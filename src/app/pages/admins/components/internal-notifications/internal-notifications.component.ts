@@ -6,6 +6,8 @@ import { MatTab } from '@angular/material/tabs';
 import { LookupsService } from 'src/app/core/services/lookups/lookup.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { BaseLiteComponemntComponent } from 'src/app/shared/base-componemnt/base-lite-componemnt/base-lite-componemnt.component';
+import { CommonService } from 'src/app/core/services/common/common.service';
 
 declare var $: any;
 
@@ -14,7 +16,7 @@ declare var $: any;
   templateUrl: './internal-notifications.component.html',
   styles: []
 })
-export class InternalNotificationsComponent extends BaseComponemntComponent implements OnInit {
+export class InternalNotificationsComponent extends BaseLiteComponemntComponent implements OnInit {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
   isChecked = true;
@@ -24,6 +26,7 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
   constructor(private _route: ActivatedRoute,
     private fb: FormBuilder,
     private _lookupService: LookupsService,
+    private _commonService: CommonService,    
   ) {
     super();
   }
@@ -60,8 +63,29 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
     return this._commonService
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then(data => {
-        if (data) {
+        if (data) { 
           this.internalnotification = data[0];
+          this.isLoading = false;
+        }
+      }, (error) => {
+        console.error(error);
+      })
+  }
+
+  async getrole() {
+    let method = "POST";
+    let url = "roles/filter";
+
+    let postData = {};
+    postData["search"] = [];
+    postData["search"].push({ "searchfield": "status", "searchvalue": "active", "criteria": "eq" });
+    postData["search"].push({ "searchfield": "property.workflowtype", "searchvalue": "internal", "criteria": "eq" });
+    return this._commonService
+      .commonServiceByUrlMethodDataAsync(url, method, postData)
+      .then(data => {
+        if (data) { 
+          console.log('getrole data =>', data);
+          // this.internalnotification = data[0];
           this.isLoading = false;
         }
       }, (error) => {

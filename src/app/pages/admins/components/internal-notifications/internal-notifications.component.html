@@ -15,34 +15,27 @@
                                             stroke-miterlimit="10" />
                                     </svg>
                                 </div>
-                                <div class="mb-3">
+                                <ng-container *ngIf="!isLoading">
+                                <div class="mb-3" *ngIf="internalnotification.solutiontype.includes(_loginUser.branchid.solutiontype)">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <h4 class="card-title">Email/SMS Notifications</h4>
                                         </div>
-                                        <div class="col-sm-6 text-right">
-                                            <section class="example-section">
-                                                <mat-checkbox class="example-margin">Email</mat-checkbox>
-                                                <mat-checkbox class="example-margin">SMS</mat-checkbox>
-                                            </section>
-                                        </div>
-                                    </div>
-                                    
+                                       
+                                    </div>&nbsp;
 
                                     <div class="d-flex mb-3">
                                         <div class="flex-grow-1">
-                                            <h5>{{internalnotification?.property?.category}}</h5>
-                                            <div>{{internalnotification?.description}}:</div>
+                                            <h5>{{internalnotification?.title}}</h5>
+                                            <div>{{internalnotification?.action?.email[0]?.title}}:</div>
 
                                             <div *ngIf="isChecked">
                                                 <h5 class="mt-3">User/Role</h5>
-                                                <div>Admin</div>
-                                                <div>Vendor</div>
-                                                <!-- <section class="example-section">
+                                                <section class="example-section">
                                                     <div>Admin</div>
-                                                    <mat-checkbox class="example-margin">Email</mat-checkbox>
-                                                    <mat-checkbox class="example-margin">SMS</mat-checkbox>
-                                                </section> -->
+                                                    <!-- <mat-checkbox class="example-margin">Email</mat-checkbox>
+                                                    <mat-checkbox class="example-margin">SMS</mat-checkbox> -->
+                                                </section>
                                             </div>
 
                                         </div>
@@ -60,6 +53,7 @@
                                         </div>
                                     </div> -->
                                 </div>
+                            </ng-container>
                             </div>
                         </div>
                     </div>

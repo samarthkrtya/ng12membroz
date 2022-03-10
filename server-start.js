@@ -3,7 +3,7 @@ process.env.JWT_SECRET = '0a6b944d-d2fb-46fc-a85e-0295c986cd9f'
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = false
 
 //process.env.MONGO_HOST='mongodb://localhost:27017/membroz2'
-process.env.MONGO_HOST = 'mongodb://membrozdbuser:Pass1234@membrozdbmumbai-shard-00-00-nagea.mongodb.net:27017,membrozdb-mumbai-shard-00-01-nagea.mongodb.net:27017,membrozdb-mumbai-shard-00-02-nagea.mongodb.net:27017/membroz-qa?ssl=true&replicaSet=MembrozDB-Mumbai-shard-0&authSource=admin&retryWrites=true'
+process.env.MONGO_HOST = 'mongodb://membrozdbuser:Pass1234@membrozdbmumbai-shard-00-00-nagea.mongodb.net:27017,membrozdb-mumbai-shard-00-01-nagea.mongodb.net:27017,membrozdb-mumbai-shard-00-02-nagea.mongodb.net:27017/qa-cocoon?ssl=true&replicaSet=MembrozDB-Mumbai-shard-0&authSource=admin&retryWrites=true'
 
 
 
