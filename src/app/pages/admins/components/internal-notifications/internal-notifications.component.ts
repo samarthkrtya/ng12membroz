@@ -21,7 +21,9 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
   destroy$: Subject<boolean> = new Subject<boolean>();
   isChecked = true;
   isLoading: boolean;
-  internalnotification: any;
+  internalnotificationList: any;
+  roleList: any;
+
 
   constructor(private _route: ActivatedRoute,
     private fb: FormBuilder,
@@ -38,6 +40,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       await super.ngOnInit();
       await this.initializeVariables();
       await this.getInternalNotification();
+      await this.getrole();
       this.isLoading = false;
 
     } catch (error) {
@@ -64,7 +67,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then(data => {
         if (data) { 
-          this.internalnotification = data[0];
+          this.internalnotificationList = data[0];
           this.isLoading = false;
         }
       }, (error) => {
@@ -79,13 +82,11 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
     let postData = {};
     postData["search"] = [];
     postData["search"].push({ "searchfield": "status", "searchvalue": "active", "criteria": "eq" });
-    postData["search"].push({ "searchfield": "property.workflowtype", "searchvalue": "internal", "criteria": "eq" });
     return this._commonService
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then(data => {
         if (data) { 
-          console.log('getrole data =>', data);
-          // this.internalnotification = data[0];
+          this.roleList = data;
           this.isLoading = false;
         }
       }, (error) => {
