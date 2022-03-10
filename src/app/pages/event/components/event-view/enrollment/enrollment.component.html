@@ -1,0 +1,199 @@
+<div class="row">
+    <div class="col-xl-12">
+            <div class="row">
+                <div class="offset-md-6 col-md-6 text-right">
+                  <button type="button" data-toggle="modal" data-target="#enrollment"  class="btn btn-primary edit" >
+                    <i class="material-icons">add</i> New Enrollment
+                  </button>
+                </div>               
+            </div>
+
+                <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive mt-3">
+                              <div class="loader" *ngIf="isLoading">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                        stroke-miterlimit="10" />
+                                </svg>
+                              </div>
+                                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100 table-hover table-membroz">
+                              
+                                  <ng-container matColumnDef="fullname">
+                                    <th mat-header-cell *matHeaderCellDef>{{getLang('fullname','Fullname')}}</th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{element?.fullname}}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <ng-container matColumnDef="email">
+                                    <th mat-header-cell *matHeaderCellDef>{{getLang('email','Email')}} </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{element?.property?.primaryemail}}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <ng-container matColumnDef="mobile">
+                                    <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('mobile','Mobile')}} </th>
+                                    <td mat-cell *matCellDef="let element" class="text-right">
+                                      {{element?.property?.mobile }}
+                                    </td>
+                                  </ng-container>
+                                  
+                              
+                                  <!-- <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}} </th>
+                                    <td mat-cell *matCellDef="let element" class="text-right">
+                                        <button mat-raised-button
+                                            type="button"
+                                            disabled
+                                            matTooltip="Delete" [matTooltipPosition]="'above'"
+                                            class="btn btn-link btn-primary btn-just-icon edit"
+                                            (click)="onDelete('member',element._id)">  
+                                            <i class="material-icons">delete</i>
+                                        </button>
+        
+                                    </td>
+                                  </ng-container> -->
+                              
+                                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                </table>
+                                <mat-paginator #paginator
+                                        [pageSize]="5"
+                                        [pageSizeOptions]="[5, 10, 20]">
+                                 </mat-paginator>
+                              </div>
+                        </div>
+                </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="enrollment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{getLang('enrollment','Enrollment')}}
+              </h4>
+              <button mat-button id="close_enrl" (click)="closed()" type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  <i class="material-icons">clear</i>
+              </button>
+          </div>
+          <div class="modal-body mat-tree-node-auto">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="input-group nav-search-main">
+                    <mat-form-field class="example-full-width w-auto pt-0 nav-search-size" appearance="standard">
+                      <input type="text" placeholder="Select Customer" aria-label="Select Customer" matInput [matAutocomplete]="auto" [formControl]="userControl">
+                      <mat-hint>Enter text to find contacts by name</mat-hint>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                      <div class="mat-optgroup-media">
+                      <mat-option > 
+                        <div (click)="toggleSelectAll()">
+                          <mat-checkbox class="checkbox-full-width" [checked]="isAllSelected" (change)="toggleSelectAll()" (click)="$event.stopPropagation()">
+                            <div class="media py-2 member-profile-item cursor-pointer" >
+                              Select All
+                            </div>
+                          </mat-checkbox>
+                        </div>
+                      </mat-option>
+                      <mat-option class="mat-option-hover-none" *ngFor="let option of filteredcontactList" [value]="selectedUsers">
+                        <div (click)="optionClicked($event, option)">
+                          <mat-checkbox class="checkbox-full-width" [checked]="option.selected" (change)="toggleSelection(option)" (click)="$event.stopPropagation()">
+                            <div class="media py-2 member-profile-item cursor-pointer" >
+                              <img 
+                                  class="example-option-img rounded mr-3" 
+                                  aria-hidden 
+                                  [src]="option.src ? option.src : '../../assets/img/default-avatar.png'" 
+                                  width="50"  
+                                  height="50">
+                              <div class="media-body">
+                                  <div class="d-flex">
+                                      <div class="flex-grow-1"> 
+                                          <div class="font-500 mb-1">
+                                              <span>{{option?.fullname}}</span> <span *ngIf="option.membernumber" > |   {{option?.membernumber}}</span> 
+                                          </div>
+                                      </div>
+                                      <div class="fc-today-button font-500">
+                                          <i class="material-icons" *ngIf="option.type == 'M'"> workspace_premium </i>
+                                          <i class="material-icons" *ngIf="option.type == 'C'"> face </i>
+                                          <i class="material-icons" *ngIf="option.type == 'U'"> person </i>
+                                      </div>
+                                  </div>
+                                  <div class="d-flex">
+                                      <div class="flex-grow-1"> {{option?.mobile}}</div>
+                                      <div class="fc-today-button font-14" *ngIf="option?.primaryemail">{{option?.primaryemail}}</div>
+                                  </div>
+                              </div>
+                          </div>
+                          </mat-checkbox>
+                        </div>
+                      </mat-option>
+                    </div>
+                    </mat-autocomplete> 
+                  </mat-form-field>
+                </div>
+               </div>
+               <div class="col-sm-12" *ngIf="tickets.length > 0">
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered table-hover table-membroz-plain">
+                      <thead data-background-color="info">                      
+                          <tr>
+                              <th>#</th>
+                              <th>Ticket</th>
+                              <th>Qty</th>
+                              <th>Cost</th>
+                              <th class="text-right" >No. of persons</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let ticket of tickets">
+                              <td class="info">
+                                <section class="example-section">
+                                  <mat-checkbox [(ngModel)]="ticket.checked" class="example-margin"></mat-checkbox>
+                                </section>
+                              </td>
+                              <td class="info">{{ ticket?.itemid?.itemname }}</td>
+                              <td class="info">
+                                <mat-form-field class="example-full-width">
+                                  <input matInput type="number" style="text-align: right;" [(ngModel)]="ticket.quantity"  oninput="this.value = Math.abs(this.value)">
+                                </mat-form-field>
+                              </td>
+                              <td class="info">{{ ticket?.cost }}</td>
+                              <td class="info text-right">{{ ticket?.noofperson }}</td>
+                              
+                          </tr>
+                      </tbody>
+                      </table>
+                </div>
+               </div>
+            </div>
+          </div>
+           <div class="modal-footer">
+              <div class="row">
+                  <div class="col-sm-12 text-right">
+                      <button 
+                          type="button" 
+                          mat-raised-button
+                          color="danger" 
+                          class="btn btn-danger ml-2"
+                          [disabled]="disableBtn" 
+                          (click)="closed()">
+                          <i class="material-icons">cancel</i> Cancel
+                      </button>
+                      <button 
+                          type="button" 
+                          mat-button 
+                          class="btn btn-success ml-2" 
+                          [disabled]="disableBtn"
+                          (click)="onEnroll()">  <i class="material-icons">save</i>
+                          Save
+                      </button>
+                  </div>
+              </div>
+      </div>
+  </div>
+</div>
+</div>

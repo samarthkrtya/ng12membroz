@@ -1,0 +1,29 @@
+
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px" >
+        <div class="member-img-main position-relative member-profile-img-border">
+              <img
+                [src]="dataContent.property && dataContent.property.images && dataContent.property.images[0] ? dataContent.property.images[0].attachment : '../assets/img/image_placeholder.jpg'"
+                class="img-fluid w-100" alt="">
+        </div>
+    </div>
+     <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent?.resortname}} <span>({{dataContent?.location?.locationname}})</span> </h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property.mobile_number">
+                    <div>{{getLang('mobile_number','Address:')}} <span class="brand-secondary"> {{dataContent?.property?.mobile_number }} </span> </div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property.address">
+                    <div>{{getLang('address','Address:')}} <span class="brand-secondary"> {{dataContent?.property?.address }} </span> </div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property.property_type">
+                    <div>{{getLang('propertytype','Property Type:')}} <span class="brand-secondary"> {{dataContent?.property?.property_type }} </span> </div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property.amenities">
+                    <div>{{getLang('amenities','Amenities:')}} <span class="brand-secondary"> {{dataContent?.property?.amenities }} </span> </div>
+                </div>                 
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,251 @@
+<div class="main-content">
+    <div class="container-fluid">
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row mt-lg-3 mt-0 d-flex align-items-center">
+                    <div class="col-sm-6">
+                        <h3 class="card-title mb-sm-0 mt-0 mb-3">Job Cards</h3>
+                    </div>
+                    <div class="col-sm-6 text-sm-right">
+                        
+                    </div>
+                </div>
+                <div class="card mb-0">
+                    <div class="px-3 pt-3 pb-sm-0 pb-3">
+                        <div class="row">
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-3">
+                                <mat-form-field
+                                    class="example-full-width common-search-size w-auto pt-0 pb-0 mb-0"
+                                    appearance="standard" >
+                                    <span
+                                        class="input-group-prepend"
+                                        matPrefix>
+                                        <span class="input-group-text pl-0">
+                                            <i class="material-icons">search</i>
+                                        </span>
+                                    </span>
+                                    <input
+                                        matInput
+                                        [(ngModel)]="search"
+                                        (keyup)="applyFilter()"
+                                        placeholder="Search">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-3 col-lg-2 col-md-3 col-sm-3">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Enter a date range</mat-label>
+                                    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                        <input 
+                                            matStartDate 
+                                            formControlName="start" 
+                                            placeholder="Start date"
+                                            (dateChange)="applyFilter()">
+                                        <input 
+                                            matEndDate 
+                                            formControlName="end" 
+                                            placeholder="End date"
+                                            (dateChange)="applyFilter()">
+                                    </mat-date-range-input>
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-date-range-picker #picker></mat-date-range-picker>
+                                  
+                                    <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                    <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-7 col-lg-2 col-md-6 col-sm-6 text-right">
+
+                                <div class="col-xl-12">
+                                    <div class="row">
+                                        <div class="col-xl-10">
+                                           
+                                            <div type="button"  class="attend-text-green attend-working-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('completed','Completed')}}
+                                            </div>
+                                           
+                                            <div type="button" class="attend-text-orange attend-holiday-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('inprogress','In Progress')}}
+                                            </div>
+                                            
+                                            <div type="button" class="attend-text-red attend-absent-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('notstarted','Not Started')}}
+                                            </div>
+
+                                            <div type="button" class="ts-blue-box ts-text-blue mb-1 ml-1 ml-lg-2">
+                                                {{getLang('onhold','On Hold')}}
+                                            </div>
+
+                                        </div>
+                                        <div class="col-xl-2">
+                                            <span class="dropdown inline-block text-right ml-2">
+                                                <button *ngIf="!ishidemorebutton" class="dropdown-toggle btn btn-primary mrtb0"
+                                                    data-toggle="dropdown">
+                                                    Job Status
+                                                    <b class="caret"></b>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" (click)="statusFilterChange('')">
+                                                        All
+                                                    </a>
+                                                    <a class="dropdown-item" (click)="statusFilterChange('completed')">
+                                                        Completed
+                                                    </a>
+                                                    <a class="dropdown-item" (click)="statusFilterChange('inprogress')">
+                                                        In Progress
+                                                    </a>
+                                                    <a class="dropdown-item" (click)="statusFilterChange('active')">
+                                                        Not Started
+                                                    </a>
+                                                    <a class="dropdown-item" (click)="statusFilterChange('onhold')">
+                                                        On Hold
+                                                    </a>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="row job-card-front-main membroz-row">
+            
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 membroz-col d-flex" *ngFor="let item of filteredItems; let i = index">
+                <div 
+                    class="card  mb-0"
+                    [ngClass]="item.status == 'completed' ? 'card-green' : item.status == 'onhold' ? 'card-blue' : item.status == 'inprogress' ? 'card-orange' : 'card-red'">
+
+                    <div class="p-3 position-relative card-sticky-item-main" >
+                         
+                        <div class="row membroz-row">
+                            <div class="col-6 membroz-col" ></div>
+                            <div class="col-6 membroz-col text-right" >
+
+                                {{isLoadingControl}}
+
+
+                                <app-add-custom-notes
+                                    *ngIf="!isLoadingControl"
+                                    formid="60965b1a8f9f8d6de8ada3a6"
+                                    [contextid]="item._id"
+                                    onModel='Joborder'
+                                    [id]='item._id'
+                                    (onCustomNotesCounter)="getSubmittedCounter($event)">
+                                </app-add-custom-notes>
+                                
+                                
+                            </div>
+                        </div>
+                        <div class="row membroz-row" >
+                            <div class="col-6 membroz-col" >
+                                <div class="mb-2">
+                                    <div class="job-card-label">Job Id</div>
+                                    <div class="font-14">{{item?.docnumber}}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="job-card-label">Customer Name</div>
+                                    <div class="font-14 text-break">{{item?.customername}}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="job-card-label">Asset</div>
+                                    <div class="font-14 text-break">{{item?.assetname}}</div>
+                                </div>
+                               
+                            </div>
+                            <div class="col-6 membroz-col" >
+                                <div class="mb-2">
+                                    <div class="job-card-label">Booking Date</div>
+                                    <div class="font-14">{{item?.date | date}}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="job-card-label">Customer No</div>
+                                    <div class="font-14">{{item?.customerid?.property?.mobile}}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="job-card-label">Registration No</div>
+                                    <div class="font-14">{{item?.assetid?.property?.license_plate}}</div>
+                                </div>
+                            </div>
+                      </div>
+
+                     
+                      <div class="card-sticky-item-footer" >
+                      <div class="font-14 mb-1">Job Done {{getCompleteTasksCount(item.activities)}} / {{item.activities.length}} </div>
+                      <div class="progress card-progress-back-bg">
+                        <div 
+                            class="progress-bar" 
+                            role="progressbar" 
+                            [style.width.%]="item.getcompletionPercent" 
+                            aria-valuenow="100" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100"
+                            ></div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+
+                                <ng-container *ngIf="item.status == 'completed'">
+                                    <span 
+                                        class="cursor-pointer job-status-green">
+                                        Completed
+                                    </span>
+                                </ng-container>
+                                
+
+                                <ng-container *ngIf="item.status !== 'completed'">
+                                    <span 
+                                        class="cursor-pointer"
+                                        [matMenuTriggerFor]="menu"
+                                        [ngClass]="item.status == 'completed' ? 'job-status-green' : item.status == 'onhold' ? 'job-status-blue' : item.status == 'inprogress' ? 'job-status-orange' : 'job-status-red'">
+                                        {{item.status == 'active' ? 'Not Started' : (item.status | titlecase)}}
+                                    </span>
+                                    <mat-menu #menu="matMenu">
+                                        <button 
+                                            (click)="statusChange(item, itemStatus.code)"
+                                            mat-menu-item 
+                                            *ngFor="let itemStatus of statusList"> 
+                                            {{itemStatus.value}} 
+                                        </button>
+                                    </mat-menu>
+                                </ng-container>
+                                
+                            </div>
+                            <div class="flex-grow-1" *ngIf="item.status !== 'completed' && item.services && item.services.length > 0" (click)="assignTasks(item)">
+                                <span 
+                                    class="cursor-pointer"
+                                    [ngClass]="item.status == 'completed' ? 'job-status-green' : item.status == 'onhold' ? 'job-status-blue' : item.status == 'inprogress' ? 'job-status-orange' : 'job-status-red'">
+                                    Assign Tasks
+                                </span>
+                            </div>
+                            <div>
+                                <a 
+                                    [routerLink]="['/pages/inspection-module/job-order/' + item._id]"
+                                    class="job-card-link">
+                                    View Job
+                                </a>
+                            </div>
+                      </div>
+                     </div>
+                    
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<app-inspection-job-status-change
+    *ngIf="statusPopupActive"
+    [joborderid]="selectedJoborder._id"
+    (onStatusChangeData)="getSubmittedData($event)">
+</app-inspection-job-status-change>

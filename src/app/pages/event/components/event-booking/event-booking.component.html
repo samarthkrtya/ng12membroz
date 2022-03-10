@@ -1,0 +1,420 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        {{getLang('eventbooking', 'Event Booking')}}
+                    </h3>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="loader" *ngIf="isLoading">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <ng-container *ngIf="!isLoading">
+
+                                        <div class="row">
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('customer', 'Customer')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <mat-form-field class="example-full-width">
+                                                    <input type="text" aria-label="Number" matInput
+                                                        [formControl]="customerid" [matAutocomplete]="auto">
+
+                                                    <mat-autocomplete #auto="matAutocomplete"
+                                                        [displayWith]="displayCusFn"
+                                                        (optionSelected)="customerSelected($event.option)">
+
+                                                        <mat-option *ngIf="isLoading" class="is-loading">
+                                                            <mat-spinner diameter="50"></mat-spinner>
+                                                        </mat-option>
+
+                                                        <ng-container *ngIf="!isLoading && contactLists.length > 0">
+
+                                                            <div class="mat-optgroup-media">
+                                                                <mat-option
+                                                                    *ngFor="let option of filteredOptions | async"
+                                                                    [value]="option">
+
+                                                                    <div
+                                                                        class="media py-2 member-profile-item cursor-pointer">
+                                                                        <img class="example-option-img rounded"
+                                                                            aria-hidden [src]="option.src" width="50"
+                                                                            height="50">
+
+                                                                        <div class="media-body">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-grow-1">
+                                                                                    <div class="font-500 mb-1">
+                                                                                        <span>{{option?.nickname}}</span>
+                                                                                        <span
+                                                                                            *ngIf="option.membernumber">
+                                                                                            |
+                                                                                            {{option?.membernumber}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="fc-today-button font-500">
+                                                                                    <i class="material-icons"
+                                                                                        *ngIf="option.type == 'M'">
+                                                                                        workspace_premium </i>
+                                                                                    <i class="material-icons"
+                                                                                        *ngIf="option.type == 'C'"> face
+                                                                                    </i>
+                                                                                    <i class="material-icons"
+                                                                                        *ngIf="option.type == 'U'">
+                                                                                        person
+                                                                                    </i>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-grow-1">
+                                                                                    {{option?.mobile}}
+                                                                                </div>
+                                                                                <div class="fc-today-button font-14"
+                                                                                    *ngIf="option?.primaryemail">
+                                                                                    {{option?.primaryemail}}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </mat-option>
+                                                            </div>
+                                                        </ng-container>
+
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+
+                                                <ng-container *ngIf="myControl?.value">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div
+                                                                class="border pt-3 px-3 rounded alternative-light-blue">
+                                                                <div class="row">
+                                                                    <div class="col-sm-4"
+                                                                        *ngIf="myControl?.value?.nickname">
+                                                                        <div class="media py-2 member-profile-item">
+                                                                            <img [src]="myControl.value.src"
+                                                                                class="profile-avatar-img mr-2 rounded-circle"
+                                                                                alt="">
+                                                                            <div class="media-body">
+                                                                                <div class="font-500 mb-1">
+                                                                                    {{myControl?.value?.nickname}}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-4"
+                                                                        *ngIf="myControl?.value?.primaryemail">
+                                                                        <div class="d-flex align-items-center mb-3">
+                                                                            <div class="mr-2">
+
+                                                                            </div>
+                                                                            <div class="text-break">
+                                                                                {{myControl?.value?.primaryemail}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center mb-3">
+                                                                            <div class="mr-2">
+
+                                                                            </div>
+                                                                            <div> {{myControl?.value?.mobile}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+
+                                            </div>
+
+                                            <div class="col-sm-12">
+
+                                                <label class="col-form-label">
+                                                    {{getLang('event', 'Event')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <dynamic-autocomplete [formControlName]="eventfields.fieldname"
+                                                    [setting]="eventfields" [dbvalue]="eventfields.dbvalue"
+                                                    (inputModelChange)="inputModelChangeValue($event)">
+                                                </dynamic-autocomplete>
+
+                                                <div [hidden]="form.get('eventid').valid || (form.get('eventid').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('eventid').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('eventisrequired', 'Event is Required')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('bookingdate', 'Booking Date')}}
+                                                </label>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker" [min]="today"
+                                                        formControlName="bookingdate">
+                                                    <mat-datepicker-toggle matSuffix [for]="picker">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+
+
+                                            <div class="col-sm-6" *ngIf="form.get('startdate').value">
+                                                <label class="col-form-label">
+                                                    {{getLang('eventdate', 'Event Date')}}
+                                                </label>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="pickeri"
+                                                        formControlName="startdate">
+                                                    <mat-datepicker-toggle matSuffix [for]="pickeri">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #pickeri></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-6" *ngIf="form.get('enddate').value">
+                                                <label class="col-form-label">
+                                                    {{getLang('enddate', 'End Date')}}
+                                                </label>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="pickero" formControlName="enddate">
+                                                    <mat-datepicker-toggle matSuffix [for]="pickero">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #pickero></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="row" *ngIf="billitems && billitems.length > 0">
+                                            <div class="col-sm-12 text-right">
+                                                <button [disabled]="submitVisibility" (click)="newTickets()"
+                                                    class="btn btn-link btn-primary btn-just-icon edit" type="button">
+                                                    <i class="material-icons">add</i>
+                                                </button>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <ng-container formArrayName="occupants"
+                                                    *ngFor="let a of form.get('occupants')['controls']; let i = index">
+
+                                                    <div class="d-flex justify-content-start align-items-center">
+                                                        <div class="flex-grow-1">
+                                                            <div class="row" [formGroupName]="i">
+                                                                <div class="col-sm-3">
+                                                                    <label class="col-form-label">
+                                                                        {{getLang('type', 'Type')}}
+                                                                        <span class="text-danger">*</span>
+                                                                    </label>
+
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <mat-select formControlName="occupanttype"
+                                                                            (selectionChange)="eventTypeChange($event, i)">
+                                                                            <!-- <mat-option *ngFor="let item of billitems" [value]="item.tickettype">
+                                                                                        {{item.tickettype}}
+                                                                                    </mat-option> -->
+                                                                            <mat-option
+                                                                                *ngFor="let item of billitemsArray[i]"
+                                                                                [value]="item.tickettype">
+                                                                                {{item.tickettype}}
+                                                                            </mat-option>
+
+                                                                        </mat-select>
+                                                                    </mat-form-field>
+
+                                                                    <div [hidden]="a.get('occupanttype').valid || (a.get('occupanttype').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="a.get('occupanttype').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('typeisrequired', 'Type is
+                                                                            Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-3">
+
+                                                                    <label class="col-form-label">
+                                                                        {{getLang('cost', 'Cost')}}
+                                                                    </label>
+
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text" matInput
+                                                                            formControlName="cost">
+                                                                    </mat-form-field>
+
+                                                                    <div [hidden]="a.get('cost').valid || (a.get('cost').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="a.get('cost').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('costisrequired', 'Cost is
+                                                                            Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-2">
+
+                                                                    <label class="col-form-label">
+                                                                        {{getLang('quantity', 'Quantity')}}
+                                                                        <span class="text-danger">*</span>
+                                                                    </label>
+
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="number" matInput
+                                                                            (input)="onPersonChange($event.target.value, i)"
+                                                                            formControlName="quantity">
+                                                                    </mat-form-field>
+
+                                                                    <div [hidden]="a.get('quantity').valid || (a.get('quantity').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="a.get('quantity').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('quantityisrequired', 'Quantity is
+                                                                            Required')}}
+                                                                        </small>
+                                                                        <small
+                                                                            *ngIf="a.get('quantity').hasError('insertonlypositivenumber')"
+                                                                            class="error-label">
+                                                                            {{getLang('quantityshdpstv', 'Quantity
+                                                                            should be positive')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-3">
+
+                                                                    <label class="col-form-label">
+                                                                        {{getLang('totalcost', 'Total Cost')}}
+                                                                    </label>
+
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text" matInput
+                                                                            formControlName="totalcost">
+                                                                    </mat-form-field>
+
+                                                                    <div [hidden]="a.get('totalcost').valid || (a.get('totalcost').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="a.get('totalcost').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('totalcostisrequired', 'Total Cost
+                                                                            is Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                <button [disabled]="submitVisibility"
+                                                                    (click)="deleteTickets(i)"
+                                                                    class="btn btn-link btn-primary btn-just-icon edit"
+                                                                    type="button">
+                                                                    <i class="material-icons">delete</i>
+                                                                </button>
+
+
+
+
+                                                                <input type="hidden" formControlName="itemid">
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-4 text-left" *ngIf="bindid">
+                            <button class="btn btn-danger ml-2" *ngIf="!isMemberLogin" (click)="cancelled.clickPP()"
+                                type="button" [disabled]="submitVisibility">
+                                <i class="material-icons">close</i> {{getLang('cancelbokng', 'Cancel Booking')}}
+                            </button>
+                        </div>
+
+                        <div class="text-right" [ngClass]="{'col-sm-8': bindid , 'col-sm-12': !bindid }">
+                            <button class="btn btn-default" type="button" (click)="cancelbookingform()"
+                                [disabled]="submitVisibility">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+
+                            <button class="btn btn-primary ml-2" (click)="status = 'requested'" type="submit"
+                                [disabled]="submitVisibility || form.controls['status'].value != 'active'">
+                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                            </button>
+
+                            <ng-container *ngIf="!isMemberLogin;else member">
+                                <button class="btn btn-success ml-2" *ngIf="bindid" (click)="confirmation.clickPP()"
+                                    type="button"
+                                    [disabled]="submitVisibility || form.controls['status'].value != 'active'">
+                                    <i class="material-icons">save</i> {{getLang('save&confrm', 'Save & Confirmed')}}
+                                </button>
+                            </ng-container>
+                            <ng-template #member>
+                                <button class="btn btn-success ml-2" *ngIf="bindid" (click)="onlinePay()" type="button"
+                                    [disabled]="submitVisibility || form.controls['status'].value != 'active'">
+                                    <i class="material-icons">payment</i> {{getLang('paynow', 'Pay Now')}}
+                                </button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>
+
+
+<app-global-confirmation #confirmation [myForm]="form" [mySubmitted]="submitted" [fieldTxt]="'notes'"
+    [displayTxt]="'Confirmation'" [id]="'Modal1'">
+    <button conBtn class="btn btn-success ml-2" (click)="status = 'confirmed';onSubmit(form.value,form.valid);"
+        type="button" [disabled]="submitVisibility || form.controls['status'].value != 'active'">
+        <i class="material-icons">save</i> {{getLang('save&confrm', 'Save & Confirmed')}}
+    </button>
+</app-global-confirmation>
+
+
+<app-global-confirmation #cancelled [myForm]="form" [mySubmitted]="submitted" [fieldTxt]="'notes'"
+    [displayTxt]="'Reason'" [id]="'Modal2'">
+    <button conBtn class="btn btn-danger ml-2" (click)="status = 'cancelled'; onSubmit(form.value,form.valid);"
+        type="button" [disabled]="submitVisibility">
+        <i class="material-icons">save</i> {{getLang('cancelled', 'Cancelled')}}
+    </button>
+</app-global-confirmation>

@@ -1,0 +1,658 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3 class="card-title"> Statutory Component </h3>
+
+                <div class="loader" *ngIf="isLoadingData">
+                    <svg class="circular" viewBox="25 25 50 50">
+                        <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                            stroke-miterlimit="10" />
+                    </svg>
+                </div>
+
+                <div class="card">
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="offset-xl-1 col-xl-10">
+                                <mat-tab-group>
+                                    <mat-tab label="EPF">
+                                        <form [formGroup]="epfForm"
+                                            (ngSubmit)="onEPFSubmit(epfForm.value,epfForm.valid)" novalidate>
+                                            <h4 class="card-title mt-4"> Employees Provident Fund </h4>
+
+                                            <div *ngIf="!epfEnable">
+                                                <div class="text-center mt-5" >
+                                                    <img class="img-fluid"
+                                                        src="assets/img/money-eep.svg"
+                                                        alt=""  />
+                                                    <div class="my-4" >
+                                                    <button class="btn btn-primary" type="button"
+                                                        (click)="onEnableEPF(true)">
+                                                        <i class="material-icons">visibility</i>  Enable EPF
+                                                    </button>
+                                                    </div>   
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="row" *ngIf="epfEnable">
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label class="col-form-label">
+                                                                EPF Number
+                                                                <span class="text-danger">*</span>
+                                                            </label>
+                                                            <mat-form-field class="example-full-width">
+                                                                <input matInput value="" formControlName="epfNumber"
+                                                                    [(ngModel)]="epfNumber">
+                                                            </mat-form-field>
+                                                            <div 
+                                                            [hidden]="epfForm.get('epfNumber').valid || (epfForm.get('epfNumber').pristine && !submitted)"
+                                                            class="text-danger">
+                                                            <small *ngIf="epfForm.get('epfNumber').hasError('required')" class="error-label font-size-75">
+                                                                {{getLang('typeisrequired', 'EPF Number is Required')}}
+                                                            </small>
+                                                        </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label class="col-form-label">
+                                                                Deduction Cycle
+                                                            </label>
+                                                            <mat-form-field class="example-full-width">
+                                                                <select matNativeControl required>
+                                                                    <option value="Monthly">Monthly</option>
+                                                                </select>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
+                                                
+                                                <div class="secondary-bg-white-color p-2">
+                                                    <div class="row">
+                                                    
+                                                    <div class="col-sm-3" style="text-align: left;">
+                                                        <label class="example-full-width mb-0">
+                                                            Sub Components
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Employee's Contribution
+                                                                </label>
+                                                            </div>
+            
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Upto
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Employer's Contribution
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Upto
+                                                                </label>
+                                                            </div>  
+                                                        </div>
+                                                    </div>
+                                                    
+                                                       
+                                                </div>
+                                                </div>
+                                               
+                                                <div class="row align-items-center">
+
+                                                    <div class="col-sm-3" style="text-align: left;">
+                                                        <label class="example-full-width">
+                                                            Employee's Provident Fund(EPF)
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="epfEmployeeContributionRate"
+                                                                        formControlName="epfEmployeeContributionRate"
+                                                                        [(ngModel)]="epfEmployeeContributionRate">
+                                                                    <mat-hint>% of PF Wage</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="epfEmployeeContributionCeiling"
+                                                                        formControlName="epfEmployeeContributionCeiling"
+                                                                        [(ngModel)]="epfEmployeeContributionCeiling">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="epfEmployerContributionRate"
+                                                                        formControlName="epfEmployerContributionRate"
+                                                                        [(ngModel)]="epfEmployerContributionRate">
+                                                                    <mat-hint>% of PF Wage</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+            
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="epfEmployerContributionCeiling"
+                                                                        formControlName="epfEmployerContributionCeiling"
+                                                                        [(ngModel)]="epfEmployerContributionCeiling">
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div class="row">
+    
+                                                    <div class="col-sm-3" style="text-align: left;">
+                                                        <label class="example-full-width">
+                                                            Employee's Pension Scheme
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0 disabled>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0 disabled>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="epsEmployerContributionRate"
+                                                                        formControlName="epsEmployerContributionRate"
+                                                                        [(ngModel)]="epsEmployerContributionRate">
+                                                                    <mat-hint>% of PF Wage</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+            
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0>
+                                                                </mat-form-field>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+
+                                                   
+                                                    
+    
+                                                    <div class="col-sm-3" style="text-align: left;">
+                                                        <label class="example-full-width">
+                                                            EPF Admin Charges
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0 disabled>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0 disabled>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="epfAdminChargeRate"
+                                                                        formControlName="epfAdminChargeRate"
+                                                                        [(ngModel)]="epfAdminChargeRate">
+                                                                    <mat-hint>% of PF Wage</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+            
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-3" style="text-align: left;">
+                                                        <label class="example-full-width">
+                                                            EDLI Contribution
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0 disabled>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0 disabled>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="epfEDLIContributionRate"
+                                                                        formControlName="epfEDLIContributionRate"
+                                                                        [(ngModel)]="epfEDLIContributionRate">
+                                                                    <mat-hint>% of PF Wage</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+            
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput value=0>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <button class="btn btn-primary" type="button" *ngIf="epfEnable"
+                                                            (click)="onDisableEPF(false)">
+                                                            <i class="material-icons">visibility_off</i> Disable EPF
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                               </div>
+                                            </div>
+
+                                            <footer class="footer fixed-bottom bg-white shadow-top">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="offset-xl-1 col-xl-10">
+                                                            <div class="row">
+                                                                <div class="col-sm-12 text-right">
+                                                                    <!-- <button class="btn btn-default" type="button"
+                                                                        [disabled]="submitted"
+                                                                        [routerLink]="['/pages/dynamic-list/list/salarycomponent']">
+                                                                        <i class="material-icons">close</i> Cancel
+                                                                    </button> -->
+                                                                    <button class="btn btn-primary ml-2" type="submit"
+                                                                        [disabled]="submitted">
+                                                                        <span *ngIf="submitted"
+                                                                            class="spinner-border"></span>
+                                                                        <i *ngIf="!submitted"
+                                                                            class="material-icons">save</i>
+                                                                        {{ !submitted ? 'Save': ''}}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </footer>
+                                        </form>
+                                    </mat-tab>
+
+
+                                    <mat-tab label="ESI">
+                                        <form [formGroup]="esiForm"
+                                            (ngSubmit)="onESISubmit(esiForm.value,esiForm.valid)">
+                                            <h4 class="card-title mt-4"> Employees State Insurance </h4>
+                                            <div *ngIf="!esiEnable">
+                                                <div class="text-center mt-5" >
+                                                    <img class="img-fluid"
+                                                        src="assets/img/money-eep.svg"
+                                                        alt=""  />
+                                                    <div class="my-4" >
+                                                        <button class="btn btn-primary" type="button"
+                                                        (click)="onEnableESI(true)">
+                                                        <i class="material-icons">visibility</i> Enable ESI
+                                                      </button>
+                                                    </div>   
+                                                </div>
+                                            </div>
+
+                                            <div class="row" *ngIf="esiEnable">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        ESI Number
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input matInput value="" formControlName="esiNumber"
+                                                            [(ngModel)]="esiNumber">
+                                                    </mat-form-field>
+                                                    <div 
+                                                    [hidden]="esiForm.get('esiNumber').valid || (esiForm.get('esiNumber').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="esiForm.get('esiNumber').hasError('required')" class="error-label font-size-75">
+                                                        {{getLang('typeisrequired', 'ESI Number is Required')}}
+                                                    </small>
+                                                </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        Deduction Cycle
+                                                    </label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <select matNativeControl required>
+                                                            <option value="Monthly">Monthly</option>
+                                                        </select>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <div class="secondary-bg-white-color p-2">
+                                                    <div class="row">
+                                                    
+                                                    <div class="col-sm-3" style="text-align: left;">
+                                                        <label class="example-full-width mb-0">
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Employee's Contribution
+                                                                </label>
+                                                            </div>
+            
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Upto
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Employer's Contribution
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: left;">
+                                                                <label class="example-full-width mb-0">
+                                                                    Upto
+                                                                </label>
+                                                            </div>  
+                                                        </div>
+                                                    </div>
+                                                    
+                                                       
+                                                </div>
+                                                </div>
+                                                <div class="row align-items-center">
+
+                                                    <div class="col-sm-3" style="text-align: left;">
+                                                        <label class="example-full-width">
+                                                            Employee State Insurance(ESI)
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width mb-3">
+                                                                    <input matInput name="esiEmployeeContributionRate"
+                                                                        formControlName="esiEmployeeContributionRate"
+                                                                        [(ngModel)]="esiEmployeeContributionRate">
+                                                                    <mat-hint>% of Gross Pay</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="esiEmployeeContributionCeiling"
+                                                                        formControlName="esiEmployeeContributionCeiling"
+                                                                        [(ngModel)]="esiEmployeeContributionCeiling">
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width mb-3">
+                                                                    <input matInput name="esiEmployerContributionRate"
+                                                                        formControlName="esiEmployerContributionRate"
+                                                                        [(ngModel)]="esiEmployerContributionRate">
+                                                                    <mat-hint>% of Gross Pay</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+            
+                                                            <div class="col-sm-3" style="text-align: center;">
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput name="esiEmployerContributionCeiling"
+                                                                        formControlName="esiEmployerContributionCeiling"
+                                                                        [(ngModel)]="esiEmployerContributionCeiling">
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                <!-- <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        Employee Contribution
+                                                    </label>
+                                                    <mat-form-field class="example-full-width mb-3">
+                                                        <input matInput name="esiEmployeeContributionRate"
+                                                            formControlName="esiEmployeeContributionRate"
+                                                            [(ngModel)]="esiEmployeeContributionRate">
+                                                        <mat-hint>% of Gross Pay</mat-hint>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        Employer Contribution
+                                                    </label>
+                                                    <mat-form-field class="example-full-width mb-3">
+                                                        <input matInput name="esiEmployerContributionRate"
+                                                            formControlName="esiEmployerContributionRate"
+                                                            [(ngModel)]="esiEmployerContributionRate">
+                                                        <mat-hint>% of Gross Pay</mat-hint>
+                                                    </mat-form-field>
+                                                </div> -->
+                                                <div class="col-sm-12">
+                                                    <button class="btn btn-primary" type="button" *ngIf="esiEnable"
+                                                        (click)="onDisableESI(false)">
+                                                        <i class="material-icons">visibility_off</i> Disable ESI
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <footer class="footer fixed-bottom bg-white shadow-top">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="offset-xl-1 col-xl-10">
+                                                            <div class="row">
+                                                                <div class="col-sm-12 text-right">
+                                                                    <!-- <button class="btn btn-default" type="button"
+                                                                        [disabled]="submitted"
+                                                                        [routerLink]="['/pages/dynamic-list/list/salarycomponent']">
+                                                                        <i class="material-icons">close</i> Cancel
+                                                                    </button> -->
+                                                                    <button class="btn btn-primary ml-2" type="submit"
+                                                                        [disabled]="submitted">
+                                                                        <span *ngIf="submitted"
+                                                                            class="spinner-border"></span>
+                                                                        <i *ngIf="!submitted"
+                                                                            class="material-icons">save</i>
+                                                                        {{ !submitted ? 'Save': ''}}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </footer>
+                                        </form>
+                                    </mat-tab>
+
+
+                                    <mat-tab label="Professional Tax">
+                                        <form [formGroup]="ptForm" (ngSubmit)="onPTSubmit(ptForm.value,ptForm.valid)">
+                                            <h4 class="card-title mt-4"> Professional Tax </h4>
+                                            <div *ngIf="!ptEnable">
+                                                <div class="text-center mt-5" >
+                                                    <img class="img-fluid"
+                                                        src="assets/img/money-eep.svg"
+                                                        alt=""  />
+                                                    <div class="my-4" >
+                                                    <button class="btn btn-primary" type="button"
+                                                    (click)="onEnablePT(true)">
+                                                    <i class="material-icons">visibility</i> Enable PT
+                                                    </button>
+                                                    </div>   
+                                                </div>
+                                               
+                                            </div>
+
+                                            <div *ngIf="ptEnable">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label class="col-form-label">
+                                                            PT Number
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput value="" formControlName="ptNumber"
+                                                                [(ngModel)]="ptNumber">
+                                                        </mat-form-field>
+                                                        <div 
+                                                            [hidden]="ptForm.get('ptNumber').valid || (ptForm.get('ptNumber').pristine && !submitted)"
+                                                            class="text-danger">
+                                                            <small *ngIf="ptForm.get('ptNumber').hasError('required')" class="error-label font-size-75">
+                                                                {{getLang('typeisrequired', 'PT Number is Required')}}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label class="col-form-label">
+                                                            Deduction Cycle
+                                                        </label>
+                                                        <mat-form-field class="example-full-width">
+                                                            <select matNativeControl required>
+                                                                <option value="Monthly">Monthly</option>
+                                                            </select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <h5 class="card-title mt-4 mb-3"> Tax Slabs based on Monthly
+                                                            Gross Salary
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row mrt10">
+                                                    <div class="col-md-12">
+                                                        <div class="secondary-bg-white-color p-2">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <label class="mb-0">START RANGE ({{_loginUser.branchid.currency}})</label>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="mb-0"> END RANGE ({{_loginUser.branchid.currency}}) </label>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="mb-0"> MONTHLY TAX AMOUNT ({{_loginUser.branchid.currency}})
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                      </div>
+                                                        <div formArrayName="ptSlabs">
+                                                            <div class="row" *ngFor="let item of ptSlabsArray.controls;
+                                                                            let i=index" [formGroupName]="i">
+
+                                                                <input type="hidden" class="form-control" name="index"
+                                                                    [value]="item.index">
+                                                                <input type="hidden" class="form-control" name="id"
+                                                                    [value]="item.id">
+
+                                                                <div class="col-md-4 col-sm-4">
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input matInput type="text"
+                                                                            name="amountGreaterThan"
+                                                                            formControlName="amountGreaterThan">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-4 col-sm-4">
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input matInput type="text" name="amountUpTo"
+                                                                            formControlName="amountUpTo">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-4 col-sm-4">
+
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input matInput type="text" name="value"
+                                                                            formControlName="value">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <button class="btn btn-primary" type="button"
+                                                                    *ngIf="ptEnable" (click)="onDisablePT(false)">
+                                                                    <i class="material-icons">visibility_off</i> Disable PT
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-sm-6 text-right">
+                                                                <button class="btn btn-primary" type="button"                                                                   
+                                                                    (click)="addProfessionalTaxSlab()"
+                                                                    [disabled]="!ptForm.valid">
+                                                                    <i class="material-icons">add</i> Add Fields
+                                                                </button>
+                                                           </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <footer class="footer fixed-bottom bg-white shadow-top">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="offset-xl-1 col-xl-10">
+                                                            <div class="row">
+                                                                <div class="col-sm-12 text-right">
+                                                                    <!-- <button class="btn btn-default" type="button"
+                                                                        [disabled]="submitted"
+                                                                        [routerLink]="['/pages/dynamic-list/list/salarycomponent']">
+                                                                        <i class="material-icons">close</i> Cancel
+                                                                    </button> -->
+                                                                    <button class="btn btn-primary ml-2" type="submit"
+                                                                        [disabled]="submitted">
+                                                                        <span *ngIf="submitted"
+                                                                            class="spinner-border"></span>
+                                                                        <i *ngIf="!submitted"
+                                                                            class="material-icons">save</i>
+                                                                        {{ !submitted ? 'Save': ''}}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </footer>
+                                        </form>
+
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

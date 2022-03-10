@@ -1,0 +1,186 @@
+<form [formGroup]="form" (keydown.enter)="$event.preventDefault()" (ngSubmit)="onSubmit(form.value,form.valid)"
+  novalidate>
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <h3 class="card-title">
+            {{getLang('purchaseorder', 'Purchase Order')}}
+            {{poData ? '(#' + poData + ')' : ''}}
+          </h3>
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+
+                  <div class="loader" *ngIf="isLoading">
+                    <svg class="circular" viewBox="25 25 50 50">
+                      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                    </svg>
+                  </div>
+
+                  <div class="row" *ngIf="!isLoading">
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        {{getLang('vendor', 'Vendor')}}
+                        <span class="text-danger">*</span>
+                      </label>
+                      <dynamic-autocomplete 
+                        [formControlName]="vendorfields.fieldname"
+                        [setting]="vendorfields"
+                        [dbvalue]="vendorfields.dbvalue"
+                        (added)="onItemAdded($event)"
+                        [showDetail]="true"
+                        [htmlContent]="htmlContent">
+                      </dynamic-autocomplete>
+
+                      <div [hidden]="form.get('vendorid').valid || (form.get('vendorid').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('vendorid').hasError('required')" class="error-label">
+                          {{getLang('vendorisrequired', 'Vendor is Required')}}
+                        </small>
+                      </div>
+
+                    </div>
+
+                  <!--
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        {{getLang('billingaddress', 'Billing Address')}}
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="billingaddress">
+                      </mat-form-field>
+                    </div> -->
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        {{getLang('shippingaddress', 'Shipping Address')}}
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="shippingaddress">
+                      </mat-form-field>
+
+                    </div>
+
+                    <div class="col-sm-12">
+                      <div *ngIf="this.form.get('billingaddress').value">
+                        <mat-checkbox id="shipadd" class="example-margin" type="checkbox"
+                          (change)="checkUncheckEvent($event)">
+                        </mat-checkbox>
+                        {{getLang('sameasbilling', 'Same As Billing')}}
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        {{getLang('orderdate', 'Order Date')}}
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input id="orderDate" [min]="!bindId ? today : ''" matInput [matDatepicker]="resultPicker"
+                          formControlName="orderdate">
+
+                        <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #resultPicker></mat-datepicker>
+                      </mat-form-field>
+
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        {{getLang('shippingdate', 'Shipping Date')}}
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input id="shippingdate" [min]="this.form.get('orderdate').value" matInput
+                          [matDatepicker]="sresultPicker" formControlName="shippingdate">
+                        <mat-datepicker-toggle matSuffix [for]="sresultPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #sresultPicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-6" *ngIf="bindId">
+                      <label class="col-form-label">
+                        {{getLang('receivedate', 'Receive Date')}}
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput [min]="this.form.get('orderdate').value" [matDatepicker]="rresultPicker"
+                          formControlName="receivedate">
+                        <mat-datepicker-toggle matSuffix [for]="rresultPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #rresultPicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <app-inventory-table #inventorytable [isSale]="false" [isAdjustment]="false">
+                      </app-inventory-table>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        {{getLang('termsandcondtn', 'Terms & Conditions')}}
+                      </label>
+                      <mat-form-field>
+                        <textarea matInput formControlName="notes"></textarea>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">{{getLang('attachment', 'Attachment')}}</label>
+                      <div>
+                        <img class="loading" src="assets/img/image-loader.GIF"
+                          style="height: 100px; width: 100px; display: none">
+                      </div>
+                      <div class="btn btn-primary btn-file">
+                        <label class="upload_button mb-0" for="fileupload"><i class="material-icons">cloud_upload</i>
+                          {{getLang('upload', 'Upload')}}
+                        </label>
+                        <input type="file" id="fileupload" #fileInput ng2FileSelect [style.display]="'none'"
+                          [uploader]="customeUploader" (change)="fileInput.value=''" multiple />
+                      </div>
+                      <div class="mt-2">
+                        <span class="upload-tag badge badge-pill d-flex mb-2" *ngFor="let item of formImageArray">
+                          <span class="d-flex flex-grow-1 align-items-center">
+                            <i class="material-icons d-flex align-items-center mr-2">link</i>
+                            <span (click)="downloadlink(item.attachment)">
+                              {{item.originalfilename}}.{{item.extension}}</span>
+                          </span>
+                          <i class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                            (click)="removeImg(item.attachment)">{{getLang('clear', 'clear')}}
+                          </i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <div class="row">
+            <div class="col-sm-12 text-right">
+              <button [routerLink]="['/pages/dynamic-list/list/purchaseorder']" class="btn btn-default" type="button">
+                <i class="material-icons">close</i>
+                {{getLang('cancel', 'Cancel')}}
+              </button>
+              <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+                <i class="material-icons">save</i>
+                {{getLang('save', 'Save')}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</form>

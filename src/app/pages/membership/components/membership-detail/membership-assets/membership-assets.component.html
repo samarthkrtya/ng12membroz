@@ -1,0 +1,132 @@
+<div class="row">
+    <div class="col-sm-12 text-right mt-0 mb-3">
+        <button class="btn btn-primary" type="button" [disabled]="disableBtn" data-toggle="modal"
+            data-target="#myModal3" (click)="onClickSrvc()">
+            <i class="material-icons">add</i> {{getLang('addfacility','Add
+            Facility')}}
+        </button>
+    </div>
+</div>
+
+<ng-container *ngIf="assetList.length > 0 ;else emptyservc">
+    <div class="table-responsive border-outer-secondary">
+        <table mat-table [dataSource]="assetList" class="mat-elevation-z8 w-100 table-membroz-plain">
+
+            <ng-container matColumnDef="item" >
+                <th mat-header-cell *matHeaderCellDef>{{getLang('facility','Facility')}}
+                </th>
+                <td mat-cell *matCellDef="let element" style="width: 25%;">
+                    {{element?.item}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef>{{getLang('category','Category')}}
+                </th>
+                <td mat-cell *matCellDef="let element" style="width: 25%;">
+                    {{element?.category}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="discount">
+                <th mat-header-cell *matHeaderCellDef>{{getLang('discper','Discount(%)')}}
+                </th>
+                <td mat-cell *matCellDef="let element" style="width: 15%;">
+                    <mat-form-field class="example-full-width">
+                        <input type="number"  matInput [(ngModel)]="element.discount">
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="visits">
+                <th mat-header-cell *matHeaderCellDef>
+                    {{getLang('visits','Visits')}}
+                    <span class="text-danger">*</span>
+                </th>
+                <td mat-cell *matCellDef="let element" style="width: 15%;">
+                    <mat-form-field class="example-full-width">
+                        <input type="number" matInput [(ngModel)]="element.visits">
+                    </mat-form-field> 
+                </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="period">
+                <th mat-header-cell *matHeaderCellDef>
+                    {{getLang('period','Period')}}
+                    <span class="text-danger">*</span>
+                </th>
+                <td mat-cell *matCellDef="let element" style="width: 20%;">
+                    <mat-form-field>
+                        <mat-label>{{getLang('chooseanoptn', 'Choose an option')}}</mat-label>
+                        <mat-select matNativeControl [(ngModel)]="element.period">
+                            <mat-option [value]="prod" *ngFor="let prod of periodList">
+                                {{prod}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field> 
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef class="text-right"> </th>
+                <td mat-cell *matCellDef="let element" class="text-right">
+                    <button *ngIf="element.fromdb" type="button" class="btn btn-link btn-primary btn-just-icon"
+                        matTooltip="Delete" [matTooltipPosition]="'above'" (click)="onDelete(element)"
+                        [disabled]="disableBtn">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+        </table>
+    </div>
+</ng-container>
+<ng-template #emptyservc>
+    <div class="text-center">  {{formName == 'package' ? 'No​ data ​defined​ ​for​ ​this Package' : 'No​ data ​defined​ ​for​ ​this Membership' }}</div>
+</ng-template>
+<div class="text-right mt-3 mb-0">
+    <button *ngIf="assetList.length > 0" [disabled]="disableBtn" class="btn btn-primary" type="button"
+        (click)="onSaveService()">
+        <i class="material-icons">save</i> {{getLang('savefacility','Save
+        Facility')}}
+    </button>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('choosefacility','Choose Facility')}}
+                </h4>
+                <button mat-button type="button" id="close_assets" (click)="isServiceOpen= !isServiceOpen"
+                    class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+
+            <div class="modal-body modal-dialog-scrollable mat-tree-node-auto" *ngIf="isServiceOpen">
+                <tree-checklist #treechecklist [for]="'assets'" [api]="'assets/filter'" [method]="'POST'"
+                    [postData]="treePostData" [sub]="true" [category]="'category'" [subcategory]="'property'"
+                    [maincategory]="'name'" [itemname]="'title'" (selectionValues)="onSelectTree($event)"
+                    [dbvalue]="assetList">
+                </tree-checklist>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal"
+                    (click)="isServiceOpen= !isServiceOpen">
+                    <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                </button>
+                <button class="btn btn-primary ml-2" type="button" (click)="onSaveTree()">
+                    <i class="material-icons">save</i> {{getLang('save','Save')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

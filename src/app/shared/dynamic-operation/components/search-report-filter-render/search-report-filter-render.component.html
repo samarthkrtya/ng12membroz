@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="offset-xl-1 col-xl-10">
+        <div class="advance-filter-main mb-0">
+            <div class="row">
+                <ng-container *ngFor="let filterfield of filterfieldListsValue let i = index">
+                    <div [ngClass]="{'col-sm-4': filterfield.fieldtype != 'ngxdaterange','col-sm-12': filterfield.fieldtype == 'ngxdaterange'}" class="">
+                        <ng-container *ngIf="filterfield.fieldtype !== 'audio' && filterfield.fieldtype !== 'attachment' && filterfield.fieldtype !== 'image' && filterfield.display">
+                            <label 
+                                class="col-form-label"
+                                title="{{filterfield.displayname ? filterfield.displayname: filterfield.fielddisplaytext}}">
+                                {{filterfield.displayname ? filterfield.displayname: filterfield.fielddisplaytext}}
+                                <span class="text-danger" *ngIf="filterfield.isrequired" >*</span>
+                            </label>
+
+                            <ng-container *ngIf="filterfield.fieldtype == 'Date' || filterfield.fieldtype == 'datepicker' || filterfield.fieldtype == 'Datetime' || filterfield.fieldtype == 'Daterange'" >
+                                <mat-form-field >
+                                <mat-date-range-input [rangePicker]="picker">
+                                    <input matStartDate [(ngModel)]="filterfield.modelValue.beginJsDate" placeholder="Start date" #dateRangeStart>
+                                    <input #dateRangeEnd   matEndDate [(ngModel)]="filterfield.modelValue.endJsDate" placeholder="End date">
+                                    </mat-date-range-input>
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+                            </mat-form-field>
+                            </ng-container>
+
+                            <ng-container *ngIf="filterfield.fieldtype == 'ngxdaterange'">
+                                <mat-form-field>
+                                    <input matInput
+                                    ngxDaterangepickerMd
+                                    [(ngModel)]="filterfield.modelValue"
+                                    [showCustomRangeLabel]="true"
+                                    [alwaysShowCalendars]="true"
+                                    [ranges]="ranges"
+                                    [linkedCalendars]="true"
+                                    [isInvalidDate] = "filterfield.disable && (filterfield.disable  == 'future' || filterfield.disable  == 'past') ? disableDates[filterfield.disable] : disableDates.none"
+                                    [showClearButton]="true"
+                                    placeholder="Select please...">
+                                </mat-form-field>
+                            </ng-container>  
+
+                            <ng-container *ngIf="filterfield.fieldtype == 'ObjectID' || filterfield.fieldtype == 'ObjectId' || filterfield.fieldtype == 'lookup' || filterfield.fieldtype == 'form' || filterfield.fieldtype == 'formdata'" >
+                                <app-dynamic-autocomplete-ngmodel
+                                    *ngIf="resetControl"
+                                    [setting]="filterfield"
+                                    [(inputModel)]="filterfield.modelValue"
+                                    [dbvalue]="filterfield.dbvalue" >
+                                </app-dynamic-autocomplete-ngmodel>
+                            </ng-container>
+
+                            <ng-container *ngIf="filterfield.fieldtype == 'form_multiselect'">
+                                <mat-form-field class="example-full-width">
+                                    <mat-select multiple   [(ngModel)]="filterfield.modelValue">
+                                        <mat-option *ngFor="let item of filterfield.formfieldfilterValue" [value]="item.id">{{item.itemName}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <div class="col-sm-12 text-right" >
+                <button type="button" class="btn btn-success ml-2 mb-3" (click)="reloadList()" >
+                     <i class="material-icons"> search</i>
+                     Run Report
+                </button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

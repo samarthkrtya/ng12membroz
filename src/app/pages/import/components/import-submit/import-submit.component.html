@@ -1,0 +1,20 @@
+<div class="form-horizontal">
+  <h4 class="card-title text-center mb-4">Finalize Your Import</h4>
+   
+     <div >
+          <div class="mb-3 text-center">
+              <i class="material-icons font-50" >cloud_upload</i>
+          </div>
+          <div class="mb-4 text-center">
+            <div class="text-success mb-3">{{importDataCount}} records imported successfully.</div> 
+             <div class="text-success">The selected file has been imported successfully</div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <button class="btn btn-primary" [routerLink]="['/pages/dynamic-list/list/' + this.formname]">View Records</button>
+            </div>
+          </div>
+      
+    </div>
+</div>
+

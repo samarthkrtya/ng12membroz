@@ -1,0 +1,32 @@
+<div *ngIf="this.currentuserroletype" >
+    <div class="card-content mrt0"  *ngIf="!isLoadTabsValue">
+        <ul class="nav nav-pills nav-pills-success mrt0" style="margin-top: 0px;">
+            <ng-container *ngFor="let opt of tabListValue; let i = index" >
+                <ng-container *ngIf="opt.isPermission">
+                    <li class="nav-item"  *ngIf="i == 0 ? true : opt.isedit" [ngClass]="(opt.tabkey == activeTabValue) ? 'active' : ' '">
+                        <a class="nav-link" data-toggle="tab" role="tablist" *ngIf="!opt.isCustomClick" [routerLink]="[opt.pageurl]">
+                            <i class="material-icons">{{opt.icontype}}</i>
+                            <span *ngIf="opt.displaytabname">{{displaytabnamebycalendarValue}}</span>
+                            <span *ngIf="!opt.displaytabname">
+                                {{langResource && langResource[opt.tabname] ? langResource[opt.tabname] : opt.displayname ? opt.displayname : opt.tabname}}
+                            </span>
+                        
+                        </a>
+                        <a *ngIf="opt.isCustomClick" (click)="this[opt.link](opt)" data-toggle="tab" role="tablist" class="nav-link cursor-pointer" [ngClass]="(opt.tabkey == activeTabValue) ? 'active' : ' '">
+                            <i class="material-icons">{{opt.icontype}}</i>
+                            {{langResource && langResource[opt.tabname] ? langResource[opt.tabname] : opt.displayname ? opt.displayname : opt.tabname}}
+                        </a>           
+                    </li>
+                </ng-container>
+            </ng-container>
+        
+        </ul>
+    </div>
+</div>   
+<div class="card-content text-center" *ngIf="isLoadTabsValue">
+    <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div> 
+</div>

@@ -1,0 +1,199 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3>Inventory Adjustment</h3>
+                <form [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)" novalidate class="mb-0">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="loader" *ngIf="isLoading">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                        stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            <div class="row"*ngIf="!isLoading" >
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                Product
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="input-group align-items-center">
+                                                <div class="flex-grow-1">
+                                                    <mat-form-field class="example-full-width">
+                                                        <input type="text" matInput required formControlName="productid"
+                                                            [matAutocomplete]="autoAsset">
+                                                        <mat-autocomplete #autoAsset="matAutocomplete"
+                                                            [displayWith]="displayAssetFn"
+                                                            (optionSelected)="onSelectInventory($event.option.value)">
+                                                            <mat-option *ngIf="productisLoadingBox" class="is-loading">
+                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                            </mat-option>
+
+                                                            <ng-container
+                                                                *ngIf="!productisLoadingBox && allProductLists.length > 0">
+
+                                                                <div class="mat-optgroup-media">
+                                                                    <mat-option
+                                                                        *ngFor="let option of filteredProductOptions | async"
+                                                                        [value]="option">
+
+                                                                        <div
+                                                                            class="media py-2 member-profile-item cursor-pointer">
+                                                                            <img class="example-option-img rounded mr-3"
+                                                                                aria-hidden
+                                                                                [src]="option && option.itemid && option.itemid.imagegallery[0] && option.itemid.imagegallery[0].attachment ? option.itemid.imagegallery[0].attachment : '../../assets/img/default-avatar.png'"
+                                                                                width="50" height="50">
+
+                                                                            <div class="media-body">
+
+                                                                                <div class="d-flex">
+                                                                                    <div class="flex-grow-1">
+                                                                                        <div class="font-500 mb-1">
+                                                                                            <span
+                                                                                                *ngIf="option?.itemid?.itemname">
+                                                                                                {{option?.itemid?.itemname}}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <!-- <div
+                                                                                        class="fc-today-button font-500">
+                                                                                        <i class="material-icons"> face
+                                                                                        </i>
+                                                                                    </div> -->
+                                                                                </div>
+                                                                                <div class="d-flex">
+                                                                                    <div class="flex-grow-1">
+                                                                                        <span
+                                                                                            *ngIf="option?.itemid?.category?.property?.title">
+                                                                                            {{option?.itemid?.category?.property?.title}}</span>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="fc-today-button font-14">
+                                                                                        {{option?.stock}}
+                                                                                        {{option?.itemid?.unit}}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                        </div>
+
+                                                                    </mat-option>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <ng-container
+                                                                *ngIf="!productisLoadingBox && allProductLists.length == 0">
+                                                                <mat-option>
+                                                                    <span>No Record</span>
+                                                                </mat-option>
+                                                            </ng-container>
+                                                        </mat-autocomplete>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-12" *ngIf="form.get('productid').value">
+                                            <div class="border pt-3 px-3 rounded alternative-light-blue">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <div class="media py-2 member-profile-item">
+                                                            <img  [src]="form.get('productid').value?.itemid?.imagegallery.length > 0 &&  form.get('productid').value?.itemid?.imagegallery[0].attachment ? form.get('productid').value?.itemid?.imagegallery[0].attachment : '../assets/img/default-avatar.png' "
+                                                                class="profile-avatar-img mr-2 rounded-circle" alt="">
+                                                            <div class="media-body">
+                                                                <div class="font-500 mb-1">
+                                                                    {{form.get('productid').value?.itemid?.itemname}}
+                                                                </div>
+                                                                <div class="d-flex">
+                                                                    <div class="flex-grow-1">
+                                                                        {{form.get('productid').value?.itemid?.category?.property?.title}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-4">
+                                                        <div class="d-flex">
+                                                            <div>
+                                                                {{form.get('productid').value?.itemid?.unit}}<br>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="form.get('productid').value">
+                                            <label class="col-form-label">
+                                                Current Stock
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input type="number" matInput formControlName="currentstock">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="form.get('productid').value">
+                                            <label class="col-form-label">
+                                                Qauntity Alert Level
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input type="number" matInput formControlName="qauntityalertlevel">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                Actual Stock
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input type="number" matInput required formControlName="newstock">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('newstock').valid || (form.get('newstock').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('newstock').hasError('required')"
+                                                    class="error-label">
+                                                    Stock is Required
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="row">
+                                        <div class="col-sm-12 text-right">
+                                            <button class="btn btn-default" type="button"
+                                                [routerLink]="['/pages/menublocklist/61237065eb77c462c48872bd']"
+                                                [disabled]="disableBtn">
+                                                <i class="material-icons">close</i>Cancel
+                                            </button>
+
+                                            <button class="btn btn-primary ml-2" type="submit" [disabled]="disableBtn">
+                                                <i class="material-icons">save</i>Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

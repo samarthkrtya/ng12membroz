@@ -1,0 +1,1003 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <h3 class="card-title">Package Booking {{docnumber ? '('+ docnumber +')' : ''  }} </h3>
+          <div class="loader" *ngIf="isLoadingData">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+          </div>
+          <div class="card" *ngIf="!isLoadingData">
+            <div class="card-body">
+              <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                  <div class="row">
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        {{getLang('customer', 'Customer')}}
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput [matAutocomplete]="auto" formControlName="customerid">
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCusFn"
+                          (optionSelected)="onCustomerSelected($event.option.value)">
+                          <mat-option *ngFor="let option of customerfilteredOptions | async" [value]="option">
+                            {{option.nickname}}
+                          </mat-option>
+                          <ng-container *ngIf="customerList.length == 0">
+                            <mat-option>
+                              <span>{{getLang('norecords', 'No Records')}}</span>
+                            </mat-option>
+                          </ng-container>
+
+                        </mat-autocomplete>
+                      </mat-form-field>
+
+                      <div [hidden]="form.get('customerid').valid || (form.get('customerid').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('customerid').hasError('required')" class="error-label">
+                          {{getLang('customerisrequired', 'Customer is Required')}}
+                        </small>
+                      </div>
+                    </div>
+
+                     <div class="col-md-12" *ngIf="selectedCustomer && form.get('customerid').valid">
+                        <div class="border pt-3 px-3 rounded alternative-light-blue">
+                          <div class="row">
+                            <div class="col-sm-4">
+                                <div class="media py-2 member-profile-item" ><img [src]="selectedCustomer.profilepic ? selectedCustomer.profilepic : '../assets/img/default-avatar.png' " class="profile-avatar-img mr-2 rounded-circle" alt=""><div class="media-body"><div class="font-500 mb-1">{{selectedCustomer?.fullname}} </div><div class="d-flex"><div class="flex-grow-1">  {{selectedCustomer?.membershipname}}</div> </div></div></div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="d-flex align-items-center mb-3" *ngIf="selectedCustomer.primaryemail" ><div class="mr-2"><img src="../assets/img/email-gray-icon.svg" alt=""></div><div>{{selectedCustomer?.primaryemail}}</div></div>
+                                <div class="d-flex align-items-center mb-3" *ngIf="selectedCustomer.mobile"><div class="mr-2"><img src="../assets/img/phone-gray-icon.svg" alt=""></div><div> {{selectedCustomer?.mobile}} </div></div>
+                            </div>
+                            <div class="col-sm-4" *ngIf="selectedCustomer.address">
+                              <!-- <div class="d-flex"><div class="mr-2"><img src="../assets/img/location-gray-icon.svg" alt=""></div><div> 124, ABC Street, <br>  Near Sports Complex,<br> New York 4000 </div></div> -->
+                              <div class="d-flex"><div class="mr-2"><img src="../assets/img/location-gray-icon.svg" alt=""></div><div> {{selectedCustomer.address}} <br> </div></div>
+                          </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        {{getLang('package', 'Package')}}
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput [matAutocomplete]="autotp" formControlName="tourpackageid" (change)="handleEmptyInput($event)">
+                        <mat-autocomplete #autotp="matAutocomplete" [displayWith]="displayTPFn">
+                          <mat-option *ngFor="let option of tourPackagefilteredOptions | async" [value]="option"
+                            (onSelectionChange)="onPackageSelected(option , true)">
+                            {{option.title}}
+                          </mat-option>
+                          <ng-container *ngIf="tourPackageList.length == 0">
+                            <mat-option>
+                              <span>{{getLang('norecords', 'No Records')}}</span>
+                            </mat-option>
+                          </ng-container>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                      <div
+                        [hidden]="form.get('tourpackageid').valid || (form.get('tourpackageid').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('tourpackageid').hasError('required')" class="error-label">
+                          {{getLang('pacakgeisrequired', 'Package is Required')}}
+                        </small>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6" >
+                      <label class="col-form-label">
+                       Travel Date
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput [matDatepickerFilter]="disableDate" formControlName="traveldate"  [matDatepicker]="pickertdd">
+                        <mat-datepicker-toggle matSuffix [for]="pickertdd"></mat-datepicker-toggle>
+                        <mat-datepicker #pickertdd></mat-datepicker>
+                      </mat-form-field>
+                      <div
+                      [hidden]="form.get('traveldate').valid || (form.get('traveldate').pristine && !submitted)"
+                      class="text-danger">
+                      <small *ngIf="form.get('traveldate').hasError('required')" class="error-label">
+                        {{getLang('travelisrequired', 'Travel Date is Required')}}
+                      </small>
+                     </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        No. of adults
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput type="number" formControlName="totaladults">
+                      </mat-form-field>
+                      <div [hidden]="form.get('totaladults').valid || (form.get('totaladults').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('totaladults').hasError('required')" class="error-label">
+                          {{getLang('totaladultisrequired', 'Total Adults is Required')}}
+                        </small>
+                        <small *ngIf="form.get('totaladults').hasError('insertonlypositivenumber')" class="error-label">
+                          {{getLang('totalchildrensisrequired', 'Total Adults is invalid')}}
+                        </small>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        No. of kids
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput type="number" formControlName="totalchildrens">
+                      </mat-form-field>
+                      <div
+                        [hidden]="form.get('totalchildrens').valid || (form.get('totalchildrens').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('totalchildrens').hasError('required')" class="error-label">
+                          {{getLang('totaladultisrequired', 'Total Children is Required')}}
+                        </small>
+                        <small *ngIf="form.get('totalchildrens').hasError('insertonlypositivenumber')"
+                          class="error-label">
+                          {{getLang('totalchildrensisrequired', 'Total Children is invalid')}}
+                        </small>
+                      </div>
+                    </div>
+
+
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Charges
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput type="number" formControlName="charges">
+                      </mat-form-field>
+                      <div [hidden]="form.get('charges').valid || (form.get('charges').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('charges').hasError('required')" class="error-label">
+                          {{getLang('chargesisrequired', 'Charges is Required')}}
+                        </small>
+                        <small *ngIf="form.get('charges').hasError('insertonlypositivenumber')" class="error-label">
+                          {{getLang('chargesisrequired', 'Charges is invalid')}}
+                        </small>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-4 d-none">
+                      <label class="col-form-label">
+                        Booked capacity
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput type="number" formControlName="bookedcapacity">
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Quantity
+                        {{form.get('traveldate').value && selectedtourPackage ? '(Available Capacity : ' +availcapacity +')': '' }}
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput type="number" formControlName="quantity">
+                      </mat-form-field>
+                      <div [hidden]="form.get('quantity').valid || (form.get('quantity').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('quantity').hasError('required')" class="error-label">
+                          {{getLang('quantitysisrequired', 'Quantity is Required')}}
+                        </small>
+                        <small *ngIf="form.get('quantity').hasError('insertonlypositivenumber')" class="error-label">
+                          {{getLang('quantityisinvalid', 'Quantity is invalid')}}
+                        </small>
+                      </div>
+                    </div>
+
+
+                  </div>
+
+                  <div class="col-sm-12 text-right">
+                    <button class="btn btn-primary btn-file dropdown-toggle" type="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="material-icons">add</i> Add
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="addNewdestination()">
+                        Add Destination
+                      </a>
+                      <a class="dropdown-item" (click)="addNewtransfer()">
+                        Add Transfer
+                      </a>
+                      <a class="dropdown-item" (click)="addNewflight()">
+                        Add Flight
+                      </a>
+                      <a class="dropdown-item" (click)="addNewactivity()">
+                        Add Activity
+                      </a>
+                    </div>
+                  </div>
+
+                  <mat-tab-group [(selectedIndex)]="ind" (selectedTabChange)="onTabChanged($event);">
+                    <mat-tab [label]="'Destination ('+form.controls.destinations.controls.length+')'">
+                        <ng-template matTabContent >
+                          <ng-template [ngTemplateOutlet]="loadingTmpl" *ngIf="isLoadingtab"></ng-template>
+                          <ng-container
+                            *ngFor="let destinationGrp of form.controls.destinations.controls ; let di = index;"
+                            formArrayName="destinations">
+                            <ng-container [formGroupName]="di">
+                              <div class="d-flex align-items-center mt-5">
+                                <h4 class="card-title flex-grow-1">Destination </h4>
+                                <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'"
+                                  class="btn btn-link btn-primary btn-just-icon edit" 
+                                  (click)="removeDestination(di)">
+                                  <i class="material-icons">delete</i>
+                                </button>
+                              </div>
+
+                              <div class="row">
+                                <div class="col-sm-6">
+                                  <label class="col-form-label">
+                                    Day
+                                    <span class="text-danger">*</span>
+                                  </label>
+                                  <mat-form-field>
+                                    <mat-select formControlName="day" #destinationDayRef (selectionChange)="dayChanges($event.value,di , 'destination')" >
+                                      <mat-option [value]="duration.day" *ngFor="let duration of subdurationArrayList[di]">
+                                        {{duration.day}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                  <div
+                                    [hidden]="destinationGrp.get('day').valid || (destinationGrp.get('day').pristine && !submitted)"
+                                    class="text-danger">
+                                    <small *ngIf="destinationGrp.get('day').hasError('required')" class="error-label">
+                                      {{getLang('dayisrequired', 'Day is Required')}}
+                                    </small>
+                                  </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                  <label class="col-form-label">
+                                    Destination
+                                    <span class="text-danger">*</span>
+                                  </label>
+                                  <dynamic-autocomplete *ngIf="resortlocation_fieldsArray[di].visible" [isDisabled]="resortlocation_fieldsArray[di].disabled" [formControlName]="'destination'"
+                                    [setting]="resortlocation_fieldsArray[di]"
+                                    [dbvalue]="resortlocation_fieldsArray[di].dbvalue"
+                                    (inputModelChange)="onItemAdded($event, di , 'destination' , resortlocation_fieldsArray[di].disabled)">
+                                  </dynamic-autocomplete>
+                                  <div
+                                    [hidden]="destinationGrp.get('destination').valid || (destinationGrp.get('destination').pristine && !submitted)"
+                                    class="text-danger">
+                                    <small *ngIf="destinationGrp.get('destination').hasError('required')"
+                                      class="error-label">
+                                      {{getLang('destinationisrequired', 'Destination is Required')}}
+                                    </small>
+                                  </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                  <label class="col-form-label">
+                                    Resort
+                                  </label>
+                                  <dynamic-autocomplete
+                                  *ngIf="resort_fieldsArray[di].visible"
+                                    [isDisabled]="resort_fieldsArray[di].disabled"
+                                    [formControlName]="'resortid'"
+                                    [setting]="resort_fieldsArray[di]"
+                                    [dbvalue]="resort_fieldsArray[di].dbvalue"
+                                    (inputModelChange)="onItemAdded($event, di , 'resort' , resort_fieldsArray[di].disabled)">
+                                  </dynamic-autocomplete>
+                                </div>
+
+                                <div class="col-sm-4">
+                                  <label class="col-form-label">
+                                    Check-in
+                                    <span class="text-danger">*</span>
+                                  </label>
+                                  <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="checkin" (dateChange)="dateValueChange(di)" [matDatepicker]="pickerci"
+                                    [min]="form.controls.destinations.controls[di-1] && form.controls.destinations.controls[di-1].get('checkout').value ?  form.controls.destinations.controls[di-1].get('checkout').value : form.get('traveldate').value ? form.get('traveldate').value : today" placeholder="checkin">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerci"  ></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerci></mat-datepicker>
+                                  </mat-form-field>
+                                  <div
+                                    [hidden]="destinationGrp.get('checkin').valid || (destinationGrp.get('checkin').pristine && !submitted)"
+                                    class="text-danger">
+                                    <small *ngIf="destinationGrp.get('checkin').hasError('required')" class="error-label">
+                                      {{getLang('checkinisrequired', 'Checkin is Required')}}
+                                    </small>
+                                  </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                  <label class="col-form-label">
+                                    Check-out
+                                    <span class="text-danger">*</span>
+                                  </label>
+                                  <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="checkout" (dateChange)="dateValueChange(di)" [matDatepicker]="pickerco"
+                                      [min]="form.controls.destinations.controls[di] && form.controls.destinations.controls[di].get('checkin').value ?  form.controls.destinations.controls[di].get('checkin').value : form.get('traveldate').value ? form.get('traveldate').value : today"
+                                      placeholder="checkout">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerco"></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerco></mat-datepicker>
+                                  </mat-form-field>
+                                  <div [hidden]="destinationGrp.get('checkout').valid || (destinationGrp.get('checkout').pristine && !submitted)"
+                                    class="text-danger">
+                                    <small *ngIf="destinationGrp.get('checkout').hasError('required')"
+                                      class="error-label">
+                                      {{getLang('checkoutisrequired', 'Checkout is Required')}}
+                                    </small>
+                                  </div>
+                                </div>
+
+                                <div class="col-sm-6" *ngIf="!selectedtourPackage" >
+                                  <label class="col-form-label">
+                                    {{getLang('totalrooms', 'Total Rooms')}}
+                                    <span class="text-danger">*</span>
+                                  </label>
+                                  <mat-form-field class="example-full-width">
+                                    <mat-label>{{getLang('chooseanoptn', 'Choose an option')}}</mat-label>
+                                    <mat-select formControlName="totalrooms">
+                                      <mat-option [value]="room" *ngFor="let room of totalrooms"
+                                        (click)="chooseRoom(room,di)">{{room}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+
+                                <ng-container formArrayName="occupants">
+                                  <div class="col-sm-12"
+                                    *ngFor="let item of destinationGrp.controls.occupants.controls; let oi = index">
+                                    <label class="col-form-label">
+                                      {{getLang('room', 'Room')}} {{oi+1}}
+                                    </label>
+
+                                    <div class="row" [formGroupName]="oi">
+                                      <div class="col-sm-3">
+                                        <mat-label>
+                                          {{getLang('type', 'Type')}}
+                                          <span class="text-danger">*</span>
+                                        </mat-label>
+
+                                        <mat-form-field class="example-full-width">
+                                          <mat-select formControlName="roomtype">
+                                              <mat-option *ngFor="let item of resortTypeLists_fieldsArray[di]"
+                                                  [value]="item.code">
+                                                  {{item.name}}
+                                              </mat-option>
+                                          </mat-select>
+                                      </mat-form-field>
+                                        <div
+                                          [hidden]="item.get('roomtype').valid || (item.get('roomtype').pristine && !submitted)"
+                                          class="text-danger">
+                                          <small *ngIf="item.get('roomtype').hasError('required')" class="error-label">
+                                            {{getLang('typeisrequired', 'Type is Required')}}
+                                          </small>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-sm-2">
+                                        <mat-label>
+                                          {{getLang('chooseanadult', 'Adult')}}
+                                        </mat-label>
+                                        <mat-form-field class="example-full-width">
+                                          <mat-select formControlName="adults">
+                                            <mat-option [value]="adult" *ngFor="let adult of totaloccupants">{{adult}}
+                                            </mat-option>
+                                          </mat-select>
+                                        </mat-form-field>
+                                        <div
+                                          [hidden]="item.get('adults').valid || (item.get('adults').pristine && !submitted)"
+                                          class="text-danger">
+                                          <small *ngIf="item.get('adults').hasError('required')" class="error-label">
+                                            {{getLang('adultisrequired', 'Adult is Required')}}
+                                          </small>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-sm-2">
+                                        <mat-label>
+                                          {{getLang('chooseanchildren', 'Childrens')}}
+                                        </mat-label>
+                                        <mat-form-field class="example-full-width">
+                                          <mat-select formControlName="childrens">
+                                            <mat-option [value]="child" *ngFor="let child of totaloccupants">{{child}}
+                                            </mat-option>
+                                          </mat-select>
+                                        </mat-form-field>
+                                      </div>
+
+                                      <div class="col-sm-3">
+                                        <mat-label>
+                                          Includes
+                                        </mat-label>
+                                        <mat-form-field>
+                                          <mat-select multiple formControlName="includes">
+                                            <mat-option value="Breakfast">Breakfast</mat-option>
+                                            <mat-option value="Mushroom">Mushroom</mat-option>
+                                            <mat-option value="Onion">Onion</mat-option>
+                                            <mat-option value="Pepperoni">Pepperoni</mat-option>
+                                            <mat-option value="Sausage">Sausage</mat-option>
+                                            <mat-option value="Tomato">Tomato</mat-option>
+                                          </mat-select>
+                                        </mat-form-field>
+                                      </div>
+
+                                      <div class="col-sm-2">
+                                        <mat-label>
+                                          {{getLang('extracost', 'Extra Cost')}}
+                                        </mat-label>
+
+                                        <mat-form-field class="example-full-width">
+                                          <input type="number" formControlName="cost" matInput>
+                                        </mat-form-field>
+                                        <div
+                                          [hidden]="item.get('cost').valid || (item.get('cost').pristine && !submitted)"
+                                          class="text-danger">
+                                          <small *ngIf="item.get('cost').hasError('required')" class="error-label">
+                                            {{getLang('costisrequired', 'Cost is Required')}}
+                                          </small>
+                                          <small *ngIf="item.get('cost').hasError('insertonlypositivenumber')" class="error-label">
+                                            {{getLang('costisinvalid', 'Cost is invalid')}}
+                                          </small>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </ng-container>
+
+                              </div>
+                            </ng-container>
+                          </ng-container>
+                        </ng-template>
+                    </mat-tab>
+
+                    <mat-tab [label]="'Transfer ('+form.controls.transfer.controls.length+')'">
+                      <ng-template matTabContent  >
+                        <ng-template [ngTemplateOutlet]="loadingTmpl" *ngIf="isLoadingtab"></ng-template>
+                        <ng-container *ngFor="let transferGrp of  form.controls.transfer.controls; let ti = index ;"
+                          formArrayName="transfer">
+                          <ng-container [formGroupName]="ti">
+
+                            <div class="d-flex align-items-center mt-5">
+                              <h4 class="card-title flex-grow-1">Transfer </h4>
+
+                              <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'"
+                                class="btn btn-link btn-primary btn-just-icon edit" (click)="removeTransfer(ti)">
+                                <i class="material-icons">delete</i>
+                              </button>
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Day
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field>
+                                  <mat-select formControlName="day" #transferDayRef (selectionChange)="dayChanges($event.value,ti , 'transfer')">
+                                    <mat-option [value]="duration.day" *ngFor="let duration of subdurationTrnsArrayList[ti]">
+                                      {{duration.day}}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                                <div
+                                    [hidden]="transferGrp.get('day').valid || (transferGrp.get('day').pristine && !submitted)"
+                                    class="text-danger">
+                                    <small *ngIf="transferGrp.get('day').hasError('required')" class="error-label">
+                                      {{getLang('dayisrequired', 'Day is Required')}}
+                                    </small>
+                                  </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  From
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <dynamic-autocomplete
+                                  *ngIf="resortlocationTFrm_fieldsArray[ti].visible"
+                                  [isDisabled]="resortlocationTFrm_fieldsArray[ti].disabled"
+                                  [formControlName]="'from'"
+                                  [setting]="resortlocationTFrm_fieldsArray[ti]"
+                                  [dbvalue]="resortlocationTFrm_fieldsArray[ti].dbvalue"
+                                  (inputModelChange)="onItemAdded($event, ti , 'transferfrom' ,resortlocationTFrm_fieldsArray[ti].disabled)" >
+                                </dynamic-autocomplete>
+                                <div
+                                [hidden]="transferGrp.get('from').valid || (transferGrp.get('from').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="transferGrp.get('from').hasError('required')" class="error-label">
+                                  {{getLang('fromisrequired', 'From is Required')}}
+                                </small>
+                              </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  To
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <dynamic-autocomplete
+                                  *ngIf="resortlocationTTo_fieldsArray[ti].visible"
+                                  [isDisabled]="resortlocationTTo_fieldsArray[ti].disabled"
+                                  [formControlName]="'to'"
+                                  [setting]="resortlocationTTo_fieldsArray[ti]"
+                                  [dbvalue]="resortlocationTTo_fieldsArray[ti].dbvalue"
+                                  (inputModelChange)="onItemAdded($event, ti , 'transferto' ,resortlocationTTo_fieldsArray[ti].disabled)">
+                                </dynamic-autocomplete>
+                                <div
+                                [hidden]="transferGrp.get('to').valid || (transferGrp.get('to').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="transferGrp.get('to').hasError('required')" class="error-label">
+                                  {{getLang('toisrequired', 'To is Required')}}
+                                </small>
+                              </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Date
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput formControlName="date" [matDatepicker]="pickertd" [min]="form.get('traveldate').value ? form.get('traveldate').value : today">
+                                  <mat-datepicker-toggle matSuffix [for]="pickertd"></mat-datepicker-toggle>
+                                  <mat-datepicker #pickertd></mat-datepicker>
+                                </mat-form-field>
+                                <div
+                                  [hidden]="transferGrp.get('date').valid || (transferGrp.get('date').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="transferGrp.get('date').hasError('required')" class="error-label">
+                                    {{getLang('dateisrequired', 'Date is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Duration
+                                  <span class="text-danger">*</span>
+                                </label>
+                                 <mat-form-field class="example-full-width">
+                                  <input matInput mask="Hh:m0" placeholder="HH:MM" formControlName="duration">
+                                </mat-form-field>
+                                <div
+                                  [hidden]="transferGrp.get('duration').valid || (transferGrp.get('duration').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="transferGrp.get('duration').hasError('required')" class="error-label">
+                                    {{getLang('durationisrequired', 'Duration is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label"></label>
+                                <div class="mt-2">
+                                  <section class="example-section">
+                                    <mat-checkbox class="example-margin" [formControlName]="'nightscover'" >Nights Cover</mat-checkbox>
+                                  </section>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Facilities
+                                </label>
+                                <mat-form-field >
+                                  <mat-select [formControlName]="'facilities'"  multiple>
+                                    <mat-option value="AC">AC</mat-option>
+                                    <mat-option value="First Aid">First Aid</mat-option>
+                                    <mat-option value="Multiple Luggage Bags">Multiple Luggage Bags</mat-option>
+                                    <mat-option value="Multiple Seater">Multiple Seater</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Transfer Type
+                                </label>
+                                <mat-form-field>
+                                  <mat-select matNativeControl formControlName="transfertype">
+                                    <mat-option value="Private Transfer by Car">Private Transfer by Car</mat-option>
+                                    <mat-option value="Intercity">Intercity</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  {{getLang('extracost', 'Extra Cost')}}
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput type="number" formControlName="cost">
+                                </mat-form-field>
+                                <div [hidden]="transferGrp.get('cost').valid || (transferGrp.get('cost').pristine && !submitted)" class="text-danger">
+                                  <small *ngIf="transferGrp.get('cost').hasError('insertonlypositivenumber')" class="error-label">
+                                    {{getLang('costisinvalid', 'Cost is invalid')}}
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                          </ng-container>
+                        </ng-container>
+                    </ng-template>
+                    </mat-tab>
+
+                    <mat-tab [label]="'Flight ('+form.controls.flight.controls.length+')'">
+                      <ng-template matTabContent >
+                        <ng-template [ngTemplateOutlet]="loadingTmpl" *ngIf="isLoadingtab"></ng-template>
+                        <ng-container *ngFor="let flightGrp of  form.controls.flight.controls; let fi = index;"
+                          formArrayName="flight">
+                          <ng-container [formGroupName]="fi">
+
+                            <div class="d-flex align-items-center mt-5">
+                              <h4 class="card-title flex-grow-1">Flight </h4>
+
+                              <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'"
+                                class="btn btn-link btn-primary btn-just-icon edit" (click)="removeFlight(fi)">
+                                <i class="material-icons">delete</i>
+                              </button>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Day
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field>
+                                  <mat-select formControlName="day" #flightDayRef (selectionChange)="dayChanges($event.value,fi , 'flight')">
+                                    <mat-option [value]="duration.day" *ngFor="let duration of subdurationFltArrayList[fi]">
+                                      {{duration.day}}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                                <div
+                                  [hidden]="flightGrp.get('day').valid || (flightGrp.get('day').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="flightGrp.get('day').hasError('required')" class="error-label">
+                                    {{getLang('dayisrequired', 'Day is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  From
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <dynamic-autocomplete
+                                  *ngIf="resortlocationFFrm_fieldsArray[fi].visible"
+                                  [isDisabled]="resortlocationFFrm_fieldsArray[fi].disabled"
+                                  [formControlName]="'from'"
+                                  [setting]="resortlocationFFrm_fieldsArray[fi]"
+                                  [dbvalue]="resortlocationFFrm_fieldsArray[fi].dbvalue"
+                                  (inputModelChange)="onItemAdded($event, fi , 'flightfrom',resortlocationFFrm_fieldsArray[fi].disabled)">
+                                </dynamic-autocomplete>
+                                <div
+                                [hidden]="flightGrp.get('from').valid || (flightGrp.get('from').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="flightGrp.get('from').hasError('required')" class="error-label">
+                                  {{getLang('fromisrequired', 'From is Required')}}
+                                </small>
+                              </div>
+                              </div>
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  To
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <dynamic-autocomplete
+                                  *ngIf="resortlocationFTo_fieldsArray[fi].visible"
+                                  [isDisabled]="resortlocationFTo_fieldsArray[fi].disabled"
+                                  [formControlName]="'to'"
+                                  [setting]="resortlocationFTo_fieldsArray[fi]"
+                                  [dbvalue]="resortlocationFTo_fieldsArray[fi].dbvalue"
+                                  (inputModelChange)="onItemAdded($event, fi , 'flightto', resortlocationFTo_fieldsArray[fi].disabled)">
+                                </dynamic-autocomplete>
+                                <div
+                                [hidden]="flightGrp.get('to').valid || (flightGrp.get('to').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="flightGrp.get('to').hasError('required')" class="error-label">
+                                  {{getLang('toisrequired', 'To is Required')}}
+                                </small>
+                              </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Date
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput formControlName="date" [matDatepicker]="pickerfd" [min]="form.get('traveldate').value ? form.get('traveldate').value : today">
+                                  <mat-datepicker-toggle matSuffix [for]="pickerfd"  ></mat-datepicker-toggle>
+                                  <mat-datepicker #pickerfd></mat-datepicker>
+                                </mat-form-field>
+                                <div
+                                  [hidden]="flightGrp.get('date').valid || (flightGrp.get('date').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="flightGrp.get('date').hasError('required')" class="error-label">
+                                    {{getLang('dateisrequired', 'Date is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Duration
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput mask="Hh:m0" placeholder="HH:MM" formControlName="duration">
+                                </mat-form-field>
+                                <div
+                                  [hidden]="flightGrp.get('duration').valid || (flightGrp.get('duration').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="flightGrp.get('duration').hasError('required')" class="error-label">
+                                    {{getLang('durationisrequired', 'Duration is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label"></label>
+                                <div class="mt-2">
+                                  <section class="example-section">
+                                    <mat-checkbox class="example-margin" [formControlName]="'nightscover'" >Nights Cover</mat-checkbox>
+                                  </section>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  Ticket Type
+                                </label>
+                                <mat-form-field >
+                                  <mat-select [formControlName]="'tickettype'">
+                                    <mat-option value="Economy Class">Economy Class</mat-option>
+                                    <mat-option value="Premium Economy Class">Premium Economy Class</mat-option>
+                                    <mat-option value="Business Class">Business Class</mat-option>
+                                    <mat-option value="First Class">First Class</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+
+                              <div class="col-sm-4">
+                                <label class="col-form-label">
+                                  {{getLang('extracost', 'Extra Cost')}}
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput type="number" formControlName="cost">
+                                </mat-form-field>
+                                <div [hidden]="flightGrp.get('cost').valid || (flightGrp.get('cost').pristine && !submitted)" class="text-danger">
+                                  <small *ngIf="flightGrp.get('cost').hasError('insertonlypositivenumber')" class="error-label">
+                                    {{getLang('costisinvalid', 'Cost is invalid')}}
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                          </ng-container>
+                        </ng-container>
+
+                      </ng-template>
+
+                    </mat-tab>
+
+                    <mat-tab [label]="'Activity ('+form.controls.activity.controls.length+')'">
+
+                      <ng-template matTabContent>
+                        <ng-template [ngTemplateOutlet]="loadingTmpl" *ngIf="isLoadingtab"></ng-template>
+                        <ng-container *ngFor="let activityGrp of form.controls.activity.controls; let ai = index;"
+                          formArrayName="activity">
+                          <ng-container [formGroupName]="ai">
+
+                            <div class="d-flex align-items-center mt-5">
+                              <h4 class="card-title flex-grow-1">Activity </h4>
+                              <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'"
+                                class="btn btn-link btn-primary btn-just-icon edit" 
+                                (click)="removeActivity(ai)">
+                                <i class="material-icons">delete</i>
+                              </button>
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  Day
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field>
+                                  <mat-select formControlName="day" #activityDayRef (selectionChange)="dayChanges($event.value,ai , 'activity')">
+                                    <mat-option [value]="duration.day" *ngFor="let duration of subdurationActArrayList[ai]">
+                                      {{duration.day}}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                                <div
+                                  [hidden]="activityGrp.get('event').valid || (activityGrp.get('event').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="activityGrp.get('event').hasError('required')" class="error-label">
+                                    {{getLang('dayisrequired', 'Day is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  Activity
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <dynamic-autocomplete
+                                  *ngIf="activity_fieldsArray[ai].visible"
+                                  [isDisabled]="activity_fieldsArray[ai].disabled"
+                                  [formControlName]="'event'"
+                                  [setting]="activity_fieldsArray[ai]" [dbvalue]="activity_fieldsArray[ai].dbvalue"
+                                  (inputModelChange)="onItemAdded($event, ai , 'evnt' ,activity_fieldsArray[ai].disabled)">
+                                </dynamic-autocomplete>
+                                <div
+                                [hidden]="activityGrp.get('event').valid || (activityGrp.get('event').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="activityGrp.get('event').hasError('required')" class="error-label">
+                                  {{getLang('eventisrequired', 'Event is Required')}}
+                                </small>
+                              </div>
+                              </div>
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  Location
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <dynamic-autocomplete
+                                  *ngIf="resortlocationE_fieldsArray[ai].visible"
+                                  [isDisabled]="resortlocationE_fieldsArray[ai].disabled"
+                                  [formControlName]="'location'"
+                                  [setting]="resortlocationE_fieldsArray[ai]" [dbvalue]="resortlocationE_fieldsArray[ai].dbvalue"
+                                  (inputModelChange)="onItemAdded($event, ai , 'evntlcn',resortlocationE_fieldsArray[ai].disabled)">
+                                </dynamic-autocomplete>
+                                <div
+                                  [hidden]="activityGrp.get('location').valid || (activityGrp.get('location').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="activityGrp.get('location').hasError('required')" class="error-label">
+                                    {{getLang('locationisrequired', 'Location is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  Duration
+                                  <span class="text-danger">*</span>
+                                </label>
+                                 <mat-form-field class="example-full-width">
+                                  <input matInput mask="Hh:m0" placeholder="HH:MM" formControlName="duration">
+                                </mat-form-field>
+                                <div
+                                  [hidden]="activityGrp.get('duration').valid || (activityGrp.get('duration').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="activityGrp.get('duration').hasError('required')" class="error-label">
+                                    {{getLang('durationisrequired', 'Duration is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  Date
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput formControlName="date" [matDatepicker]="pickerad" [min]="form.get('traveldate').value ? form.get('traveldate').value : today">
+                                  <mat-datepicker-toggle matSuffix [for]="pickerad"></mat-datepicker-toggle>
+                                  <mat-datepicker #pickerad></mat-datepicker>
+                                </mat-form-field>
+                                <div
+                                  [hidden]="activityGrp.get('date').valid || (activityGrp.get('date').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="activityGrp.get('date').hasError('required')" class="error-label">
+                                    {{getLang('dateisrequired', 'Date is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  {{getLang('extracost', 'Extra Cost')}}
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput type="number" formControlName="cost">
+                                </mat-form-field>
+                                <div [hidden]="activityGrp.get('cost').valid || (activityGrp.get('cost').pristine && !submitted)" class="text-danger">
+                                  <small *ngIf="activityGrp.get('cost').hasError('insertonlypositivenumber')" class="error-label">
+                                    {{getLang('costisinvalid', 'Cost is invalid')}}
+                                  </small>
+                                </div>
+                               </div>
+
+                               <div class="col-sm-12">
+                                  <label class="col-form-label">
+                                    Description
+                                  </label>
+                                   <angular-editor formControlName="description" [placeholder]="'Enter here...'"></angular-editor>
+                               </div>
+
+                            </div>
+                          </ng-container>
+                        </ng-container>
+                      </ng-template>
+                    </mat-tab>
+                  </mat-tab-group>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoadingData">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <div class="row">
+             <div class="col-sm-4 text-left" *ngIf="bindId">
+              <!-- (click)="cancelled.clickPP()" -->
+              <button class="btn btn-danger ml-2" (click)="cancelBooking()" type="button" [disabled]="disableButton2">
+                      <i class="material-icons">close</i> {{getLang('cancelbokng', 'Cancel Booking')}}
+              </button>
+              <ng-container *ngIf="displayBillBtnList && displayBillBtnList.length > 0">
+                <app-viewbillbtn [btnLists]="displayBillBtnList" [displayTxt]="'View Biils'"> </app-viewbillbtn>
+              </ng-container>
+            </div>
+            <div class="text-right" [ngClass]="{'col-sm-8': bindId , 'col-sm-12': !bindId }">
+              <button class="btn btn-default" [disabled]="disableButton" type="button"
+                [routerLink]="['/pages/dynamic-list/list/packagebooking']">
+                <i class="material-icons">close</i> Cancel
+              </button>
+              <button class="btn btn-primary ml-2" (click)="status = 'active'" [disabled]="disableButton" type="submit">
+                <i class="material-icons">save</i> Save
+              </button>
+              <button class="btn btn-success ml-2"  *ngIf="bindId" (click)="confirmation.clickPP()"
+                type="button"  [disabled]="disableButton || form.controls['status'].value != 'active'">
+                <i class="material-icons">save</i> {{getLang('save&confrm', 'Save & Confirmed')}}
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</form>
+
+<app-global-confirmation #confirmation [myForm]="form" [mySubmitted]="submitted" [fieldTxt]="'notes'" [displayTxt]="'Confirmation'" [id]="'Modal1'">
+  <button conBtn class="btn btn-success ml-2" (click)="status = 'confirmed';onSubmit(form.value,form.valid);" type="button" [disabled]="disableButton || form.controls['status'].value != 'active'" >
+      <i class="material-icons">save</i> {{getLang('save&confrm', 'Save & Confirmed')}}
+  </button>
+</app-global-confirmation>
+
+
+<!-- <app-global-confirmation #cancelled [myForm]="form" [mySubmitted]="submitted" [fieldTxt]="'notes'" [displayTxt]="'Reason'" [id]="'Modal2'">
+<button conBtn class="btn btn-danger ml-2" (click)="status = 'cancelled'; onSubmit(form.value,form.valid);" type="button" [disabled]="disableButton" >
+  <i class="material-icons">save</i> {{getLang('cancelled', 'Cancelled')}}
+</button>
+</app-global-confirmation> -->
+
+<ng-template #loadingTmpl>
+  <div class="loader">
+    <svg class="circular" viewBox="25 25 50 50">
+      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+    </svg>
+  </div>
+</ng-template>

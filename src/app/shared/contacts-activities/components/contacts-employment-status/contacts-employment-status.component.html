@@ -1,0 +1,135 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)" novalidate class="form-horizontal mb-0">
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <span>{{getLang('employmentstatus', 'Employment Status')}}</span>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" id="closeemploymentstatusform">&times;</button>
+    </div>
+
+    <div class="modal-body box-shadow-none">
+
+        <div class="loader" *ngIf="isLoading">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+        </div>
+        <div class="form-horizontal" *ngIf="!isLoading">
+            <div class="row">
+
+                <div class="col-sm-12">
+                    <label class="col-form-label">
+                        {{getLang('employmentstatus', 'Employment Status')}}
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="employmentstatus"
+                            [matAutocomplete]="autoEmploymentStatus">
+
+                        <mat-autocomplete #autoEmploymentStatus="matAutocomplete" [displayWith]="displayEmployeeFn">
+
+                            <mat-option *ngIf="employeeisLoadingBox" class="is-loading">
+                                <mat-spinner diameter="50"></mat-spinner>
+                            </mat-option>
+
+                            <ng-container *ngIf="!employeeisLoadingBox && employmentstatusList.length > 0">
+                                <mat-option *ngFor="let option of filteredOptionsEmploymentStatus | async"
+                                    [value]="option">
+                                    {{option.name}}
+                                </mat-option>
+                            </ng-container>
+
+                            <ng-container *ngIf="!employeeisLoadingBox && employmentstatusList.length == 0">
+                                <mat-option>
+                                    <span>No Record</span>
+                                </mat-option>
+                            </ng-container>
+
+                        </mat-autocomplete>
+
+                    </mat-form-field>
+
+                    <div [hidden]="form.get('employmentstatus').valid || (form.get('employmentstatus').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('employmentstatus').hasError('required')" class="error-label">
+                            {{getLang('employmentstatusisrequired', 'Employment Status is Required')}}
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-sm-12"
+                    *ngIf="form.get('employmentstatus').value && form.get('employmentstatus').value.name == 'Resigned'">
+                    <label class="col-form-label">
+                        {{getLang('lastworkingdate', 'Last Working Date')}}
+                        <span class="text-danger">*</span>
+                    </label>
+                    <mat-form-field class="example-full-width">
+                        <input [min]="!bindId ? today : ''" matInput #ref
+                            (dateChange)="lastworkingdateChange($event.value)" [matDatepicker]="resultPickerlastworking"
+                            formControlName="lastworkingdate">
+                        <mat-datepicker-toggle matSuffix [for]="resultPickerlastworking">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #resultPickerlastworking></mat-datepicker>
+                    </mat-form-field>
+
+                    <div [hidden]="form.get('lastworkingdate').valid || (form.get('lastworkingdate').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('lastworkingdate').hasError('required')" class="error-label">
+                            {{getLang('lastworkingdateisrequired', 'Last Working Date is
+                            Required')}}
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <label class="col-form-label">
+                        {{getLang('manager', 'Manager')}}
+                    </label>
+
+                    <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="manager" [matAutocomplete]="automanager"
+                            (click)="preloadmanagerdata()" (change)="handleEmptyManagerInput($event)">
+                        <mat-autocomplete #automanager="matAutocomplete" [displayWith]="displaymanagerFn">
+
+                            <mat-option *ngIf="employeeisLoadingBox" class="is-loading">
+                                <mat-spinner diameter="50"></mat-spinner>
+                            </mat-option>
+
+                            <ng-container *ngIf="!employeeisLoadingBox && managerList.length > 0">
+                                <mat-option *ngFor="let option of filteredOptionsManager | async" [value]="option">
+                                    {{option.fullname}}
+                                </mat-option>
+                            </ng-container>
+
+                            <ng-container *ngIf="!employeeisLoadingBox && managerList.length == 0">
+                                <mat-option>
+                                    <span>No Record</span>
+                                </mat-option>
+                            </ng-container>
+
+                        </mat-autocomplete>
+
+                    </mat-form-field>
+
+                    <div [hidden]="form.get('manager').valid || (form.get('manager').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('manager').hasError('required')" class="error-label">
+                            {{getLang('managerisrequired', 'Manager is Required')}}
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer" *ngIf="!isLoading">
+        <button class="btn btn-default" type="button" [disabled]="btnDisable" data-dismiss="modal">
+            <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+        </button>
+        <button class="btn btn-primary ml-2" [disabled]="btnDisable" type="submit">
+            <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+        </button>
+
+    </div>
+</form>

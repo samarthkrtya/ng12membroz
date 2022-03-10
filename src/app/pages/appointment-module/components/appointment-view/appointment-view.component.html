@@ -1,0 +1,118 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list [dataContent]="dataContent" [schema]="'appointments'" [formObj]="formObj"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+
+            <div class="col-xl-9">
+                <h3 class="card-title">View Appointment</h3>   
+                <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+
+                <ng-container *ngIf="contentVisibility && dataContent">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12">                                    
+                                    <div class="row">
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                            {{getLang('appointmentdate','Created on:')}}                                         
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.appointmentdate |
+                                                    toLocaleDate }} 
+                                                    
+                                                 <button mat-raised-button                                                    
+                                                    type="button" style="line-height: normal;width: auto;height: 30px;"
+                                                    [matTooltip]="'History'"
+                                                    [matTooltipPosition]="'above'"
+                                                    data-original-title="History"
+                                                    class="btn btn-link btn-primary btn-just-icon m-0 p-0"
+                                                    (click)="onClick()">
+                                                    <i class="material-icons" style="line-height: normal;">history</i>
+                                                </button>
+                                                   
+                                            </span>                                            
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                                {{getLang('document','Booking #:')}}                                             
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.docnumber}}</span>                                            
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                            {{getLang('appointmentdate','Appointment On:')}}                                         
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.appointmentdate |
+                                                toLocaleDate }}
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                            {{getLang('service','Service:')}}                                       
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.refid?.title }}
+                                            </span>                                            
+                                        </div>
+                                        
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                            {{getLang('attendee','Customer:')}}                                        
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.attendee?.fullname}}
+                                            </span>                                            
+                                        </div>                                        
+                                        
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                            {{getLang('provider','Host:')}}                                        
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.host?.fullname }}
+                                            </span>                                            
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                            {{getLang('timeslot','Timeslot:')}}                                          
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.timeslot?.day}} ({{dataContent?.timeslot?.starttime}})
+                                            </span>                                            
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">                                            
+                                            {{getLang('status','Status:')}}                                        
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-4 mb-3">
+                                            <span class="font-bold">
+                                                {{dataContent?.status}}
+                                            </span>                                            
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <app-modal-list #modalbox [postData]="postData" [headers]="headers" [id]="'apphstid'" [displayTxt]="'Appointment History'" [id]="'Modal1'" (onCancel)="onCancel($event)" *ngIf="visible" >
+    </app-modal-list>

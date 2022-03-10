@@ -1,0 +1,110 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <mat-tab-group class="frontdesk-tab-card" id="tamplate-gallery">
+                    <mat-tab label="Code Your Own">
+                        <ng-template matTabContent>
+                            <div class="card p-3">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-10 col-xl-10 ml-auto mr-auto">
+                                        <div class="row">
+                                            <div class="col-md-6 col-lg-4 col-xl-4 ml-auto mr-auto">
+                                                <a [routerLink]="['/pages/template-module/html-editor/'+bindId]">
+                                                    <div style="width: 300px;
+                                                    height: 150px;  
+                                                    padding: 50px;
+                                                    text-align: center;
+                                                    border: 1px solid black;">
+                                                        <h4>Code Your Own</h4>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6 col-lg-4 col-xl-4 ml-auto mr-auto">
+                                                <a [routerLink]="['/pages/template-module/angular-editor/'+bindId]">
+                                                    <div style="width: 300px;
+                                                height: 150px;  
+                                                padding: 50px;
+                                                text-align: center;
+                                                border: 1px solid black;">
+                                                        <h4>Drag & Drop Editor
+                                                        </h4>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </mat-tab>
+                    <mat-tab label="Template Gallery">
+                        <ng-template matTabContent>
+                            <div class="card">
+                                <div class="px-3">
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
+                                            <label class="col-form-label">
+                                                Template Categories
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl required>
+                                                    <mat-option value="" selected>All </mat-option>
+                                                    <mat-option value="Featured (8)">Featured (8)</mat-option>
+                                                    <mat-option value="Anniversary (2)">Anniversary (2)</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <ng-container *ngFor="let t of templateData">
+                                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex"
+                                        *ngIf="t?.property?.thumbnail">
+                                        <div class="card w-100 card-overlay-main" *ngIf="t.property.editorindex == 0">
+                                            <a [routerLink]="['/pages/template-module/html-editor/'+t._id+'/'+bindId]">
+                                                <img [src]="t?.property?.thumbnail"
+                                                    class="card-img-top card-img-size-1by4" alt="">
+                                                <div class="card-body p-3">
+                                                    <div>{{t.subject}}</div>
+                                                </div>
+                                                <div class="card-overlay">
+                                                    <div class="card-overlay-inner">
+                                                        <button class="btn btn-primary" type="submit">
+                                                            <i class="material-icons">visibility</i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="card w-100 card-overlay-main" *ngIf="t.property.editorindex == 1">
+                                            <a
+                                                [routerLink]="['/pages/template-module/angular-editor/'+t._id+'/'+bindId]">
+                                                <img [src]="t?.property?.thumbnail"
+                                                    class="card-img-top card-img-size-1by4" alt="">
+                                                <div class="card-body p-3">
+                                                    <div>{{t.subject}}</div>
+                                                </div>
+                                                <div class="card-overlay">
+                                                    <div class="card-overlay-inner">
+                                                        <button class="btn btn-primary" type="submit">
+                                                            <i class="material-icons">visibility</i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-template>
+                    </mat-tab>
+
+                </mat-tab-group>
+            </div>
+        </div>
+    </div>
+</div>

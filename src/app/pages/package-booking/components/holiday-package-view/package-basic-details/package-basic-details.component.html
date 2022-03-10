@@ -1,0 +1,25 @@
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12">
+        <h3 class="member-name mt-2">{{dataContent?.title}} <span>{{dataContent.status}}</span> </h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3">
+                    <div>{{getLang('type','Type:')}} <span class="brand-secondary"> {{dataContent.packagetype }} </span> </div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.duration">
+                    <div>{{getLang('drtn','Duration:')}} <span class="brand-secondary"> {{dataContent.duration }} </span> </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent && dataContent.cost">
+                    <div>{{getLang('chrgs','Charges:')}} <span class="brand-secondary"> {{dataContent.cost | myCurrencyPipe}} </span> </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent && dataContent.totaladults">
+                    <div>{{getLang('adlts','Adults:')}} <span class="brand-secondary"> {{dataContent.totaladults}} </span> </div>
+                </div>
+                 
+            </div>
+        </div>
+    </div>
+</div>

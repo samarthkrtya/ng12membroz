@@ -1,0 +1,64 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3 class="card-title">Campaign</h3>
+              
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="offset-xl-1 col-xl-10">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="container text-right">
+                                            <button class="btn btn-primary text-right" type="button"
+                                            (click)="onSubmitContacts()" 
+                                            >
+                                                Next Step
+                                            </button>
+                                        </div>
+                                      
+                                        <table class="table table-membroz table-pos">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <section class="example-section">
+                                                            <span class="example-list-section">
+                                                                <mat-checkbox class="example-margin"
+                                                                              [checked]="allComplete"
+                                                                              (change)="setAll($event.checked)">
+                                                                </mat-checkbox>
+                                                              </span>
+                                                        </section>
+                                                    </th>
+                                                    <th>List Name</th>
+                                                    <th>No of contact</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let c of groupList">
+                                                    <td>
+                                                    <mat-checkbox [(ngModel)]="c.completed"
+                                                        (ngModelChange)="updateAllComplete()">
+                                                    </mat-checkbox>
+                                                    </td>
+                                                    <td>
+                                                        {{c.title}}
+                                                    </td>
+                                                    <td>{{c.members.length}} </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,168 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">Suprema User</h3>
+
+                    
+                    <div fxLayout="row" *ngIf="isLoadingData" fxLayoutAlign="space-around center"
+                        style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                        <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                    </div>
+
+                    <div class="card" *ngIf="!isLoadingData">
+
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <!-- <h4 class="card-title">
+                                    {{getLang('company address', 'Company Address')}}***
+                                </h4> -->
+                                    <label class="col-form-label">
+                                        Membroz user
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <!-- <mat-form-field>
+                                <mat-select name="contextid" formControlName="contextid">
+                                <mat-option *ngFor="let item of userData" [value]="item._id"> {{item.fullname}} </mat-option>
+                                </mat-select>
+                            </mat-form-field> -->
+
+
+                                    <mat-form-field class="example-full-width" appearance="standard">
+                                        <input type="text" matInput [matAutocomplete]="auto"
+                                            #trigger="matAutocompleteTrigger" formControlName="contextid"
+                                            [placeholder]="getLang('searchmembrozuser', 'Search member/user')"
+                                            (dblclick)="trigger.openPanel()">
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                            (optionSelected)="inputModelChangeValue($event.option.value)">
+                                            <mat-option *ngIf="customerisLoadingBox" class="is-loading">
+                                                <mat-spinner diameter="50"></mat-spinner>
+                                            </mat-option>
+                                            <ng-container *ngIf="!customerisLoadingBox && customerList.length > 0">
+                                                <mat-option *ngFor="let option of customerfilteredOptions | async"
+                                                    [value]="option">
+                                                    {{option.fullname}}
+                                                </mat-option>
+                                            </ng-container>
+                                            <!-- <ng-container *ngIf="!customerisLoadingBox && customerList.length == 0">
+                                    <mat-option>
+                                      <span>{{getLang('norecord', 'No Record')}}</span>
+                                    </mat-option>
+                                  </ng-container> -->
+                                        </mat-autocomplete>
+                                        <mat-icon matPrefix *ngIf="!searchMember">search</mat-icon>
+                                        <button matSuffix class="btn btn-just-icon btn-link m-0 p-0"
+                                            [disabled]="disableBtn" (click)="clearMember()"
+                                            *ngIf="searchMember && searchMember._id">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </mat-form-field>
+
+                                    <div [hidden]="form.get('contextid').valid || (form.get('contextid').pristine && !submitted)" class="text-danger">
+                                        <small *ngIf="form.get('contextid').hasError('required')"
+                                            class="error-label">
+                                            {{getLang('membrozuserisrequired', 'Membroz user is Required')}}
+                                        </small>
+                                        <!-- <small *ngIf="form.get('contextid').hasError('invalidAutocompleteObject')"
+                                            class="error-label">
+                                            {{getLang('plsfsl', 'Please select from search list')}}
+                                        </small> -->
+                                    </div>
+
+                                    <!-- 
+                                    <app-dynamic-property-fields *ngIf="visible" [formid]="this.formObj._id"
+                                        [myForm]="this.form" [mySubmitted]="this.isSubmitted"
+                                        [bindIdData]="_propertyobjectModel">
+                                    </app-dynamic-property-fields> -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <label class="col-form-label">
+                                        Suprema User
+                                    </label>
+                                    <mat-form-field>
+                                        <input matInput formControlName="supremauser">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-4">
+                                    <label class="col-form-label">
+                                        Card Count
+                                    </label>
+                                    <mat-form-field>
+                                        <input matInput type="number" formControlName="cardcount">
+                                    </mat-form-field>
+                                </div>
+                                <!-- <div class="offset-xl-1 col-xl-4">
+
+                                        <label class="col-form-label">
+                                            Gender
+                                        </label><br /><br />
+                                        <mat-radio-group aria-label="Select an option" formControlName="gender">
+                                            <mat-radio-button value="0">Male</mat-radio-button>
+                                            <mat-radio-button value="1">Female</mat-radio-button>
+                                        </mat-radio-group>
+                                    </div> -->
+                            </div>
+
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-4">
+
+                                    <label class="col-form-label">
+                                        Expired
+                                    </label>
+                                    <br /><br />
+                                    <mat-radio-group aria-label="Select an option" formControlName="expired">
+                                        <mat-radio-button value="true">True</mat-radio-button>
+                                        <mat-radio-button value="false">False</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                                <div class="offset-xl-1 col-xl-4">
+                                    <label class="col-form-label">
+                                        Disable
+                                    </label><br /><br />
+                                    <mat-radio-group aria-label="Select an option" formControlName="disabled">
+                                        <mat-radio-button value="true">True</mat-radio-button>
+                                        <mat-radio-button value="false">False</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+
+                            <!-- <app-dynamic-property-fields *ngIf="visible" [formid]="this.formObj._id"
+                                [myForm]="this.form" [mySubmitted]="this.isSubmitted"
+                                [bindIdData]="_propertyobjectModel">
+                            </app-dynamic-property-fields> -->
+
+                        </div>
+                        <footer class="footer fixed-bottom bg-white shadow-top">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="offset-xl-1 col-xl-10">
+                                        <div class="col-sm-12 text-right">
+                                            <button class="btn btn-default" type="button"
+                                                [routerLink]="['/pages/dynamic-list/list/suprema']" [disabled]="disabledBtn">
+                                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                                            </button>
+                                            <button class="btn btn-primary" type="submit" [disabled]="disabledBtn">
+                                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>

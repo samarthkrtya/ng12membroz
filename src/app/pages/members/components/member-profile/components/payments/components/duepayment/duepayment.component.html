@@ -1,0 +1,94 @@
+<div class="table-responsive mt-3">
+
+  <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+    <ng-container matColumnDef="item">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('item','Item')}}  </th>
+      <td mat-cell *matCellDef="let element"> {{element.item}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="period">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('period','Period')}}  </th>
+      <td mat-cell *matCellDef="let element"> {{element.period}} </td>
+    </ng-container>
+
+  
+
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('amount','Amount')}}</th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        {{element && element.amount !== '---' ? (element.amount | myCurrencyPipe) : element.amount}}
+      </td>
+    </ng-container>
+
+    
+    <ng-container matColumnDef="discount">
+      <th mat-header-cell *matHeaderCellDef >{{getLang('discount','Discount')}}  </th>
+      <td mat-cell *matCellDef="let element" >
+        {{element.discount | myCurrencyPipe}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tax">
+      <th mat-header-cell *matHeaderCellDef >{{getLang('tax%','Tax(%)')}}</th>
+      <td mat-cell *matCellDef="let element">
+        <span *ngFor="let i of element.tax; let isLast=last">
+          {{i.taxname}}
+          ({{i.amount}}%){{isLast ? '' : ', '}}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="taxamount">
+      <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('taxamount','Tax Amount')}}</th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        {{element && element.taxamount !== '---' ? (element.taxamount | myCurrencyPipe) : element.taxamount}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="paidamount">
+      <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('paidamount','Paid Amount')}}</th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        {{element && element.paidamount !== '---' ? (element.paidamount | myCurrencyPipe) : element.paidamount}}
+      </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="balance">
+      <th mat-header-cell *matHeaderCellDef >{{getLang('balanceamount','Balance Amount')}}  </th>
+      <td mat-cell *matCellDef="let element" >
+        {{element && element.balance !== '---' ? (element.balance | myCurrencyPipe) : element.balance}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef >{{getLang('status','Status')}}  </th>
+      <td mat-cell *matCellDef="let element" >
+        {{element.status}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="scheduledate">
+      <th mat-header-cell *matHeaderCellDef >{{getLang('schduledate','Schdule Date')}}</th>
+      <td mat-cell *matCellDef="let element" >
+        {{element.scheduledate | toLocaleDate }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}}</th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        <button  class="btn btn-link"  data-toggle="dropdown">
+          <i class="material-icons">{{getLang('morevert','more_vert')}}</i>
+        </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" [routerLink]="['/pages/dynamic-preview-list/paymentschedule/' + element.schduleid ]">{{getLang('viewinvoice','View Invoice')}}</a>
+            <a class="dropdown-item" [routerLink]="['/pages/payment-module/make-payment/' + element.schduleid ]">{{getLang('paynow','Pay Now')}} </a>
+          </div>
+      </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+  </table>
+</div>

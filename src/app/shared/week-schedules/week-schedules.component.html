@@ -1,0 +1,242 @@
+<div class="row">
+    <div class="col-sm-12 text-right mt-3 mb-4">
+        <button 
+            class="dropdown-toggle btn btn-primary" 
+            data-toggle="dropdown">
+            <i class="material-icons">add</i> {{getLang('addweekschedule', 'Add Week Schedule ')}} 
+        </button>
+        <div class="dropdown-menu dropdown-menu-right dropdown-limit">
+            <a class="dropdown-item" *ngFor="let item of weekScheduleLists" (click)="dataChanged(item)">
+                {{item.title}}
+            </a>
+        </div>
+    </div>
+</div>
+
+<ng-container>
+
+    <span *ngIf="selectedWeekSchedule && selectedWeekSchedule._id">
+        <h4>
+            {{selectedWeekSchedule?.title}} 
+        </h4>
+    </span>
+
+    <div *ngIf="!isLoading">
+        <div  id="componentID">
+            <div class="table-responsive border-outer-secondary">
+                <table 
+                    class="table mat-elevation-z8 w-100 table-membroz-plain schedule-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">
+                                <span class="material-icons" *ngIf="type == 'diet'"> local_dining </span>
+                                <span class="material-icons" *ngIf="type == 'workout'"> fitness_center </span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th 
+                                style="text-align:center;" 
+                                *ngFor="let day of dayArray; let k = index">
+                                <span> {{day.name}} </span> <br>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of (scheduleWiseData | keys); let i = index">
+                            <th> {{capitalizeFirstLetter(item.key)}} </th>
+                            <td
+                                class="position-relative" 
+                                *ngFor="let appointment of item.value; let k = index">
+                                <mat-chip-list aria-label="Fish selection">
+                                    <div class="mat-chip-list-wrapper-new">
+                                        <div *ngFor="let appdata of appointment.data; let l = index">
+                                            <mat-chip [matMenuTriggerFor]="menu" >
+                                                <div>{{appdata && appdata.refid && appdata.refid.property && appdata.refid.property.title ? appdata.refid.property.title : ''}}</div>
+                                                <mat-icon *ngIf="appdata.status == 'confirmed'">more_vert</mat-icon>
+                                                <mat-menu #menu="matMenu">
+                                                    <button mat-menu-item (click)="delete(appdata)">
+                                                        <mat-icon>cancel</mat-icon>
+                                                        <span>Delete</span>
+                                                    </button>
+                                                </mat-menu> 
+                                            </mat-chip>
+                                        </div>
+                                    </div>
+                                </mat-chip-list>
+                                <div class="schedule-add-icon">
+                                    <span class="material-icons" (click)="add(appointment)"> add </span>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr class="text-center" *ngIf="scheduleData.length == 0">
+                            <td [attr.colspan]="( 1 + (dayArray.length * 1))">
+                                {{getLang('pleasesetupweekschedule','please setup WeekSchedule')}}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+
+
+        <div class="row" *ngIf="((selectedWeekSchedule && selectedWeekSchedule._id && !this.existingScheduleid) || (selectedWeekSchedule && selectedWeekSchedule._id && this.existingScheduleid && this.existingScheduleid !== this.selectedWeekSchedule._id))">
+            <div class="col-md-4 col-sm-4"> </div>
+
+            <div class="col-md-4 col-sm-4">
+                
+            </div>
+
+            <div class="col-md-4 col-sm-4 col-xs-12 ">
+                <button 
+                    class="btn btn-warning pull-right" 
+                    type="button" 
+                    (click)="print()">
+                    {{getLang('print','Print')}}
+                </button>
+                <button 
+                    class="btn btn-success pull-right" 
+                    type="button" 
+                    (click)="saveSchedule()">
+                    {{getLang('save','Save')}}
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</ng-container>
+
+
+<!-- Trigger the modal with a button -->
+<button 
+    id="formSchedule_{{formid}}"
+    type="button" 
+    class="btn btn-info btn-lg d-none" 
+    data-toggle="modal" 
+    [attr.data-target]="'#myModal_' + formid"
+    data-backdrop="static" 
+    data-keyboard="false">
+</button>
+
+<!-- Modal -->
+<div id="myModal_{{formid}}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+
+        <form 
+            [formGroup]="form" 
+            (ngSubmit)="onSubmit(form.value, form.valid)" 
+            novalidate
+            class="form-horizontal">
+
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span> Add {{this.selectedWeekSchedule?.formid?.dispalyformname}} </span>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" id="weekclose_{{formid}}">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="row">
+
+                        <div class="col-sm-12">
+                            <label class="col-form-label">
+                                {{getLang('days','Day')}}
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            
+                            <mat-selection-list required #selectedDays  class="d-flex flex-wrap"  formControlName="days" >
+                                <mat-list-option class="mat-primary col-md-4 col-6" checkboxPosition="before" *ngFor="let item of dayArray" [value]="item.name">
+                                    {{item.name}}
+                                </mat-list-option>
+                            </mat-selection-list>
+
+
+                            <div 
+                                [hidden]="form.get('days').valid || (form.get('days').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="form.get('days').hasError('required')" class="error-label">
+                                    {{getLang('dayisrequired', 'Day is Required')}}
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12">
+
+                            <label class="col-form-label">
+                                {{getLang('label','Label')}}
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            
+                            <mat-form-field>
+                                <mat-select formControlName="heading">
+                                    <mat-option value="">Select Label</mat-option>
+                                    <mat-option *ngFor="let item of weekscheduleHeadingLists" [value]="item.name">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <div 
+                                [hidden]="form.get('heading').valid || (form.get('heading').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="form.get('heading').hasError('required')" class="error-label">
+                                    {{getLang('labelisrequired', 'Label is Required')}}
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12">
+
+                            <label class="col-form-label">
+                                {{this.selectedWeekSchedule?.scheduleformid?.dispalyformname}}
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <mat-form-field>
+                                <mat-select formControlName="refid">
+                                    <mat-option value="">Select {{this.selectedWeekSchedule?.scheduleformid?.dispalyformname}} </mat-option>
+                                    <mat-option *ngFor="let item of scheduleFormDataLists" [value]="item.id">
+                                        {{item.title}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <div 
+                                [hidden]="form.get('refid').valid || (form.get('refid').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="form.get('refid').hasError('required')" class="error-label">
+                                    {{getLang('refidisrequired', this.selectedWeekSchedule?.scheduleformid?.dispalyformname + ' is Required')}}
+                                </small>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" [disabled]="disablesubmit" data-dismiss="modal">
+                    <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                </button>
+                <button class="btn btn-primary ml-2" [disabled]="disablesubmit" type="submit">
+                    <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                </button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>

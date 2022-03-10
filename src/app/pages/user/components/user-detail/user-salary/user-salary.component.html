@@ -1,0 +1,279 @@
+<div class="row">
+    <div class="col-sm-12 text-right mb-2">
+        <button class="dropdown-toggle btn btn-primary" data-toggle="dropdown">
+            Add Salary Component
+        </button>
+        <ul class="dropdown-menu dropdown-menu-left" style="cursor:pointer;">
+            <li *ngFor="let opt of selectedPayHeadList">
+                <a (click)="addNewSalaryComponent(opt, selectedPayHeadList)"
+                    *ngIf="opt.payHeadTypeID==101 || opt.payHeadTypeID==103  || opt.payHeadTypeID==102">{{opt.payHeadName}}</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <a [routerLink]="['/pages/payroll-module/salary-component']">+ Add Salary Component</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="border-outer-secondary p-3">
+    <div class="mb-3">
+        <!-- *ngIf="selectedPayHeadList.length > 0" -->
+        <h4 class="card-title"> Earnings </h4>
+        <div class="row" *ngFor="let item of salarycomponents">
+            <ng-container *ngIf="item.payHeadTypeID=='101'">
+                <div class="col-lg-2 d-flex">
+                    <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                        {{item.payHeadName}}
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    <label class="col-form-label">
+                        Amount Monthly
+                    </label>
+                    <mat-form-field class="example-full-width">
+                        <input matInput name="amount" [(ngModel)]="item.amount"
+                            (ngModelChange)="valueChanged($event, item, revision)">
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-3">
+                    <label class="col-form-label">
+                        Amount Annually
+                    </label>
+                    <div class="input-group">
+                        <div class="d-flex w-100">
+                            <div class="flex-grow-1">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput value="{{item.amountAnnually}}">
+                                </mat-form-field>
+                            </div>
+                            <div class="input-group-append mt-3">
+                                <button type="submit" class="btn btn-link btn-primary btn-just-icon" matTooltip="Delete"
+                                    [matTooltipPosition]="'above'" (click)="deleteComponent(item)">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
+    <hr />
+    <!-- *ngIf="revision && revision.salarycomponents.length > 0" -->
+    <div class="mb-2">
+        <!-- *ngIf="revision && revision.salarycomponents.length > 0"  -->
+        <h4 class="card-title"> Deductions </h4>
+        <div class="row" *ngFor="let item of salarycomponents">
+            <ng-container *ngIf="item.payHeadTypeID=='103'">
+                <ng-container *ngIf="item.calculationTypeID==501">
+                    <div class="col-lg-2 d-flex">
+                        <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                            {{item.payHeadName}}
+                        </label>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="col-form-label">
+                            Amount Monthly
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput value="{{item.amount}}" >
+                        </mat-form-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="col-form-label">
+                            Amount Annually
+                        </label>
+                        <div class="input-group">
+                            <div class="d-flex w-100">
+                                <div class="flex-grow-1">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput value="{{item.amountAnnually}}">
+                                    </mat-form-field>
+                                </div>
+                                <div class="input-group-append mt-3">
+                                    <button type="submit" class="btn btn-link btn-primary btn-just-icon"
+                                        matTooltip="Delete" [matTooltipPosition]="'above'"
+                                        (click)="deleteComponent(item)">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="item.calculationTypeID!=501">
+                    <div class="col-lg-2 d-flex">
+                        <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                            {{item.payHeadName}}
+                        </label>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="col-form-label">
+                            Amount Monthly
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput name="amount" [(ngModel)]="item.amount"
+                                (ngModelChange)="valueChanged($event, item)" readonly>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="col-form-label">
+                            Amount Annually
+                        </label>
+                        <div class="input-group">
+                            <div class="d-flex w-100">
+                                <div class="flex-grow-1">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput value="{{item.amountAnnually}}" readonly>
+                                    </mat-form-field>
+                                </div>
+                                <div class="input-group-append mt-3">
+                                    <button type="submit" class="btn btn-link btn-primary btn-just-icon"
+                                        matTooltip="Delete" [matTooltipPosition]="'above'"
+                                        (click)="deleteComponent(item)">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="item.payHeadTypeID=='102'">
+                <div class="col-lg-2 d-flex">
+                    <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                        {{item.payHeadName}}
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    <label class="col-form-label">
+                        Amount Monthly
+                    </label>
+                    <mat-form-field class="example-full-width">
+                        <input matInput name="amount" [(ngModel)]="item.amount"
+                            (ngModelChange)="valueChanged($event, item, revision)">
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-3">
+                    <label class="col-form-label">
+                        Amount Annually
+                    </label>
+                    <div class="input-group">
+                        <div class="d-flex w-100">
+                            <div class="flex-grow-1">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput value="{{item.amountAnnually}}">
+                                </mat-form-field>
+                            </div>
+                            <div class="input-group-append mt-3">
+                                <button type="submit" class="btn btn-link btn-primary btn-just-icon" matTooltip="Delete"
+                                    [matTooltipPosition]="'above'" (click)="deleteComponent(item)">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
+    <hr />
+    <!-- *ngIf="revision && revision.salarycomponents.length > 0" -->
+    <div class="mb-3">
+        <!-- *ngIf="revision && revision.salarycomponents.length > 0" -->
+        <h4 class="card-title"> Employer's Contribution </h4>
+        <div class="row" *ngFor="let item of salarycomponents">
+            <ng-container
+                *ngIf="item.statutoryPayTypeID==301 || item.statutoryPayTypeID==302 || item.statutoryPayTypeID==401 || item.statutoryPayTypeID==402 || item.statutoryPayTypeID==303">
+                <div class="col-lg-2 d-flex">
+                    <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                        {{item.payHeadName}}
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    <label class="col-form-label">
+                        Amount Monthly
+                    </label>
+                    <mat-form-field class="example-full-width">
+                        <input matInput name="amount" [(ngModel)]="item.amount"
+                            (ngModelChange)="valueChanged($event, component)" readonly>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-3">
+                    <label class="col-form-label">
+                        Amount Annually
+                    </label>
+                    <div class="input-group">
+                        <div class="d-flex w-100">
+                            <div class="flex-grow-1">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput value="{{item.amountAnnually}}" readonly>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
+    <hr />
+    <div class="mb-3">
+        <div class="row">
+            <div class="col-lg-2 d-flex">
+                <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                    Total
+                </label>
+            </div>
+            <div class="col-lg-3">
+                <label class="col-form-label">
+                    <strong>{{totalAmountMonthly}}</strong>
+                </label>
+            </div>
+            <div class="col-lg-3">
+                <label class="col-form-label">
+                    <strong>{{totalAmountAnnualy}}</strong>
+                </label>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="mb-3">
+        <div class="row">
+            <div class="col-lg-2 d-flex">
+                <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                    Cost To Company
+                </label>
+            </div>
+            <div class="col-lg-3">
+                <label class="col-form-label">
+                    <strong>{{costToAmountMonthly}}</strong>
+                </label>
+            </div>
+            <div class="col-lg-3">
+                <label class="col-form-label">
+                    <strong>{{costToAmountAnnualy}}</strong>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-right">
+            <!-- <button class="btn btn-default" type="button" [disabled]="submitted"
+                [routerLink]="['/pages/dynamic-list/list/user']">
+                <i class="material-icons">close</i> Cancel
+            </button> -->
+            <button class="btn btn-primary ml-2" type="submit" [disabled]="submitted"
+                (click)="onSalaryDetailsSubmit(salarycomponents)">
+                <span *ngIf="submitted" class="spinner-border"></span>
+                <i *ngIf="!submitted" class="material-icons">save</i>
+                {{ !submitted ? 'Save': ''}}
+            </button>
+        </div>
+    </div>
+</div>

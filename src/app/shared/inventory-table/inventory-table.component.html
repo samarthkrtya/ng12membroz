@@ -1,0 +1,85 @@
+<div class="table-responsive">
+    <table class="table table-membroz">
+        <thead>
+            <tr>
+                <th colspan="2" width="40%">
+                    {{getLang('item', 'Item')}}
+                </th>
+                <th width="20%" class="text-right">
+                    {{getLang('quantity', 'Quantity')}}
+                </th>
+                <th width="20%" class="text-right">
+                    {{getLang('cost', 'Cost')}}
+                </th>
+                <th class="text-right td-actions" width="20%">
+                    {{getLang('action', 'Action')}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of setitemsList">
+                <td>
+                    <img [src]="item.item && item.item.item_logo ? item.item.item_logo : 'assets/img/image_placeholder.jpg'" width="60"
+                        height="60">
+                </td>
+                <td>
+                    <app-dynamic-autocomplete-ngmodel [setting]="billfields" [(inputModel)]="billfields.modelValue"
+                        [dbvalue]="item.dbvalue" (inputModelChange)="inputModelChangeValue($event ,item)">
+                    </app-dynamic-autocomplete-ngmodel>
+                </td>
+                <td>
+                    <mat-form-field class="example-full-width">
+                        <input type="number" matInput [(ngModel)]="item.quantity"
+                            (ngModelChange)="changeTblQty($event , item)" [disabled]="!item.itemid" min="0"
+                            oninput="this.value = Math.abs(this.value)">
+                    </mat-form-field>
+                </td>
+                <td class="text-right">
+                    {{item?.cost}}
+                </td>
+                <td class="text-right td-actions">
+                    <button *ngIf="item.itemid" (click)="tblDeleteItem(item)" type="button" matTooltip="Delete"
+                        [matTooltipPosition]="'above'" data-original-title="Delete"
+                        class="btn btn-link btn-primary btn-just-icon edit">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-right">
+                    {{getLang('subtotal', 'Sub Total')}}
+                </td>
+                <td class="text-right" colspan="2">{{subtotal}} </td>
+            </tr>
+
+            <tr>
+                <td colspan="4" class="text-right bold">
+                    {{getLang('taxamount', 'Tax Amount')}}
+                </td>
+                <td class="text-right bold" colspan="2">{{(taxamount)}}
+                </td>
+            </tr>   
+            
+
+            <tr *ngIf="isAdjustment">
+                <td colspan="4" class="text-right bold">
+                    {{getLang('adjustment', 'Adjustment')}}
+                </td>
+                <td class="text-right bold" colspan="2">
+                    <mat-form-field class="example-full-width">
+                        <input type="number" matInput placeholder="Enter Adjustment" [(ngModel)]="adjustment"
+                            (ngModelChange)="setAdjustment()">
+                    </mat-form-field>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4" class="text-right bold">
+                    {{getLang('total', 'Total')}}
+                </td>
+                <td class="text-right bold" colspan="2">{{(grandtotal)}}
+                </td>
+            </tr>       
+        </tbody>
+    </table>
+</div>

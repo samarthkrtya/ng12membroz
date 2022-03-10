@@ -1,0 +1,315 @@
+
+<div class="loading" *ngIf="disableBtn">Loading&#8230;</div>
+
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row d-none">
+      <div class="col-md-12">
+        <div class="card mb-0">
+          <div class="card-body pb-md-0">
+            <div class="row">
+              <div class="col-xl-10 ml-auto mr-auto">
+                <div class="row align-items-sm-center">
+                  <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 ml-auto">
+                    <label class="col-form-label p-0">
+                      {{getLang('form', 'Form')}}
+                    </label>
+                    <mat-form-field class="example-full-width">
+                      <input
+                        type="text"
+                        aria-label="Number"
+                        matInput
+                        [formControl]="selectedform"
+                        [matAutocomplete]="selectedformauto"
+                        (keyup.enter)="selectedformEnter()"
+                        (click)="selectedformPreloaddata()"
+                        (change)="selectedformHandleEmptyInput($event)">
+
+                      <mat-autocomplete
+                        #selectedformauto="matAutocomplete"
+                        [displayWith]="selectedformDisplayFn"
+                        (optionSelected)="selectedformOptionSelected($event.option)">
+
+                        <mat-option *ngIf="selectedformIsLoadingBox" class="is-loading">
+                          <mat-spinner diameter="50"></mat-spinner>
+                        </mat-option>
+
+                        <ng-container *ngIf="!selectedformIsLoadingBox && formLists.length > 0">
+                          <mat-option
+                            *ngFor="let option of selectedformfilteredOptions | async"
+                            [value]="option">
+                            {{option.formname}}
+                          </mat-option>
+                        </ng-container>
+
+                        <ng-container *ngIf="!selectedformIsLoadingBox && formLists.length == 0">
+                          <mat-option>
+                            <span>No Record</span>
+                          </mat-option>
+                        </ng-container>
+
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 mr-auto">
+                    <button class="btn btn-primary m-0" type="button" [disabled]="disableBtn" (click)="addDisposition()" >
+                      <i class="material-icons font-24" >add</i>  {{getLang('Add disposition at root', 'Add disposition at root')}}
+                    </button>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-tab-group class="frontdesk-tab-card" (selectedTabChange)="onTabChanged($event.tab)">
+          <ng-container *ngFor="let item of formLists">
+                <mat-tab [label]="item.name">
+                  <div class="loader" *ngIf="isLoadingData">
+                      <svg class="circular" viewBox="25 25 50 50">
+                          <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                              stroke-miterlimit="10" />
+                      </svg>
+                  </div>
+                  <ng-container [ngTemplateOutlet]="template"></ng-container>
+                </mat-tab>
+          </ng-container>
+      </mat-tab-group>
+  </div>
+</div>
+
+<ng-template #template>
+  <ng-container *ngIf="filteredDispositionLists && filteredDispositionLists.length > 0;else emtyTmp" >
+  <div class="row" >
+    <div class="col-xl-3 pr-xl-0">
+      <div class="card disposition-card mt-0">
+        <div class="card-body p-0 member-profile-main">
+          <div >
+            <div class="d-flex justify-content-end">
+            <button class="btn btn-link p-2" type="button" [disabled]="disableBtn" (click)="addDisposition()"><i class="material-icons material-icons-f22-l20">add</i> Add Root Disposition </button>
+           </div>
+            <ul class="list-unstyled m-0">
+              <li
+
+                class="border-bottom p-2"
+                *ngFor="let items of filteredDispositionLists" [ngClass]="items.selected ? 'active' : '' ">
+                <span (click)="edit(items)" class="font-weight-bold"> {{items.disposition}} </span>
+
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #menu="matMenu">
+
+                  <button 
+                    mat-menu-item
+                    (click)="addSubDisposition(items)">
+                    <mat-icon>add</mat-icon>
+                    <span>Add Sub Disposition</span>
+                  </button>
+
+                  <button 
+                    mat-menu-item
+                    (click)="edit(items)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+
+                  <button 
+                    mat-menu-item
+                    (click)="delete(items._id)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+
+                </mat-menu>
+
+                <app-form-disposition-tree-view
+                  *ngIf="items.children"
+                  [treeData]="items.children"
+                  [parent]="items._id"
+                  [formId]="this.selectedform?.value?.id"
+                  (SubmitData)="getSubmittedData($event)">
+                </app-form-disposition-tree-view>
+
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-9">
+      <div class="card mt-0">
+        <div class="card-body pt-0">
+          <div class="row">
+            <div class="col-xl-12">
+              <mat-tab-group (selectedTabChange)="tabClick($event)">
+                <mat-tab label="General Setup">
+                  <div class="p-md-3">
+                    <div class="row">
+                      <div class="col-sm-6" >
+                        <label class="col-form-label">
+                          {{getLang('name', 'Name')}}
+                        </label>
+                        <mat-form-field class="example-full-width">
+                          <input
+                            matInput
+                            [(ngModel)]="_dispositionModel.disposition"
+                            #disposition="ngModel"
+                            (change)="dispositionChange(disposition)">
+                        </mat-form-field>
+                        <div *ngIf="dispositionRequiredError" class="alert alert-danger">
+                          {{getLang('dspstnrqrd', 'disposition is required.')}}
+                        </div>
+
+                      </div>
+                      <div class="col-12 col-md-6">
+
+                        <label class="col-form-label">
+                          {{getLang('action', 'Action')}}
+                        </label>
+
+                        <div class="mt-3">
+                          <section
+                            class="example-section row">
+                            <mat-checkbox
+                              class="example-margin m-0 col-sm-6 col-md-6 col-xl-6"
+                              [(ngModel)]="callback"
+                              (change)="showOptions($event, 'callback')">
+                              {{getLang('callback', 'Callback | Followup')}}
+                            </mat-checkbox>
+                            <mat-checkbox
+                              class="example-margin m-0 col-sm-6 col-md-6 col-xl-6"
+                              [(ngModel)]="meeting"
+                              (change)="showOptions($event, 'meeting')">
+                              {{getLang('meeting', 'Meeting | Opportunity')}}
+                            </mat-checkbox>
+                            <mat-checkbox
+                              class="example-margin m-0 col-sm-6 col-md-6 col-xl-6"
+                              [(ngModel)]="task"
+                              (change)="showOptions($event, 'task')">
+                              {{getLang('task', 'Task')}}
+                            </mat-checkbox>
+                            <mat-checkbox
+                              class="example-margin m-0 col-sm-6 col-md-6 col-xl-6"
+                              [(ngModel)]="communication"
+                              (change)="showOptions($event, 'communication')">
+                              {{getLang('communication', 'Communication')}}
+                            </mat-checkbox>
+
+                          </section>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Forms" *ngIf="callback || meeting  || task || communication">
+                  <div class="p-md-3">
+                    <div class="row">
+                      <div class="col-md-12 text-right">
+                        <button
+                          id="addFormFieldBtn"
+                          type="button"
+                          class="btn btn-primary m-0"
+                          data-toggle="modal"
+                          data-target="#myModal">
+                          <i class="material-icons font-24">add</i> Add Fields
+                        </button>
+                      </div>
+                    </div>
+                    <app-form-disposition-formfield-lists
+                      [dispositionModel]="_dispositionModel"
+                      *ngIf="formsVisibility"
+                      (formfieldSubmitData)="getformfieldSubmitData($event)">
+                    </app-form-disposition-formfield-lists>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Rules" *ngIf="(callback || meeting  || task || communication) && !isbranchwise">
+                  <div class="p-md-3">
+                    <app-form-disposition-rules
+                      [dispositionModel]="_dispositionModel"
+                      *ngIf="rulesVisibility"
+                      (ruleSubmitData)="getruleSubmittedData($event)">
+                    </app-form-disposition-rules>
+
+                  </div>
+                </mat-tab>
+                <mat-tab label="Role Permission" *ngIf="(callback || meeting  || task || communication) && !isbranchwise">
+                  <div class="p-md-3">
+                    <div class="row mb-3">
+                      <div class="col-lg-4 col-md-6 mb-2" *ngFor="let item of formWiseRoles">
+                        <mat-checkbox (change)="ruleChangeOptions($event, item)" [checked]="item.selected == true"> {{item.name | slice:0:30}} </mat-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+            </div>
+            <div class="col-md-6 text-right">
+
+              <button
+                  (click)="ngOnInit()"
+                  class="btn btn-default ml-2"
+                  type="button"
+                  [disabled]="disableSubmitBtn">
+                  <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+              </button>
+
+              <button
+                [disabled]="disableSubmitBtn"
+                class="btn btn-primary ml-2"
+                type="button"
+                (click)="onDispositionSubmit()">
+                <i class="material-icons">save</i> Save
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+  <ng-template #emtyTmp>
+    <div class="card mt-0">
+       <div class="card-body">
+        <h3 class="text-center mb-3"> Your disposition setup is incomplete! </h3>
+        <div class="d-flex justify-content-center mb-3">
+          <button class="btn btn btn-outline-primary m-0 mr-2" [disabled]="disableBtn" (click)="addDisposition()" >
+              <i class="material-icons" >add</i> Add Disposition for {{selectedform?.value?.name}}
+          </button>
+        </div>
+       </div>
+    </div>
+    
+  </ng-template>
+</ng-template>
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{getLang('fields', 'Fields')}} </h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <app-form-disposition-formfield
+          [dispositionModel]="_dispositionModel"
+          [formfieldEditData]="formfieldEditData"
+          *ngIf="formsVisibility">
+        </app-form-disposition-formfield>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

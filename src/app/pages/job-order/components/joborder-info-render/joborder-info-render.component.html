@@ -1,0 +1,426 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+
+                <h3>Job Order Information</h3>
+
+                <form [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)" novalidate class="mb-0">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <h4>Info</h4>
+                                    <div class="row">
+
+                                        <input type="hidden" formControlname="_id">
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('customer', 'Customer')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="input-group align-items-center">
+                                                <div class="flex-grow-1">
+
+                                                    <mat-form-field class="example-full-width">
+                                                        <input 
+                                                            type="text" 
+                                                            matInput 
+                                                            required 
+                                                            [formControl]="assetid"
+                                                            [matAutocomplete]="autoAsset" 
+                                                            (keyup.enter)="enterAsset()"
+                                                            (click)="preloadAssetdata()"
+                                                            (change)="handleEmptyAssetInput($event)">
+                                                        <mat-autocomplete #autoAsset="matAutocomplete"
+                                                            [displayWith]="displayAssetFn"
+                                                            (optionSelected)="optionAssetSelected($event.option)">
+
+                                                            <mat-option *ngIf="assetisLoadingBox" class="is-loading">
+                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                            </mat-option>
+
+                                                            <ng-container
+                                                                *ngIf="!assetisLoadingBox && allAssetLists.length > 0">
+                                                                <div class="mat-optgroup-media">
+                                                                    <mat-option
+                                                                        *ngFor="let option of filteredAssetOptions | async"
+                                                                        [value]="option">
+
+                                                                        <div
+                                                                            class="media py-2 member-profile-item cursor-pointer">
+
+                                                                            <img 
+                                                                                class="example-option-img rounded mr-3"
+                                                                                aria-hidden 
+                                                                                [src]="option && option.customerid && option.customerid.profilepic ? option.customerid.profilepic : '../../assets/img/default-avatar.png'"
+                                                                                width="50" 
+                                                                                height="50">
+
+                                                                            <div class="media-body">
+
+                                                                                <div class="d-flex">
+                                                                                    <div class="flex-grow-1">
+                                                                                        <div class="font-500 mb-1">
+                                                                                            <span>{{option?.title}}</span>
+                                                                                            <span
+                                                                                                *ngIf="option?.property?.license_plate">
+                                                                                                |
+                                                                                                {{option?.property?.license_plate}}</span>
+                                                                                                <span *ngIf="option?.property?.regnumberyear"> 
+                                                                                                    | {{option?.property?.regnumberyear}}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="fc-today-button font-500">
+                                                                                        <i class="material-icons"> face
+                                                                                        </i>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="d-flex">
+                                                                                    <div class="flex-grow-1">
+                                                                                        <span *ngIf="option?.customerid?.property?.fullname">
+                                                                                            {{option?.customerid?.property?.fullname}}</span>
+                                                                                        <span 
+                                                                                        *ngIf="option?.customerid?.property?.mobile"> 
+                                                                                        | {{option?.customerid?.property?.mobile}}</span>
+                                                                                    </div>
+                                                                                    <div class="fc-today-button font-14"
+                                                                                        *ngIf="option?.customerid?.property?.primaryemail">
+                                                                                        {{option?.customerid?.property?.primaryemail}}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                        </div>
+
+                                                                    </mat-option>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <ng-container
+                                                                *ngIf="!assetisLoadingBox && allAssetLists.length == 0">
+                                                                <mat-option>
+                                                                    <span>{{getLang('norecord', 'No Record')}}</span>
+                                                                </mat-option>
+                                                            </ng-container>
+
+                                                        </mat-autocomplete>
+
+                                                        <mat-error *ngFor="let validation of validation_msgs.assetid">
+                                                            <div *ngIf="assetid.hasError(validation.type)">
+                                                                {{validation.message}}
+                                                            </div>
+                                                        </mat-error>
+
+
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <!-- <app-quickadd  
+                                                    [quickfromstyle]="'single'" 
+                                                    [id]="'_id'" 
+                                                    [quickformschemaname]="'customerasset'"
+                                                    [quickdisplayname]="'Type'" 
+                                                    class="off-form-quick" 
+                                                    (childSubmitData)="getSubmittedData($event)" >
+                                                </app-quickadd> -->
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-12"
+                                            *ngIf="assetid && assetid.value  && form.get('assetid').valid">
+                                            <div class="border pt-3 px-3 rounded alternative-light-blue">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <div class="media py-2 member-profile-item"><img
+                                                                [src]="assetid?.value?.customerid?.profilepic ? assetid?.value?.customerid?.profilepic : '../assets/img/default-avatar.png' "
+                                                                class="profile-avatar-img mr-2 rounded-circle" alt="">
+                                                            <div class="media-body">
+                                                                <div class="font-500 mb-1">{{assetid.value?.title}}
+                                                                </div>
+                                                                <div class="d-flex">
+                                                                    <div class="flex-grow-1">
+                                                                        {{assetid?.value?.customerid?.fullname}}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="d-flex align-items-center mb-3"
+                                                            *ngIf="assetid?.value?.customerid?.property?.primaryemail">
+                                                            <div class="mr-2"><img
+                                                                    src="../assets/img/email-gray-icon.svg" alt="">
+                                                            </div>
+                                                            <div>{{assetid?.value?.customerid?.property?.primaryemail}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex align-items-center mb-3"
+                                                            *ngIf="assetid?.value?.customerid?.property?.mobile">
+                                                            <div class="mr-2"><img
+                                                                    src="../assets/img/phone-gray-icon.svg" alt="">
+                                                            </div>
+                                                            <div>{{assetid?.value?.customerid?.property?.mobile}} </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4"
+                                                        *ngIf="assetid?.value?.customerid?.property?.address">
+                                                        <div class="d-flex">
+                                                            <div class="mr-2"><img
+                                                                    src="../assets/img/location-gray-icon.svg" alt="">
+                                                            </div>
+                                                            <div> {{assetid?.value?.customerid?.property?.address}}<br>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('bookingdate', 'Booking Date')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <mat-form-field style="margin-bottom: -1.00em !important;">
+                                                <input matInput (click)="picker.open()" [matDatepicker]="picker"
+                                                    [matDatepickerFilter]="myFilter" formControlName="date"
+                                                    [min]="mindate">
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <div [hidden]="form.get('date').valid || (form.get('date').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('date').hasError('required')"
+                                                    class="error-label  font-size-75">
+                                                    {{getLang('dateisrequired', 'Date is Required')}}
+                                                </small>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('dueby', 'Due By')}}
+                                            </label>
+
+                                            <mat-form-field style="margin-bottom: -1.00em !important;">
+                                                <input matInput (click)="pickerDueby.open()"
+                                                    [matDatepicker]="pickerDueby" [matDatepickerFilter]="myFilter"
+                                                    formControlName="dueby" [min]="mindate">
+                                                <mat-datepicker-toggle matSuffix [for]="pickerDueby">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #pickerDueby></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <div [hidden]="form.get('dueby').valid || (form.get('dueby').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('dueby').hasError('required')"
+                                                    class="error-label  font-size-75">
+                                                    {{getLang('duebyisrequired', 'DueBy is Required')}}
+                                                </small>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('advisor', 'Advisor')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <mat-form-field class="example-full-width">
+                                                <input type="text" matInput required [formControl]="advisorid"
+                                                    [matAutocomplete]="autoAdvicer" (keyup.enter)="enterAdvisor()"
+                                                    (click)="preloadAdvisordata()"
+                                                    (change)="handleEmptyAdvisorInput($event)">
+                                                <mat-autocomplete #autoAdvicer="matAutocomplete"
+                                                    [displayWith]="displayAdvisorFn"
+                                                    (optionSelected)="optionAdvisorSelected($event.option)">
+
+                                                    <mat-option *ngIf="advisorisLoadingBox" class="is-loading">
+                                                        <mat-spinner diameter="50"></mat-spinner>
+                                                    </mat-option>
+
+
+                                                    <ng-container
+                                                        *ngIf="!advisorisLoadingBox && allAdvisorLists.length > 0">
+                                                        <mat-option
+                                                            *ngFor="let option of filteredadvisoroptions | async"
+                                                            [value]="option">
+                                                            {{option.fullname}}
+                                                        </mat-option>
+                                                    </ng-container>
+
+                                                    <ng-container
+                                                        *ngIf="!advisorisLoadingBox && allAdvisorLists.length == 0">
+                                                        <mat-option>
+                                                            <span>{{getLang('norecord', 'No Record')}}</span>
+                                                        </mat-option>
+                                                    </ng-container>
+
+                                                </mat-autocomplete>
+
+                                                <mat-error *ngFor="let validation of validation_msgs.advisorid">
+                                                    <div *ngIf="advisorid.hasError(validation.type)">
+                                                        {{validation.message}}
+                                                    </div>
+                                                </mat-error>
+
+
+                                            </mat-form-field>
+
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                Inspection
+                                            </label>
+
+                                            <div class="input-group align-items-center">
+                                                <div class="flex-grow-1">
+                                                    <mat-form-field class="example-full-width">
+                                                        <input type="text" matInput required
+                                                            [formControl]="inspectionid"
+                                                            [matAutocomplete]="autoInspection"
+                                                            (keyup.enter)="enterInspection()"
+                                                            (click)="preloadInspectiondata()"
+                                                            (change)="handleEmptyInspectionInput($event)">
+
+
+                                                        <mat-autocomplete #autoInspection="matAutocomplete"
+                                                            [displayWith]="displayInspectionFn"
+                                                            (optionSelected)="optionInspectionSelected($event.option)">
+
+                                                            <mat-option *ngIf="inspectionisLoadingBox"
+                                                                class="is-loading">
+                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                            </mat-option>
+
+                                                            <ng-container
+                                                                *ngIf="!inspectionisLoadingBox && customerWiseInspection.length > 0">
+
+                                                                <div class="mat-optgroup-media">
+                                                                    <mat-option
+                                                                        *ngFor="let option of filteredInspectionOptions | async"
+                                                                        [value]="option">
+
+                                                                        <div
+                                                                            class="media py-2 member-profile-item cursor-pointer">
+                                                                            <!-- <img class="example-option-img rounded" aria-hidden
+                                                                        [src]="option.src" width="50" height="50"> -->
+
+                                                                            <div class="media-body">
+
+                                                                                <div class="d-flex">
+                                                                                    <div class="flex-grow-1">
+                                                                                        <div class="font-500 mb-1">
+                                                                                            <span>{{option?.formname}}</span>
+                                                                                            <span
+                                                                                                *ngIf="option?.formname">
+                                                                                                |
+                                                                                                {{option?.customername}}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="fc-today-button font-500">
+
+                                                                                        <button 
+                                                                                            (click)="onEvent(option, $event)"
+                                                                                            class="btn btn-info btn-sm mat-raised-button mat-button-base">
+                                                                                            <span class="mat-button-wrapper">view</span>
+                                                                                            <div class="mat-ripple mat-button-ripple"></div>
+                                                                                            <div class="mat-button-focus-overlay"></div>
+                                                                                        </button>
+                                                                                        
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="d-flex">
+                                                                                    <div class="flex-grow-1">
+                                                                                        Inspected on {{option?.date | date}} by {{option?.inspectionby}}
+                                                                                    </div>
+                                                                                    <!-- <div class="fc-today-button font-14"
+                                                                                        *ngIf="option?.formname">
+                                                                                        {{option?.date |
+                                                                                        date:'MM/dd/yyyy'}}
+                                                                                    </div> -->
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                        </div>
+
+                                                                    </mat-option>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <ng-container
+                                                                *ngIf="!inspectionisLoadingBox && customerWiseInspection.length == 0">
+                                                                <mat-option>
+                                                                    <span>{{getLang('norecord', 'No Record')}}</span>
+                                                                </mat-option>
+                                                            </ng-container>
+
+                                                        </mat-autocomplete>
+                                                        <!-- <mat-error *ngFor="let validation of validation_msgs.assetid">
+                                                    <div *ngIf="assetid.hasError(validation.type)">
+                                                        {{validation.message}}
+                                                    </div>
+                                                </mat-error> -->
+                                                    </mat-form-field>
+                                                </div>
+                                                <button mat-button type="button"
+                                                    [routerLink]="['/pages/inspection-module/inspection']"
+                                                    data-toggle="modal" data-backdrop="false" data-keyboard="false"
+                                                    class="btn btn-primary btn-simple btn-square-plr" matTooltip="Add"
+                                                    data-original-title="Add Field">
+                                                    <i class="material-icons help-font">add</i>
+                                                </button>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 text-right">
+                                            <div class="row">
+                                                <div class="col-sm-6 text-left">
+                                                    <button 
+                                                        *ngIf="this.joborderDetail && this.joborderDetail._id"
+                                                        class="btn btn-danger ml-2" 
+                                                        type="button" 
+                                                        (click)="onDelete()" 
+                                                        [disabled]="disableButton">
+                                                        <i class="material-icons">delete</i> {{getLang('delete',
+                                                        'Delete')}}
+                                                    </button>
+                                                </div>
+                                    
+                                                <div class="col-sm-6 text-right">
+                                                    <button [routerLink]="['/pages/dynamic-list/list/joborder']" class="btn btn-default" type="button"
+                                                        [disabled]="disableBtn">
+                                                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                                                    </button>
+                                                    <button class="btn btn-primary ml-2" type="submit" [disabled]="disableBtn">
+                                                        <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

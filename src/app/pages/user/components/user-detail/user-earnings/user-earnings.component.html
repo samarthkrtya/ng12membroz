@@ -1,0 +1,120 @@
+<div class="material-datatables1">
+    
+    <div class="table-responsive">
+  
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz">
+        <div id="content" #content>
+            <ng-container matColumnDef="Month">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
+            <td mat-cell *matCellDef="let element;"> {{months[element.month - 1]}} - {{element.year}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="Salary">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Salary </th>
+                <td mat-cell *matCellDef="let element;"> {{element.salary}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Earnings">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Earnings </th>
+                <td mat-cell *matCellDef="let element;"> {{element.earning}} </td>
+            </ng-container>
+        </div>
+        <ng-container matColumnDef="Action">
+            <th mat-header-cell *matHeaderCellDef class="text-right"> Action</th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+                <button class="btn btn-link btn-primary btn-just-icon"
+                    matTooltip="View"
+                    [matTooltipPosition]="'above'" data-toggle="modal"
+                    data-target="#myModal" (click)="onModal(element)">
+                    <i class="material-icons">visibility</i>
+                </button>
+
+                <!-- <button 
+                    class="btn btn-link btn-primary btn-just-icon" (click)="downloadPDF()"
+                    matTooltip="Download" [matTooltipPosition]="'above'">
+                    <i class="material-icons">download</i>
+                </button> -->
+            </td>   
+       </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  
+  
+      </table>
+  
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  
+  </div>
+
+  <!-- The Modal -->
+<div class="modal fade" id="myModal" *ngIf="onModalShow">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="text-align: center;">Salary Slip</h4>
+                <hr>
+            </div>
+            <div class="modal-body">
+                <div class="border-outer-secondary">
+                <h5 class="modal-title">&nbsp; &nbsp; &nbsp;Employee Name: {{dataContent.fullname}}</h5>
+               <h5 class="modal-title"> &nbsp; &nbsp; &nbsp;Designation: {{dataContent.designation}}</h5>
+               <h5 class="modal-title"> &nbsp; &nbsp; &nbsp;Month: {{months[selectedMonth.month-1]}} - {{selectedMonth.year}}</h5>
+               <h5 class="modal-title"> &nbsp; &nbsp; &nbsp;Salary: {{selectedMonth.salary}} </h5>
+
+            </div>
+                <div class="row"></div>
+                <br/>
+                <br/>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap table-membroz table-attendance">
+                        <tbody>
+                            <tr>
+                                <td><b>Earnings </b></td>
+                                <td> </td>
+                            </tr>
+                            <tr *ngFor="let c of selectedMonth.salaryComponent">
+                                <ng-container *ngIf="c.payHeadTypeID == 101">
+                                    <td>{{c.payHeadName}} </td>
+                                    <td>{{c.amount}}</td>
+                                </ng-container>
+                                
+                            </tr>
+                            <tr>
+                                <ng-container *ngIf="selectedMonth.bonus!== 0">
+                                    <td>Bonus</td>
+                                    <td>{{selectedMonth.bonus}}</td>
+                                </ng-container>
+                                
+                            </tr>
+                            <tr>
+                                <td><b>Deduction </b></td>
+                                <td> </td>
+                            </tr>
+                            <tr *ngFor="let c of selectedMonth.salaryComponent">
+                              
+                                <ng-container *ngIf="c.payHeadTypeID == 103">
+                                    <td>{{c.payHeadName}} </td>
+                                    <td>{{c.amount}}</td>
+                                </ng-container>
+                            </tr>
+                            <tr>
+                                <td><h5>Net Amount </h5></td>
+                                <td><h5>{{selectedMonth.netonhand}}</h5></td>
+                            </tr>
+                       
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">
+                    <i class="material-icons">close</i>Cancel
+                </button>
+               
+            </div>
+        </div>
+    </div>
+</div>

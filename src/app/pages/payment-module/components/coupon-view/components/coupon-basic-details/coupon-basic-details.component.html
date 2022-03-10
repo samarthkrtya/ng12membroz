@@ -1,0 +1,61 @@
+
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px" >
+        <div class="member-img-main position-relative member-profile-img-border">
+            <img
+                [src]="dataContent.gallery && dataContent.gallery.length > 0 ? dataContent.gallery[0].attachment : '../assets/img/image_placeholder.jpg'"
+                class="img-fluid w-100" alt="">
+
+            <div
+                class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.couponcode}}</h3>
+        <div class="row">
+          
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3">
+                    {{getLang('value','Value :')}}  &nbsp; {{dataContent?.coupontype != 'Percentage' ? (dataContent?.value | myCurrencyPipe) : (dataContent?.value +'%')  }}
+                </div>
+            </div>
+          
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent?.property?.start_date">
+                <div class="d-flex align-items-center mb-3" >
+                    {{getLang('fromdate','From date: ')}}	&nbsp;    <div>{{dataContent.property.start_date | toLocaleDate}}</div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3 text-break">
+                    {{getLang('maxusage','Max Usage : ')}} &nbsp; <div>{{dataContent.property.max_usage}}</div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent?.property?.end_time">
+                <div class="d-flex align-items-center mb-3" >
+                    {{getLang('validtl','Valid till : ')}}	&nbsp;    <div>{{dataContent.property.end_date | toLocaleDate}}</div>
+                </div>
+            </div>
+           
+
+          
+             
+         
+            <!-- <div class="col-md-12 col-lg-6" *ngIf="dataContent.property && dataContent.property.weekdays && dataContent.property.weekdays.length > 0">
+                <div class="d-flex align-items-center mb-3" >
+                    {{getLang('weekdays','Weekdays : ')}} <span>{{dataContent.property.weekdays}}</span>
+                </div>
+            </div> -->
+
+           
+
+          
+        </div>
+    </div>
+</div>

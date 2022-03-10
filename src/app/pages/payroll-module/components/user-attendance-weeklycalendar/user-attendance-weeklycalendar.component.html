@@ -1,0 +1,509 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">Timesheet Weekly</h3>
+                    <div class="">
+
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12" *ngIf="(showCalendarButton || xeroCalendarId == 'undefined') && isXeroConnected == 'true'">
+                                <div class="row mb-12">
+                                    <div class="col-md-4 align-items-center">
+                                        <button class="btn btn-primary" (click)="addPayrollCalendarToXero()" title="Create a new payment calendar on xero if add timesheet return error (Provided period doesn't correspond with a pay period)." >Add Payroll Calendar To Xero</button> 
+                                    </div>
+                                    <div class="col-md-8">
+                                        <span><strong> Note: </strong> {{ showCalendarButtonMsg }}  </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-12 align-items-center">
+                                    <div class="col-md-3" *ngIf="isXeroConnected == 'true' && xeroCalendarId != 'undefined'">
+                                        <button class="btn btn-primary" (click)="addTimesheetToXero()" >Add Timesheet To Xero</button>      
+                                    </div>
+                                    <div class="col-md-9 text-md-right">
+                                        <span
+                                            class="attend-text-green font-weight-bold attend-working-box mb-lg-0 mb-3">Working
+                                            Days </span> <span
+                                            class="ml-md-3 ml-1 attend-text-orange font-weight-bold attend-holiday-box mb-lg-0 mb-3">Holiday
+                                            & Weekend days </span> <span
+                                            class="ml-md-3 ml-1 attend-text-red font-weight-bold attend-absent-box mb-lg-0 mb-3">Absent
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Weekly -->
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="row mb-1">
+                                            <div class="col-xl-4 col-lg-5 col-md-4 col-sm-6">
+                                                <div class="d-flex justify-content-start">
+
+                                                    <mat-form-field>
+                                                        <mat-label>Select Week</mat-label>
+                                                        <mat-date-range-input [formGroup]="range"
+                                                            [rangePicker]="picker">
+                                                            <input matStartDate formControlName="start"
+                                                                (dateChange)="startDateSelection()">
+                                                            <input matEndDate formControlName="end"
+                                                                (dateChange)="endDateSelection()">
+                                                        </mat-date-range-input>
+                                                        <mat-datepicker-toggle matSuffix [for]="picker">
+                                                        </mat-datepicker-toggle>
+                                                        <mat-date-range-picker #picker></mat-date-range-picker>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6 ml-auto">
+
+                                                <!-- <mat-form-field floatlabel="never">
+                                                    <mat-select placeholder="Designation" 
+                                                        (selectionChange)="onSelectDesignation($event.value)"> -->
+                                                        <!-- -- <app-mat-option-select-all></app-mat-option-select-all>-- -->
+                                                        <!-- <mat-option *ngFor="let d of designationData" [value]="d.title">
+                                                            {{d.title}} </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field> -->
+                                            </div>
+
+                                            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+                                                <form [formGroup]="staffForm">
+                                                    <mat-form-field floatlabel="never">
+                                                        <mat-select placeholder="Staff" formControlName="staff"
+                                                            multiple>
+                                                            <!-- <app-mat-option-select-all></app-mat-option-select-all> -->
+                                                            <mat-option *ngFor="let u of attendanceArrayWeek"
+                                                                [value]="u">{{u.fullname}} </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table
+                                                class="table table-bordered text-nowrap table-membroz table-attendance">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                          <div class="checkbox-container">
+                                                            <label class="checkbox-label">
+                                                              <input type="checkbox" [checked]="checkForAll()"
+                                                                (change)="selectDeselectTimesheets($event, 'all')">
+                                                              <span class="checkbox-custom rectangular"></span>
+                                                            </label>
+                                                          </div>
+                                                        </th>
+                                                        <th style="text-align: center;">Employee Name </th>
+                                                        <th style="text-align: center;">Designation </th>
+                                                        <th *ngFor="let i of daysInRange">{{i.date}}</th>
+                                                        <th style="text-align: center;">Action</th>
+                                                        <th style="text-align: center;">Total </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container *ngIf="!staffForm.get('staff').value">
+
+                                                        <tr *ngFor="let u of pagedItems">
+                                                            <td>
+                                                              <div class="checkbox-container">
+                                                                <label class="checkbox-label">
+                                                                  <input type="checkbox"
+                                                                    [checked]="selectedTimesheets?.length && (selectedTimesheets.indexOf(u.id) !== -1)"
+                                                                    (change)="selectDeselectTimesheets($event, u.id)">
+                                                                  <span class="checkbox-custom rectangular"></span>
+                                                                </label>
+                                                              </div>
+                                                            </td>
+                                                            <td>{{u.fullname}}</td>
+                                                            <td>{{u.designation}}</td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day1.type==='workingday', 'absent-bg' : u.day1.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day1)">
+                                                                    <div *ngIf="u.day1.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day1.checkin}} -
+                                                                        {{u.day1.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day1.type==='workingday'">
+                                                                        {{u.day1.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day1.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day2.type==='workingday', 'absent-bg' : u.day2.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day2)">
+                                                                    <div *ngIf="u.day2.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day2.checkin}} -
+                                                                        {{u.day2.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day2.type==='workingday'">
+                                                                        {{u.day2.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day2.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day3.type==='workingday', 'absent-bg' : u.day3.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day3)">
+                                                                    <div *ngIf="u.day3.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day3.checkin}} -
+                                                                        {{u.day3.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day3.type==='workingday'">
+                                                                        {{u.day3.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day3.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day4.type==='workingday', 'absent-bg' : u.day4.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day4)">
+                                                                    <div *ngIf="u.day4.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day4.checkin}} -
+                                                                        {{u.day4.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day4.type==='workingday'">
+                                                                        {{u.day4.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day4.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day5.type==='workingday', 'absent-bg' : u.day5.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day5)">
+                                                                    <div *ngIf="u.day5.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day5.checkin}} -
+                                                                        {{u.day5.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day5.type==='workingday'">
+                                                                        {{u.day5.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day5.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day6.type==='workingday', 'absent-bg' : u.day6.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day6)">
+                                                                    <div *ngIf="u.day6.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day6.checkin}} -
+                                                                        {{u.day6.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day6.type==='workingday'">
+                                                                        {{u.day6.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day6.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day7.type==='workingday', 'absent-bg' : u.day7.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day7)">
+                                                                    <div *ngIf="u.day7.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day7.checkin}} -
+                                                                        {{u.day7.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day7.type==='workingday'">
+                                                                        {{u.day7.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day7.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <div style="text-align: center;">
+                                                                    <button mat-raised-button type="button"
+                                                                        matTooltip="Approve"
+                                                                        [matTooltipPosition]="'above'"
+                                                                        data-original-title="Approve"
+                                                                        class="btn btn-link btn-primary btn-just-icon approve"
+                                                                        (click)="onClickbutton('approve', element)">
+                                                                        <i class="material-icons">done</i>
+                                                                    </button>
+                                                                    <button mat-raised-button type="button"
+                                                                        matTooltip="Decline"
+                                                                        [matTooltipPosition]="'above'"
+                                                                        data-original-title="Decline"
+                                                                        class="btn btn-link btn-primary btn-just-icon deny"
+                                                                        (click)="onClickbutton('decline', element)">
+                                                                        <i class="material-icons">unpublished</i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>Present {{u.totalPresent}} / Hours
+                                                                    {{u.workingHours}}</div>
+                                                                <div>Absent {{u.absentDays}}</div>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="staffForm.get('staff').value">
+                                                        <tr *ngFor="let u of staffForm.get('staff').value">
+                                                            <td>{{u.fullname}}</td>
+                                                            <td>{{u.designation}}</td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day1.type==='workingday', 'absent-bg' : u.day1.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day1)">
+                                                                    <div *ngIf="u.day1.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day1.checkin}} -
+                                                                        {{u.day1.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day1.type==='workingday'">
+                                                                        {{u.day1.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day1.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day2.type==='workingday', 'absent-bg' : u.day2.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day2)">
+                                                                    <div *ngIf="u.day2.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day2.checkin}} -
+                                                                        {{u.day2.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day2.type==='workingday'">
+                                                                        {{u.day2.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day2.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day3.type==='workingday', 'absent-bg' : u.day3.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day3)">
+                                                                    <div *ngIf="u.day3.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day3.checkin}} -
+                                                                        {{u.day3.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day3.type==='workingday'">
+                                                                        {{u.day3.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day3.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day4.type==='workingday', 'absent-bg' : u.day4.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day4)">
+                                                                    <div *ngIf="u.day4.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day4.checkin}} -
+                                                                        {{u.day4.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day4.type==='workingday'">
+                                                                        {{u.day4.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day4.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day5.type==='workingday', 'absent-bg' : u.day5.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day5)">
+                                                                    <div *ngIf="u.day5.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day5.checkin}} -
+                                                                        {{u.day5.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day5.type==='workingday'">
+                                                                        {{u.day5.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day5.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day6.type==='workingday', 'absent-bg' : u.day6.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day6)">
+                                                                    <div *ngIf="u.day6.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day6.checkin}} -
+                                                                        {{u.day6.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day6.type==='workingday'">
+                                                                        {{u.day6.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day6.type!='workingday'">-</div>
+                                                                </a>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day7.type==='workingday', 'absent-bg' : u.day7.type!='workingday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day7)">
+                                                                    <div *ngIf="u.day7.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day7.checkin}} -
+                                                                        {{u.day7.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day7.type==='workingday'">
+                                                                        {{u.day7.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day7.type!='workingday'">-</div>
+                                                                </a>
+
+                                                            </td>
+                                                            <td>
+                                                                <div style="text-align: center;">
+                                                                    <button mat-raised-button type="button"
+                                                                        matTooltip="Approve"
+                                                                        [matTooltipPosition]="'above'"
+                                                                        data-original-title="Approve"
+                                                                        class="btn btn-link btn-primary btn-just-icon approve"
+                                                                        (click)="onClickbutton('approve', element)">
+                                                                        <i class="material-icons">done</i>
+                                                                    </button>
+                                                                    <button mat-raised-button type="button"
+                                                                        matTooltip="Decline"
+                                                                        [matTooltipPosition]="'above'"
+                                                                        data-original-title="Decline"
+                                                                        class="btn btn-link btn-primary btn-just-icon deny"
+                                                                        (click)="onClickbutton('decline', element)">
+                                                                        <i class="material-icons">unpublished</i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>Present {{u.totalPresent}} / Hours
+                                                                    {{u.workingHours}}</div>
+                                                                <div>Absent {{u.absentDays}}</div>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
+                                                </tbody>
+                                            </table>
+                                            <nav class="ng2-smart-pagination-nav">
+                                                <ul *ngIf="pager.pages" class="ng2-smart-pagination pagination">
+                                                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                                        <a (click)="setPage(1)" class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                First
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                First
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                                        <a (click)="setPage(pager.currentPage - 1)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                previous
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                previous
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li *ngFor="let page of pager.pages"
+                                                        [ngClass]="{active:pager.currentPage === page}">
+                                                        <a (click)="setPage(page)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            {{page}}
+                                                        </a>
+                                                    </li>
+                                                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                                        <a (click)="setPage(pager.currentPage + 1)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                Next
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                Next
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                                        <a (click)="setPage(pager.totalPages)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                Last
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                Last
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <ul class="ng2-smart-pagination pagination pull-right">
+                                                    <li>
+                                                        Showing
+                                                        {{this.pager.startIndex + 1}}
+                                                        to
+                                                        {{this.pager.endIndex + 1}}
+                                                        of
+                                                        {{this.attendanceArrayWeek.length}}
+                                                        records
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Weekly End -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{modalName}} Attendance</h4>
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title">Date : {{modaldate | toLocaleDate}} </h5>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="col-form-label">
+                            Check-In Time
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput  placeholder="HH:MM"  type="time" [(ngModel)]="checkinTime"
+                               >
+                               <!-- (ngModelChange)="valueChanged($event, daysInRange)" -->
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="col-form-label">
+                            Check-Out Time  1
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="time" placeholder="HH:MM" matInput
+                                 [(ngModel)]="checkoutTime"
+                               >
+                               <!-- (ngModelChange)="valueChanged1($event,daysInRange)" -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" #closeBtn>
+                    <i class="material-icons">close</i>Cancel
+                </button>
+                <button class="btn btn-primary ml-2" type="submit" [disabled]="!disableBtn"
+                    (click)="onUpdate(modalDate,checkinTime,checkoutTime)">
+                    <i class="material-icons">save</i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

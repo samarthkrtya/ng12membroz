@@ -1,0 +1,116 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list [dataContent]="dataContent" [schema]="'reports'" [formObj]="formObj"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+                <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+
+                <ng-container *ngIf="contentVisibility && dataContent">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12 text-right mb-lg-0 mb-3">
+                                    <span class="dropdown inline-block text-right ml-2">
+                                        <button class="dropdown-toggle btn btn-primary mrtb0" data-toggle="dropdown">
+                                            {{getLang('more','More')}}
+                                            <b class="caret"></b>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a [routerLink]="['/pages/dynamic-reports/report-view/reports/' + bindId ]"
+                                                class="dropdown-item">
+                                                {{getLang('viewreport', 'View Report')}}
+                                            </a>
+                                            <a [routerLink]="['/pages/dynamic-forms/form/' + _formId + '/' + bindId ]"
+                                                class="dropdown-item">
+                                                {{getLang('edit', 'Edit')}}
+                                            </a>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12">
+                                    <app-report-basic-details [dataContent]="dataContent">
+                                    </app-report-basic-details>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </ng-container>
+
+
+                <div class="mt-3">
+                    <mat-accordion *ngIf="dataContent  && contentVisibility">
+                        <mat-expansion-panel [expanded]="false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{getLang('selectfields','Select Fields')}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+
+
+                            <app-report-select-fields *ngIf="schemafieldLists && schemafieldLists.length > 0"
+                                [dataContent]="dataContent" [bindId]="bindId" [schemafieldLists]="schemafieldLists" 
+                                (selectfiledSubmitData)="selectfiledSubmitData($event)">
+                            </app-report-select-fields>
+
+
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                
+                <div class="mt-3">
+                    <mat-accordion *ngIf="dataContent  && contentVisibility">
+                        <mat-expansion-panel [expanded]="false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{getLang('filterfields','Filter Fields')}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <app-report-filter-fields *ngIf="schemafieldLists && schemafieldLists.length > 0"
+                                [dataContent]="dataContent" [bindId]="bindId" [schemafieldLists]="schemafieldLists"
+                                (selectfiledSubmitData)="selectfiledSubmitData($event)">
+                             </app-report-filter-fields>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+
+
+                <div class="mt-3">
+                    <mat-accordion *ngIf="dataContent  && contentVisibility">
+                        <mat-expansion-panel [expanded]="false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{getLang('sortfields','Sort Fields')}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+
+
+                            <app-report-sort-fields *ngIf="schemafieldLists && schemafieldLists.length > 0"
+                                [dataContent]="dataContent" [bindId]="bindId" [schemafieldLists]="schemafieldLists"
+                                (selectfiledSubmitData)="selectfiledSubmitData($event)">
+                            </app-report-sort-fields>
+
+
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>

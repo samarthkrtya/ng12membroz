@@ -1,0 +1,91 @@
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px">
+        <div class="member-img-main position-relative member-profile-img-border">
+            <img [src]="customerDetail.profilepic ? customerDetail.profilepic : '../assets/img/default-avatar.png'"
+                src="" class="img-fluid w-100" alt="">
+            <div class="membership-details"
+                [style.background-color]="customerDetail.status && customerDetail.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{customerDetail?.status}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{customerDetail?.fullname}}
+            <span>{{customerDetail?.membernumber}}</span>
+        </h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-2">
+                        <img src="../assets/img/email-gray-icon.svg" alt="">
+                    </div>
+                    <div>{{customerDetail.property && customerDetail.property.primaryemail
+                        ? customerDetail?.property?.email : '---' }}</div>
+                    <div class="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
+                            <g transform="translate(-13418 105)">
+                                <g transform="translate(13418 -105)" fill="none" class="svg-stroke-secondary-icon"
+                                    stroke-width="1">
+                                    <circle cx="17" cy="17" r="17" stroke="none" />
+                                    <circle cx="17" cy="17" r="16.5" fill="none" />
+                                </g>
+                                <g transform="translate(13426 -95)">
+                                    <g transform="translate(0 0)">
+                                        <path
+                                            d="M17.069.149a.5.5,0,0,0-.544-.112L.318,6.52a.5.5,0,0,0-.033.922l6.391,3.1,3.1,6.391a.5.5,0,0,0,.454.284h.018a.5.5,0,0,0,.45-.317L17.18.693A.5.5,0,0,0,17.069.149ZM1.752,7.032,14.618,1.886,6.95,9.553Zm8.433,8.433-2.521-5.2L15.331,2.6Z"
+                                            transform="translate(0 -0.001)" class="svg-fill-secondary-icon" />
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-3"
+                    *ngIf="customerDetail.property && customerDetail.property.mobile">
+                    <div class="mr-2"> <img src="../assets/img/phone-gray-icon.svg" alt=""></div>
+                    <div> {{customerDetail?.property?.mobile}} </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6"
+                *ngIf="customerDetail.membershipid && customerDetail.membershipid.membershipname">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-2"> <img src="../assets/img/member-card-gray-icon.svg" alt="">
+                    </div>
+                    <div> {{customerDetail?.membershipid?.membershipname}}</div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="customerDetail.membershipstart">
+                    <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg" alt=""></div>
+                    <div> {{customerDetail?.membershipstart | date: 'medium'}} </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent.checkin">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-2">
+                        <img src="../assets/img/member-card-gray-icon.svg" alt="">
+                    </div>
+                    <div> {{dataContent?.checkin | date: 'medium'}}</div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.checkout">
+                    <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg" alt=""></div>
+                    <div> {{dataContent?.checkout | date: 'medium'}} </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent.resortid">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-2">
+                        <img src="../assets/img/member-card-gray-icon.svg" alt="">
+                    </div>
+                    <div> {{dataContent?.resortid?.resortname}}</div>
+                </div>
+                <div class="d-flex align-items-center mb-3" >
+                    <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg" alt=""></div>
+                    <div> {{dataContent.bookingdetail?.totalrooms}} </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

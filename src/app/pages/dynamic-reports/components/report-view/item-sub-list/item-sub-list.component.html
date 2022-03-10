@@ -1,0 +1,18 @@
+<div class="card member-profile-card mb-0 mt-lg-3">
+    <div class="card-body p-0 member-profile-main">
+        <div fxLayout="row" *ngIf="isLoadingResults" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+        </div>
+        <div [@listAnimation]="data$.length">
+        <ng-container *ngFor="let itemList of data$;" >
+            <span class="fd-customer-title px-3 pt-3 pb-0 d-inline-block "> {{ itemList[0]?.category}}</span>
+            <div class="border-bottom p-3">
+                <ng-container *ngFor="let item of itemList">
+                    <div [innerHTML]="item.dataHtml" [ngClass]="item._id == bindId ? 'active' : ''"  (click)="redirect(item)" ></div>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+    </div>
+</div>

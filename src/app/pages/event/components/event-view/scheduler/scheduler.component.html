@@ -1,0 +1,74 @@
+<div class="row">
+    <div class="col-sm-12">
+        <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+</div> 
+
+
+
+
+
+<app-appointment-booking *ngIf="isOpen" [retrieveData]="retrieveData" [dataContent]="dataContent" (onAppointmentData)="getSubmitted($event)" [bindId]="bindId"  ></app-appointment-booking>
+
+
+<div data-toggle="modal" id="modlpp" data-target="#appmdal"></div>
+
+<div class="modal fade" id="appmdal" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> {{selectedAppointment?.title}}  </h4>
+                <button type="button" class="close" id="appmodalclose" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="media mb-4" >
+                    <div class="media-body">
+                        <div class="font-bold mb-1">{{selectedAppointment?.attendee?.fullname}} </div>
+                        <div class="d-flex">
+                            <div class="flex-grow-1"> {{selectedAppointment?.attendee?.property?.mobile}}</div>
+                            <div class="text-gray"><small>Booked on {{selectedAppointment?.createdAt | date: 'MMM d, y'}}  ({{selectedAppointment?.prefix}}-{{selectedAppointment?.number}})</small></div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="list-unstyled"  *ngIf="this.selectedAppointment">
+                    <li class="media mb-3"><mat-icon class="mat-icon material-icons mr-2">event_note</mat-icon>
+                        <div class="media-body">
+                            <div>{{dataContent?.title}}</div>
+                        </div>
+                    </li>
+                    <li class="media mb-3"><mat-icon class="mat-icon material-icons mr-2">today</mat-icon>
+                        <div class="media-body">
+                            <div> {{selectedAppointment?.timeslot?.starttime}} - {{selectedAppointment?.timeslot?.endtime}} </div>
+                            <div class="text-gray"><small>{{selectedAppointment?.appointmentdate | date: 'EEEE, MMMM d'}}</small></div>
+                        </div>
+                    </li>
+                    <li class="mb-3" *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status === 'requested'">
+                        <button class="btn btn-link-gray m-0 p-0" [disabled]="disableBtn" (click)="reschedule()">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">schedule</mat-icon>
+                            {{getLang('reschedule','Reschedule')}}
+                        </button>
+                    </li>
+                    <li class="mb-3" *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel' && (!this.selectedAppointment.billid)">
+                        <button class="btn btn-link-gray m-0 p-0" [disabled]="disableBtn" (click)="cancel()">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">clear</mat-icon>
+                            {{getLang('cancel','Cancel')}} 
+                        </button>
+                    </li>
+                    
+                </ul>
+            </div>
+
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">{{getLang('close','Close')}}</button>
+            </div>
+
+        </div>
+    </div>
+  </div>
+  
+
+  

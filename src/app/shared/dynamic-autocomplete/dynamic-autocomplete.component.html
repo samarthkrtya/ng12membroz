@@ -1,0 +1,64 @@
+<div class="input-wrap">
+
+    <mat-form-field class="example-full-width">
+        <input 
+            type="text"
+            aria-label="Number"
+            matInput
+            autocomplete="off"
+            [formControl]="control"
+            [matAutocomplete]="auto"
+            (click)="preloaddata()"
+            (keyup)="enter()"
+            (change)="handleEmptyInput($event)">
+
+        <mat-autocomplete 
+            #auto="matAutocomplete"
+            [displayWith]="displayFn"
+            (optionSelected)="optionSelected($event.option)">
+
+            <mat-option *ngIf="isLoadingBox" class="is-loading">
+                <mat-spinner diameter="50"></mat-spinner>
+            </mat-option>
+
+            <ng-container *ngIf="!isLoadingBox && options.length > 0">
+                <!-- <div class="mat-optgroup-media"> -->
+                    <mat-option 
+                        *ngFor="let option of filteredOptions | async" 
+                        [value]="option">
+
+                        {{option.autocomplete_displayname}}
+                        <!-- <div 
+                            [innerHtml]="templateParse(option) | sanitizeHtml" >
+                        </div> -->
+
+                    </mat-option>
+                <!-- </div> -->
+            </ng-container>
+
+            <ng-container *ngIf="!isLoadingBox && options.length == 0">
+                <mat-option>
+                    <span>No Record</span>
+                </mat-option>
+            </ng-container>
+
+        </mat-autocomplete>
+
+        <mat-error *ngIf="control.hasError('invalidAutocompleteObject')">
+            Invalid records, please correct it!
+        </mat-error>
+
+        <!-- <mat-error *ngIf="control.hasError('required')">
+            {{Label ? Label : this.setting.fieldname}} is Required
+        </mat-error> -->
+
+    </mat-form-field>
+
+    <ng-container *ngIf="displayhtmlContent">
+        <span 
+            (click)="onClick()" 
+            *ngIf="showDetail" 
+            [innerHTML]="displayhtmlContent | sanitizeHtml">
+        </span>
+    </ng-container>
+</div>

@@ -1,0 +1,139 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="!isLoading">
+                <app-item-list [dataContent]="dataContent" [schema]="'bookings'" [formObj]="formObj"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+                <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+                <div class="card" *ngIf="!isLoading">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12 text-right mb-lg-0 mb-3">
+                                <button type="button" class="btn btn-primary ml-2"
+                                    [routerLink]="['/pages/booking-module/form/'+ bindId]">
+                                    <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <app-booking-details [customerDetail]="customerDetail" [dataContent]="dataContent">
+                                </app-booking-details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" *ngIf="!isLoading">
+                    <form [formGroup]="form" novalidate>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label">
+                                                {{getLang('bookingcost', 'Booking Cost')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="number" formControlName="bookingcost">
+                                            </mat-form-field>
+                                            <span class="help-block"></span>
+                                            <div [hidden]="form.get('bookingcost').valid || (form.get('bookingcost').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('bookingcost').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('bookingcostisrequired', 'Booking Cost is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label">
+                                                {{getLang('costperroom', 'Cost Per Room')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="number" formControlName="costperroom">
+                                            </mat-form-field>
+                                            <span class="help-block"></span>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label">
+                                                {{getLang('vendor', 'Vendor')}}
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-label>{{getLang('chooseanoptn', 'Choose an option')}}</mat-label>
+                                                <mat-select matNativeControl formControlName="vendor">
+                                                    <mat-option [value]="vendor.code" *ngFor="let vendor of vendorList">
+                                                        {{vendor?.code}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <span class="help-block"></span>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label">
+                                                {{getLang('addons', 'Add-ons')}}
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-label>{{getLang('chooseanoptn', 'Choose an option')}}</mat-label>
+                                                <mat-select matNativeControl multiple formControlName="addons">
+                                                    <mat-option [value]="addons.code" *ngFor="let addons of addonsList">
+                                                        {{addons?.code}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <span class="help-block"></span>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label">
+                                                {{getLang('confirmationnote', 'Confirmation Note')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="text" formControlName="note">
+                                            </mat-form-field>
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <button class="btn btn-primary"
+                                                [disabled]="disableButton || dataContent.status != 'active'"
+                                                (click)="onSubmit(form.value,form.valid,'cancelled')"
+                                                type="button">{{getLang('cancelbooking',
+                                                'Cancel Booking')}}
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6 text-right">
+                                            <button [disabled]="disableButton" class="btn btn-default"
+                                                [routerLink]="['/pages/dynamic-list/list/booking']"
+                                                routerLinkActive="router-link-active" type="button">{{getLang('cancel',
+                                                'Cancel')}}
+                                            </button>
+                                            <button class="btn btn-success"
+                                                [disabled]="disableButton || dataContent.status != 'active'"
+                                                (click)="onSubmit(form.value,form.valid ,'confirmed')"
+                                                type="submit">{{getLang('confirmbooking',
+                                                'Confirm Booking')}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

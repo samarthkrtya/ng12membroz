@@ -1,0 +1,100 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+
+            <div class="col-xl-12">
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">{{getLang('calendar','Calendar')}}</h3>
+                    <div>
+                        <button id="myModalScheduleBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#myModalSchedule" (click)="addSchedule()">
+                            <i class="material-icons">add</i>{{getLang('schedule','Schedule')}}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div fxLayout="row" *ngIf="!calendarVisibility" fxLayoutAlign="space-around center"
+                        style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                        <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                    </div>
+
+                    <div>
+                        <full-calendar *ngIf="calendarVisibility" [options]="calendarOptions">
+                        </full-calendar>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-info btn-lg d-none">{{getLang('openmodal','Open Modal')}}</button>
+    <div id="myModalSchedule" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getLang('schedule','Schedule')}}</h4>
+                    <button type="button" id="scheduleClose" (click)="cancel()" class="close "
+                        data-dismiss="modal">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <app-schedule-multiple *ngIf="schedule" #appintmentadd [dataContent]="dataContent"
+                        [memberid]="bindId" [passondate]="date" type="multi"
+                        (onScheduleData)="getSubmittedData($event)">
+                    </app-schedule-multiple>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="myModal" [style.display]="showModal ? 'block' : 'none'">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title"> {{selectedAppointment?.title}} </h4>
+                    <button type="button" class="close" data-dismiss="modal" (click)="hide()">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="media mb-4">
+                        <img [src]="selectedAppointment?.memberprofilepic"
+                            class="profile-avatar-img mr-3 rounded-circle" alt="">
+                        <div class="media-body">
+                            <div class="font-bold mb-1">{{dataContent?.property?.fullname}} </div>
+                            <div class="d-flex">
+                                <div class="flex-grow-1"> {{dataContent?.property?.mobile}}</div>
+                                <div class="text-gray"><small>Booked on {{selectedAppointment?.createdAt | date: 'MMM d,
+                                        y'}}</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled" *ngIf="this.selectedAppointment">
+
+                        <li class="media mb-3">
+
+                            <div class="media-body">
+                                <div> {{selectedAppointment?.timeslot?.starttime}} -
+                                    {{selectedAppointment?.timeslot?.endtime}} </div>
+                                <div class="text-gray"><small>{{selectedAppointment?.createdAt | date: 'EEEE, MMMM
+                                        d'}}</small></div>
+                                <div class="font-bold mb-1"><span>{{selectedAppointment?.host?.fullname}}</span></div>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <button class="btn btn-link-gray m-0 p-0">
+                                <mat-icon class="mat-icon material-icons font-24 mr-1">done</mat-icon>
+                                {{getLang('confirmed','Confirmed')}}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>

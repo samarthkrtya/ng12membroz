@@ -1,0 +1,203 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        {{getLang('makeevent', 'Make Event')}}
+                    </h3>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="loader" *ngIf="isLoadingdata">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <ng-container *ngIf="!isLoadingdata">
+
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('title', 'Title')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput type="text" formControlName="title">
+                                                </mat-form-field>
+                                                <div [hidden]="form.get('title').valid || (form.get('title').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('title').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('titleisrequired', 'Title is Required')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('location', 'Location')}}
+                                                </label>
+                                                <div class="input-group align-items-center">
+
+                                                
+                                                <dynamic-autocomplete class="flex-grow-1" *ngIf="type_fields.autocomplete"  [formControlName]="type_fields.fieldname"
+                                                    [setting]="type_fields" [dbvalue]="type_fields.dbvalue"
+                                                    (inputModelChange)="inputModelChangeValue($event)">
+                                                </dynamic-autocomplete>
+
+                                                <app-quickadd  [quickfromstyle]="'single'" [id]="'_id'" [quickformschemaname]="'eventlocation'"
+                                                 [quickdisplayname]="'Location'" class="off-form-quick" (childSubmitData)="getSubmittedData($event)" >
+                                                </app-quickadd>
+                                                </div>
+
+                                                <div [hidden]="form.get('location').valid || (form.get('location').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('location').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('locationisrequired', 'Location is Required')}}
+                                                    </small> 
+                                                </div>
+                                            </div>
+
+                                        
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('capacity', 'Capacity')}}
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput type="number" formControlName="capacity">
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('type', 'Type')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field>
+                                                    <mat-select name="eventtype" formControlName="eventtype">
+                                                        <mat-option [value]="'singleday'"> Single Day </mat-option>
+                                                        <mat-option [value]="'multipleday'"> Multiple Day </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    <span *ngIf="form.get('eventtype').value == 'singleday'">
+                                                        {{getLang('eventdate', 'Event Date')}}
+                                                    </span>
+                                                    <span *ngIf="form.get('eventtype').value == 'multipleday'">
+                                                        {{getLang('startdate', 'Start Date')}}
+                                                    </span>
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker" [min]="today"
+                                                        formControlName="startdate">
+                                                    <mat-datepicker-toggle matSuffix [for]="picker">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker></mat-datepicker>
+                                                </mat-form-field>
+
+                                                <div [hidden]="form.get('startdate').valid || (form.get('startdate').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('startdate').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('startdateisrequired', 'Start Date is Required')}}
+                                                    </small>
+                                                </div>
+                                            </div> 
+
+                                             <div class="col-sm-6" *ngIf="form.get('eventtype').value == 'multipleday'">
+                                                <label class="col-form-label">
+                                                    {{getLang('enddate', 'End Date')}}
+                                                </label>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker1"
+                                                        [min]="form.get('enddate').value" formControlName="enddate">
+                                                    <mat-datepicker-toggle matSuffix [for]="picker1">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker1></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('starttime', 'Start time')}}
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput type="time"  formControlName="starttime">
+                                                    <mat-hint>{{getLang('hhmm', 'HH / MM')}}</mat-hint>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('endtime', 'End time')}}
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput type="time" formControlName="endtime">
+                                                    <mat-hint>{{getLang('hhmm', 'HH / MM')}}</mat-hint>
+                                                </mat-form-field>
+                                            </div>
+
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('description', 'Description')}}
+                                                </label>
+                                                <div class="mt-2">
+                                                    <angular-editor [placeholder]="'Enter text here...'"
+                                                        formControlName="description">
+                                                    </angular-editor>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                    </ng-container> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoadingdata">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                       
+                            <button [routerLink]="['/pages/dynamic-list/list/event']" class="btn btn-default ml-2"
+                                type="button" [disabled]="submitVisibility">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+                            <button [disabled]="submitVisibility" class="btn btn-primary ml-2" type="submit">
+                                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+                            </button>
+                            <button *ngIf="viewOnlineBtn" (click)="onPayOnline()" class="btn btn-success ml-2" type="button"
+                            [disabled]="submitVisibility">
+                            <i class="material-icons">payment</i> {{getLang('payonline', 'Pay Online')}}
+                        </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>

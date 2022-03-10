@@ -1,0 +1,35 @@
+
+
+<button data-toggle="modal" class="d-none" [attr.id]="id" [attr.data-target]="'#'+myModal">
+</button>
+
+<div [id]="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" >
+        <div class="modal-content" [formGroup]="myForm" *ngIf="myForm">
+            <div class="modal-header">
+                <h4 class="modal-title">Booking Details </h4>
+                <button mat-button type="button" id="qtyClose" class="close" data-dismiss="modal">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="col-sm-12">
+                        <label class="col-form-label">
+                            {{displayTxt}}
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="text" [formControlName]="fieldTxt" matInput>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">
+                    <i class="material-icons">close</i> Cancel
+                </button>
+                <ng-content select="[conBtn]"></ng-content>
+            </div>
+        </div>
+    </div>
+</div>

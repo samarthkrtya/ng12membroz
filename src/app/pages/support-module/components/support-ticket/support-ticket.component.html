@@ -1,0 +1,217 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-10 ml-auto mr-auto">
+        <div class="row mt-lg-3 mt-0">
+          <h3 class="col-sm-6 card-title align-self-center mb-sm-0 mt-0 mb-3">Support Ticket</h3>
+        </div>
+        <div class="loader" *ngIf="isLoading">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+          </svg>
+        </div>
+
+        <div class="row" *ngIf="!isLoading">
+          <div class="col-lg-8 col-md-7 pr-md-0">
+            <div class="card">
+
+
+              <div class="border-bottom p-3"
+                [ngClass]="retrvData.customerid && retrvData.customerid._id &&  retrvData.customerid._id != _loginUserId ? 'primary-light-bg-strip' : ''">
+                <div class="media mb-3">
+                  <img
+                    [src]="retrvData.customerid && retrvData.customerid.profilepic ? retrvData.customerid.profilepic :  'https://randomuser.me/api/portraits/women/31.jpg'"
+                    class="profile-avatar-img mr-3 rounded-circle" alt="">
+                  <div class="media-body">
+                    <div class="font-500 mb-1">{{retrvData.customerid && retrvData.customerid.fullname ?
+                      retrvData.customerid.fullname : '---'}} </div>
+                    <div class="font-weight-bold">{{retrvData?.createdAt | toLocaleDate}}</div>
+                  </div>
+                </div>
+                <div [innerHtml]="retrvData.content"></div>
+              </div>
+
+              <ng-container *ngIf="retrvData.response && retrvData.response.length > 0">
+                <div class="border-bottom p-3" *ngFor="let res of retrvData.response"
+                  [ngClass]=" res.responderid && res.responderid._id &&  res.responderid._id != _loginUserId ? 'primary-light-bg-strip' : ''">
+                  <div class="media mb-3">
+                    <img
+                      [src]="res.responderid && res.responderid.profilepic ? res.responderid.profilepic :  'https://randomuser.me/api/portraits/women/31.jpg'"
+                      class="profile-avatar-img mr-3 rounded-circle" alt="">
+                    <div class="media-body">
+                      <div class="font-500 mb-1">{{res.responderid && res.responderid.fullname ?
+                        res.responderid.fullname : '---'}} </div>
+                      <div class="font-weight-bold">{{res?.timestamp | toLocaleDate}}</div>
+                    </div>
+                  </div>
+                  <div [innerHtml]="res.content"></div>
+                </div>
+              </ng-container>
+
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label class="col-form-label">
+                      Type your message
+                    </label>
+                    <div class="mt-3">
+                      <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="content"></angular-editor>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label class="col-form-label"> Attachment </label>
+                    <div class="mt-3">
+                      <div>
+                        <img class="loading" src="assets/img/image-loader.GIF"
+                          style="height: 100px; width: 100px; display: none">
+                      </div>
+                      <div class="btn btn-primary btn-file">
+                        <label class="upload_button mb-0" for="fileupload"><i class="material-icons">cloud_upload</i>
+                          Upload </label>
+                        <input type="file" id="fileupload" #fileInput ng2FileSelect [style.display]="'none'"
+                          [uploader]="customeUploader" (change)="fileInput.value=''" multiple />
+                      </div>
+
+                      <div class="mt-2" *ngFor="let item of formImageArray;let i = index">
+                        <span class="upload-tag badge badge-pill d-flex mb-2">
+                          <span class="d-flex flex-grow-1 align-items-center">
+                            <i class="material-icons d-flex align-items-center mr-2">link</i>
+                            <a id="singledata_{{i}}" target="_blank" [href]="item.attachment">
+                              <span> {{item.originalfilename}}.{{item.extension}}</span>
+                            </a>
+                          </span>
+                          <i class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                            (click)="showSwal(item.attachment)">clear</i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-sm-6" *ngIf="isHead">
+                    <label class="col-form-label">
+                      Assign To
+                    </label>
+                    <mat-form-field>
+                      <mat-select matNativeControl [(ngModel)]="assignedUser"
+                      (selectionChange)="onSupportRoleChange($event)">
+                        <mat-option *ngFor="let c of supportRole" [value]="c._id">
+                          {{c.fullname}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- <app-dynamic-autocomplete-ngmodel [setting]="fields" [(inputModel)]="fields.modelValue"
+                      [dbvalue]="fields.dbvalue" (inputModelChange)="inputModelChanged($event)">
+                    </app-dynamic-autocomplete-ngmodel> -->
+                  </div>
+
+              <!--     <div class="col-sm-6" *ngIf="isHead || isAssignUser">
+                    <label class="col-form-label">
+                      Status
+                    </label>
+                    <mat-form-field>
+                      <mat-select matNativeControl [(ngModel)]="status"
+                        [disabled]="status == 'In queue' && !isAssignUser">
+                        <mat-option *ngFor="let sts of statusList" [value]="sts.code">
+                          {{sts.name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div> -->
+
+                  <div class="col-sm-12 text-right">
+                    <button class="btn btn-default" type="button" [routerLink]="['/pages/dynamic-list/list/support']"
+                      [disabled]="disableButton">
+                      <i class="material-icons">close</i> Cancel
+                    </button>
+                    <ng-container *ngIf="isHead ||  isAssignUser || isMember">
+                      <button class="btn btn-primary ml-2" [disabled]="disableButton" type="submit"
+                        (click)="onSubmit()">
+                        <i class="material-icons">save</i> Submit
+                      </button>
+                    </ng-container>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-5">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title mb-4"> Ticket Details </h4>
+                <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Id</div>
+                  <div class="col-7">#{{docnumber}}</div>
+                </div>
+                <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Requester</div>
+                  <div class="col-7">{{retrvData?.customerid?.fullname}} </div>
+                </div>
+                <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Created</div>
+                  <div class="col-7"> {{retrvData?.createdAt | toLocaleDate}} </div>
+                </div>
+                <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Last Activity</div>
+                  <div class="col-7"> {{retrvData?.updatedAt | toLocaleDate}} </div>
+                </div>
+               <!--  <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Assign To </div>
+                  <div class="col-7"> {{retrvData?.assignuserid && retrvData?.assignuserid?.fullname ?
+                    retrvData?.assignuserid?.fullname : 'Not assigned yet' }} </div>
+                </div> -->
+                <div class="row" [ngClass]="isHead ? 'mb-3 pb-3 border-bottom' : ''">
+                  <div class="col-5 font-weight-bold">Status</div>
+                  <div class="col-7">
+                    <span class="font-weight-bold mb-lg-0"
+                      [ngClass]="{'attend-text-green attend-working-box': retrvData.status == 'Closed'  || retrvData.status == 'Fixed', 'attend-text-red attend-absent-box': retrvData.status == 'Open' || retrvData.status == 'Reopen' || retrvData.status == 'Requested' || retrvData.status == 'In queue'}">
+                      {{retrvData.status}}
+                    </span>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="isHead">
+               <!--    <div class="row mb-3 pb-3 border-bottom">
+                    <div class="col-5 font-weight-bold">Assign To</div>
+                    <div class="col-7">
+                      <app-dynamic-autocomplete-ngmodel [setting]="fields" [(inputModel)]="fields.modelValue"
+                        [dbvalue]="fields.dbvalue" (inputModelChange)="inputModelChanged($event)">
+                      </app-dynamic-autocomplete-ngmodel>
+                    </div>
+                  </div> -->
+                  <div class="row mb-3 pb-3 border-bottom">
+                    <div class="col-5 font-weight-bold">Status</div>
+                    <div class="col-7">
+                      <mat-form-field>
+                        <mat-select matNativeControl [(ngModel)]="status" [disabled]="status == 'In queue'">
+                          <mat-option *ngFor="let sts of statusList" [value]="sts.code">
+                            {{sts.name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-5"></div>
+                    <div class="col-7">
+                      <button class="btn btn-primary ml-2" [disabled]="disableButton" type="submit"
+                        (click)="onSubmitSidebar()">
+                        <i class="material-icons">save</i> Submit
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,150 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="offset-xl-1 col-xl-10">
+        <h3 class="card-title">
+          IP Configuration
+         </h3>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="offset-xl-1 col-xl-10">
+                <div class="loader" *ngIf="isLoading">
+                  <svg class="circular" viewBox="25 25 50 50">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                  </svg>
+                </div>
+
+                <div class="row" *ngIf="!isLoading">
+
+                  <div class="col-sm-12 text-right">
+                    <button data-toggle="modal" id="modalBtn" class="btn btn-primary" data-target="#myModal">
+                      <i class="material-icons mr-1">add</i>
+                      {{getLang('add', 'Add ')}} IP Address
+                    </button>
+                  </div>
+
+                  <div class="col-sm-12 box">
+                    <label class="col-form-label"> You only be able to connect to your system from following list of IP Addresses.  </label>
+                  </div>
+
+                  <div class="col-sm-12">
+                    <div class="material-datatables1">
+                      <div class="table-responsive">
+
+                        <mat-form-field>
+                          <mat-label>Filter</mat-label>
+                          <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input>
+                        </mat-form-field>
+
+                        <table mat-table [dataSource]="dataSource" matSort
+                          class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                          <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Access List Entry</th>
+                            <td mat-cell *matCellDef="let element"> {{element.ip}} </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="comment">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Comment</th>
+                            <td mat-cell *matCellDef="let element"> {{element.comment}} </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef class="text-right"> Action</th>
+                            <td mat-cell *matCellDef="let element; index as i" class="text-right">
+                              <button mat-raised-button type="button" matTooltip="Edit" [matTooltipPosition]="'above'"
+                                data-original-title="Edit" class="btn btn-link btn-primary btn-just-icon edit"
+                                [disabled]="disableButton" (click)="editAction(element)">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'"
+                                data-original-title="Delete" class="btn btn-link btn-primary btn-just-icon edit"
+                                [disabled]="disableButton" (click)="deleteAction(i)">
+                                <i class="material-icons">delete</i>
+                              </button>
+                            </td>
+                          </ng-container>
+
+
+                          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                          <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell" colspan="6">No data matching the filter "{{input.value}}"</td>
+                          </tr>
+                        </table>
+
+                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true">
+                        </mat-paginator>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+        <div class="modal-header">
+          <h4 class="modal-title">{{getLang('addipacenls','Add IP Access List Entry')}} 
+          </h4>
+          <button mat-button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"
+            (click)="Cancel()">
+            <i class="material-icons">clear</i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-12">
+            <label class="col-form-label"> System only allows client connections to a cluster from entries in the project's IP Address List. Each entry should either be a single IP Address or a CIDR-notated range of addressess. </label>
+          </div>
+          <div class="col-md-12">
+            <label class="col-form-label">
+              {{getLang('accesslistentry','Access List Entry')}}
+              <span class="text-danger">*</span>
+            </label>
+            <mat-form-field class="example-full-width">
+              <input type="text" matInput formControlName="ip" placeholder="Enter ip Address or CIDR Notation">
+            </mat-form-field>
+            <div [hidden]="form.get('ip').valid || (form.get('ip').pristine && !submitted)" class="text-danger">
+              <small *ngIf="form.get('ip').hasError('required')" class="error-label">
+                {{getLang('ipisrequired', 'ip is required !')}}
+              </small>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <label class="col-form-label">
+              {{getLang('comment','comment')}} 
+            </label>
+            <mat-form-field class="example-full-width">
+              <input type="text" matInput formControlName="comment" placeholder="Optional comment describing this entry">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="disableButton"
+            (click)="Cancel();">
+            <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+          </button>
+
+          <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+            <i class="material-icons">save</i> {{getLang('save','Save')}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

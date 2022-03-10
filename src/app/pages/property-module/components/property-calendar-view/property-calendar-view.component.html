@@ -1,0 +1,33 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div 
+                                            fxLayout="row" 
+                                            *ngIf="!calendarVisibility" 
+                                            fxLayoutAlign="space-around center" 
+                                            style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                                            <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                                        </div>
+                                        <div>
+                                            <full-calendar 
+                                                *ngIf="calendarVisibility" 
+                                                [options]="calendarOptions">
+                                            </full-calendar>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

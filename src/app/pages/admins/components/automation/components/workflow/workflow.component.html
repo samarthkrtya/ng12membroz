@@ -1,0 +1,1862 @@
+<div class="main-content">
+    <div class="container-fluid">        
+      
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="card-title mt-3">
+                     {{title ? title : 'WorkFlow form'}} 
+                </h3>
+                <div class="card">
+
+                    <div class="card-body">
+                        <h5
+                            class="card-title" 
+                            *ngIf="formid && formid.value" 
+                           >
+                            @ {{formid && formid.value && formid.value.name ? formid.value.name : getformnameById(formid)}} 
+                            <span *ngIf="subformid && subformid.value"> ==> {{subformid.value.name}} </span>
+                        </h5>
+
+                        <div class="loader" *ngIf="isLoading">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+
+                        <div class="pl-3" *ngIf="!isLoading">
+
+                            <div *ngIf="flowVisibility">
+                                <div class="wf_Container_p wf_edit_rule initRule">
+                                    <div class="mL5 triggerDiv pR">
+                                        <div class="wf_rnd proximal f14 caps">
+                                            {{getLang('when','when')}}
+                                        </div>
+                                        <span class="setLine" [ngClass]="bindId ? 'nextLine' : ''"></span>
+                                        <div class="wfSubSec fL trans_wfSubSec wf_foc_div wf_sec_focus" id="trigEditSumMode">
+                                            <div 
+                                                class="editMode" 
+                                                style="min-width: 900px;"
+                                                [ngClass]="bindId ? 'hide-cls' : 'show-cls'">
+                                                <div class="wfSubSecSelH proxima f14">
+                                                    {{getLang('whentoexct','When do you want to execute this rule?')}}
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        
+                                                        <input 
+                                                            [attr.disabled]="bindId"
+                                                            id="trigger_workflowtype"
+                                                            type="radio" 
+                                                            name="workflowtype"
+                                                            [(ngModel)]="_workflowModel.workflowtype" 
+                                                            value="trigger"
+                                                            (ngModelChange)="workflowtypeChangeEvent($event)"> 
+                                                            {{getLang('onrcrd','On a record action')}}
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        
+                                                        <input 
+                                                            [attr.disabled]="bindId"
+                                                            id="schedule_workflowtype"
+                                                            type="radio" 
+                                                            name="workflowtype"
+                                                            [(ngModel)]="_workflowModel.workflowtype" 
+                                                            value="schedule"
+                                                            (ngModelChange)="workflowtypeChangeEvent($event)">
+                                                            {{getLang('ondttime', 'On a Date/Time')}}
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        
+                                                        <input 
+                                                        
+                                                            [attr.disabled]="bindId"
+                                                            id="disposition_workflowtype"
+                                                            type="radio" 
+                                                            name="workflowtype"
+                                                            [(ngModel)]="_workflowModel.workflowtype" 
+                                                            value="disposition"
+                                                            (ngModelChange)="workflowtypeChangeEvent($event)">
+                                                            {{getLang('disposition', 'Disposition')}}
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                            
+                                                        <input 
+                                                            [attr.disabled]="bindId"
+                                                            id="disposition_workflowtype"
+                                                            type="radio" 
+                                                            name="workflowtype"
+                                                            [(ngModel)]="_workflowModel.workflowtype" 
+                                                            value="surveyandfeedback"
+                                                            (ngModelChange)="workflowtypeChangeEvent($event)">
+                                                            {{getLang('srvndfdbk', 'Survey & Feedback')}}
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="triggerVisibilty">
+                                                    <div class="col-md-12" >
+                                                        <div class="wf_recordActDiv pT8" style="display: inline-block; margin-left: 15px;">
+                                                            <table class="newFormContBlk recordListTab" cellpadding="0" cellspeacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr class="recordActionRow">
+                                                                        <td>
+                                                                            <label class="rbCheckHtml dB">
+                                                                                <input 
+                                                                                    class="rbRealHtml trigger" 
+                                                                                    type="radio"
+                                                                                    name="trigger_process" 
+                                                                                    [(ngModel)]="_workflowModel.triggerprocess"
+                                                                                    value="Create">
+                                                                                <span class="rbHtmlLb mL5">
+                                                                                    {{getLang('create', 'Create')}}
+                                                                                </span>
+                                                                            </label>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="recordActionRow">
+                                                                        <td> 
+                                                                            <label class="rbCheckHtml dB">
+                                                                                <input 
+                                                                                    class="rbRealHtml trigger" 
+                                                                                    type="radio" 
+                                                                                    name="trigger_process" 
+                                                                                    [(ngModel)]="_workflowModel.triggerprocess" 
+                                                                                    value="Create or Edit">
+                                                                                <span class="rbHtmlLb mL5">
+                                                                                    {{getLang('crtoredt', 'Create or Edit')}}
+                                                                                </span> 
+                                                                            </label>
+                                                                            
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="recordActionRow">
+                                                                        <td> 
+                                                                            <label class="rbCheckHtml dB">
+                                                                                <input 
+                                                                                    class="rbRealHtml trigger" 
+                                                                                    type="radio" 
+                                                                                    name="trigger_process" 
+                                                                                    [(ngModel)]="_workflowModel.triggerprocess"
+                                                                                    value="Edit">
+                                                                                <span class="rbHtmlLb mL5">
+                                                                                    {{getLang('edit', 'Edit')}}
+                                                                                </span> 
+                                                                            </label>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <input
+                                                                        type="radio" 
+                                                                        value="all" 
+                                                                        name="triggerRules" 
+                                                                        [(ngModel)]="_workflowModel.triggerRules"> 
+                                                                        {{getLang('all', 'All')}}
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <input 
+                                                                        type="radio" 
+                                                                        value="or" 
+                                                                        name="triggerRules" 
+                                                                        [(ngModel)]="_workflowModel.triggerRules">
+                                                                        {{getLang('or', 'OR')}}
+                                                                </div>
+                                                        </div>
+                                                        <div *ngFor="let item of triggerFieldsLists">
+
+                                                            <div class="row mt-3 newApCriteriaTable newCriUi NewRule sandboxDiffChanges">
+                                                                <div class="col-md-2">
+                                                                    <div >
+                                                                        <input 
+                                                                            class="searchMatchText" 
+                                                                            readonly=""  
+                                                                            value="{{item.index}}"
+                                                                            type="text">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <select 
+                                                                        [(ngModel)]="item.fieldname"
+                                                                        class="form-control">
+                                                                        <option value="">
+                                                                            {{getLang('none', 'None')}}
+                                                                        </option>
+                                                                        <option 
+                                                                            *ngFor="let item of fieldLists" 
+                                                                            [value]="item.fieldname">
+                                                                            {{item.displayname}}
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-5" >
+                                                                    <a
+                                                                        *ngIf="item.index !== 1"
+                                                                        class="removeTrigger"
+                                                                        (click)="deleteTriggerItem(item.index)"></a>
+                                                                    <a
+                                                                        class="addTrigger"
+                                                                        (click)="addTriggerItem(item.index)"></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="wf_saveCancel_Div text-right">
+                                                            <input 
+                                                                type="button" 
+                                                                class="btn btn-primary mb-0" 
+                                                                value="Done" 
+                                                                (click)="showWFRuleStep3()">
+                                                            <a class="canEd wf_edit_cancel" style="display:none">
+                                                                {{getLang('cancel', 'Cancel')}}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="scheduleVisibilty">
+                                                    <form 
+                                                        [formGroup]="formScheduleAction" 
+                                                        (ngSubmit)="onSubmitScheduleAction(formScheduleAction.value,formScheduleAction.valid)" 
+                                                        novalidate
+                                                        class="form-horizontal">
+                                                        <div class="card-body">
+                                                            <div class="row">
+
+                                                                <div class="col-sm-12" *ngIf="IsSurveyformVisibility">
+                                                                    <label class="col-form-label"> 
+                                                                        {{getLang('form', 'Form')}}
+                                                                    </label>
+                                        
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input 
+                                                                            type="text"
+                                                                            matInput
+                                                                            [formControl]="formnameSurvey" 
+                                                                            [matAutocomplete]="autoformnameSurvey"
+                                                                            (keyup.enter)="enterformnameSurvey()"
+                                                                            (click)="preloadformnameSurveydata()"
+                                                                            (change)="handleEmptyformnameSurveyInput($event)">
+                                        
+                                                                        <mat-autocomplete 
+                                                                            #autoformnameSurvey="matAutocomplete"
+                                                                            [displayWith]="displayformnameSurveyFn"
+                                                                            (optionSelected)="optionformnameSurveySelected($event.option)">
+                                        
+                                                                            <mat-option *ngIf="formnameSurveyisLoadingBox" class="is-loading">
+                                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                                            </mat-option>
+                                                        
+                                                                            <ng-container *ngIf="!formnameSurveyisLoadingBox && _allsurveyForms.length > 0">
+                                                                                <mat-option 
+                                                                                    *ngFor="let option of filteredFormnameSurveyOptions | async" 
+                                                                                    [value]="option">
+                                                                                    {{option.name}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                        
+                                                                            <ng-container *ngIf="!formnameSurveyisLoadingBox && _allsurveyForms.length == 0">
+                                                                                <mat-option>
+                                                                                <span>{{getLang('norecord', 'No Record')}}</span>
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                        
+                                                                        </mat-autocomplete>
+                                                                    </mat-form-field>
+                                                                </div>
+
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label"> 
+                                                                        {{getLang('fldname', 'Field Name')}}
+                                                                    </label>
+                                        
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input 
+                                                                            type="text"
+                                                                            matInput
+                                                                            [formControl]="fieldnameScheduleAction" 
+                                                                            [matAutocomplete]="autofieldnameScheduleAction"
+                                                                            (keyup.enter)="enterfieldnameScheduleAction()"
+                                                                            (click)="preloadfieldnameScheduleActiondata()"
+                                                                            (change)="handleEmptyfieldnameScheduleActionInput($event)">
+                                        
+                                                                        <mat-autocomplete 
+                                                                            #autofieldnameScheduleAction="matAutocomplete"
+                                                                            [displayWith]="displayfieldnameScheduleActionFn"
+                                                                            (optionSelected)="optionfieldnameScheduleActionSelected($event.option)">
+                                        
+                                                                            <mat-option *ngIf="fieldnameScheduleActionisLoadingBox" class="is-loading">
+                                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                                            </mat-option>
+                                                        
+                                                                            <ng-container *ngIf="!fieldnameScheduleActionisLoadingBox && dateFieldLists.length > 0">
+                                                                                <mat-option 
+                                                                                    *ngFor="let option of filteredFieldnameScheduleActionOptions | async" 
+                                                                                    [value]="option">
+                                                                                    {{option.name}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                        
+                                                                            <ng-container *ngIf="!fieldnameScheduleActionisLoadingBox && dateFieldLists.length == 0">
+                                                                                <mat-option>
+                                                                                <span>{{getLang('norecord', 'No Record')}}</span>
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                        
+                                                                        </mat-autocomplete>
+                                                                    </mat-form-field>
+                                        
+                                                                    
+                                        
+                                                                </div>
+
+                                                                <div class="col-sm-12">
+                                                                        <div class="row">
+                                                                    <label class="col-sm-2 col-form-label">
+                                                                        {{getLang('dtofexcn', 'Date of Execution')}}
+                                                                        <span class="star">*</span>
+                                                                    </label>
+                                                                    <div class="col-sm-8">
+                                                                            <div class="row">
+                                                                        <div class="col-sm-4">
+                                                                          <mat-form-field class="example-full-width">
+                                                                            <mat-select 
+                                                                                matInput
+                                                                                formControlName="timeScheduleAction" >
+                                                                                <mat-option value="-1">
+                                                                                    {{getLang('before', 'Before')}}
+                                                                                </mat-option>
+                                                                                <mat-option value="1">
+                                                                                    {{getLang('after', 'After')}}
+                                                                                </mat-option>
+                                                                                <mat-option value="0">
+                                                                                    {{getLang('on', 'On')}}
+                                                                                </mat-option>
+                                                                            </mat-select>
+                                                                        </mat-form-field>
+                                                                            <div [hidden]="formScheduleAction.get('timeScheduleAction').valid || (formScheduleAction.get('timeScheduleAction').pristine && !submittedScheduleAction)" class="errormsg text-danger">
+                                                                                {{getLang('timerqd', 'Time is required.')}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-4" [ngClass]="timeScheduleAction == '0' ? 'hide-cls':'show-cls'">
+                                                                          <mat-form-field class="example-full-width">
+                                                                            <input 
+                                                                                matInput
+                                                                                type="text"
+                                                                                formControlName="monthScheduleAction" > 
+                                                                            </mat-form-field>
+                                                                                {{getLang('months', 'Months')}}
+                                                                            <div [hidden]="formScheduleAction.get('monthScheduleAction').valid || (formScheduleAction.get('monthScheduleAction').pristine && !submittedScheduleAction)" class="errormsg text-danger">
+                                                                                {{getLang('mnthrqd', 'Month is required.')}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-4" [ngClass]="timeScheduleAction == '0' ? 'hide-cls':'show-cls'">
+                                                                          <mat-form-field class="example-full-width">
+                                                                            <input 
+                                                                                matInput
+                                                                                type="text" 
+                                                                                formControlName="daysScheduleAction" > 
+                                                                            </mat-form-field>
+                                                                                {{getLang('days', 'Days')}}
+                                                                            <div [hidden]="formScheduleAction.get('daysScheduleAction').valid || (formScheduleAction.get('daysScheduleAction').pristine && !submittedScheduleAction)" class="errormsg text-danger">
+                                                                                {{getLang('daysrqd', 'Days is required.')}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+                                                                </div>
+                                                          
+                                                                <div class="col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-sm-2 col-form-label">
+                                                                            {{getLang('ocrnce', 'Occurrence')}}
+                                                                        </label>
+                                                                        <div class="col-sm-8">
+                                                                            <div class="label-floating is-empty">
+                                                                                    <mat-form-field class="example-full-width">
+                                                                                <mat-select  matInput 
+                                                                                    formControlName="occurrenceScheduleAction" >
+                                                                                    <mat-option value="yearly">
+                                                                                        {{getLang('yrly', 'Yearly')}}
+                                                                                    </mat-option>
+                                                                                    <mat-option value="monthly">
+                                                                                        {{getLang('mnthly', 'monthly')}}
+                                                                                    </mat-option>
+                                                                                    <mat-option value="on">
+                                                                                        {{getLang('on', 'ON')}}
+                                                                                    </mat-option>
+                                                                                </mat-select>
+                                                                            </mat-form-field>
+                                                                                <div [hidden]="formScheduleAction.get('occurrenceScheduleAction').valid || (formScheduleAction.get('occurrenceScheduleAction').pristine && !submittedScheduleAction)" class="errormsg text-danger">
+                                                                                    {{getLang('ocrncrqd', 'Occurrence is required.')}}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12 text-right">
+                                                                    <button  class="btn btn-primary"  type="submit">
+                                                                        {{getLang('done', 'Done')}}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    
+                                                </div>
+                                                <div *ngIf="dispositionVisibilty">
+                                                    <div class="form-horizontal">
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <div class="col-md-12 mat-tree-node-auto">
+                                                                    <div class="row">
+                                                                        <label class="col-sm-2 col-form-label">
+                                                                            {{getLang('disposition', 'Disposition')}}
+                                                                        </label>
+
+                                                                        <mat-radio-group
+                                                                            aria-labelledby="example-radio-group-label"
+                                                                            class="example-radio-group"
+                                                                            name="disposition"
+                                                                            [(ngModel)]="disposition">
+                                                                            
+                                                                            <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+
+                                                                                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                                                                                    <li class="mat-tree-node">
+                                                                                        <button mat-icon-button disabled></button>
+                                                                                        <mat-radio-button [value]="node._id" (change)="radioChange($event)">{{node.disposition}} </mat-radio-button>
+                                                                                    </li>
+                                                                                </mat-tree-node>
+
+                                                                                <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                                                                                    <li>
+                                                                                        <div class="mat-tree-node">
+                                                                                            <button mat-icon-button matTreeNodeToggle
+                                                                                                [attr.aria-label]="'toggle ' + node.disposition">
+                                                                                                <mat-icon class="mat-icon-rtl-mirror">
+                                                                                                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                                                                                </mat-icon>
+                                                                                            </button>
+                                                                                            <mat-radio-button [value]="node._id" (change)="radioChange($event)">{{node.disposition}} </mat-radio-button>
+                                                                                        </div>
+                                                                                        <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+                                                                                            <ng-container matTreeNodeOutlet></ng-container>
+                                                                                        </ul>
+                                                                                    </li>
+                                                                                </mat-nested-tree-node>
+                                                                            </mat-tree>
+                                                                        </mat-radio-group>
+
+                                                                        <!-- <div class="col-md-6">
+                                                                            <div class="label-floating is-empty">
+                                                                                <label class="control-label"></label>
+                                                                                <span class="dropdown inline-block text-right">
+                                                                                    <button class="dropdown-toggle btn btn-primary m-0" data-toggle="dropdown" *ngIf="selectedDisposition">
+                                                                                        {{selectedDisposition.displayNameSelect}}
+                                                                                        <span *ngIf="dispositionDDTreeList.length == 0">
+                                                                                            {{getLang('slctdspsn', 'Select Disposition')}}
+                                                                                        </span>
+                                                                                        <b class="caret"></b>
+                                                                                    </button>
+                                                                                    <ul class="dropdown-menu dropdown-menu-left" style="cursor:pointer;">
+                                                                                        <li *ngFor="let opt of dispositionDDTreeList">
+                                                                                            <a (click)="changeDesposition(opt)">{{opt.displayNameDD}}</a>
+                                                                                        </li>
+                                                                                        <li *ngIf="dispositionDDTreeList.length == 0">
+                                                                                            <a>
+                                                                                                {{getLang('nodspsn', 'No Disposition')}}
+                                                                                            </a>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </span>
+                                                                            </div>
+                                                                        </div> -->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12 text-right">
+                                                                    <button 
+                                                                        type="button"
+                                                                        (click)="dispositionSubmit()"
+                                                                        class="btn btn-primary">
+                                                                        {{getLang('done', 'Done')}}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div 
+                                                class="sumMode" 
+                                                [ngClass]="bindId ?'show-cls':'hide-cls'">
+                                                <span 
+                                                    (click)="sum_to_edit()"
+                                                    class="sumToEdit" 
+                                                    id="wf_trg_EditIc" 
+                                                    data-wt="572" 
+                                                    data-ht="246">
+                                                </span>
+                                                <div 
+                                                    class="recSumMode" 
+                                                    id="recSumMode">
+                                                    <div *ngIf="_workflowModel.workflowtype == 'schedule'">
+                                                        <span>
+                                                            {{getLang('thswrkflw', 'This workflow will be executed')}} <b> 
+                                                            {{daysScheduleAction}} {{getLang('dys', 'Day(s)')}}, 
+                                                            {{monthScheduleAction}} {{getLang('mnths', 'Month(s)')}},
+                                                            <span *ngIf="timeScheduleAction == '-1'">
+                                                                {{getLang('before', 'Before')}}
+                                                            </span> 
+                                                            <span *ngIf="timeScheduleAction == '1'">
+                                                                {{getLang('after', 'After')}}
+                                                            </span>
+                                                            <span *ngIf="timeScheduleAction == '0'">
+                                                                {{getLang('on', 'ON')}}
+                                                            </span> 
+                                                            &nbsp; <span *ngIf="fieldnameScheduleAction && fieldnameScheduleAction.value && fieldnameScheduleAction.value.id"> 
+                                                                        <span *ngIf="fieldnameScheduleAction.value.id"> {{fieldnameScheduleAction.value.name}} </span> 
+                                                                        <span *ngIf="!fieldnameScheduleAction.value.id"></span> 
+                                                                    </span> </b> <br>
+                                                            {{getLang('recur', 'Recur')}}  
+                                                            &nbsp; <b> {{occurrenceScheduleAction}} </b>
+                                                        </span>
+                                                    </div>
+                                                    <div *ngIf="_workflowModel.workflowtype == 'trigger'">
+                                                        <span *ngIf="_workflowModel.triggerprocess == 'Create'">
+                                                            {{getLang('wrkflwhen', 'This workflow will be executed when a')}}  
+
+                                                            {{ this.formid.value && this.formid.value.name ? this.formid.value.name : formName}}
+                                                            
+                                                            {{getLang('is', 'is')}}  
+                                                            <b> {{getLang('created', 'created')}}</b>.
+                                                        </span>
+                                                        <span *ngIf="_workflowModel.triggerprocess !== 'Create'">
+                                                            {{getLang('thswrkflw', 'This workflow will be executed')}}
+                                                            <b> {{getLang('when', 'When')}} </b> 
+                                                            {{getLang('a', 'a')}}
+                                                            {{ this.formid.value && this.formid.value.name ? this.formid.value.name : formName}} {{getLang('is', 'is')}} 
+                                                            <b> {{_workflowModel.triggerprocess}} </b> 
+                                                            {{getLang('tomeetif', 'to meet the condition (if any).')}}
+                                                        </span>
+                                                    </div>
+                                                    <div *ngIf="_workflowModel.workflowtype == 'disposition' && selectedDisposition">
+                                                        <span> {{getLang('disposition', 'Disposition')}} <b> {{selectedDisposition.disposition}} </b> </span>
+                                                    </div>
+                                                    <div *ngIf="_workflowModel.workflowtype == 'surveyandfeedback' && formnameSurvey">
+                                                        
+                                                        {{getLang('thswrkflw', 'This workflow will be executed')}}
+                                                        <b> {{daysScheduleAction}} {{getLang('dys', 'Day(s)')}}, 
+                                                            {{monthScheduleAction}} {{getLang('mnths', 'Month(s)')}}, 
+                                                            <span *ngIf="timeScheduleAction == '-1'">
+                                                            {{getLang('before', 'Before')}}
+                                                        </span> <span *ngIf="timeScheduleAction == '1'">
+                                                            {{getLang('after', 'After')}}
+                                                        </span><span *ngIf="timeScheduleAction == '0'">
+                                                            {{getLang('on', 'ON')}}
+                                                        </span> &nbsp; <span *ngIf="fieldnameScheduleAction && fieldnameScheduleAction.value"> <span *ngIf="fieldnameScheduleAction.value.id"> {{fieldnameScheduleAction.value.name}} </span> <span *ngIf="!fieldnameScheduleAction.value.id"></span> </span> </b> <br>
+                                                        {{getLang('recur', 'Recur')}} &nbsp; <b>  {{formnameSurvey.name}} </b>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearB"></div>
+                                    </div>
+                                    <div id="condition" class="pR" [ngClass]="bindId ? 'show-cls' : 'hide-cls'">
+                                        <div class="wfCriteriaActions">
+                                            <div class="mT60 mL5">
+                                                <div class="pwie">
+                                                    <div class="wf_rnd criRnd proximal f14">
+                                                        <span class="wfRndTxt criteriaCube uppercase">
+                                                            {{getLang('cndtn1', 'CONDITION 1')}}
+                                                        </span>
+                                                    </div>
+                                                    <span class="setLine criLine nextLine"></span>
+                                                    <div class="wfSubSec fL criSubSec">
+                                                        <div class="wfDelHighlight wfCritError dN"></div>
+                                                        <div class="wfErrorMsgContainer pA" style="left: calc(100% + 20px)"></div>
+                                                        <div class="criEditSum whiteBg wf_foc_div wf_sec_focus" id="trigEditSumMode2">
+                                                            <div class="editMode" [ngClass]="bindId ? 'hide-cls' : 'show-cls'">
+                                                                <div class="wfSubSecSelH proxima f14">
+                                                                    {{getLang('wchrcrdsrule', 'Which records would you like to apply the rule on?')}}
+                                                                </div>
+                                                                <div class="tab pT10 pB8 noWrap">
+                                                                    <div class="rbCheckHtml mT15">
+                                                                        <input 
+                                                                            id="filterRecordsRadio"
+                                                                            class="rbRealHtml" 
+                                                                            type="radio" 
+                                                                            value="filterRecords" 
+                                                                            name="criteriaRules" 
+                                                                            (click)="criteria_rules_click('filterRecords')"
+                                                                            [(ngModel)]="_workflowModel.criteriaRules">
+                                                                        <span class="rbHtmlLb mL5">
+                                                                            {{getLang('rcrdsmtchng', 'Records Matching the Conditions')}}
+                                                                        </span> 
+                                                                        <span class="tParrow "></span>
+                                                                    </div>
+                                                                    <div class="rbCheckHtml activeTabSpan">
+                                                                        <input 
+                                                                            id="allRecordsRadio"
+                                                                            class="rbRealHtml" 
+                                                                            type="radio" 
+                                                                            value="allRecords" 
+                                                                            name="criteriaRules"
+                                                                            (click)="criteria_rules_click('allRecords')"
+                                                                            [(ngModel)]="_workflowModel.criteriaRules">
+                                                                        <span class="rbHtmlLb mL5 criteria_opt">
+                                                                            {{getLang('allrcrds', 'All Records')}}
+                                                                        </span>
+                                                                        <span class="tParrow"></span>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="pT15">
+                                                                    <div *ngFor="let item of conditions">
+                                                                        <div class="row mt-3 newApCriteriaTable newCriUi NewRule sandboxDiffChanges">
+                                                                            <div class="col-md-3">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-4"></div>
+                                                                                    <div class="col-md-8">
+                                                                                        <code>Field Name</code>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <code>Operation</code>
+
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <code>Value</code>
+
+                                                                            </div>
+                                                                            <div class="col-md-2">
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mt-3 newApCriteriaTable newCriUi NewRule sandboxDiffChanges">
+                                                                            <div class="col-md-3">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-4">
+                                                                                        <div 
+                                                                                            class="wf_slideDownUp_Div tr_cnt_1" 
+                                                                                            style="height: auto;opacity: 1;overflow: visible; "
+                                                                                            [ngClass]=" (item.index == 1)? '' : ' '">
+                                                                                            <span 
+                                                                                                class="cus_cb_sp" 
+                                                                                                (click)="changeText(item.index)" 
+                                                                                                *ngIf="item.index !== 1">
+                                                                                                {{item.rule}}
+                                                                                            </span>
+                                                                                            <input 
+                                                                                                type="text" 
+                                                                                                id="patternNum1_1" 
+                                                                                                class="searchMatchText" 
+                                                                                                value="{{item.index}}" 
+                                                                                                readonly="">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-8">
+                                                                                        <select 
+                                                                                            class="form-control" 
+                                                                                            [(ngModel)]="item.fieldname"
+                                                                                            (ngModelChange)="onFieldChange($event, item)">
+                                                                                            <option value="">
+                                                                                                {{getLang('none', 'None')}}
+                                                                                            </option>
+                                                                                            <option 
+                                                                                                *ngFor="let item of fieldLists" 
+                                                                                                [value]="item.fieldname">
+                                                                                                {{item.displayname}}
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div *ngIf="item.fieldtype == 'Number'">
+                                                                                    <select 
+                                                                                        (ngModelChange)="onFieldTypeChange($event, item)"
+                                                                                        title="{{item.fieldtype}}"
+                                                                                        class="form-control"
+                                                                                        [(ngModel)]="item.operator">
+                                                                                        <option value="">
+                                                                                            {{getLang('select', 'Select')}}
+                                                                                        </option>
+                                                                                        <option value="="> = </option>
+                                                                                        <option value="!="> != </option>
+                                                                                        <option value="<"> < </option>
+                                                                                        <option value="<="> <= </option>
+                                                                                        <option value=">"> > </option>
+                                                                                        <option value=">="> >= </option>
+                                                                                        <option value="between">
+                                                                                            {{getLang('between', 'Between')}}
+                                                                                        </option>
+                                                                                        <option value="not_between">
+                                                                                            {{getLang('ntbtwn', 'not between')}}
+                                                                                        </option>
+                                                                                        <option value="is_empty">
+                                                                                            {{getLang('isempty', 'is empty')}}
+                                                                                        </option>
+                                                                                        <option value="is_not_empty">
+                                                                                            {{getLang('isnotempty', 'is not empty')}}
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                                                                                    <select 
+                                                                                        (ngModelChange)="onFieldTypeChange($event, item)"
+                                                                                        title="{{item.fieldtype}}"
+                                                                                        class="form-control"
+                                                                                        [(ngModel)]="item.operator">
+                                                                                        <option value="">
+                                                                                            {{getLang('select', 'Select')}}
+                                                                                        </option>
+                                                                                        <option value="is">
+                                                                                            {{getLang('is', 'is')}}
+                                                                                        </option>
+                                                                                        <option value="isnt">
+                                                                                            {{getLang('isnt', 'isnt')}}
+                                                                                        </option>
+                                                                                        <option value="is_before">
+                                                                                            {{getLang('isbefore', 'is before')}}
+                                                                                        </option>
+                                                                                        <option value="is_after">
+                                                                                            {{getLang('isafter', 'is after')}}
+                                                                                        </option>
+                                                                                        <option value="between">
+                                                                                            {{getLang('between', 'Between')}}
+                                                                                        </option>
+                                                                                        <option value="not_between">
+                                                                                            {{getLang('ntbtwn', 'not between')}}
+                                                                                        </option>
+                                                                                        <option value="age_in_days">
+                                                                                            {{getLang('ageindys', 'Age in Days')}}
+                                                                                        </option>
+                                                                                        <option value="due_in_days">
+                                                                                            {{getLang('dueindys', 'Due in Days')}}
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div *ngIf="item.fieldtype !== 'Number' && item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker'">
+                                                                                    <select 
+                                                                                        (ngModelChange)="onFieldTypeChange($event, item)"
+                                                                                        title="{{item.fieldtype}}"
+                                                                                        class="form-control"
+                                                                                        [(ngModel)]="item.operator">
+                                                                                        <option value="">
+                                                                                            {{getLang('none', 'None')}}
+                                                                                        </option>
+                                                                                        <option value="is">
+                                                                                            {{getLang('is', 'is')}}
+                                                                                        </option>
+                                                                                        <option value="isnt">
+                                                                                            {{getLang('isnt', 'isnt')}}
+                                                                                        </option>
+                                                                                        <option value="contains">
+                                                                                            {{getLang('contains', 'contains')}}
+                                                                                        </option>
+                                                                                        <option value="doesnt_contain">
+                                                                                            {{getLang('dsntcntn', 'doesnt contain')}}
+                                                                                        </option>
+                                                                                        <option value="starts_with">
+                                                                                            {{getLang('strtswth', 'starts with')}}
+                                                                                        </option>
+                                                                                        <option value="ends_with">
+                                                                                            {{getLang('endswith', 'ends with')}}
+                                                                                        </option>
+                                                                                        <option value="is_empty">
+                                                                                            {{getLang('isempty', 'is empty')}}
+                                                                                        </option>
+                                                                                        <option value="is_not_empty">
+                                                                                            {{getLang('isnotempty', 'is not empty')}}
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <ng-container>
+                                                                            <!-- <div class="col-md-4"> -->
+                                                                                <div class="col-md-4 test" *ngIf="item.operator !== 'between' && item.operator !== 'not_between'">
+
+                                                                                    <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+
+                                                                                        <div *ngIf="item.operator == 'age_in_days' || item.operator == 'due_in_days'">
+                                                                                            
+                                                                                            <input type="text" class="form-control" [(ngModel)]="item.fieldvalue">
+                                                                                            
+                                                                                        </div>
+
+                                                                                        <div *ngIf="item.operator !== 'age_in_days' && item.operator !== 'due_in_days'">
+
+                                                                                            <mat-form-field class="example-full-width">
+                                                                                                <input 
+                                                                                                    matInput
+                                                                                                    [matDatepicker]="resultPicker"
+                                                                                                    [(ngModel)]="item.fieldvalue"
+                                                                                                    placeholder="">
+                                                                                                <span class="help-block" style="margin-top: 11px;display: block;">{{gDateFormat}}</span>
+                                                                                                <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                                                                                                <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+                                                                                            </mat-form-field>
+                                                                                        </div>
+                                                                                        
+                                                                                    </div>
+                                                                                    <div *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form'  && item.fieldtype !== 'ObjectID'">
+                                                                                       
+                                                                                        <input type="text" class="form-control"  [(ngModel)]="item.fieldvalue">
+                                                                                       
+                                                                                    </div>
+
+                                                                                    <div *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                                                                                        <!-- <input 
+                                                                                            type="text" 
+                                                                                            class="form-control" 
+                                                                                            ngui-auto-complete
+                                                                                            [list-formatter]="autocompleListFormatter"
+                                                                                            [source]="dynamicValueLists[item.fieldname]"
+                                                                                            value-property-name=null
+                                                                                            display-property-name="name"
+                                                                                            [(ngModel)]="item.fieldvalue"
+                                                                                            placeholder="Select {{item.fieldname}}"> -->
+                                                                                           
+                                                                                            <input 
+                                                                                                class="form-control"
+                                                                                                type="text"
+                                                                                                [(ngModel)]="item.fieldvalue"
+                                                                                                placeholder="Select {{item.fieldname}}">
+                                                                                          
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="col-md-4" *ngIf="item.operator == 'between' || item.operator == 'not_between'">
+                                                                                   <div class="row">
+                                                                                    <div class="col-md-6">
+                                                                                        <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+
+                                                                                            <mat-form-field class="example-full-width">
+                                                                                                <input 
+                                                                                                    matInput
+                                                                                                    [matDatepicker]="resultPicker"
+                                                                                                    [(ngModel)]="item.fieldvalue"
+                                                                                                    placeholder="">
+                                                                                                <span class="help-block" style="margin-top: 11px;display: block;">{{gDateFormat}}</span>
+                                                                                                <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                                                                                                <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+                                                                                            </mat-form-field>
+
+                                                                                        </div>
+                                                                                        <div *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form' && item.fieldtype !== 'ObjectID'">
+                                                                                            
+                                                                                            <input type="text"  class="form-control" [(ngModel)]="item.fieldvalue">
+                                                                                        
+                                                                                        </div>
+                                                                                        <div *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                                                                                            <!-- <input 
+                                                                                                *ngIf="item.valueLists"
+                                                                                                type="text" 
+                                                                                                class="form-control" 
+                                                                                                ngui-auto-complete
+                                                                                                [list-formatter]="autocompleListFormatter"
+                                                                                                [source]="dynamicValueLists[item.fieldname]"
+                                                                                                value-property-name=null
+                                                                                                display-property-name="name"
+                                                                                                [(ngModel)]="item.fieldvalue"
+                                                                                                placeholder="Select {{item.fieldname}}"> -->
+                                                                                              
+                                                                                            <input  
+                                                                                                *ngIf="item.valueLists"
+                                                                                                type="text" 
+                                                                                                class="form-control"
+                                                                                                [(ngModel)]="item.fieldvalue"
+                                                                                                placeholder="Select {{item.fieldname}}">
+                                                                                           
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                                                                                            <mat-form-field class="example-full-width">
+                                                                                                <input 
+                                                                                                    matInput
+                                                                                                    [matDatepicker]="resultPicker"
+                                                                                                    [(ngModel)]="item.fieldvalue"
+                                                                                                    placeholder="">
+                                                                                                <span class="help-block" style="margin-top: 11px;display: block;">{{gDateFormat}}</span>
+                                                                                                <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                                                                                                <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+                                                                                            </mat-form-field>
+                                                                                        </div>
+                                                                                        <div *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form' && item.fieldtype !== 'ObjectID'">
+                                                                                            <input type="text"  class="form-control" [(ngModel)]="item.fieldvalue2">
+                                                                                        </div>
+                                                                                        <div *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                                                                                            <!-- <input 
+                                                                                                type="text" 
+                                                                                                 
+                                                                                                ngui-auto-complete
+                                                                                                [list-formatter]="autocompleListFormatter"
+                                                                                                [source]="dynamicValueLists[item.fieldname]"
+                                                                                                value-property-name=null
+                                                                                                display-property-name="name"
+                                                                                                [(ngModel)]="item.fieldvalue"
+                                                                                                placeholder="Select {{item.fieldname}}"> -->
+                                                                                            
+                                                                                            <input 
+                                                                                            class="form-control"
+                                                                                                type="text" 
+                                                                                                [(ngModel)]="item.fieldvalue"
+                                                                                                placeholder="Select {{item.fieldname}}">
+                                                                                           
+                                                                                        </div>
+                                                                                    </div>
+                                                                                  </div>
+                                                                                </div>
+                                                                                
+                                                                                
+                                                                            <!-- </div> -->
+                                                                           </ng-container>
+                                                                            <div class="col-md-2" >
+                                                                                <a
+                                                                                    *ngIf="item.index !== 1"
+                                                                                    class="removeCriteria"
+                                                                                    (click)="deleteItem(item.index)"></a>
+                                                                                <a
+                                                                                    class="addCriteria"
+                                                                                    (click)="addItem(item.index)"></a>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                    <div *ngIf="conditions">
+                                                                        <div class="row" *ngIf="conditions.length > 1">
+                                                                            <div class="col-md-3">
+                                                                                <span>
+                                                                                    {{getLang('crtraptrn', 'Criteria Pattern')}}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="col-md-9">
+                                                                                {{pattern}} 
+                                                                                <span 
+                                                                                    class="cus_cb_sp">
+                                                                                    {{getLang('edtptrn', 'Edit Pattern')}}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+    
+                                                                </div>
+                                                                <div class="alignRight pR">
+                                                                    <input 
+                                                                        (click)="showWFRuleStep4()"
+                                                                        type="button" 
+                                                                        class="btn btn-primary mb-0" 
+                                                                        value="Done">
+                                                                </div>
+                                                            </div>
+                                                            <div class="p25 wfWarningMsg pA bxsh1 dN">
+                                                            </div>
+                                                            <div class="sumMode" [ngClass]="bindId ? 'show-cls' : 'hide-cls'">
+                                                                <span *ngIf="_workflowModel.workflowtype !== 'disposition'" class="sumToEdit" (click)="sum_to_edit2()"></span>
+                                                                <div id="criteriaSummary_1">
+                                                                    <ol class="approvalOrderList" *ngIf="_workflowModel.criteriaRules !== 'allRecords'">
+                                                                        <li *ngFor="let item of conditions">
+                                                                            <div>
+                                                                                <span class="andOrText">
+                                                                                    <label *ngIf="item.index !== 1"> {{item.rule}} </label>
+                                                                                </span>
+
+                                                                                <span class="text-success">
+                                                                                    {{getfieldisplayname(item.fieldname)}}
+                                                                                </span> 
+
+                                                                                <span class="highlightTxt mR5 mL5 f13">{{item.operator}}</span> 
+                                                                                <span class="text-success">
+                                                                                    <span *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker'">{{item.fieldvalue}}</span>
+                                                                                    <span *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                                                                                        <span *ngIf="item.operator == 'age_in_days' || item.operator == 'due_in_days'">
+                                                                                            {{item.fieldvalue}}
+                                                                                        </span>
+                                                                                        <span *ngIf="item.operator !== 'age_in_days' && item.operator !== 'due_in_days'">
+                                                                                            {{item.fieldvalue | date: gDateFormat}}
+                                                                                        </span>
+                                                                                        
+                                                                                    </span>
+                                                                                </span>
+                                                                                <span class="text-success" *ngIf="item.fieldvalue2">
+                                                                                    <span *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker'">{{item.fieldvalue2}}</span>
+                                                                                    <span *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                                                                                        <span *ngIf="item.operator == 'age_in_days' || item.operator == 'due_in_days'">
+                                                                                            {{item.fieldvalue2}}
+                                                                                        </span>
+                                                                                        <span *ngIf="item.operator !== 'age_in_days' && item.operator !== 'due_in_days'">
+                                                                                            {{item.fieldvalue2 | date: gDateFormat}}
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </span>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ol>
+                                                                    <span *ngIf="_workflowModel.criteriaRules == 'allRecords'">
+                                                                        {{getLang('rulexctforall', 'This rule will be executed for all records.')}}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearB"></div>
+                                                        <div class="mt15 pR" id="trigEditSumMode3" *ngIf="instanceActionVisibility">
+                                                            <div class="pwie">
+                                                                <span class="actionLine">
+                                                                </span>
+                                                                <div style="display: block;padding-top:65px;" class="disableTime" >
+                                                                    <div 
+                                                                        class="wfSubSec actionPartDiv insBasedDiv wf_foc_div fL wf_sec_focus" 
+                                                                        style="width: 345px; height: auto;">
+                                                                        <div class="wfActInsAct insBasedIc proxima f15 color_3 fontSmooth">
+                                                                            {{getLang('instactn', 'Instant Actions')}}
+                                                                        </div>
+                                                                        <div class="wfActUlDesc">
+                                                                            <ul class="wfActInsActUl wfActInsActUlDesc" data-liact="0">
+
+                                                                                <li style="opacity:1" *ngIf="emailDisplay.length !== 0">
+                                                                                    <div actionname="Alert" class="wfActLiHd proximas bold f13 color_3" style="cursor:text">
+                                                                                        {{getLang('email', 'Email')}}
+                                                                                        <div class="row" *ngFor="let item of emailDisplay">
+                                                                                            <div class="col-md-12" >
+                                                                                                <div class="col-md-10">
+                                                                                                    {{item.name}}
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <span class="wfDelIc" (click)="removeAction(item.id, 'email')"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </li>
+
+                                                                                <li style="opacity:1" *ngIf="mailMergeDisplay.length !== 0">
+                                                                                    <div actionname="Alert" class="wfActLiHd proximas bold f13 color_3" style="cursor:text">
+                                                                                        {{getLang('mailmrg', 'Mail Merge')}}
+                                                                                        <div class="row" *ngFor="let item of mailMergeDisplay">
+                                                                                            <div class="col-md-12" >
+                                                                                                <div class="col-md-10">
+                                                                                                    {{item.name}}
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <span class="wfDelIc" (click)="removeAction(item.id, 'mailmerge')"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </li>
+
+                                                                                <li style="opacity:1" *ngIf="smsDisplay.length !== 0">
+                                                                                    <div actionname="Alert" class="wfActLiHd proximas bold f13 color_3" style="cursor:text">
+                                                                                        {{getLang('sms', 'SMS')}}
+                                                                                        <div class="row" *ngFor="let item of smsDisplay">
+                                                                                            <div class="col-md-12" >
+                                                                                                <div class="col-md-10">
+                                                                                                    {{item.name}}
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <span class="wfDelIc" (click)="removeAction(item.id, 'sms')"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </li>
+
+                                                                                <li style="opacity:1" *ngIf="whatsappDisplay.length !== 0">
+                                                                                    <div actionname="Alert" class="wfActLiHd proximas bold f13 color_3" style="cursor:text">
+                                                                                        {{getLang('whatsapp', 'WhataApp')}}
+                                                                                        <div class="row" *ngFor="let item of whatsappDisplay">
+                                                                                            <div class="col-md-12" >
+                                                                                                <div class="col-md-10">
+                                                                                                    {{item.name}}
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <span class="wfDelIc" (click)="removeAction(item.id, 'whatsapp')"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </li>
+
+                                                                                <li style="opacity:1" *ngIf="notificationDisplay.length !== 0">
+                                                                                    <div actionname="Alert" class="wfActLiHd proximas bold f13 color_3" style="cursor:text">
+                                                                                        {{getLang('ntfctns', 'Notifications')}}
+                                                                                        <div class="row" *ngFor="let item of notificationDisplay">
+                                                                                            <div class="col-md-12" >
+                                                                                                <div class="col-md-10">
+                                                                                                    {{item.name}}
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <span class="wfDelIc" (click)="removeAction(item.id, 'notification')"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </li>
+                                                                                
+                                                                                <li style="opacity:1" *ngIf="taskDisplay.length !== 0">
+                                                                                    <div actionname="Alert" class="wfActLiHd proximas bold f13 color_3" style="cursor:text">
+                                                                                        {{getLang('tasks', 'Tasks')}}
+                                                                                        <div class="row" *ngFor="let item of taskDisplay">
+                                                                                            <div class="col-md-12" >
+                                                                                                <div class="col-md-10">
+                                                                                                    {{item.name}}
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <span class="wfDelIc" (click)="removeAction(item.id, 'tasks')"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </li>
+                                                                            </ul>
+                                                                            <div class="proxima wf_link caps f13 wfMoreAct aligncenter cP noHoverTD moreTimeAct pA pR" style="cursor: pointer">
+                                                                                <div class="moreActTxt " (click)="toggle()">+ {{getLang('action', 'ACTION')}} </div>
+                                                                                <ul class="wfActInsActUl capt wfActUlList" style="left: 0px;right: auto;top: 65px;" *ngIf="isActive">
+                                                                                    <li  class="wfAlertIc " actionname="Alert" (click)="actionModalPopup('email')">
+                                                                                        <span class="bdrTopB" style="left: 73px;"></span> 
+                                                                                        {{getLang('email', 'Email')}}
+                                                                                    </li>
+                                                                                    <li  class="wfAlertIc " actionname="Alert" (click)="actionModalPopup('mailmerge')">
+                                                                                        <span class="bdrTopB" style="left: 73px;"></span> 
+                                                                                        {{getLang('mailmrg', 'Mail Merge')}}
+                                                                                    </li>
+                                                                                    <li  class="wfAlertIc " actionname="Alert" (click)="actionModalPopup('sms')">
+                                                                                        <span class="bdrTopB" style="left: 73px;"></span> 
+                                                                                        {{getLang('sms', 'SMS')}}
+                                                                                    </li>
+                                                                                    <li  class="wfAlertIc " actionname="Alert" (click)="actionModalPopup('whatsapp')">
+                                                                                        <span class="bdrTopB" style="left: 73px;"></span> 
+                                                                                        {{getLang('whatsapp', 'WhatsApp')}}
+                                                                                    </li>
+                                                                                    <li  class="wfAlertIc " actionname="Alert" (click)="actionModalPopup('notification')">
+                                                                                        <span class="bdrTopB" style="left: 73px;"></span> 
+                                                                                        {{getLang('ntfctn', 'Notification')}}
+                                                                                    </li>
+                                                                                    <li  class="wfTaskIc " actionname="Task" (click)="actionModalPopup('tasks')">
+                                                                                        <span class="bdrTopB" style="left: 73px;"></span> 
+                                                                                        {{getLang('task', 'Task')}}
+                                                                                    </li>
+                                                                                    
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="clearB"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row" style="margin-top: 50px; clear: both;">
+                                <div class="col-xl-12">
+                                    <div class="row">
+                                        <div class="col-sm-6 text-left">
+                                            <button 
+                                                class="btn btn-default" 
+                                                type="button" 
+                                                *ngIf="bindId"
+                                                (click)="deleteWorkflow()">
+                                                <i class="material-icons">delete</i> {{getLang('delete', 'Delete')}}
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6 text-right">
+                                            <button class="btn btn-default" type="button" [routerLink]="['/pages/dynamic-list/list/workflow']">
+                                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                                            </button>
+                                  
+                                            <button class="btn btn-primary ml-2" type="submit" (click)="submit()">
+                                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+   
+<button 
+    type="button" 
+    style="display: none" 
+    id="createRules" 
+    class="btn btn-info btn-lg" 
+    data-toggle="modal" 
+    data-target="#myModal">
+    {{getLang('opnmodal', 'Open Modal')}}
+</button>
+    
+<div 
+    id="myModal" 
+    class="modal fade" 
+    role="dialog" 
+    data-backdrop="static" 
+    data-keyboard="false">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    {{getLang('crtnwrule', 'Create New Rule')}}
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" (click)="cancelCreate()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <form 
+                    [formGroup]="form" 
+                    (ngSubmit)="onSubmit(form.value,form.valid)" 
+                    novalidate 
+                    class="mb-0">
+                    
+                    <div class="row">
+
+                        <div class="col-sm-12">
+                            <label class="col-form-label"> 
+                                {{getLang('module', 'Module')}} 
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <mat-form-field class="example-full-width">
+                                <input 
+                                    type="text"
+                                    matInput
+                                    [formControl]="formid"
+                                    [matAutocomplete]="autoAttendee"
+                                    (keyup.enter)="enterFormid()"
+                                    (click)="preloadFormiddata()"
+                                    (change)="handleEmptyFormidInput($event)">
+
+                                <mat-autocomplete 
+                                    #autoAttendee="matAutocomplete"
+                                    [displayWith]="displayFormidFn"
+                                    (optionSelected)="optionFormidSelected($event.option)">
+
+                                    <mat-option *ngIf="formidisLoadingBox" class="is-loading">
+                                        <mat-spinner diameter="50"></mat-spinner>
+                                    </mat-option>
+                
+                                    <ng-container *ngIf="!formidisLoadingBox && _allForms.length > 0">
+                                        <mat-option 
+                                            *ngFor="let option of filteredFormidOptions | async" 
+                                            [value]="option">
+                                            {{option.name}}
+                                        </mat-option>
+                                    </ng-container>
+                
+                                    <ng-container *ngIf="!formidisLoadingBox && _allForms.length == 0">
+                                        <mat-option>
+                                        <span>{{getLang('norecord', 'No Record')}}</span>
+                                        </mat-option>
+                    
+                                        <ng-container *ngIf="!formidisLoadingBox && _allForms.length > 0">
+                                            <mat-option 
+                                                *ngFor="let option of filteredFormidOptions | async" 
+                                                [value]="option">
+                                                {{option.name}}
+                                            </mat-option>
+                                        </ng-container>
+                    
+                                        <ng-container *ngIf="!formidisLoadingBox && _allForms.length == 0">
+                                            <mat-option>
+                                            <span>{{getLang('norecord', 'No Record')}}</span>
+                                            </mat-option>
+                                        </ng-container>
+                                    </ng-container>
+                    
+                                    </mat-autocomplete>
+                            </mat-form-field>
+                            
+                            <div [hidden]="form.get('formid').valid || (form.get('formid').pristine && !submitted)" class="text-danger">
+                                <small  class="error-label">
+                                    {{getLang('modulenamerqd', 'Module is required.')}}
+                                </small>
+                                
+                            </div>
+                            
+                            <ng-container *ngIf="formid.dirty">
+                                <div [hidden]="this.formid.errors?.formidInvalide" class="text-danger">
+                                    <small  class="error-label">
+                                        {{getLang('modulenamerqd', 'Module is not valid.')}}
+                                    </small>
+                                    
+                                </div>
+                            </ng-container>
+                            
+
+                          
+    
+                        </div>
+    
+                        <div class="col-sm-12" *ngIf="isVisibleSubform">
+                            <label class="col-form-label"> 
+                                {{getLang('submodule', 'Sub Module')}}
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <mat-form-field class="example-full-width">
+                                <input 
+                                    type="text"
+                                    matInput
+                                    [formControl]="subformid"
+                                    [matAutocomplete]="autoAttendee"
+                                    (keyup.enter)="enterSubformid()"
+                                    (click)="preloadSubformiddata()"
+                                    (change)="handleEmptySubformidInput($event)">
+
+                                <mat-autocomplete 
+                                    #autoAttendee="matAutocomplete"
+                                    [displayWith]="displaySubformidFn"
+                                    (optionSelected)="optionSubformidSelected($event.option)">
+                
+                                    <mat-option *ngIf="subformIdisLoadingBox" class="is-loading">
+                                        <mat-spinner diameter="50"></mat-spinner>
+                                    </mat-option>
+                
+                                    <ng-container *ngIf="!subformIdisLoadingBox && _allsurveyForms.length > 0">
+                                        <mat-option 
+                                            *ngFor="let option of filteredSubFormidOptions | async" 
+                                            [value]="option">
+                                            {{option.name}}
+                                        </mat-option>
+                                    </ng-container>
+                
+                                    <ng-container *ngIf="!subformIdisLoadingBox && _allsurveyForms.length == 0">
+                                        <mat-option>
+                                        <span>{{getLang('norecord', 'No Record')}}</span>
+                                        </mat-option>
+                                    </ng-container>
+                
+                                </mat-autocomplete>
+                            </mat-form-field>
+
+                            <div [hidden]="form.get('subformid').valid || (form.get('subformid').pristine && !submitted)" class="text-danger">
+                                <small  class="error-label">
+                                    {{getLang('subformnamerqd', 'Subform Name is required.')}}
+                                </small>
+                                
+                            </div>
+
+                        </div>
+    
+                        <div class="col-sm-12">
+                            <label class="col-form-label"> 
+                                {{getLang('rulename', 'Rule Name')}}
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <mat-form-field class="example-full-width">
+                                <input 
+                                    matInput
+                                    (keyup)="onKeyWorkFlowName($event)"
+                                    type="text" 
+                                    formControlName="title">
+                            </mat-form-field>
+
+                            <div [hidden]="form.get('title').valid || (form.get('title').pristine && !submitted)" class="text-danger">
+                                <small  class="error-label">
+                                    {{getLang('wrkflwnmrqd', 'Workflow Name is required.')}}
+                                </small>
+                            </div>
+
+                            <div *ngIf="nameAlreadyexists" class="text-danger">
+                                <small  class="error-label">
+                                    {{getLang('wrkflwnmexst', 'Workflow Name is Already Exists.')}}
+                                </small>
+                                
+                            </div>
+
+                        </div>
+    
+                        <div class="col-sm-12">
+                            <label class="col-form-label"> 
+                                {{getLang('dscrptn', 'Description')}}
+                            </label>
+
+                            <mat-form-field class="example-full-width">
+                                <input 
+                                    matInput
+                                    type="text"
+                                    formControlName="description">
+                            </mat-form-field>
+
+                            <div [hidden]="form.get('description').valid || (form.get('description').pristine && !submitted)" class="text-danger">
+                                <small  class="error-label">
+                                    {{getLang('dscrpnrqd', 'description is required.')}}
+                                </small>
+                                
+                            </div>
+
+                        </div>
+    
+                    </div>
+
+                    <div class="row">
+                        
+                        <div class="col-sm-12 text-right">
+                            <button 
+                                data-dismiss="modal"
+                                class="btn btn-default" 
+                                type="button"
+                                (click)="cancelCreate()">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+                            <button 
+                                class="btn btn-primary ml-2" 
+                                type="submit" >
+                                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+                            </button>
+                        </div>
+                            
+                    </div>
+                        
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+<button 
+    style="display: none"
+    type="button" 
+    id="loadActions"
+    class="btn btn-info btn-lg" 
+    data-toggle="modal" 
+    data-target="#myModalAction">
+    {{getLang('opnmodal', 'Open Modal')}}
+</button>
+    
+<div id="myModalAction" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    
+    <div class="modal-dialog modal-lg">
+    
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{getLang('select', 'Select')}} {{_selectedAction}}</h4>
+                <button type="button" class="close" data-dismiss="modal" id="myModalActionClose">&times;</button>
+                
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="_selectedAction == 'email'">
+                    <div class="material-datatables" *ngIf="email">
+                        <div class="table-responsive">
+                            <table 
+                                id="datatables"
+                                class="table table-striped table-no-bordered table-hover" 
+                                cellspacing="0" 
+                                width="100%" 
+                                style="width:100%">
+                                <thead data-background-color="info">
+                                    <tr >
+                                        <th>#</th>
+                                        <th>
+                                            {{getLang('name', 'Name')}}
+                                        </th>
+                                        <th>
+                                            {{getLang('subject', 'Subject')}}
+                                        </th>
+                                    </tr>                                               
+                                </thead>
+                                <tbody>                                           
+                                    <tr *ngFor="let row of email">
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input 
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        [(ngModel)]="row.selected">
+                                                    <span class="form-check-sign">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span>{{row?.title}}</span>
+                                        </td> 
+                                        <td>
+                                            <span>{{row.subject}}</span>
+                                        </td> 
+                                    </tr>
+                                    <tr *ngIf="email.length == 0 && !isLoading" class="text-center">
+                                        <td colspan="5">
+                                            {{getLang('nodata', 'No Data')}}
+                                        </td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>	
+        
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
+                                <button class="btn btn-primary" type="button" (click)="actionSubmit()">
+                                    {{getLang('associate', 'Associate')}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div *ngIf="_selectedAction == 'mailmerge'">
+                    <div class="material-datatables" *ngIf="mailMerge">
+                        <div class="table-responsive">
+                        <table
+                            id="datatables"
+                            class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                            <thead data-background-color="info">
+                                <tr>
+                                    <th>#</th>
+                                    <th>
+                                        {{getLang('name', 'Name')}}
+                                    </th>
+                                    <th>
+                                        {{getLang('subject', 'Subject')}}
+                                    </th>
+                                    
+                                </tr>                                               
+                            </thead>
+                            <tbody>                                           
+                                <tr *ngFor="let row of mailMerge">
+                                    <td>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input 
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    [(ngModel)]="row.selected">
+                                                <span class="form-check-sign">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>{{row?.title}}</span>
+                                    </td> 
+                                    <td>
+                                        <span>{{row.subject}}</span>
+                                    </td> 
+                                        
+                                </tr>
+                                <tr *ngIf="mailMerge.length == 0 && !isLoading" class="text-center">
+                                    <td colspan="5">
+                                        {{getLang('nodata', 'No Data')}}
+                                    </td> 
+                                </tr>
+                            </tbody>
+                        </table>                                   
+                        </div>	
+        
+                        <div class="row">
+                                <div class="col-sm-12 text-right">
+                                <button class="btn btn-primary" type="button" (click)="actionSubmit()">
+                                    {{getLang('associate', 'Associate')}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div *ngIf="_selectedAction == 'sms'">
+                    <div class="material-datatables" *ngIf="sms">
+                        <div class="table-responsive">
+                            <table
+                                id="datatables" 
+                                class="table table-striped table-no-bordered table-hover" 
+                                cellspacing="0" 
+                                width="100%" 
+                                style="width:100%">
+                                <thead data-background-color="info">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>
+                                            {{getLang('name', 'Name')}}
+                                        </th>
+                                        
+                                        <th>
+                                            {{getLang('message', 'Message')}}
+                                        </th>
+                                        
+                                    </tr>                                               
+                                </thead>
+                                <tbody>                                           
+                                    <tr *ngFor="let row of sms">
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input 
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        [(ngModel)]="row.selected">
+                                                    <span class="form-check-sign">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span>{{row?.title}}</span>
+                                        </td> 
+                                        
+                                        <td>
+                                            <span>{{row.content}}</span>
+                                        </td> 
+                                        
+                                    </tr>
+                                    <tr *ngIf="sms.length == 0 && !isLoading" class="text-center">
+                                        <td colspan="5">
+                                            {{getLang('nodata', 'No Data')}}
+                                        </td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>	
+        
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
+                                <button class="btn btn-primary" type="button" (click)="actionSubmit()">
+                                    {{getLang('associate', 'Associate')}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div *ngIf="_selectedAction == 'whatsapp'">
+                    <div class="material-datatables" *ngIf="whatsapp">
+                        <div class="table-responsive">
+                            <table 
+                                id="datatables"
+                                class="table table-striped table-no-bordered table-hover" 
+                                cellspacing="0" 
+                                width="100%" 
+                                style="width:100%">
+                                <thead data-background-color="info">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>
+                                            {{getLang('name', 'Name')}}
+                                        </th>
+                                        <th>
+                                            {{getLang('message', 'Message')}}
+                                        </th>
+                                        
+                                    </tr>                                               
+                                </thead>
+                                <tbody>                                           
+                                    <tr *ngFor="let row of whatsapp">
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input 
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        [(ngModel)]="row.selected">
+                                                    <span class="form-check-sign">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span>{{row?.title}}</span>
+                                        </td> 
+                                        
+                                        <td>
+                                            <span>{{row.content}}</span>
+                                        </td> 
+                                        
+                                    </tr>
+                                    <tr *ngIf="whatsapp.length == 0 && !isLoading" class="text-center">
+                                        <td colspan="5">
+                                            {{getLang('nodata', 'No Data')}}
+                                        </td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>	
+        
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
+                                <button class="btn btn-primary" type="button" (click)="actionSubmit()">
+                                    {{getLang('associate', 'Associate')}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div *ngIf="_selectedAction == 'notification'">
+                    <div class="material-datatables" *ngIf="notification">
+                        <div class="table-responsive">
+                            <table 
+                                id="datatables"
+                                class="table table-striped table-no-bordered table-hover" 
+                                cellspacing="0" 
+                                width="100%" 
+                                style="width:100%">
+                                <thead data-background-color="info">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>
+                                            {{getLang('name', 'Name')}}
+                                        </th>
+                                        
+                                        <th>
+                                            {{getLang('message', 'Message')}}
+                                        </th>
+                                        
+                                    </tr>                                               
+                                </thead>
+                                <tbody>                                           
+                                    <tr *ngFor="let row of notification">
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input 
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        [(ngModel)]="row.selected">
+                                                    <span class="form-check-sign">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span>{{row?.title}}</span>
+                                        </td> 
+                                        
+                                        <td>
+                                            <span>{{row.content}}</span>
+                                        </td> 
+                                        
+                                    </tr>
+                                    <tr *ngIf="notification.length == 0 && !isLoading" class="text-center">
+                                        <td colspan="5">
+                                            {{getLang('nodata', 'No Data')}}
+                                        </td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>	
+        
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
+                                <button class="btn btn-primary" type="button" (click)="actionSubmit()">
+                                    {{getLang('associate', 'Associate')}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div *ngIf="_selectedAction == 'tasks'">
+                    <div class="material-datatables" *ngIf="_taskdata">
+                        <div class="table-responsive">
+                            <table 
+                                id="datatables"
+                                class="table table-striped table-no-bordered table-hover" 
+                                cellspacing="0" 
+                                width="100%" 
+                                style="width:100%">
+                                <thead data-background-color="info">
+                                <tr>
+                                    <th>#</th>
+                                    
+                                    <th>
+                                        {{getLang('title', 'Title')}}
+                                    </th>
+                                    <th>
+                                        {{getLang('priority', 'Priority')}}
+                                    </th>
+                                    <th>
+                                        {{getLang('duedate', 'Due date')}}
+                                    </th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody> 
+                                <tr *ngFor="let row of _taskdata">
+                                    <td>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input 
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    [(ngModel)]="row.selected">
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <span>{{row.title}}</span>
+                                    </td> 
+                                    <td>
+                                        <span>{{row.priority}}</span>
+                                    </td> 
+                                    <td>
+                                        <span>{{row.duedate.dueday}} {{row.duedate.duedaytype}}  {{row.duedate.duecond}} {{row.duedate.duefieldname}}</span>
+                                    </td> 
+                                </tr>
+                                <tr *ngIf="_taskdata.length == 0 && !isLoading" class="text-center">
+                                    <td colspan="6">
+                                        {{getLang('nodata', 'No Data')}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>                                   
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary" type="button" (click)="actionSubmit()">
+                                    {{getLang('associate', 'Associate')}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+    
+

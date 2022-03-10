@@ -1,0 +1,340 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title"> {{getLang('addjobservice', 'Add Job Service')}}</h3>
+
+                    <div class="loader" *ngIf="isLoadingData">
+                        <svg class="circular" viewBox="25 25 50 50">
+                            <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+
+                    <div class="card" *ngIf="!isLoadingData">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <h4 class="card-title"> {{getLang('generalinformation', 'General Information')}}
+                                    </h4>
+                                    <app-wf-permission #wfpermission [formObj]="formObj" 
+                                    [schemaname]="formObj.schemaname" [bindId]="bindId"
+                                    [isOnlyBtn]='false'
+                                        [bindObj]="serviceModel" (onOperation)="onOperation($event)">
+                                    </app-wf-permission>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('servicename', 'Service Name')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput formControlName="title">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('title').valid || (form.get('title').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('title').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('serviceisrequired', 'Service is required !')}}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('servicetype', 'Service Type')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+
+                                            <div class="input-group align-items-center">
+                                                <dynamic-autocomplete *ngIf="category_fields.autocomplete" class="flex-grow-1" [formControlName]="category_fields.fieldname" [setting]="category_fields"
+                                                  [dbvalue]="category_fields.dbvalue">
+                                                </dynamic-autocomplete>
+
+                                                <app-quickadd  [quickfromstyle]="'single'" [id]="'_id'" [quickformschemaname]="'jobservicetype'"
+                                                 [quickdisplayname]="'Type'" class="off-form-quick" (childSubmitData)="getSubmittedData($event)" >
+                                                </app-quickadd>
+                                            </div>
+
+                                            <div [hidden]="form.get('category').valid || (form.get('category').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('category').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('typeisrequired', 'Type is required !')}}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('servicedescription', 'Service Description')}}
+                                            </label>
+                                            <div class="mt-2">
+                                                <angular-editor [placeholder]="'Enter text here...'"
+                                                    formControlName="description">
+                                                </angular-editor>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="!isLoadingData">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <h4 class="card-title">
+                                        {{getLang('selectstaffwhoperformthisservice', 'Select staff who perform this service')}}
+                                        <span class="text-danger">*</span>
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <section class="example-section">
+                                                <mat-checkbox class="example-margin" (change)="setAll($event.checked)">
+                                                    {{getLang('selectall', 'Select All')}}
+                                                </mat-checkbox>
+                                            </section>
+                                            <div class="row membroz-row">
+                                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6 membroz-col d-flex"
+                                                    *ngFor="let staff of staffList">
+                                                    <div class="card card-border">
+                                                        <div class="card-body card-body-10">
+                                                            <div class="d-flex justify-content-end mb-1">
+                                                                <section class="example-section">
+                                                                    <mat-checkbox [(ngModel)]="staff.checked"
+                                                                        class="example-margin"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                    </mat-checkbox>
+                                                                </section>
+                                                            </div>
+
+                                                            <div class="text-center">
+                                                                <div class="d-flex justify-content-center">
+                                                                    <div class="mb-3">
+                                                                        <img [src]="staff.profileimage ? staff.profileimage : '../assets/img/default-avatar.png'"
+                                                                            class="staff-avatar-img rounded-circle"
+                                                                            alt="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="staff-title"> 
+                                                                    <span class="font-bold">{{staff.fullname ? staff.fullname : '---'}} </span> <br>
+                                                                    {{staff?.designationid?.title}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="!isLoadingData">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <h4 class="card-title">
+                                                {{getLang('availablilityindayandhours', 'Availability in day & hours')}}
+                                            </h4>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <app-workingdays (submitted)="workinghoursupdated($event)">
+                                                <button conBtn data-toggle="modal" type="button" class="btn btn-primary" data-target="#workingDayModel"> Working Details </button>
+                                            </app-workingdays>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('workingdays', 'Working Days')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="mt-2 row">
+                                                <div class="col-12 col-md-6">
+                                                    <section class="example-section row">
+                                                        <mat-checkbox class="example-margin m-0 col-12" [disabled]="isdisabled" (change)="setAllDays($event.checked)">
+                                                            <span class="font-bold">{{getLang('selectall', 'Select All')}}</span>
+                                                        </mat-checkbox>
+                                                    </section>
+
+                                                    <section class="example-section row">
+                                                        <mat-checkbox class="example-margin m-0 col-4"
+                                                            [(ngModel)]="day.checked" *ngFor="let day of daysList"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [disabled]="day.disabled">
+                                                            {{day.code}}
+                                                        </mat-checkbox>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="!isLoadingData">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <h4 class="card-title"> {{getLang('advancepriceandcommissionsetting', 'Advance price
+                                        & commission setting')}} </h4>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <label class="col-form-label"> {{getLang('cost', 'Cost')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input type="number" matInput formControlName="charges">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('charges').valid || (form.get('charges').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('charges').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('costisrequired ', 'Cost is required !')}}
+                                                </small>
+                                                <small *ngIf="form.get('charges').hasError('insertonlypositivenumber')"
+                                                    class="error-label">
+                                                    {{getLang('costshouldbepositive ', 'Cost should be positive
+                                                    !')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label class="col-form-label">
+                                                {{getLang('commission', 'Commission')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input type="number" matInput formControlName="commission">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('commission').valid || (form.get('commission').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="form.get('commission').hasError('insertonlypositivenumber')"
+                                                    class="error-label">
+                                                    {{getLang('chargesshouldbepositive ', 'Charges should be positive
+                                                    !')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label class="col-form-label">
+                                                {{getLang('tax(inclidesinprice)', 'TAX (Includes In Price)')}}
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl multiple formControlName="taxes">
+                                                    <mat-option [value]="taxes._id" *ngFor="let taxes of taxesList">
+                                                        {{taxes?.taxname}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="!isLoadingData">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <h4 class="card-title mb-0"> {{getLang('imagegallery', 'Image Gallery')}} </h4>
+                                    <div class="font-13 mb-3"><span class="font-weight-bold">{{getLang('tips:',
+                                            'Tips:')}} </span>
+                                        {{getLang('pleaseuseimageswitha4:2ratio(minimunof1200pxwidth).',
+                                        'Please use images with a 4:2 ratio (minimum of 1200px width).')}}
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+
+
+                                            <div class="mt-2">
+                                                <div class="row membroz-row">
+                                                    <div
+                                                        class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 membroz-col d-flex flex-grow-1 mb-3">
+                                                        <span class="btn-file text-center add-upload-inner-vcenter">
+                                                            <label class="upload_button mb-0 add-upload-main"
+                                                                for="fileupload">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18.77"
+                                                                    height="18.77" viewBox="0 0 18.77 18.77">
+                                                                    <g transform="translate(-807.636 -666.636)">
+                                                                        <line x2="11.858" y2="11.858"
+                                                                            transform="translate(817.021 667.636) rotate(45)"
+                                                                            fill="none" stroke="#949494"
+                                                                            stroke-linecap="round" stroke-width="1" />
+                                                                        <line x1="11.858" y2="11.858"
+                                                                            transform="translate(817.021 667.636) rotate(45)"
+                                                                            fill="none" stroke="#949494"
+                                                                            stroke-linecap="round" stroke-width="1" />
+                                                                    </g>
+                                                                </svg>
+                                                                <div class="mt-2"> {{getLang('addimage', 'Add image')}}
+                                                                </div>
+                                                            </label>
+                                                            <input type="file" id="fileupload" #fileInput ng2FileSelect
+                                                                [style.display]="'none'" [uploader]="customeUploader"
+                                                                (change)="fileInput.value=''" multiple />
+                                                        </span>
+                                                        <img class="loading" src="assets/img/image-loader.GIF"
+                                                            style="height: 100px; width: 100px; display: none">
+
+
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 membroz-col d-flex flex-grow-1 mb-3"
+                                                        *ngFor="let item of formImageArray;let i = index">
+                                                        <div class="position-relative d-flex">
+                                                            <img [src]="item.attachment" alt=""
+                                                                class="img-fluid img-add-product">
+                                                            <span class="img-add-product-delete">
+                                                                <button mat-raised-button
+                                                                type="button"
+                                                                    class="btn btn-just-icon btn-link"
+                                                                    (click)="removeImg(item.attachment)">
+                                                                    <i class="material-icons">cancel</i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoadingData">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-default" type="button"
+                                [routerLink]="['/pages/dynamic-list/list/jobservice']" [disabled]="disableButton">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+                            <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton"
+                                *ngIf="wfpermission && wfpermission.wfAlterPerms">
+                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>
+

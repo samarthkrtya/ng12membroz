@@ -1,0 +1,186 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+        <app-item-list [dataContent]="dataContent" [schema]="'events'" [formObj]="formObj"
+          (onItemListsData)="getSubmittedItemListsData($event)">
+        </app-item-list>
+      </div>
+
+      <div class="col-xl-9">
+
+        <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center"
+          style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+          <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+        </div>
+
+        <ng-container *ngIf="contentVisibility && dataContent">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h4 class="card-title">
+                        {{formObj.dispalyformname}} {{getLang('details','Details')}}
+                    </h4>
+                </div>
+                <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                    <button type="button" class="btn btn-primary ml-2"
+                        [routerLink]="['/pages/dynamic-forms/form/' + formObj._id+ '/' + bindId ]">
+                        <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                    </button>
+
+                    <span class="dropdown inline-block text-right ml-2" *ngIf="dataContent.property && dataContent.property.type  && dataContent.property.type == 'program'">
+                      <button class="dropdown-toggle btn btn-primary mrtb0" data-toggle="dropdown">
+                          {{getLang('more','More')}}
+                          <b class="caret"></b>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                          <ng-container *ngIf="!functionPermission.includes('Publish')">
+                              <a *ngIf="dataContent.status == 'active'" class="dropdown-item cursor-pointer" (click)="isOpen = !isOpen"
+                                  data-toggle="modal" data-target="#publish">
+                                  {{getLang('publish', 'Publish')}}
+                              </a>
+                          </ng-container>
+                        </div>
+                      </span>
+                </div>
+            </div>
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                  <app-event-detail [dataContent]="dataContent">
+                  </app-event-detail>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="mt-3" *ngIf="tabPermission.includes('Enrollment')">
+            <ng-container>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{getLang('enrollment','Enrollment')}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-enrollment [dataContent]="dataContent" [bindId]="bindId" [reloadingStr]="reloadingStr" (onAdded)="getSubmittedData($event , 'bills')"  >
+                        </app-enrollment>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-container>
+        </div>
+
+
+        
+        <div class="mt-3" *ngIf="tabPermission.includes('Ticket')">
+            <ng-container>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{getLang('ticket','Ticket')}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-tickets [dataContent]="dataContent" [bindId]="bindId" [reloadingStr]="reloadingStr" (onAdded)="getSubmittedData($event , 'bills')"  >
+                        </app-tickets>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-container>
+        </div>
+
+
+          <div class="mt-3"  *ngIf="tabPermission.includes('Scheduler')">
+            <ng-container>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{getLang('scheduler','Scheduler')}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-scheduler [dataContent]="dataContent" [bindId]="bindId" [reloadingStr]="reloadingStr" (submittedData)="getSubmittedData($event , 'scheduler')" >
+                        </app-scheduler>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-container>
+        </div>
+
+        <div class="mt-3" *ngIf="tabPermission.includes('Invitees')">
+            <ng-container>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{getLang('invitees','Invitees')}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-invitees [dataContent]="dataContent" [bindId]="bindId" [reloadingStr]="reloadingStr" (onAdded)="getSubmittedData($event , 'invitees')"  >
+                        </app-invitees>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-container>
+        </div>
+
+        <div class="mt-3" *ngIf="tabPermission.includes('Bill Payments')">
+            <ng-container>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{getLang('blpymnt','Bill Payments')}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <mat-tab-group>
+                                    <mat-tab label="Bill Payments">
+                                        <app-billpayments [dataContent]="dataContent" [reloadingStr]="reloadingStr" >
+                                        </app-billpayments>
+                                    </mat-tab>
+                                    <mat-tab label="Bill">
+                                        <app-bills [dataContent]="dataContent" [reloadingStr]="reloadingStr">
+                                        </app-bills>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-container>
+        </div>
+
+          <div class="mt-3" *ngIf="tabPermission.includes('Attendee')">
+            <ng-container>
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{getLang('attendee','Attendee')}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-attendee [dataContent]="dataContent" [bindId]="bindId" [reloadingStr]="reloadingStr" (onAdded)="getSubmittedData($event , 'attendee')"  >
+                        </app-attendee>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-container>
+        </div>
+
+        
+        
+      
+             
+
+        </ng-container>
+      </div>
+    </div>
+
+
+
+    </div>
+  </div> 
+
+
+
+
+  
+<app-appointment-booking *ngIf="isOpen"  [dataContent]="dataContent" (onAppointmentData)="getSubmitted($event, 'scheduler')" [bindId]="bindId"  ></app-appointment-booking>

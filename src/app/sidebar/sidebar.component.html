@@ -1,0 +1,242 @@
+<div class="logo text-center">
+  <a href="" class="simple-text logo-normal">
+    <!-- Creative Tim -->
+    <img class="logo-main-img" *ngIf="logoPath" [src]="logoPath" />
+    <img class="logo-main-img" *ngIf="!isLoadLogo && !logoPath" src="/assets/img/default-logo.png" />
+  </a>
+</div>
+
+<div class="sidebar-wrapper">
+
+  <div class="user" *ngIf="isNotMobileMenu()">
+    <div class="photo">
+      <img *ngIf="!profilePicPath" src="assets/img/default-avatar.png">
+      <img *ngIf="profilePicPath" src="{{serverPath}}{{profilePicPath}}"
+        onError="this.src='assets/img/default-avatar.png';">
+    </div>
+    <div class="user-info">
+      <a data-toggle="collapse" href="#collapseExample" class="collapsed">
+        <span class="sidebar-username" *ngIf="username == ''">
+          Demo User
+          <b class="caret"></b>
+        </span>
+        <span class="sidebar-username" *ngIf="username != ''">
+          {{username | titlecase}}
+          <b class="caret"></b>
+        </span>
+      </a>
+      <div class="collapse" id="collapseExample">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" (click)="gotoMyprofile()">
+              <span class="sidebar-mini">MP</span>
+              <span class="sidebar-normal">My Profile</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item cursor-pointer" *ngIf="isAccandBillEnable && authService.currentUser.roletype != 'M'" [routerLink]="['/pages/myaccount']">
+              <span class="sidebar-mini">AB</span>
+              <span class="sidebar-normal">Account & Billing</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item cursor-pointer" [routerLink]="['/pages/admins/reset-password']">
+              <span class="sidebar-mini">CP</span>
+              <span class="sidebar-normal">Change Password</span>
+            </a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" (click)="gotoMysettings()">
+              <span class="sidebar-mini">S</span>
+              <span class="sidebar-normal">My Settings</span>
+            </a>
+          </li> -->
+          <li class="nav-item"
+            *ngIf="authService.currentUser.roletype == 'M' && isWalletEnable == true && walletId != undefined">
+
+            <a class="nav-link" [routerLink]="['/pages/wallet/summary/' + walletId]">
+              <span class="sidebar-mini">W</span>
+              <span class="sidebar-normal">Wallet Settings</span>
+            </a>
+          </li>
+          <!-- <li class="nav-item" *ngIf="accMenu != undefined && authService.currentUser.roletype != 'M'">
+            <button [routerLink]="['/pages/admin-account/admin-account-overview']"
+              class="btn btn-primary btn-fill btn-block nav-item">
+              <i class="material-icons">{{accMenu.materialicon}}</i>
+              <p>{{accMenu.title}}</p>
+            </button>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" (click)="logout()">
+              <span class="sidebar-mini">SO</span>
+              <span class="sidebar-normal">Sign Out</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="user" *ngIf="isMobileMenu()">
+    <ul class="nav navbar-nav nav-mobile-menu">
+      <!-- <li routerlinkactive="active" class="nav-item">
+        <a [routerLink]="['/pages/dynamic-list/list/followup']" class="nav-link">
+          <i class="material-icons">phone </i>
+          <span class="notification">{{followUpCounter}}</span>
+          <p class="d-lg-none d-md-block">
+            Call Notifications
+          </p>
+        </a>
+      </li> -->
+      <li *ngIf="isSettingEnable" routerlinkactive="active" class="nav-item">
+        <a [routerLink]="['/pages/menublocklist/5bc4568ffc478d2044076c3a']" class="nav-link">
+          <i class="material-icons">settings</i>
+          <p class="d-lg-none d-md-block">
+            Setting
+          </p>
+        </a>
+      </li>
+      <li *ngIf="isWalletEnable && authRole !='M'" routerlinkactive="active" class="nav-item">
+        <a [routerLink]="['/pages/wallet-module/debit']" class="nav-link">
+          <i class="material-icons">account_balance_wallet</i>
+          <p class="d-lg-none d-md-block">
+            Wallet
+          </p>
+        </a>
+      </li>
+      <li *ngIf="calendarmenu" routerlinkactive="active" class="nav-item">
+        <a [routerLink]="['/pages/calendar/my-calendar']" class="nav-link">
+          <i class="material-icons">calendar_today</i>
+          <p class="d-lg-none d-md-block">
+            Calendar
+          </p>
+        </a>
+      </li>
+      <li class="nav-item dropdown" *ngIf="authRole !='M'">
+        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false" aria-haspopup="true">
+          <i class="material-icons">notifications</i>
+          <!-- <span class="notification">{{_notificationCounter}}</span> -->
+          <span class="notification" [ngClass]=" (activitiesLists.length != 0)? 'badge-num' : ' '"
+          id="counterbadge">{{activitiesLists.length}}</span>
+          <p class="d-lg-none d-md-block">
+            Notifications
+            <b class="caret"></b>
+          </p>
+
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="#" *ngIf="activitiesLists.length == 0">No Notifications !!</a>
+          <a class="dropdown-item" [routerLink]="[activity.url]" *ngFor="let activity of activitiesLists">
+            {{activity?.title}}
+            <br>
+            {{activity?.duedate | date }}
+          </a>
+        </div>
+        <!-- <ul class="dropdown-menu nav mnoti">
+
+                    <li *ngFor="let item of _taskLists">
+                        <a
+                            [routerLink]="['/pages/notification/form/' + item._id]" >
+                            <div class="row row0"  >
+                                <div class="notifications-icon badge badge-green col-xs-2 col-sm-1 col-md-1 col-lg-1 pdlr0">
+                                    <span class="material-icons font16 line-height18">check_box</span>
+                                </div>
+                                <div class="notifications-details col-xs-10 col-sm-11 col-md-11 col-lg-11 pdl10r0">
+                                    <div class="whitespace-normal" >{{item.title}}</div>
+                                    <div  class="notification-timestamp">{{item.createdAt}}</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li><a [routerLink]="['/pages/notification/lists']">View All Tasks</a></li>
+
+                    </ul> -->
+      </li>
+      <li class="nav-item dropdown" *ngIf="isSupportEnable">
+        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false" aria-haspopup="true">
+          <i class="material-icons">help_outline</i>
+          <p class="d-lg-none d-md-block">
+            Help
+            <b class="caret"></b>
+          </p>
+
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item cursor-pointer" target="_blank" (click)="goToLink('www.membroz.com/documents/company-profile/')">Help</a>
+          <a class="dropdown-item cursor-pointer" target="_blank" (click)="goToLink('www.membroz.com/additional-services/video/')">Traning Videos</a>
+          <a class="dropdown-item cursor-pointer" [routerLink]="['/pages/dynamic-list/list/support']"> Support Ticket </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+
+
+  <ul class="nav" *ngIf="authRole!=='M'">
+    <li routerLinkActive="active" *ngFor="let menuitem of selectedMenus" class="nav-item">
+      <!--If is a single link-->
+      <a [routerLink]="[menuitem.url]" *ngIf="(menuitem.url  != undefined && menuitem.url !== '' && menuitem.menuname != 'support')" class="nav-link">
+        <i class="material-icons">{{menuitem.materialicon}}</i>
+        <p>{{menuitem.text}}</p> 
+      </a>
+
+      <a [routerLink]="['/pages/menublocklist/' + menuitem.value]"
+        [ngClass]="(menuitem.menuname == 'adminaccount') ? 'btn btn-primary btn-fill btn-block' : ''"
+        *ngIf="(menuitem.url != undefined && menuitem.url.length == 0 && menuitem.menuname != 'clientsetting'  && menuitem.menuname != 'support')" class="nav-link">
+        <i class="material-icons">{{menuitem.materialicon}}</i>
+        <p>{{menuitem.text}}</p> 
+      </a>
+
+      <!--If it have a submenu-->
+      <a data-toggle="collapse" href="#{{menuitem.collapse}}" *ngIf="menuitem.type === 'sub'" (click)="updatePS()"
+        class="nav-link">
+        <i class="material-icons">{{menuitem.icontype}}</i>
+        <p>{{menuitem.title}}<b class="caret"></b></p>
+      </a>
+
+      <!--Display the submenu items-->
+      <div id="{{menuitem.collapse}}" class="collapse" *ngIf="menuitem.type === 'sub'">
+        <ul class="nav">
+          <li routerLinkActive="active" *ngFor="let childitem of menuitem.children" class="nav-item">
+            <a [routerLink]="[menuitem.path, childitem.path]" class="nav-link">
+              <span class="sidebar-mini">{{childitem.ab}}</span>
+              <span class="sidebar-normal">{{childitem.title}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+
+  <ul class="nav" *ngIf="authRole=='M'">
+    <li routerLinkActive="active" *ngFor="let menuitem of selectedMenus" class="nav-item">
+
+      <!--If is a single link-->
+      <a [routerLink]="[menuitem.url]" *ngIf="!menuitem.children  && menuitem.menuname != 'membersupport'" class="nav-link">
+        <i class="material-icons">{{menuitem.materialicon}}</i>
+        <p>{{menuitem.text}}</p>
+      </a>
+
+      <!--If it have a submenu-->
+      <a data-toggle="collapse" href="#{{menuitem.collapse}}" *ngIf="menuitem.children" (click)="updatePS()"
+        class="nav-link">
+        <i class="material-icons">{{menuitem.materialicon}}</i>
+        <p>{{menuitem.text}}<b class="caret"></b></p>
+      </a>
+
+      <!--Display the submenu items-->
+      <div id="{{menuitem.collapse}}" class="collapse" *ngIf="menuitem.children">
+        <ul class="nav">
+          <li routerLinkActive="active" *ngFor="let childitem of menuitem.children" class="nav-item">
+            <a [routerLink]="[childitem.url]" class="nav-link">
+              <span class="sidebar-mini">{{childitem.shortname}}</span>
+              <span class="sidebar-normal">{{childitem.text}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+
+
+</div>

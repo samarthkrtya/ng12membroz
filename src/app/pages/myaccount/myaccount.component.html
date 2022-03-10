@@ -1,0 +1,554 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div fxLayout="row" *ngIf="isLoadingData" fxLayoutAlign="space-around center"
+                style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+            </div>
+
+            <div class="col-xl-10 ml-auto mr-auto" *ngIf="!isLoadingData">
+                <h3 class="card-title"> {{getLang('myacn&bilng', 'My Account & Billing')}} </h3>
+                <div class="card" >
+                    <div class="card-body">
+                        <ng-container *ngIf="dataContent;else empy">
+                        <h4 class="card-title"> {{getLang('mypln', 'My Plan')}} </h4>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <mat-tab-group >
+                                    <mat-tab label="My Plan">
+                                        <div class="py-4 px-3">
+                                            <div class="row">
+                                                <div class="col-md-6 col-xl-5 mb-4 mb-md-0">
+                                                    <h4 class="mt-2 mb-4"> {{dataContent?.membership?.membershipname}} :
+                                                        {{dataContent.license ? dataContent?.license?.users : ''}} Users</h4>
+                                                    <div class="mb-2">{{usercount?.remaininguser}} remaining users of
+                                                        {{dataContent.license ? dataContent?.license?.users : ''}} Users</div>
+                                                    <mat-progress-bar mode="determinate"
+                                                        [value]="usercount.remaininguserinper"></mat-progress-bar>
+                                                    <div class="mt-4 mb-2">{{membercount?.remainingmember}} remaining
+                                                        Members of {{dataContent?.license?.members}} Members</div>
+                                                    <mat-progress-bar mode="determinate"
+                                                        [value]="membercount.remainingmemberinper"></mat-progress-bar>
+                                                    <div class="mt-4 mb-4 text-danger" *ngIf="dataContent.nextbilldate">
+                                                        Your Subscription will be renewed
+                                                        on {{dataContent?.nextbilldate | toLocaleDate }} </div>
+                                                    <h4 class="mt-2 mb-3 d-none">Addons</h4>
+                                                    <h4 class="mt-2 mb-1 d-none">SMS</h4>
+                                                    <div class="border-outer-secondary d-none">
+                                                        <table class="table table-hover table-membroz-plain">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-right">SMS</th>
+                                                                    <th class="text-right">Price</th>
+                                                                    <th class="text-right"></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let item of sms">
+                                                                    <td class="text-right">{{item?.limit}}</td>
+                                                                    <td class="text-right">{{item?.cost |
+                                                                        myCurrencyPipe}}</td>
+                                                                    <td class="text-right"><a href="#">Buy Now</a></td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <h4 class="mt-2 mb-1 d-none">Email</h4>
+                                                    <div class="border-outer-secondary d-none">
+                                                        <table class="table table-hover table-membroz-plain">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-right">Email</th>
+                                                                    <th class="text-right">Price</th>
+                                                                    <th class="text-right"></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let item of email">
+                                                                    <td class="text-right">{{item?.limit}}</td>
+                                                                    <td class="text-right">{{item?.cost |
+                                                                        myCurrencyPipe}}</td>
+                                                                    <td class="text-right"><a href="#">Buy Now</a></td>
+                                                                </tr>
+
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                                <ng-container
+                                                    *ngIf="dataContent.upgrademembership && dataContent.upgrademembership.length > 0">
+                                                    <div class="col-md-6 col-xl-5 ml-auto mr-auto">
+                                                        <h4 class="mt-2 mb-4">Upgrade to the Standard plan and get</h4>
+
+                                                        <div class="border-outer-secondary mb-4"
+                                                            *ngFor="let plan of dataContent.upgrademembership">
+                                                            <div class="pricing-box">
+                                                                <div class="text-center">
+                                                                    <h3 class="pricing-box-head">
+                                                                        {{plan?.membershipname}}
+                                                                    </h3>
+                                                                    <div class="pricing-amount pricing-color-2">
+                                                                        <!-- <sup     class="nprice-number-cur">₹</sup>  -->
+                                                                        {{plan?.property?.cost | myCurrencyPipe}}
+                                                                    </div>
+                                                                    <div class="nprice-month">/ month </div>
+                                                                </div>
+                                                                <!-- <h5 class="text-center mt-2">All Feature from BASIC +</h5>
+                                                            <ul class="pricing-feature-list mt-4 mb-4">
+                                                                <li>10 Users</li>
+                                                                <li>CRM (Calling App included)</li>
+                                                                <li>POS</li>
+                                                                <li>Wallet &amp; Cashback</li>
+                                                                <li>Accounting &amp; Finance Report</li>
+                                                            </ul> -->
+                                                                <div [innerHtml]="plan?.desc">
+                                                                </div>
+                                                                <div class="text-center mb-3">
+                                                                    <a href="javascript:void(0)" [class.disabled]="btnDisable" (click)="upgradePlan(plan)" class="btn btn-primary">Upgrade Now</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </mat-tab>
+                                    <!-- <mat-tab label="Payment Method">
+                                        <div class="py-3">
+
+                                            <div class="mb-2 d-flex justify-content-end ">
+                                                <button class="btn btn-primary" type="button" data-toggle="modal"
+                                                    data-target="#myModalAddPaymentMethod" [disabled]="btnDisable">
+                                                    Add Payment Method
+                                                </button>
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-membroz">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Type </th>
+                                                            <th>Card Details</th>
+                                                            <th>Expiry</th>
+                                                            <th>Holder name</th>
+                                                            <th>Default</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let item of cardDetail">
+                                                            <td>
+
+                                                                <img *ngIf="item.cctype == 'visa'"
+                                                                    src="assets/img/visa-card.svg" alt="">
+                                                                <img *ngIf="item.cctype == 'mastercard'"
+                                                                    src="assets/img/mastercard.svg" alt="">
+                                                                <img *ngIf="item.cctype == 'discover'"
+                                                                    src="assets/img/discover-card.svg" alt="">
+                                                                <img *ngIf="item.cctype == 'amex'"
+                                                                    src="assets/img/american-express-card.svg" alt="">
+                                                                <img *ngIf="item.cctype == 'rupay'"
+                                                                    src="assets/img/rupay-card.svg" alt="">
+                                                                <img *ngIf="item.cctype == 'jcb'"
+                                                                    src="assets/img/jcb-card.svg" alt="">
+                                                                <img *ngIf="item.cctype == 'diners'"
+                                                                    src="assets/img/diners-card.svg" alt="">
+
+                                                            </td>
+                                                            <td><span class="mr-4">{{item.cardnumber}}
+                                                                </span>
+                                                                <span> </span>
+                                                            </td>
+                                                            <td>
+                                                                <span>
+                                                                    {{ item.expiry ? (item.expiry | date: 'MM/yyyy') : '---'}}
+                                                                </span>
+                                                            </td>
+                                                            <td> {{item.holdername}} </td>
+                                                            <td>
+                                                                <mat-slide-toggle [(ngModel)]="item.default"
+                                                                    (change)="updateCard(item , 'update' , $event)"
+                                                                    [disabled]="btnDisable">
+                                                                </mat-slide-toggle>
+                                                            </td>
+                                                            <td>
+                                                                <button mat-raised-button type="button"
+                                                                    *ngIf="!item.default" matTooltip="Delete"
+                                                                    [matTooltipPosition]="'above'"
+                                                                    data-original-title="Delete"
+                                                                    (click)="updateCard(item , 'delete' , $event)"
+                                                                    [disabled]="btnDisable"
+                                                                    class="btn btn-link btn-red btn-just-icon">
+                                                                    <i class="material-icons">delete</i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </mat-tab> -->
+                                    <mat-tab label="Billing Information">
+                                        <div class="py-4 px-3">
+                                            <div class="row">
+                                                <form [formGroup]="branchForm"
+                                                    (ngSubmit)="onSubmit(branchForm.value,branchForm.valid)" novalidate>
+                                                    <div class="offset-xl-1 col-xl-10">
+                                                        <div class="p-0">
+                                                            <div class="row">
+
+                                                                <div class="col-sm-5">
+
+                                                                    <div class="member-img-main position-relative member-profile-img-border">
+                                                                        <img [src]="dataContent.branchlogo ? dataContent.branchlogo : '../assets/img/default-avatar.png'"
+                                                                            class="img-fluid w-100"
+                                                                            alt="">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-7">
+                                                                    <label class="col-form-label"> Contact Person
+                                                                    </label>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text"
+                                                                            formControlName="contactperson" matInput>
+                                                                    </mat-form-field>
+                                                                    <div [hidden]="branchForm.get('contactperson').valid || (branchForm.get('contactperson').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="branchForm.get('contactperson').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('contactpersonisrequired',
+                                                                            'Contact Person is Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label"> Company /
+                                                                        Organization
+                                                                    </label>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text" matInput
+                                                                            formControlName="branchname">
+                                                                    </mat-form-field>
+                                                                    <div [hidden]="branchForm.get('branchname').valid || (branchForm.get('branchname').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="branchForm.get('branchname').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('branchnameisrequired',
+                                                                            'Company / Organization is Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label"> Email Address
+                                                                    </label>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="email" matInput
+                                                                            formControlName="billingemail">
+                                                                    </mat-form-field>
+                                                                    <div [hidden]="branchForm.get('billingemail').valid || (branchForm.get('billingemail').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="branchForm.get('billingemail').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('emailisrequired',
+                                                                            'Email is Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label"> Street Address
+                                                                    </label>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text" matInput
+                                                                            formControlName="address">
+                                                                    </mat-form-field>
+                                                                    <div [hidden]="branchForm.get('address').valid || (branchForm.get('address').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="branchForm.get('address').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('addressrequired',
+                                                                            'Address is Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="col-form-label"> Zip Code </label>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text" matInput
+                                                                            formControlName="postcode">
+                                                                    </mat-form-field>
+                                                                    <div [hidden]="branchForm.get('postcode').valid || (branchForm.get('postcode').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="branchForm.get('postcode').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('postcoderequired',
+                                                                            'Postcode is Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="col-form-label"> City </label>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text" matInput
+                                                                            formControlName="city">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="col-form-label"> Country </label>
+                                                                    <dynamic-autocomplete
+                                                                        [formControlName]="country_fields.fieldname"
+                                                                        [setting]="country_fields"
+                                                                        [dbvalue]="country_fields.dbvalue">
+                                                                        <!-- (added)="onItemAdded($event)" -->
+                                                                    </dynamic-autocomplete>
+                                                                    <div [hidden]="branchForm.get('country').valid || (branchForm.get('country').pristine && !submitted)"
+                                                                        class="text-danger">
+                                                                        <small
+                                                                            *ngIf="branchForm.get('country').hasError('required')"
+                                                                            class="error-label">
+                                                                            {{getLang('countryrequired',
+                                                                            'Country is Required')}}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="col-form-label"> GST Number </label>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="text" matInput
+                                                                            formControlName="gstnumber">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-sm-12 text-right">
+                                                                    <button class="btn btn-primary ml-2" type="submit"
+                                                                        [disabled]="btnDisable">
+                                                                        <i class="material-icons">save</i> Save
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                    </mat-tab>
+                                    <mat-tab label="Invoices">
+                                        <div class="py-3">
+
+                                            <h4>Review and download past invoices</h4>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-membroz">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Invoice Id </th>
+                                                            <th>Order Date</th>
+                                                            <th class="text-right">Total</th>
+                                                            <th class="text-right">Status</th>
+                                                            <th class="text-right">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let itm of invoices">
+                                                            <td> {{itm?.prefix}}-{{itm?.invoicenumber}}</td>
+                                                            <td>{{itm?.scheduledate | date: 'dd/MM/yyyy'}}</td>
+                                                            <td class="text-right">{{itm?.totalamount | myCurrencyPipe
+                                                                }}</td>
+                                                            <td class="text-right">
+                                                                <span class="font-weight-bold"
+                                                                    [ngClass]="itm?.status == 'Paid' ?  'attend-working-box attend-text-green' : 'attend-absent-box attend-text-red'">
+                                                                    {{itm?.status}}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <button mat-raised-button type="button"
+                                                                    matTooltip="Download" [matTooltipPosition]="'above'"
+                                                                    data-original-title="Download"
+                                                                    (click)="downloadInv()"
+                                                                    class="btn btn-link btn-primary btn-just-icon">
+                                                                    <i class="material-icons">download</i>
+                                                                </button>
+
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-template #empy>
+                        <h4 class="card-title"> {{getLang('nodataavail', 'No Data Available !')}} </h4>
+                    </ng-template>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="myModalAddPaymentMethod" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form [formGroup]="cardForm" (ngSubmit)="onSubmitMethod(cardForm.value,cardForm.valid)" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Payment Method</h4>
+                    <button type="button" id="methodClose" class="close" (click)="cardForm.reset()"
+                        data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-form-label"> Card Number
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="position-relative">
+                                <mat-form-field class="example-full-width">
+                                    <input type="number" matInput formControlName="number">
+                                </mat-form-field>
+                                <div [hidden]="cardForm.get('number').valid || (cardForm.get('number').pristine && !submitted)"
+                                    class="text-danger">
+                                    <small *ngIf="cardForm.get('number').hasError('required')" class="error-label">
+                                        {{getLang('cardnumberisrequired', 'Card Number is Required')}}
+                                    </small>
+                                    <small
+                                        *ngIf="cardForm.get('number').hasError('insertonlypositivenumber') || cardForm.get('number').hasError('insertvalidcard')"
+                                        class="error-label">
+                                        {{getLang('cardnumberisinvalid', 'Card Number is invalid')}}
+                                    </small>
+
+                                </div>
+                                <span class="box-card-icon">
+                                    <img *ngIf="cardForm.get('cctype').value == 'visa'" src="assets/img/visa-card.svg"
+                                        alt="">
+                                    <img *ngIf="cardForm.get('cctype').value == 'mastercard'"
+                                        src="assets/img/mastercard.svg" alt="">
+                                    <img *ngIf="cardForm.get('cctype').value == 'discover'"
+                                        src="assets/img/discover-card.svg" alt="">
+                                    <img *ngIf="cardForm.get('cctype').value == 'amex'"
+                                        src="assets/img/american-express-card.svg" alt="">
+                                    <img *ngIf="cardForm.get('cctype').value == 'rupay'" src="assets/img/rupay-card.svg"
+                                        alt="">
+                                    <img *ngIf="cardForm.get('cctype').value == 'jcb'" src="assets/img/jcb-card.svg"
+                                        alt="">
+                                    <img *ngIf="cardForm.get('cctype').value == 'diners'"
+                                        src="assets/img/diners-card.svg" alt="">
+
+
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="col-form-label"> Expiry Date
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <mat-form-field>
+                                <input matInput [matDatepicker]="picker" formControlName="expiry" [min]="today">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker startView="multi-year" (monthSelected)="monthSelected($event)">
+                                </mat-datepicker>
+                            </mat-form-field>
+
+                            <div [hidden]="cardForm.get('expiry').valid || (cardForm.get('expiry').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="cardForm.get('expiry').hasError('required')" class="error-label">
+                                    {{getLang('expirydateisrequired', 'Expiry Date is Required')}}
+                                </small>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="col-form-label"> CVC / CVV
+                                <span class="text-danger">*</span>
+                            </label>
+                            <mat-form-field class="example-full-width">
+                                <input type="number" matInput formControlName="csv">
+                            </mat-form-field>
+                            <div [hidden]="cardForm.get('csv').valid || (cardForm.get('csv').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="cardForm.get('csv').hasError('required')" class="error-label">
+                                    {{getLang('cvvisrequired', 'CVV is Required')}}
+                                </small>
+                                <small
+                                    *ngIf="cardForm.get('csv').hasError('insertonlypositivenumber') || cardForm.get('csv').hasError('insertonlythreenumber')"
+                                    class="error-label">
+                                    {{getLang('cvvisinvalid', 'CVV is invalid')}}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <label class="col-form-label"> Cardholder Name
+                                <span class="text-danger">*</span>
+                            </label>
+                            <mat-form-field class="example-full-width">
+                                <input type="text" matInput formControlName="holdername">
+                            </mat-form-field>
+                            <div [hidden]="cardForm.get('holdername').valid || (cardForm.get('holdername').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="cardForm.get('holdername').hasError('required')" class="error-label">
+                                    {{getLang('cardholderisrequired', 'Cardholder is Required')}}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+
+                            <mat-slide-toggle formControlName="default">
+                                <label class="col-form-label">
+                                    Is default
+                                </label>
+                            </mat-slide-toggle>
+
+
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="mt-2 mb-3">
+                                <mat-checkbox formControlName="terms">I agree to the <a href="#">Terms of Service</a>.
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <p>Your billing information will be encrypted and is 100% safe with our payment processing
+                                partner.</p>
+                            <p>Payment information is not stored on our servers.</p>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" (click)="cardForm.reset()" data-dismiss="modal">
+                        <i class="material-icons">close</i> Cancel
+                    </button>
+                    <button class="btn btn-primary ml-2" [disabled]="btnDisable" type="submit">
+                        <i class="material-icons">save</i> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>

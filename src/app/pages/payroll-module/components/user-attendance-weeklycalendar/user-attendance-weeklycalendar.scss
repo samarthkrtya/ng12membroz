@@ -1,0 +1,29 @@
+.xerobutton{
+    background-color: #f57c00;
+    border-radius: 60px;
+    border: none;
+    color: #eeeeee;
+    cursor: pointer;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 17px;
+    padding: 7px 10px;
+    text-align: center;
+    text-decoration: none;
+    -webkit-animation: glowingbtn 1300ms infinite;
+    animation: glowingbtn 1300ms infinite;
+}
+@keyframes glowingbtn {
+    0% {
+        background-color: #f57c00;
+        box-shadow: 0 0 5px #f57c00;
+    }
+    50% {
+        background-color: #ffa447;
+        box-shadow: 0 0 20px #ffa447;
+    }
+    100% {
+        background-color: #f57c00;
+        box-shadow: 0 0 5px #f57c00;
+    }
+} 

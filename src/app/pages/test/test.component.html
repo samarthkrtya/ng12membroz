@@ -1,0 +1,1506 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="offset-xl-1 col-xl-10">
+        <mat-tab-group class="frontdesk-tab-card" id="create-campaign">
+          <mat-tab label="Email">
+            <ng-template matTabContent>
+              <div class="card mt-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-10 col-lg-10 col-xl-10 mr-auto ml-auto">
+                      <h4 class="card-title">Set up your email campaign</h4>
+                      <label class="col-form-label">
+                        Campaign Name
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput value="">
+                        <mat-hint>Give your campaign name to help organize and locate it easily within your account.
+                        </mat-hint>
+                      </mat-form-field>
+
+
+
+                      <label class="col-form-label">
+                        To
+                      </label>
+                      <mat-form-field>
+                        <mat-select matNativeControl required>
+                          <mat-option value="" selected>Choose an audience </mat-option>
+                          <mat-option value="Membroz 2019">Membroz 2019</mat-option>
+                          <mat-option value="Membroz 2020">Membroz 2020</mat-option>
+                          <mat-option value="Membroz 2021">Membroz 2021</mat-option>
+                        </mat-select>
+                        <mat-hint>Select the audience group to send the emails.</mat-hint>
+                      </mat-form-field>
+
+
+
+                      <label class="col-form-label">
+                        From
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput value="">
+                        <mat-hint>Your company email address </mat-hint>
+                      </mat-form-field>
+
+                      <label class="col-form-label">
+                        Subject
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput value="">
+                        <mat-hint>See how your subject line displayed</mat-hint>
+                      </mat-form-field>
+
+
+                      <div class="d-flex justify-content-end">
+                        <button class="btn btn-default" type="button">
+                          <i class="material-icons">close</i> Cancel
+                        </button>
+                        <button class="btn btn-primary ml-2" type="button">
+                          <i class="material-icons">save</i> Save for Later
+                        </button>
+                        <button class="btn btn-primary ml-2" type="button">
+                          Next <i class="material-icons">east</i>
+                        </button>
+                      </div>
+
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+          <mat-tab label="SMS">
+            <div class="card mt-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-10 col-lg-10 col-xl-10 mr-auto ml-auto">
+                    <h4 class="card-title">Set up your SMS campaign</h4>
+                    <label class="col-form-label">
+                      Campaign Name
+                    </label>
+                    <mat-form-field class="example-full-width">
+                      <input matInput value="">
+                      <mat-hint>Give your campaign name to help organize and locate it easily within your account.
+                      </mat-hint>
+                    </mat-form-field>
+
+
+
+                    <label class="col-form-label">
+                      To
+                    </label>
+                    <mat-form-field class="example-full-width">
+                      <input matInput value="">
+                      <mat-hint>Select the name to send the SMS.</mat-hint>
+                    </mat-form-field>
+
+                    <label class="col-form-label">
+                      SMS Content
+                    </label>
+                    <mat-form-field>
+                      <textarea matInput rows="7"></textarea>
+                      <mat-hint>Add your SMS content </mat-hint>
+                    </mat-form-field>
+                    <div class="d-flex justify-content-end">
+
+                      <button class="btn btn-default" type="button">
+                        <i class="material-icons">close</i> Cancel
+                      </button>
+
+                      <button class="btn btn-primary ml-2" type="submit">
+                        <i class="material-icons">save</i> Save
+                      </button>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+
+          </mat-tab>
+        </mat-tab-group>
+
+        <mat-tab-group class="frontdesk-tab-card" id="campaign-view">
+          <mat-tab label="Email Campaign View">
+            <ng-template matTabContent>
+              <h3 class="card-title mt-0">Your Compaign Name</h3>
+              <div class="card mt-0">
+                <div class="card-body">
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <h5>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <g transform="translate(-233 -465)">
+                            <g transform="translate(237.979 471.732)">
+                              <g transform="translate(0)">
+                                <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                  transform="translate(0 -67.997)" stroke-width="0.7" />
+                              </g>
+                            </g>
+                            <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                            <g class="svg-stroke-green-custom-icon" transform="translate(233 465)" fill="none"
+                              stroke-width="1.5">
+                              <circle cx="12" cy="12" r="12" stroke="none" />
+                              <circle cx="12" cy="12" r="11.25" fill="none" />
+                            </g>
+                          </g>
+                        </svg>
+                        <span class="ml-3">To</span>
+                      </h5>
+                      <div>Who are you sending this campaign to? </div>
+                    </div>
+                    <div class="justify-content-end">
+                      <button class="btn btn-primary m-0">
+                        Add Recipients
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <h5>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <g transform="translate(-233 -465)">
+                            <g transform="translate(237.979 471.732)">
+                              <g transform="translate(0)">
+                                <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                  transform="translate(0 -67.997)" stroke-width="0.7" />
+                              </g>
+                            </g>
+                            <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                            <g class="svg-stroke-green-custom-icon" transform="translate(233 465)" fill="none"
+                              stroke-width="1.5">
+                              <circle cx="12" cy="12" r="12" stroke="none" />
+                              <circle cx="12" cy="12" r="11.25" fill="none" />
+                            </g>
+                          </g>
+                        </svg>
+                        <span class="ml-3">From</span>
+                      </h5>
+                      <div>Who is sending this campaign? </div>
+                    </div>
+                    <div class="justify-content-end">
+                      <button class="btn btn-primary m-0">
+                        Add From
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <h5>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <g transform="translate(-233 -465)">
+                            <g transform="translate(237.979 471.732)">
+                              <g transform="translate(0)">
+                                <path class="svg-stroke-dark-gray-icon svg-fill-dark-gray-icon"
+                                  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                  transform="translate(0 -67.997)" stroke-width="0.7" />
+                              </g>
+                            </g>
+                            <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                            <g class="svg-stroke-dark-gray-icon" transform="translate(233 465)" fill="none"
+                              stroke-width="1.5">
+                              <circle cx="12" cy="12" r="12" stroke="none" />
+                              <circle cx="12" cy="12" r="11.25" fill="none" />
+                            </g>
+                          </g>
+                        </svg>
+                        <span class="ml-3">Subject</span>
+                      </h5>
+                      <div>What's the subject line for this campaign? </div>
+                    </div>
+                    <div class="justify-content-end">
+                      <button class="btn btn-primary m-0">
+                        Add Subject
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-5 col-lg-5 col-xl-7 mb-md-0 mb-3">
+                      <h5>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <g transform="translate(-233 -465)">
+                            <g transform="translate(237.979 471.732)">
+                              <g transform="translate(0)">
+                                <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                  transform="translate(0 -67.997)" stroke-width="0.7" />
+                              </g>
+                            </g>
+                            <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                            <g class="svg-stroke-green-custom-icon" transform="translate(233 465)" fill="none"
+                              stroke-width="1.5">
+                              <circle cx="12" cy="12" r="12" stroke="none" />
+                              <circle cx="12" cy="12" r="11.25" fill="none" />
+                            </g>
+                          </g>
+                        </svg>
+                        <span class="ml-3">Email Content</span>
+                      </h5>
+                      <div>You can edit email content or whatever to make it perfect email. </div>
+                    </div>
+                    <div class="col-md-4 col-lg-4 col-xl-3 mb-md-0 mb-3">
+                      <div class="row">
+                        <div class="col-auto w-auto">
+                          <div class="card w-100 card-overlay-main mt-0 mb-0">
+                            <img src="../../../../../assets/img/template1.png" class="card-img-top card-img-size-1by4"
+                              alt="">
+                            <div class="card-overlay">
+                              <div class="card-overlay-inner">
+                                <button class="btn btn-primary" type="submit">
+                                  <i class="material-icons">visibility</i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xl-2 text-right">
+                      <button class="btn btn-outline-primary m-0">
+                        Edit Email Design
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+          <mat-tab label="SMS Campaign View">
+            <ng-template matTabContent>
+              <h3 class="card-title mt-0">Your Compaign Name</h3>
+              <div class="card mt-0">
+                <div class="card-body">
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <h5>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <g transform="translate(-233 -465)">
+                            <g transform="translate(237.979 471.732)">
+                              <g transform="translate(0)">
+                                <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                  transform="translate(0 -67.997)" stroke-width="0.7" />
+                              </g>
+                            </g>
+                            <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                            <g class="svg-stroke-green-custom-icon" transform="translate(233 465)" fill="none"
+                              stroke-width="1.5">
+                              <circle cx="12" cy="12" r="12" stroke="none" />
+                              <circle cx="12" cy="12" r="11.25" fill="none" />
+                            </g>
+                          </g>
+                        </svg>
+                        <span class="ml-3">To</span>
+                      </h5>
+                      <div>Who are you sending this campaign to? </div>
+                    </div>
+                    <div class="justify-content-end">
+                      <button class="btn btn-primary m-0">
+                        Add Recipients
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+             
+             
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <h5>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <g transform="translate(-233 -465)">
+                            <g transform="translate(237.979 471.732)">
+                              <g transform="translate(0)">
+                                <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                  transform="translate(0 -67.997)" stroke-width="0.7" />
+                              </g>
+                            </g>
+                            <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                            <g class="svg-stroke-green-custom-icon" transform="translate(233 465)" fill="none"
+                              stroke-width="1.5">
+                              <circle cx="12" cy="12" r="12" stroke="none" />
+                              <circle cx="12" cy="12" r="11.25" fill="none" />
+                            </g>
+                          </g>
+                        </svg>
+                        <span class="ml-3">SMS Content</span>
+                      </h5>
+                      <div>You can edit email content or whatever to make it perfect email. </div>
+                    </div>
+                   
+                    <div class="justify-content-end">
+                      <button class="btn btn-outline-primary m-0">
+                        Resend
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </ng-template>
+
+
+
+          </mat-tab>
+        </mat-tab-group>
+
+        <mat-tab-group class="frontdesk-tab-card" id="tamplate-gallery">
+          <mat-tab label="Template Gallery">
+            <ng-template matTabContent>
+              <div class="card">
+                <div class="px-3">
+                  <div class="row">
+                    <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
+                      <label class="col-form-label">
+                        Template Categories
+                      </label>
+                      <mat-form-field>
+                        <mat-select matNativeControl required>
+                          <mat-option value="" selected>All </mat-option>
+                          <mat-option value="Featured (8)">Featured (8)</mat-option>
+                          <mat-option value="Anniversary (2)">Anniversary (2)</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex">
+                  <div class="card w-100 card-overlay-main">
+                    <img src="../../../../../assets/img/template1.png" class="card-img-top card-img-size-1by4" alt="">
+                    <div class="card-body p-3">
+                      <div>Appointment Reminder</div>
+                    </div>
+                    <div class="card-overlay">
+                      <div class="card-overlay-inner">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="material-icons">visibility</i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex">
+                  <div class="card w-100 card-overlay-main">
+                    <img src="../../../../../assets/img/template2.png" class="card-img-top card-img-size-1by4" alt="">
+                    <div class="card-body p-3">
+                      <div>Payment Reminder</div>
+                    </div>
+                    <div class="card-overlay">
+                      <div class="card-overlay-inner">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="material-icons">visibility</i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex">
+                  <div class="card w-100 card-overlay-main">
+                    <img src="../../../../../assets/img/template3.png" class="card-img-top card-img-size-1by4" alt="">
+                    <div class="card-body p-3">
+                      <div>Appointment Reminder</div>
+                    </div>
+                    <div class="card-overlay">
+                      <div class="card-overlay-inner">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="material-icons">visibility</i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex">
+                  <div class="card w-100 card-overlay-main">
+                    <img src="../../../../../assets/img/template4.png" class="card-img-top card-img-size-1by4" alt="">
+                    <div class="card-body p-3">
+                      <div>Appointment Reminder</div>
+                    </div>
+                    <div class="card-overlay">
+                      <div class="card-overlay-inner">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="material-icons">visibility</i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex">
+                  <div class="card w-100 card-overlay-main">
+                    <img src="../../../../../assets/img/template2.png" class="card-img-top card-img-size-1by4" alt="">
+                    <div class="card-body p-3">
+                      <div>Appointment Reminder</div>
+                    </div>
+                    <div class="card-overlay">
+                      <div class="card-overlay-inner">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="material-icons">visibility</i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex">
+                  <div class="card w-100 card-overlay-main">
+                    <img src="../../../../../assets/img/template3.png" class="card-img-top card-img-size-1by4" alt="">
+                    <div class="card-body p-3">
+                      <div>Appointment Reminder</div>
+                    </div>
+                    <div class="card-overlay">
+                      <div class="card-overlay-inner">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="material-icons">visibility</i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex">
+                  <div class="card w-100 card-overlay-main">
+                    <img src="../../../../../assets/img/template4.png" class="card-img-top card-img-size-1by4" alt="">
+                    <div class="card-body p-3">
+                      <div>Appointment Reminder</div>
+                    </div>
+                    <div class="card-overlay">
+                      <div class="card-overlay-inner">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="material-icons">visibility</i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+
+            </ng-template>
+          </mat-tab>
+          <mat-tab label="Code Your Own">
+            <ng-template matTabContent>
+              <div class="card p-3">
+                <div class="row">
+                  <div class="col-md-12 col-lg-10 col-xl-10 ml-auto mr-auto">
+                    <h4 class="card-title">Paste your own code here</h4>
+                    <mat-form-field>
+                      <textarea matInput rows="20"></textarea>
+                    </mat-form-field>
+                    <div class="d-flex justify-content-end">
+
+                      <button class="btn btn-default" type="button">
+                        <i class="material-icons">close</i> Cancel
+                      </button>
+
+                      <button class="btn btn-primary ml-2" type="submit">
+                        <i class="material-icons">save</i> Save
+                      </button>
+
+
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+
+
+          </mat-tab>
+        </mat-tab-group>
+
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+    <div class="row d-none">
+      <div class="offset-xl-1 col-xl-10">
+        <div class="card">
+
+          <div class="card-body d-none">
+            <div class="ct-chart ct-perfect-fourth"></div>
+          </div>
+          <div class="card-body">
+
+            <ng-container *ngIf="!previewBtn;else preview">
+              <!-- <div>
+              <full-calendar [options]="calendarOptions"></full-calendar>
+            </div> -->
+
+              <div class="row">
+
+
+                <form [formGroup]="stateForm">
+                  <mat-form-field appearance="fill">
+                    <input type="text" matInput formControlName="stateGroup" required [matAutocomplete]="autoGroup">
+                    <mat-autocomplete #autoGroup="matAutocomplete">
+                      <mat-optgroup *ngFor="let group of stateGroupOptions | async" [label]="group.letter">
+                        <mat-option *ngFor="let name of group.names" [value]="name">
+                          <img class="example-option-img" aria-hidden [src]="group.flag" height="25">
+                          <span>{{name}}</span> |
+                          <small>Population: {{group.population}}</small>
+                        </mat-option>
+                      </mat-optgroup>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </form>
+
+
+                <div class="offset-xl-1 col-xl-10">
+                  <h4 class="card-title">Test Page</h4>
+                  <div class="row">
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Slide Toggle / Switche
+                        <span class="text-danger">*</span>
+                      </label>
+                      <div class="mt-2">
+                        <mat-slide-toggle></mat-slide-toggle>
+
+
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label"> Readonly </label>
+                      <mat-form-field class="example-full-width" [hidden]="true">
+                        <input matInput type="text" class="example-margin" readonly
+                          value="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book">
+                      </mat-form-field>
+
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label"> Rating </label>
+                      <div class="mt-2">
+                        <ngb-rating [(rate)]="currentRate" max=5></ngb-rating>
+                      </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label"> Number </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="number" matInput value="9879887975">
+                      </mat-form-field>
+
+                    </div>
+
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Text
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input matInput value="Jhon Doe">
+                      </mat-form-field>
+
+                    </div>
+
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label"> Datepicker <span class="text-danger">*</span></label>
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker" (click)="picker.open()">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+
+
+
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Mobile With Country Code
+                        <span class="text-danger">*</span>
+                      </label>
+
+
+                      <div class="mt-2">
+                        <ngx-intl-tel-input [cssClass]="'form-control'" [preferredCountries]="preferredCountries"
+                          [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                          [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                          [selectFirstCountry]="false" [selectedCountryISO]="CountryISO.India" [maxLength]="15"
+                          [phoneValidation]="true" [separateDialCode]="separateDialCode" name="phone">
+                        </ngx-intl-tel-input>
+                      </div>
+
+                    </div>
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        Long Text
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field>
+                        <textarea matInput
+                          value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."></textarea>
+                      </mat-form-field>
+
+                    </div>
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label"> Attachment </label>
+                      <div>
+
+                        <img class="loading" src="assets/img/image-loader.GIF"
+                          style="height: 100px; width: 100px; display: none">
+
+                        <div *ngFor="let item of formImageArray">
+                          <div class="choose-photo-relative">
+
+                            <img *ngIf="item.extension == 'xlsx' || item.extension == 'xls'" src="assets/img/xlsx.png"
+                              style="height: 100px; width: 100px;">
+
+                            <img *ngIf="item.extension == 'doc' || item.extension == 'docx'" src="assets/img/doc.png"
+                              style="height: 100px; width: 100px;">
+
+                            <img *ngIf="item.extension == 'ppt' || item.extension == 'pptx'" src="assets/img/ppt.png"
+                              style="height: 100px; width: 100px;">
+
+                            <img *ngIf="item.extension == 'csv'" src="assets/img/csv.png"
+                              style="height: 100px; width: 100px;">
+
+                            <img *ngIf="item.extension == 'pdf'" src="assets/img/pdf.png"
+                              style="height: 100px; width: 100px;">
+
+                            <img
+                              *ngIf="item.extension !== 'xlsx' && item.extension !== 'xls' && item.extension !== 'doc' && item.extension !== 'docx' && item.extension !== 'pdf' && item.extension == 'ppt' && item.extension == 'pptx' && item.extension == 'csv'"
+                              src="assets/img/others.png" style="height: 100px; width: 100px;">
+
+                            <img
+                              *ngIf="item.extension == 'jpg' || item.extension == 'jpeg' || item.extension == 'gif' || item.extension == 'png' || item.extension == 'tif' || item.extension == 'tiff'"
+                              [src]="item.attachment" style="height: 100px; width: 100px;">
+
+                            <i class="material-icons upload-img-close" (click)="removeImg(item)">cancel</i>
+
+                            <button type="button" class="btn btn-primary" (click)="downloadlink(item.attachment)">
+                              Download </button>
+
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div class="btn btn-primary btn-file">
+
+                        <label class="upload_button mb-0" for="fileupload"><i class="material-icons">cloud_upload</i>
+                          Upload </label>
+                        <input type="file" id="fileupload" #fileInput ng2FileSelect [style.display]="'none'"
+                          [uploader]="uploader" (change)="fileInput.value=''" multiple />
+                      </div>
+                      <div class="mt-2">
+                        <span class="upload-tag badge badge-pill d-flex mb-2"> <span
+                            class="d-flex flex-grow-1 align-items-center"> <i
+                              class="material-icons d-flex align-items-center mr-2">link</i> <span>
+                              document.doc</span></span> <i
+                            class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer">clear</i></span>
+                      </div>
+
+                    </div>
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        Editor
+                      </label>
+                      <angular-editor [placeholder]="'Enter text here...'"></angular-editor>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Lists / Single Select
+                      </label>
+
+
+                      <mat-form-field>
+                        <mat-select matNativeControl required>
+                          <mat-option value="volvo">Volvo</mat-option>
+                          <mat-option value="saab">Saab</mat-option>
+                          <mat-option value="mercedes">Mercedes</mat-option>
+                          <mat-option value="audi">Audi</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Multi Select Lists
+                      </label>
+                      <mat-form-field>
+                        <mat-select [formControl]="toppings" multiple>
+                          <mat-option value="Extra cheese">Extra cheese</mat-option>
+                          <mat-option value="Mushroom">Mushroom</mat-option>
+                          <mat-option value="Onion">Onion</mat-option>
+                          <mat-option value="Pepperoni">Pepperoni</mat-option>
+                          <mat-option value="Sausage">Sausage</mat-option>
+                          <mat-option value="Tomato">Tomato</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Auto complete
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" placeholder="Pick one" aria-label="Number" matInput
+                          [formControl]="autocompletemyControl" [matAutocomplete]="auto">
+                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option}}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                    </div>
+
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Chip
+                        <span class="text-danger">*</span>
+                      </label>
+                      <div>
+                        To add Chip control
+                      </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Checkboxes
+                        <span class="text-danger">*</span>
+                      </label>
+                      <div class="mt-2">
+                        <!-- <mat-checkbox>Checkboxe</mat-checkbox>  -->
+                        <section class="example-section">
+                          <mat-checkbox class="example-margin">Checked</mat-checkbox>
+                          <mat-checkbox class="example-margin">Indeterminate</mat-checkbox>
+                        </section>
+                      </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Radio
+                        <span class="text-danger">*</span>
+                      </label>
+                      <div class="mt-2">
+                        <!-- <mat-radio-button value="1">Radio</mat-radio-button> -->
+
+                        <mat-radio-group aria-label="Select an option">
+                          <mat-radio-button value="1">Option 1</mat-radio-button>
+                          <mat-radio-button value="2">Option 2</mat-radio-button>
+                        </mat-radio-group>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="col-sm-6">
+                      <label class="col-form-label">
+                        Upload
+                        <span class="text-danger">*</span>
+                      </label>
+                      <div>
+                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                          <!-- <div class="fileinput-preview fileinput-exists thumbnail img-circle"></div> -->
+
+                          <div class="fileinput-exists"></div>
+                          <div>
+                            <button class="btn btn-primary btn-file dropdown-toggle" type="button"
+                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="material-icons">cloud_upload</i> Attach a File
+                              <!-- <span class="fileinput-new">Attach a File</span>
+                              <span class="fileinput-exists">Change</span>
+                              <input type="file" name="..." /> -->
+                            </button>
+                            <div class="dropdown-menu  ">
+                              <a class="dropdown-item">
+                                <span class="btn-file">
+                                  <span class="fileinput-new">Attach from your Computer</span>
+                                  <!-- <span class="fileinput-exists">Change</span> -->
+                                  <input type="file" name="..." />
+                                </span>
+                              </a>
+                              <a class="dropdown-item">
+                                <span class="btn-file">
+                                  <span class="fileinput-new">Attach from Documents</span>
+                                  <!-- <span class="fileinput-exists">Change</span> -->
+                                  <input type="file" name="..." />
+                                </span>
+                              </a>
+
+                            </div>
+
+                            <!-- <br />
+                          <a href="#pablo" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a> -->
+                          </div>
+                        </div>
+                        <div>
+                          <span class="upload-tag badge badge-pill d-flex mb-2"> <span
+                              class="d-flex flex-grow-1 align-items-center"> <i
+                                class="material-icons d-flex align-items-center mr-2">link</i> <span>
+                                document.doc</span></span> <i
+                              class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer">clear</i></span>
+                        </div>
+
+
+                      </div>
+                    </div>
+
+
+                  </div>
+
+
+
+
+
+
+                </div>
+              </div>
+
+
+
+
+              <div class="row">
+                <div class="col-md-3">
+                  <!-- <form class="navbar-form">
+                  <div class="input-group nav-search-main">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">search</i></span>
+                    </div>
+                    <input type="text" class="form-control">
+                  </div>        
+                </form> -->
+
+                  <!-- <form [formGroup]="profileForm" (ngSubmit)="onSubmit(profileForm.value, profileForm.valid)">
+  
+                  <label>
+                    First Name:
+                    <input type="text" formControlName="firstName">
+
+                    <div 
+                      style="margin-left:18%;"
+                      [hidden]="profileForm.get('firstName').valid || (profileForm.get('firstName').pristine && !submitted)"
+                      class="text-danger">
+                      <small *ngIf="profileForm.get('firstName').hasError('required')" class="error-label"> 
+                        * firstName is Required
+                      </small>
+                    </div>
+
+                  </label>
+                
+                  <label>
+                    Last Name:
+                    
+                    <dynamic-autocomplete 
+                      [formControlName]="form_fields.fieldname"
+                      [setting]="form_fields"
+                      [dbvalue]="form_fields.dbvalue"
+                      (added)="onItemAdded($event)">
+                  </dynamic-autocomplete>
+
+                  <div 
+                    style="margin-left:18%;"
+                    [hidden]="profileForm.get([form_fields.fieldname]).valid || (profileForm.get([form_fields.fieldname]).pristine && !submitted)"
+                    class="text-danger">
+                    <small *ngIf="profileForm.get([form_fields.fieldname]).hasError('required')" class="error-label"> 
+                      * {{form_fields.fieldname}} is Required
+                    </small>
+                  </div>
+
+                  </label>
+
+                  <button type="submit">Submit</button>
+                
+                </form> 
+                <app-dynamic-autocomplete-ngmodel
+                  [setting]="form_fields"
+                  [(inputModel)]="form_fields.modelValue"
+                  [dbvalue]="form_fields.dbvalue">
+                </app-dynamic-autocomplete-ngmodel>
+
+                <button type="button" (click)="Submit()">Submit</button>
+-->
+
+
+                  <!-- <mat-spinner [diameter]="50" *ngIf="contentLoading"></mat-spinner> -->
+
+
+                  <!-- <ul class="list-group" id="nav">
+                  <li 
+                    [ngClass]="selecteMember && selecteMember._id && selecteMember._id == item._id ? 'active' : ''"
+                    class="list-group-item d-flex align-items-center cursor-pointer" 
+                    *ngFor="let item of memberLists"
+                    (click)="memberClick(item)">
+                    <div style="max-width: 40px;">
+                      <img 
+                        [src]="item.profilepic ? item.profilepic : 'https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/don_quixote.jpg'" 
+                        class="rounded-circle"
+                        style="height: 50px; width: 50px;" 
+                        alt="quixote">
+                    </div>
+                    <span>{{item.fullname}} </span>
+                  </li>
+                  <a class="load-more cursor-pointer" (click)="loadMore(currentPage + 1)">Load More</a>
+                </ul> -->
+                </div>
+                <div class="col-md-9">
+
+                  <!-- <div *ngIf="isLoading" class="spinner-border"></div> -->
+
+                  <div class="card card-profile" *ngIf="selecteMember && selecteMember._id">
+                    <div class="card-avatar">
+                      <a href="#pablo">
+                        <img class="img"
+                          [src]="selecteMember.profilepic ? selecteMember.profilepic : './assets/img/faces/marc.jpg'" />
+                      </a>
+                    </div>
+                    <div class="card-body">
+                      <h4 class="card-title">{{selecteMember.fullname}}</h4>
+                      <p class="card-description"></p>
+                      <a href="#pablo" class="btn btn-info btn-round">Edit</a>
+                    </div>
+                  </div>
+                  <div class="card" *ngIf="selecteMember && selecteMember._id">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="row">
+                            <div class="col-md-4">
+                              <div class="card">
+                                <div class="card-header card-header-info">
+                                  Profile Information
+                                </div>
+                                <div class="card-body">
+                                  <div class="row">
+                                    <div class="col-md-6">Name: </div>
+                                    <div class="col-md-6">Samarth</div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-6">Marital Status: </div>
+                                    <div class="col-md-6">Married</div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-6">Language: </div>
+                                    <div class="col-md-6">English</div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-6">Gender: </div>
+                                    <div class="col-md-6">Male</div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-6">Birth Date: </div>
+                                    <div class="col-md-6">22nd January 1988</div>
+                                  </div>
+                                </div>
+                                <div class="card-footer"></div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <div class="card-header card-header-info">
+                                  Open Activities
+                                </div>
+                                <div class="card-body">
+
+                                  <h4 class="card-title">Website Views</h4>
+                                  <p class="card-category">Last Campaign Performance</p>
+                                </div>
+                                <div class="card-footer">
+                                  <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <div class="card-header card-header-info">
+                                  Close Activities
+                                </div>
+                                <div class="card-body">
+
+                                  <h4 class="card-title">Website Views</h4>
+                                  <p class="card-category">Last Campaign Performance</p>
+                                </div>
+                                <div class="card-footer">
+                                  <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <div class="card-header card-header-info">
+                                  Attachment
+                                </div>
+                                <div class="card-body">
+
+                                  <h4 class="card-title">Website Views</h4>
+                                  <p class="card-category">Last Campaign Performance</p>
+                                </div>
+                                <div class="card-footer">
+                                  <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <div class="card-header card-header-info">
+                                  Booking
+                                </div>
+                                <div class="card-body">
+
+                                  <h4 class="card-title">Website Views</h4>
+                                  <p class="card-category">Last Campaign Performance</p>
+                                </div>
+                                <div class="card-footer">
+                                  <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <div class="card-header card-header-info">
+                                  Facility Booking
+                                </div>
+                                <div class="card-body">
+                                  <h4 class="card-title">Website Views</h4>
+                                  <p class="card-category">Last Campaign Performance</p>
+                                </div>
+                                <div class="card-footer">
+                                  <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+
+
+              </div>
+            </ng-container>
+
+            <ng-template #preview>
+              <div class="text-right">
+                <button class="btn btn-primary ml-2 text-right" type="button" (click)="onClickprint()">
+                  <i class="material-icons">print</i> Print
+                </button>
+              </div>
+
+              <div class="ml-auto mr-auto col-xl-4" id="printid">
+                <div style="width: 100%;position: relative;padding-bottom: 15px;text-align: center;">
+                  <img src="../assets/img/pinks.png" style="max-width: 270px;max-height: 133px;">
+                </div>
+                <div style="text-align: center;">
+                  <div class="print-company" style="font-weight: bold;">Cocoon Medical Spa</div>
+                  <address class="print-text mb-0">
+                    Jalan Sunset Road, Legian, Kuta, <br>
+                    Kabupaten Badung,<br>
+                    Bali 80361
+                  </address>
+                  <div class="print-text">+62 811 388 2240</div>
+                  <div class="print-text" style="margin-bottom: 20px;">www.cocoonmedicalspa.com</div>
+                  <div style="margin-bottom: 2px;display: flex;">
+                    <div class="print-text" style="display: flex;justify-content: end;width: 45%;">Order #:</div>
+                    <div class="print-text"
+                      style="padding-left: 20px;font-weight: bold;display: flex;justify-content: start;width: 55%; text-align: left;">
+                      100707746945 </div>
+                  </div>
+                  <div style="margin-bottom: 2px;display: flex;">
+                    <div class="print-text" style="display: flex;justify-content: end;width: 45%;">Receipt #:</div>
+                    <div class="print-text"
+                      style="padding-left: 20px;font-weight: bold;display: flex;justify-content: start;width: 55%;text-align: left;">
+                      2022_0017 </div>
+                  </div>
+                  <div style="margin-bottom: 2px;display: flex;">
+                    <div class="print-text" style="display: flex;justify-content: end;width: 45%;">Date:</div>
+                    <div class="print-text"
+                      style="padding-left: 20px;display: flex;justify-content: start;width: 55%;text-align: left;"> Jan
+                      4, 2022 15:18 </div>
+                  </div>
+                  <div style="margin-bottom: 2px;display: flex;">
+                    <div class="print-text" style="display: flex;justify-content: end;width: 45%;">Customer:</div>
+                    <div class="print-text"
+                      style="padding-left: 20px;display: flex;justify-content: start;width: 55%;text-align: left;">
+                      Setiawan Lauw </div>
+                  </div>
+                  <div style="margin-bottom: 2px;display: flex;">
+                    <div class="print-text" style="display: flex;justify-content: end;width: 45%;">&nbsp;</div>
+                    <div class="print-text"
+                      style="padding-left: 20px;display: flex;justify-content: start;width: 55%;text-align: left;">
+                      <span style="font-weight: bold;display: inline-block;padding-right: 5px;">200</span> Rewards
+                      Points
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 2px;display: flex;">
+                    <div class="print-text" style="display: flex;justify-content: end;width: 45%;">&nbsp;</div>
+                    <div class="print-text"
+                      style="padding-left: 20px;display: flex;justify-content: start;width: 55%;text-align: left;">
+                      <span style="font-weight: bold;display: inline-block;padding-right: 5px;">1</span> Referrals
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 0;display: flex;">
+                    <div class="print-text" style="display: flex;justify-content: end;width: 45%;">Processed by:</div>
+                    <div class="print-text"
+                      style="padding-left: 20px;display: flex;justify-content: start;width: 55%;text-align: left;">
+                      Setiawan </div>
+                  </div>
+
+                </div>
+                <div
+                  style="margin-top: 10px; border-top: 1px solid #000000;border-bottom: 1px solid #000000;padding-bottom: 10px;margin-bottom: 10px;">
+
+                  <div class="print-head-md" style="margin-top: 10px;margin-bottom: 10px;font-weight: bold;"> Order
+                    Items</div>
+                  <div style="margin-bottom: 10px;display: flex;">
+                    <div class="print-head-sm" style="font-weight: bold;flex-grow: 1;">Naked Skin Package</div>
+                    <div class="print-head-sm" style="padding-left: 25px;font-weight: bold;"> Rp4.700.000 </div>
+                  </div>
+                  <div style="margin-bottom: 15px;display: flex;">
+                    <div class="print-text" style="font-weight: bold;">
+                      <img src="../assets/img/barcode.jpg" style="max-width: 200px;max-height: 90px;">
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 15px;">
+                    <div class="print-head-sm" style="font-weight: bold;">A Free Doctor's Consultation</div>
+                    <div class="print-text" style="font-weight: bold;margin-bottom: 3px;">Jan 31, 2022 14:00</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Duration:</span> 15
+                      minutes</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Room:</span> Doctor Room 1
+                    </div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Employee:</span> Dr.
+                      Josephine Ong</div>
+                    <div class="print-text"><span style="display: inline-block;padding-right: 10px;">Booking #:</span>
+                      100563383464</div>
+                  </div>
+                  <div style="margin-bottom: 15px;">
+                    <div class="print-head-sm" style="font-weight: bold;">Diamond Microdermabrasion- Face/Chest</div>
+                    <div class="print-text" style="font-weight: bold;margin-bottom: 3px;">Jan 31, 2022 14:15</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Duration:</span> 30
+                      minutes</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Room:</span> Doctor Room 1
+                    </div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Employee:</span> Nurse
+                      Prima</div>
+                    <div class="print-text"><span style="display: inline-block;padding-right: 10px;">Booking #:</span>
+                      100563383464</div>
+                  </div>
+                  <div style="margin-bottom: 15px;">
+                    <div class="print-head-sm" style="font-weight: bold;">Pre-treatment anesthetic/numbing creme</div>
+                    <div class="print-text" style="font-weight: bold;margin-bottom: 3px;">Jan 31, 2022 14:55</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Duration:</span> 20
+                      minutes</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Room:</span> Doctor Room 1
+                    </div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Employee:</span> Nurse
+                      Prima</div>
+                    <div class="print-text"><span style="display: inline-block;padding-right: 10px;">Booking #:</span>
+                      100563383464</div>
+                  </div>
+                  <div style="margin-bottom: 15px;">
+                    <div class="print-head-sm" style="font-weight: bold;">(PACKAGE) Dermapen - full face</div>
+                    <div class="print-text" style="font-weight: bold;margin-bottom: 3px;">Jan 31, 2022 15:15</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Duration:</span> 30
+                      minutes</div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Room:</span> Doctor Room 1
+                    </div>
+                    <div class="print-text"><span
+                        style="display: inline-block;padding-right: 10px;margin-bottom: 2px;">Employee:</span> Dr.
+                      Josephine Ong</div>
+                    <div class="print-text"><span style="display: inline-block;padding-right: 10px;">Booking #:</span>
+                      100563383464</div>
+                  </div>
+                  <div style="text-align: right;margin-top: 25px;">
+                    <div style="margin-bottom: 2px;display: flex;">
+                      <div class="print-text" style="width: 65%;font-weight: bold;">Sub Total:</div>
+                      <div class="print-text"
+                        style="padding-left: 20px;font-weight: bold;width: 35%; text-align: right;"> Rp4.700.000 </div>
+                    </div>
+                    <div style="margin-bottom: 2px;display: flex;">
+                      <div class="print-text" style="width: 65%;font-weight: bold;">Total:</div>
+                      <div class="print-text"
+                        style="padding-left: 20px;font-weight: bold;width: 35%; text-align: right;"> Rp4.700.000 </div>
+                    </div>
+                    <div style="margin-bottom: 2px;display: flex;">
+                      <div class="print-text" style="width: 65%;">Amount Paid:</div>
+                      <div class="print-text" style="padding-left: 20px;width: 35%; text-align: right;"> Rp4.700.000
+                      </div>
+                    </div>
+                    <div style="margin-bottom: 2px;display: flex;">
+                      <div class="print-text" style="width: 65%;font-weight: bold;">Balance Due:</div>
+                      <div class="print-text"
+                        style="padding-left: 20px;font-weight: bold;width: 35%; text-align: right;"> Rp0 </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div style="border-bottom: 1px solid #000000;padding-bottom: 10px;margin-bottom: 10px;">
+                  <div class="print-head-md" style="margin-top: 10px;margin-bottom: 10px;font-weight: bold;"> Payments
+                  </div>
+                  <div style="display: flex;">
+                    <div class="print-head-sm" style="font-weight: bold;flex-grow: 1;">Credit card</div>
+                    <div class="print-head-sm" style="padding-left: 25px;font-weight: bold;"> Rp4.700.000 </div>
+                  </div>
+                  <div style="display: flex;">
+                    <div class="print-head-sm" style="font-weight: normal;">Visa</div>
+                  </div>
+                </div>
+                <div style="margin-bottom: 25px;text-align: center;">
+                  <div class="print-text-sm" style="font-weight: bold;">Refund Policy</div>
+                  <div class="print-text-sm"> For information regarding our return policy, please visit the below URL.
+                  </div>
+                  <div class="print-text-sm" style="word-break: break-all;"> https://app.cocoonmedicalspa.com
+                    /App/ViewRefundPolicy.aspx?SFID=15807</div>
+                </div>
+                <div class="print-text" style="margin-bottom: 45px;text-align: center;">
+                  Thank you for your visit at Cocoon
+                  Medical Spa.
+
+                </div>
+
+
+              </div>
+
+              <!-- <div class="offset-xl-1 col-xl-10" id="printid">
+            <div class="row" style="display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;" >
+              <div style="flex: 0 0 75%;max-width: 75%;width: 100%;position: relative;padding-right: 0;padding-left: 15px;" class="col-sm-9" >
+                  <div style="font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;font-weight: bold;margin-bottom: 15px;">Dear Member,</div>
+                  <div style="font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Thank you for choosing Pinks Hospitality Resorts for your forth coming visit. We are delighted to have you stay with us and are committed to making the stay a memorable one.</div>
+              </div>
+
+              <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;" class="col-sm-3" >
+                <img src="../assets/img/pinks.png" style="max-width: 100%;"  >               
+              </div>
+            </div>
+            
+              <div style="font-family: poppins, arial;font-size: 16px;color: #000000;font-weight: bold;margin-top: 10px;margin-bottom: 10px;">RESERVATION CONFIRMATION VOUCHER</div>
+              
+              <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+                 <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Confirmation Date</div>
+                 <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 25/09/2021 </div>
+              </div>
+              <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+                 <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Confirmation No</div>
+                 <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 925 </div>
+              </div>
+              <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+                <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Member Name</div>
+                <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; Kapil Dutta </div>
+             </div>
+             <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+              <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Guest Name</div>
+              <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; Kamlesh Patel </div>
+           </div>
+           <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+            <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Membership No</div>
+            <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 40005 </div>
+         </div>
+         <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+          <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Contact No</div>
+          <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 9999999999 </div>
+       </div>
+       <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+        <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Email ID</div>
+        <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; kapildutta25@gmail.com </div>
+     </div>
+     <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Hotel/Resort Name</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; Khanvel Resort Pvt. Ltd </div>
+   </div>
+   <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+    <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Arrival on</div>
+    <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 25/10/2021 </div>
+ </div>
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Departure on</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 27/10/2021 </div>
+    </div>
+
+    <div style="font-family: poppins, arial;font-size: 16px;color: #000000;font-weight: bold;margin-top: 10px;margin-bottom: 10px;">YOUR ACCOMMODATION DETAILS</div>
+    
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Number of Rooms</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 2 </div>
+   </div>
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Number of Rooms</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; Adults  <span style="display: inline-block;margin-right: 20px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 2 </span> Child <span style="font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 2</span>   </div>
+   </div>
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Accommodation Type</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; Delux </div>
+    </div>
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Special Offer</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; NA </div>
+    </div>
+
+
+    <div style="font-family: poppins, arial;font-size: 16px;color: #000000;font-weight: bold;margin-top: 10px;margin-bottom: 10px;">ROOM NIGHTS & PAYMENT INFORMATION</div>
+    
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Total Room Nights</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 2 </div>
+   </div>
+   <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+    <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Meal Plan</div>
+    <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; mealtype </div>
+    </div>
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Billing Instruction</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; Complimentary  </div>
+    </div>
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Cancellation Deadline</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; 48 hours prior to arrival date </div>
+    </div>
+    <div style="margin-bottom: 5px;display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;">
+      <div style="flex: 0 0 25%; max-width: 25%;width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Confirmation Note</div>
+      <div style="flex: 0 0 75%;max-width: 75%; width: 100%;position: relative;padding-right: 15px;padding-left: 15px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">: &nbsp; notes </div>
+    </div>
+
+    <div style="font-family: poppins, arial;font-size: 16px;color: #000000;font-weight: bold;margin-top: 10px;margin-bottom: 10px;">TERMS & CONDITIONS</div>
+
+    <ul style="padding-left: 0;margin-left: 20px;">
+       <li style="margin-bottom: 5px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Any Early Check -in or Late Check -out would be subject to availability at an additional cost as per Hotels policy.</li>
+       <li style="margin-bottom: 5px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Tax policy:-GST as per applicable Kindly advice Credit Card no / Company Guarantee Letter to Guarantee the booking made by you for your esteemed guest enable to hold the rooms on confirmed basis. (Ignore if already given)</li>
+       <li style="margin-bottom: 5px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Cancellation policy:-Hotel reserves the rights to levy 01 night’s room retention charges in case of cancellation of the booking within 48hrs to date of arrivalNo show policy Hotel reserves the right to levy 01 night’s room retention charges in case of No Show.</li>
+       <li style="margin-bottom: 5px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">Current government regulations require Indian residents to present proof of identity at the time of   check-in. The proof of identity can be the guest’s driving license, passport or voter’s identity card.</li>
+    </ul>
+
+    <div style="font-family: poppins, arial;font-size: 16px;color: #000000;font-weight: bold;margin-top: 10px;margin-bottom: 10px;">IMPORTANT</div>
+     
+    <div style="margin-bottom: 5px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">
+      Please note that our check-in time is 14.00 hours. However, we will Endeavour to have a room for you on arrival.
+      We look forward to welcoming you to the Palace.      
+    </div>
+    <div style="margin-bottom: 10px;font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;">
+      If there is anything we can assist with prior to your visit please e-mail at reservations@Pinkshospitality.com.
+    </div>
+
+    <div style="font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;font-weight: bold;">Yours sincerely,</div>
+    <div style="font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;font-weight: bold;">Reservation Team</div>
+    <div style="font-family: poppins, arial; font-size: 13px;color: #000000;line-height: 1.4;font-weight: bold;">Global Pinks Hospitality Pvt. Ltd.</div>
+          
+          </div> -->
+
+
+
+            </ng-template>
+
+
+
+
+
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="footer fixed-bottom bg-white shadow-top d-none">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="offset-xl-1 col-xl-10">
+        <div class="px-3">
+          <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+              <div class="row">
+                <div class="col-sm-12 text-right">
+                  <button class="btn btn-default" type="button">
+                    <i class="material-icons">close</i> Cancel
+                  </button>
+
+                  <button class="btn btn-primary ml-2" type="submit">
+                    <i class="material-icons">save</i> Save
+                  </button>
+
+                  <button class="btn btn-success ml-2" type="button" (click)="previewBtn = !previewBtn">
+                    <i class="material-icons">preview</i> {{ !previewBtn ? 'Preview Mode' : 'Normal Mode'}}
+                  </button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,78 @@
+<span 
+    [matBadge]="this.getCount()" 
+    (click)="addNewNotesButton()"
+    matBadgeOverlap="false">
+    <a class="cursor-pointer">
+        <img src="../assets/img/plus-white-icon.svg" class="ml-2" alt="">
+    </a>
+</span>
+<button [attr.id]="'customNotes' + id" class="d-none" (click)="this.getCount()"></button>
+
+
+<a
+    class="cursor-pointer d-none"
+    data-toggle="modal" 
+    data-backdrop="static" 
+    data-keyboard="false"
+    [attr.id]="id" 
+    [attr.data-target]="'#myModalAddCustomNotes_'+ id">
+    <img src="../assets/img/plus-white-icon.svg" class="ml-2" alt="">
+</a>
+
+
+
+<div id="myModalAddCustomNotes_{{id}}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 style="color: #3C4858;" class="modal-title">View Notes</h4>
+                <button type="button" class="close" data-dismiss="modal" (click)="close()" id="closeCustomNotes">&times;</button>
+            </div>
+
+            <div class="modal-body">
+
+                <div 
+                    fxLayout="row" 
+                    *ngIf="isnotesLoading" 
+                    fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+
+                <ng-container *ngIf="!isnotesLoading" >
+
+                    <div class="app">
+                        <app-lists-notes 
+                            *ngFor="let note of notes" 
+                            (dismiss)="deleteNote($event)" 
+                            (focusoutEvent)="saveNote($event)" 
+                            id="{{note.id}}">
+                            {{note.content}}
+                        </app-lists-notes>
+                    </div>
+                </ng-container>
+                
+            </div>
+            
+            <div class="modal-footer">
+                
+                <button class="d-none" id="refresh_{{id}}" (click)="refresh()"></button>
+                    
+                <div 
+                    class="toolbar" 
+                    id="toolbar" 
+                    tabindex="0">
+                    
+                    <button 
+                        class="add material-icons" 
+                        (click)="addNote()">
+                        note_add
+                    </button>
+                </div>
+
+            </div>
+           
+        </div>
+    </div>
+</div>

@@ -1,0 +1,262 @@
+<div class="card" *ngIf="isLoadingData">
+    <div class="card-body text-center">
+        <div class="col-xl-12">
+            <div 
+                fxLayout="row"
+                fxLayoutAlign="space-around center"
+                style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                
+                <mat-spinner 
+                    diameter="50" 
+                    strokeWidth="5">
+                </mat-spinner>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<form 
+    [formGroup]="form" 
+    novalidate 
+    (ngSubmit)="onSubmit(form.value, form.valid)"
+    class="form-horizontal">
+
+    <div>
+
+        <div class="row">
+            <div class="col-xl-12">
+
+                <div class="card">
+                    
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h4 class="card-title">
+                                    {{getLang('Offer details', 'Offer Details')}}
+                                </h4>
+                            </div>
+
+                            <div class="col-sm-6 text-right mb-lg-0 mb-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="offset-xl-1 col-xl-10">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-12 text-right mb-3">
+                                                
+                                                <button 
+                                                    class="btn btn-primary" 
+                                                    (click)="addMore()" 
+                                                    type="button">
+                                                    Add More
+                                                </button>
+
+                                            </div>
+                                        </div>
+
+                                        <ng-container 
+                                            formArrayName="membershipoffer" 
+                                            *ngFor="let memberoffer of membershipoffer().controls; let i=index">
+
+                                            <ng-container [formGroupName]="i">
+
+                                                <div class="d-flex justify-content-start align-items-center">
+                                                    <div class="flex-grow-1">
+                                                        
+                                                        <div class="row">
+                                
+                                                            <div class="col-sm-4">
+                                
+                                                                <label class="col-form-label">
+                                                                    {{getLang('offername', 'Offer Name')}}
+                                                                    <span class="text-danger ng-star-inserted">*</span>
+                                                                </label>
+
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input 
+                                                                        type="text"
+                                                                        aria-label="Number"
+                                                                        matInput
+                                                                        formControlName="offername"
+                                                                        [matAutocomplete]="autoMembershipOffer">
+
+                                                                    <mat-autocomplete 
+                                                                        #autoMembershipOffer="matAutocomplete"
+                                                                        [displayWith]="displayFn"
+                                                                        (optionSelected)="optionSelected($event.option)">
+
+                                                                        <mat-option 
+                                                                            *ngFor="let option of filteredOptions | async" 
+                                                                            [value]="option">
+                                                                            {{option.title}}
+                                                                        </mat-option>
+                                                                    </mat-autocomplete>
+                                                                </mat-form-field>
+                                
+                                                                
+                                                                <div [hidden]="memberoffer.get('offername').valid || (memberoffer.get('offername').pristine && !submitted)"
+                                                                    class="text-danger">
+                                                                    <small
+                                                                        *ngIf="memberoffer.get('offername').hasError('required')"
+                                                                        class="error-label">
+                                                                        {{getLang('offernameisrequired', 'offername is Required')}}
+                                                                    </small>
+                                                                </div>
+                                
+                                                            </div>
+                                
+                                                            <div class="col-sm-4">
+                                
+                                                                <label class="col-form-label">
+                                                                    {{getLang('offeramount', 'Offer Amount')}}
+                                                                    <span class="text-danger ng-star-inserted">*</span>
+                                                                </label>
+                                
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input
+                                                                        matInput 
+                                                                        type="number"
+                                                                        formControlName="offeramount" >
+                                                                </mat-form-field>
+
+                                                                <div 
+                                                                    [hidden]="memberoffer.get('offeramount').valid || (memberoffer.get('offeramount').pristine && !submitted)"
+                                                                    class="text-danger">
+                                                                    <small *ngIf="memberoffer.get('offeramount').hasError('required')" class="error-label">
+                                                                        {{getLang('offeramountisrequired', 'offeramount is Required')}}
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-sm-4">
+                                
+                                                                <label class="col-form-label">
+                                                                    {{getLang('offerutilizationperiod', 'Offer Utilization Period')}}
+                                                                    <span class="text-danger ng-star-inserted">*</span>
+                                                                </label>
+
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input 
+                                                                        matInput 
+                                                                        formControlName="offerutilizationperiod"
+                                                                        [matDatepicker]="picker"
+                                                                        (click)="picker.open()">
+                                                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                                    <mat-datepicker #picker></mat-datepicker>
+                                                                </mat-form-field>
+
+                                
+
+                                                                <div 
+                                                                    [hidden]="memberoffer.get('offerutilizationperiod').valid || (memberoffer.get('offerutilizationperiod').pristine && !submitted)"
+                                                                    class="text-danger">
+                                                                    <small *ngIf="memberoffer.get('offerutilizationperiod').hasError('required')" class="error-label">
+                                                                        {{getLang('offerutilizationperiodisrequired', 'offerutilizationperiod is Required')}}
+                                                                    </small>
+                                                                </div>
+
+                                                            </div>
+                                
+                                                        </div>
+                                
+                                                        <div class="row">
+
+                                                            <div class="col-sm-6">
+                                
+                                                                <label class="col-form-label">
+                                                                    {{getLang('exception', 'Exception')}}
+                                                                    
+                                                                </label>
+                                
+                                                                <mat-radio-group aria-label="Select an option" formControlName="exception">
+                                                                    <mat-radio-button value="yes">Yes</mat-radio-button>
+                                                                    <mat-radio-button value="no">No</mat-radio-button>
+                                                                </mat-radio-group>
+
+                                                                <div 
+                                                                    [hidden]="memberoffer.get('exception').valid || (memberoffer.get('exception').pristine && !submitted)"
+                                                                    class="text-danger">
+                                                                    <small *ngIf="memberoffer.get('exception').hasError('required')" class="error-label">
+                                                                        {{getLang('exceptionisrequired', 'exception is Required')}}
+                                                                    </small>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="col-sm-6">
+                                
+                                                                <label class="col-form-label">
+                                                                    {{getLang('remark', 'Remark')}}
+                                                                    
+                                                                </label>
+                                
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input
+                                                                        matInput 
+                                                                        type="text"
+                                                                        formControlName="remark" >
+                                                                </mat-form-field>
+
+                                                                <div 
+                                                                    [hidden]="memberoffer.get('remark').valid || (memberoffer.get('remark').pristine && !submitted)"
+                                                                    class="text-danger">
+                                                                    <small *ngIf="memberoffer.get('remark').hasError('required')" class="error-label">
+                                                                        {{getLang('remarkisrequired', 'remark is Required')}}
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        <button
+                                                            mat-raised-button
+                                                            type="button"
+                                                            matTooltip="Delete"
+                                                            [matTooltipPosition]="'above'"
+                                                            class="btn btn-link btn-primary btn-just-icon edit"
+                                                            (click)="removeembershipOffer(i)">
+                                                            <i class="material-icons">delete</i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+
+                            <div class="col-sm-12 text-right">
+                                    
+                                <button 
+                                    class="btn btn-default" 
+                                    type="button">
+                                    <i class="material-icons">close</i> 
+                                    {{getLang('cancel', 'Cancel')}}
+                                </button>
+    
+                                <button 
+                                    id="submit"
+                                    class="btn btn-primary ml-2" 
+                                    type="submit">
+                                    <i class="material-icons">save</i> 
+                                    {{getLang('save', 'Save')}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>

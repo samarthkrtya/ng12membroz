@@ -1,0 +1,16 @@
+<oc-salesteam-designation *ngIf="salesDesignation" (updateSalesChannelNd)="updateSalesDesignationOrg1($event)" [salesDesignation]="salesDesignation" [hasManager]="hasManager"></oc-salesteam-designation>
+
+<div class="oc-reports">
+	
+	<ng-container *ngFor="let salesDes of salesDesignation?.subordinates; first as isFirst; last as isLast">
+		<div class="oc-org-container">
+			<div class="oc-h-bar-container">
+				<div class="oc-h-bar oc-border" [style.border-color]="isFirst?'transparent':''"></div>
+				<div class="oc-border"></div>
+				<div class="oc-h-bar oc-border" [style.border-color]="isLast?'transparent':''"></div>
+			</div>
+			<ng-saleschannelteam-chart [salesDesignation]="salesDes" [hasManager]="true" (updateSalesChannelOrg)="updateSalesDesignationOrg2($event)"></ng-saleschannelteam-chart>
+		</div>
+	</ng-container>
+</div>
+  

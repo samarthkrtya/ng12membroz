@@ -1,0 +1,183 @@
+<form role="form" id="payment-form" method="POST">
+    <div class="row">
+
+        <div class="col-sm-12" >
+            <label class="col-form-label">
+              {{getLang('cardnmbr', 'CARD NUMBER')}}
+              <span class="text-danger">*</span>
+            </label>
+            <div class="mt-2">
+
+              <input 
+                #firstName
+                matInput
+                type="password"
+                class="form-control inp"
+                name="cardNumber"
+                placeholder="Valid Card Number"
+                [disabled]="sendOtpVisibility"
+                [(ngModel)]="cardnumber"
+                (ngModelChange)="modelChangedValue($event)"
+                (keyup.enter)="modelChanged()"
+                autofocus/>
+                
+          
+            </div>
+        </div>
+
+    </div>
+    <div *ngIf="visibility">
+
+        <div class="row" *ngIf="memberDetails && memberDetails.profilepic">
+            <div class="col-sm-12">
+
+                
+
+                <div class="mt-2">
+                    <div class="form-group">
+                        <div class="row membroz-row">
+                            
+                            <div 
+                                class="col-xl-3 col-lg-3 col-md-4 col-sm-5 col-7 membroz-col d-flex flex-grow-1 mb-3"
+                                >
+                                <div class="position-relative d-flex">
+                                    <img 
+                                        [src]="memberDetails.profilepic"
+                                        
+                                        class="img-fluid img-add-product">
+                                        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-7" >
+                <label class="col-form-label">
+                    {{getLang('membrsname', 'Members Name')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="tel" 
+                            class="form-control" 
+                            name="membername"
+                            placeholder="Member Name"
+                            [(ngModel)]="membername"
+                            readonly />
+                        
+                    </mat-form-field>
+              
+                </div>
+            </div>
+
+            <div class="col-sm-5 pull-right" >
+                <label class="col-form-label">
+                    {{getLang('membernmbr', 'Member Number')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="text" 
+                            class="form-control"
+                            name="membernumber"
+                            placeholder="Member Number"
+                            [(ngModel)]="membernumber"
+                            readonly/>
+                    </mat-form-field>              
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-12" >
+              <label class="col-form-label">
+                  {{getLang('visitorname', 'Visitor Name')}}
+              </label>
+              <div class="mt-2">
+                  <mat-form-field class="example-full-width">
+                      <input 
+                          matInput
+                          type="tel" 
+                          class="form-control" 
+                          name="visitorname"
+                          placeholder="Visitor Name"
+                          [(ngModel)]="visitorname"
+                          readonly />
+                      
+                  </mat-form-field>
+            
+              </div>
+          </div>
+
+          
+
+      </div>
+
+        <div class="row" *ngIf="iswalletotpenable && otpCodeVisibility">
+
+            <div class="col-sm-12" >
+                <label class="col-form-label">
+                    {{getLang('otpcode', 'OTP Code')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="text" 
+                            class="form-control" 
+                            name="otpcode"
+                            [(ngModel)]="otpcode" />
+                    </mat-form-field>              
+                </div>
+            </div>                      
+        </div>
+
+        <!-- <div class="row">
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ml-auto mr-auto">
+            <div class="d-sm-flex align-items-sm-center ml-auto mr-auto">
+              <div class="ml-xl-6 ml-md-12 ml-sm-6 ml-6">
+                <label class="col-form-label">
+                  Check-In Time
+                </label>
+        
+                <h4 *ngIf="checkIn">{{checkInDate}} - {{checkInTime}}</h4>
+        
+              </div>
+        
+              <div class="ml-xl-4 ml-md-12 ml-sm-4 ml-4">
+                          <label class="col-form-label">
+                            Total Time
+                          </label>
+                          <tr *ngFor="let entry of entries">
+                            <td>{{entry.id}}</td>
+                            <td>
+                              <h4 *ngIf="getElapsedTime(entry) as elapsed">
+                                {{elapsed.hours}} : {{elapsed.minutes}} : {{elapsed.seconds}}
+                              </h4>
+                            </td>
+                          </tr>
+                        </div>
+        
+              <div class="ml-xl-6 ml-md-12 ml-sm-6 ml-6 " style="float: left; margin: auto;">
+                <a class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                  Check-Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        
+    </div>
+</form>

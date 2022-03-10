@@ -1,0 +1,2043 @@
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div fxLayout="row" *ngIf="isLoadingData" fxLayoutAlign="space-around center"
+            style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+            <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+        </div>
+        <div class="offset-xl-1 col-xl-10">
+            <mat-tab-group class="frontdesk-tab-card" (selectedTabChange)="onTabChanged($event.tab)">
+                <mat-tab label="Booking settings">
+                    <ng-container *ngTemplateOutlet="bookingsettings"></ng-container>
+                </mat-tab>
+                <mat-tab label="Cancellation policy">
+                    <ng-container *ngTemplateOutlet="cancellationpolicy"></ng-container>
+                </mat-tab>
+                <mat-tab label="Payment Settings">
+                    <ng-container *ngTemplateOutlet="paymentsettings"></ng-container>
+                </mat-tab>
+            </mat-tab-group>
+
+            <ng-template #bookingsettings>
+                <form #formtext *ngIf="appointmentform && !isLoadingData" [formGroup]="appointmentform"
+                    (ngSubmit)="onAppointmentSubmit(appointmentform.value,appointmentform.valid)" novalidate
+                    class="form-horizontal">
+                    <div class="card mt-0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-10 col-lg-10 col-xl-10 mr-auto ml-auto">
+
+                                    <div class="loader" *ngIf="isLoadingData">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <div class="row">
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('scheduling', 'Scheduling')}}
+                                        </h5>
+                                        <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                            <button type="button" class="btn btn-primary ml-2"
+                                                (click)="onAppointmentEdit()" *ngIf="!isAppointmentEditMode">
+                                                <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" *ngIf="isAppointmentEditMode">
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('allowAppointmentsToEndAfterYourLocationOfficalClosingTime',
+                                                'Allow Appointments To End After Your Location Offical
+                                                Closing
+                                                Time')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="allowAppointmentsToEndAfterYourLocationOfficalClosingTime">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-6"
+                                            *ngIf="appointmentform.get('allowAppointmentsToEndAfterYourLocationOfficalClosingTime').value && appointmentform.get('allowAppointmentsToEndAfterYourLocationOfficalClosingTime').value == 'Yes'">
+                                            <label class="col-form-label">
+                                                {{getLang('overageduration', 'Overage duration')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-label>Select</mat-label>
+                                                <mat-select matNativeControl formControlName="overageduration">
+                                                    <mat-option value="1">1 Hours</mat-option>
+                                                    <mat-option value="2">2 Hours</mat-option>
+                                                    <mat-option value="5">5 Hours</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('allowAppointmentInThepast', 'Allow Appointment In
+                                                The
+                                                past')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="allowAppointmentInThepast">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('allowResourceOverbooking', 'Allow Resource Over
+                                                booking')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="allowResourceOverbooking">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('allowStaffConcurrency', 'Allow Staff
+                                                Concurrency')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="allowStaffConcurrency">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <!-- <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('requireStaffonAvailabilitySearch', 'Require Staff
+                                                On
+                                                Availability Search')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="requireStaffonAvailabilitySearch">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div> -->
+
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('enableAutoPackageDetection', 'Enable Auto Package
+                                                Detection')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enableAutoPackageDetection">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('alerts', 'Alerts')}}
+                                        </h5>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('enableNoShowAlert', 'Enable No Show Alert')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enableNoShowAlert">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label class="col-sm-4">
+                                                    {{getLang('showAlertwhenacustomerhas', 'Show alert when
+                                                    a
+                                                    customer
+                                                    has')}}
+                                                </label>
+                                                <mat-form-field class="col-sm-4">
+                                                    <mat-label>Select</mat-label>
+                                                    <mat-select matNativeControl
+                                                        formControlName="showAlertwhenacustomerhas">
+                                                        <mat-option value="1">1</mat-option>
+                                                        <mat-option value="2">2</mat-option>
+                                                        <mat-option value="3">3</mat-option>
+                                                        <mat-option value="4">4</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <label class="col-sm-4">
+                                                    {{getLang('ormorenoshowsonrecords', 'or more no. shows
+                                                    on
+                                                    records')}}
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('enableStaffDependentPricingAndDurations', 'Enable
+                                                Staff
+                                                Dependent Pricing And Durations')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enableStaffDependentPricingAndDurations">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                            {{getLang('status', 'Status')}}
+                                        </h5>
+                                        <!-- <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('enableCheckin', 'Enable Check-in (in Service)')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enableCheckin">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div> -->
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('staff', 'Staff')}}
+                                        </h5>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('enableLockStafftoRoom', 'Enable Lock Staff to
+                                                Room')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enableLockStafftoRoom">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <!-- <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('enableStaffbookingonoffdays', 'Enable Staff
+                                                booking on
+                                                off
+                                                days')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enableStaffbookingonoffdays">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div> -->
+                                    </div>
+
+                                    <!-- Appointment Edit Mode Enable -->
+                                    <div *ngIf="!isAppointmentEditMode">
+
+                                        <div class="row">
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('allowAppointmentsToEndAfterYourLocationOfficalClosingTime',
+                                                    'Allow Appointments To End After Your Location Offical
+                                                    Closing Time')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="allowAppointmentsToEndAfterYourLocationOfficalClosingTime">
+                                            </div>
+
+                                            <div class="col-sm-12"
+                                                *ngIf="appointmentform.get('allowAppointmentsToEndAfterYourLocationOfficalClosingTime').value && appointmentform.get('allowAppointmentsToEndAfterYourLocationOfficalClosingTime').value == 'Yes'">
+                                                <label class="col-form-label">
+                                                    {{getLang('overageduration', 'Overage duration')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="overageduration">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('allowAppointmentInThepast', 'Allow
+                                                    Appointment In
+                                                    The
+                                                    past')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="allowAppointmentInThepast">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('allowResourceOverbooking', 'Allow
+                                                    Resource Over
+                                                    booking')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="allowResourceOverbooking">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('allowStaffConcurrency', 'Allow Staff
+                                                    Concurrency')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="allowStaffConcurrency">
+                                            </div>
+<!-- 
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('requireStaffonAvailabilitySearch',
+                                                    'Require Staff
+                                                    On
+                                                    Availability Search')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="requireStaffonAvailabilitySearch">
+                                            </div> -->
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableAutoPackageDetection', 'Enable Auto
+                                                    Package
+                                                    Detection')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enableAutoPackageDetection">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                                {{getLang('alerts', 'Alerts')}}
+                                            </h5>
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableNoShowAlert', 'Enable No Show
+                                                    Alert')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enableNoShowAlert">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('showAlertwhenacustomerhas', 'Show alert
+                                                    when a
+                                                    customer has')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="showAlertwhenacustomerhas">
+                                            </div>
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableStaffDependentPricingAndDurations',
+                                                    'Enable
+                                                    Staff Dependent Pricing And Durations')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="enableStaffDependentPricingAndDurations">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('status', 'Status')}}
+                                            </h5>
+                                            <!-- <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableCheckin', 'Enable Check-in (in
+                                                    Service)')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enableCheckin">
+                                            </div> -->
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                                {{getLang('staff', 'Staff')}}
+                                            </h5>
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableLockStafftoRoom', 'Enable Lock
+                                                    Staff to
+                                                    Room')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enableLockStafftoRoom">
+                                            </div>
+
+                                            <!-- <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableStaffbookingonoffdays', 'Enable
+                                                    Staff
+                                                    booking
+                                                    on off days')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enableStaffbookingonoffdays">
+                                            </div> -->
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <footer class="footer fixed-bottom bg-white shadow-top"
+                        *ngIf="!isLoadingData && isAppointmentEditMode">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="row">
+                                        <div class="col-sm-12 text-right">
+                                            <button class="btn btn-default" type="button"
+                                                [routerLink]="['/pages/admins/cancellation-policy']"
+                                                [disabled]="btnDisable" (click)="onAppointmentCancel()">
+                                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                                            </button>
+
+                                            <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable">
+                                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </form>
+            </ng-template>
+
+            <ng-template #cancellationpolicy>
+                <form #formtext *ngIf="cancellationform && !isLoadingData" [formGroup]="cancellationform"
+                    (ngSubmit)="onCancellationSubmit(cancellationform.value,cancellationform.valid)" novalidate
+                    class="form-horizontal">
+                    <div class="card mt-0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-10 col-lg-10 col-xl-10 mr-auto ml-auto">
+
+
+                                    <div class="loader" *ngIf="isLoadingData">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <h5 class="card-title mt-4 mb-0">
+                                                {{getLang('rules', 'Rules')}}
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                            <button type="button" class="btn btn-primary ml-2"
+                                                (click)="onCancellationEdit()" *ngIf="!isCancellationEditMode">
+                                                <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" *ngIf="isCancellationEditMode">
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('applyto', 'Apply To')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <mat-form-field>
+                                                <mat-select matNativeControl multiple formControlName="applyto">
+                                                    <mat-option [value]="applyto" *ngFor="let applyto of applyToList">
+                                                        {{applyto}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <div [hidden]="cancellationform.get('applyto').valid || (cancellationform.get('applyto').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="cancellationform.get('applyto').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('applytoisrequired', 'Apply To is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="isCancellationEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('applycancellationfeewithin', 'Apply Cancellation Fee
+                                                Within')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl
+                                                    formControlName="applycancellationfeewithin">
+                                                    <mat-option value="1 Hours">1 Hours</mat-option>
+                                                    <mat-option value="2 Hours">2 Hours</mat-option>
+                                                    <mat-option value="5 Hours">5 Hours</mat-option>
+                                                    <mat-option value="1 Week">1 Week</mat-option>
+                                                    <mat-option value="2 Week">2 Week</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="cancellationform.get('applycancellationfeewithin').valid || (cancellationform.get('applycancellationfeewithin').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="cancellationform.get('applycancellationfeewithin').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('applycancellationfeewithinisrequired', 'Apply
+                                                    Cancellation Fee Within is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="isCancellationEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('cancellationfee', 'Cancellation Fee')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="cancellationfee">
+                                                    <mat-option value="10%">10%</mat-option>
+                                                    <mat-option value="25%">25%</mat-option>
+                                                    <mat-option value="50%">50%</mat-option>
+                                                    <mat-option value="75%">75%</mat-option>
+                                                    <mat-option value="100%">100%</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="cancellationform.get('cancellationfee').valid || (cancellationform.get('cancellationfee').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="cancellationform.get('cancellationfee').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('cancellationfeeisrequired', 'Cancellation Fee is
+                                                    Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="isCancellationEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('noshowfee', 'No Show Fee')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="noshowfee">
+                                                    <mat-option value="10%">10%</mat-option>
+                                                    <mat-option value="25%">25%</mat-option>
+                                                    <mat-option value="50%">50%</mat-option>
+                                                    <mat-option value="75%">75%</mat-option>
+                                                    <mat-option value="100%">100%</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="cancellationform.get('noshowfee').valid || (cancellationform.get('noshowfee').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="cancellationform.get('noshowfee').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('noshowfeeisrequired', 'No Show Fee is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="isCancellationEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('enablecancellationreasons', 'Enable Cancellation
+                                                Reasons')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enablecancellationreasons">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+
+                                            <div [hidden]="cancellationform.get('enablecancellationreasons').valid || (cancellationform.get('enablecancellationreasons').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="cancellationform.get('enablecancellationreasons').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('enablecancellationreasonsisrequired', 'Enable
+                                                    Cancellation Reasons is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="isCancellationEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('cancellationpolicytext', 'Cancellation Policy Text')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <mat-label></mat-label>
+                                                <textarea matInput placeholder="Ex. It makes me feel..."
+                                                    formControlName="cancellationpolicytext"></textarea>
+                                            </mat-form-field>
+
+                                            <div [hidden]="cancellationform.get('cancellationpolicytext').valid || (cancellationform.get('cancellationpolicytext').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="cancellationform.get('cancellationpolicytext').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('cancellationpolicytextisrequired', 'Cancellation
+                                                    Policy
+                                                    Text is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="isCancellationEditMode">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        {{getLang('cancellationreasons', 'Cancellation Reasons')}}
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                                    <button data-toggle="modal" id="modalBtn" class="btn btn-primary"
+                                                        data-target="#myCancellationReasonsModal" type="button">
+                                                        <i class="material-icons mr-1">add</i>
+                                                        {{getLang('adlk', 'Add ')}} {{lookupDetail?.lookup |
+                                                        titlecase}}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group align-items-center">
+                                                <table mat-table [dataSource]="cancellationdataSource" matSort
+                                                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                                    <ng-container matColumnDef="name">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"> {{element.name}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <ng-container matColumnDef="action">
+                                                        <th mat-header-cell *matHeaderCellDef class="text-right">
+                                                            Action</th>
+                                                        <td mat-cell *matCellDef="let element; index as i"
+                                                            class="text-right">
+                                                            <button mat-raised-button type="button" matTooltip="Delete"
+                                                                [matTooltipPosition]="'above'"
+                                                                data-original-title="Delete"
+                                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                                [disabled]="btnDisable"
+                                                                (click)="deleteCancellationReasonAction(i)">
+                                                                <i class="material-icons">delete</i>
+                                                            </button>
+                                                        </td>
+                                                    </ng-container>
+
+
+                                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                                                    </tr>
+
+                                                    <tr class="mat-row" *matNoDataRow>
+                                                        <td class="mat-cell" colspan="6">No data matching the filter
+                                                            "{{input.value}}"</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div [hidden]="cancellationform.get('cancellationreasons').valid || (cancellationform.get('cancellationreasons').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="cancellationform.get('cancellationreasons').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('cancellationreasonsisrequired', 'Cancellation Reasons
+                                                    is
+                                                    Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Cancellation Edit Mode Enable -->
+                                    <div *ngIf="!isCancellationEditMode">
+
+                                        <div class="row">
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('applyto', 'Apply To')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="applyto">
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('applycancellationfeewithin', 'Apply Cancellation
+                                                    Fee
+                                                    Within')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="applycancellationfeewithin">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('cancellationfee', 'Cancellation Fee')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="cancellationfee">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('noshowfee', 'No Show Fee')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="noshowfee">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('enablecancellationreasons', 'Enable Cancellation
+                                                    Reasons')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enablecancellationreasons">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('cancellationpolicytext', 'Cancellation Policy
+                                                    Text')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput readonly placeholder="Ex. It makes me feel..."
+                                                        formControlName="cancellationpolicytext">{{this.cancellationpolicy?.cancellationpolicytext}}</textarea>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('cancellationreasons', 'Cancellation Reasons')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-list role="list" *ngIf="selectedCancellationPolicy">
+                                                    <mat-list-item role="listitem" readonly
+                                                        *ngFor="let cancellationreasons of cancellationReasonsList">
+                                                        {{cancellationreasons?.code}}
+                                                    </mat-list-item>
+                                                </mat-list>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <footer class="footer fixed-bottom bg-white shadow-top"
+                        *ngIf="!isLoadingData && isCancellationEditMode">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="row">
+                                        <div class="col-sm-12 text-right">
+                                            <button class="btn btn-default" type="button" [disabled]="btnDisable"
+                                                (click)="onCancellationCancel()">
+                                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                                            </button>
+
+                                            <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable">
+                                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </form>
+            </ng-template>
+
+            <ng-template #paymentsettings>
+                <form #formtext *ngIf="paymentform && !isLoadingData" [formGroup]="paymentform"
+                    (ngSubmit)="onPaymentSubmit(paymentform.value,paymentform.valid)" novalidate
+                    class="form-horizontal">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-10 col-lg-10 col-xl-10 mr-auto ml-auto">
+                                    <div class="loader" *ngIf="isLoadingData">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <div class="row">
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('checks', 'Checks')}}
+                                        </h5>
+
+                                        <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                            <button type="button" class="btn btn-primary ml-2" (click)="onPaymentEdit()"
+                                                *ngIf="!isPaymentEditMode">
+                                                <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" *ngIf="isPaymentEditMode">
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('acceptchecks','Accept Checks')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="acceptchecks">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('cash', 'Cash')}}
+                                        </h5>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('acceptcash','Accept Cash')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option" formControlName="acceptcash">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('creditcard', 'Credit Card')}}
+                                        </h5>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('acceptcreditcard','Accept Credit Card')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="acceptcreditcard">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('cardtypes','Types')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <section class="example-section" formGroupName="cardtypes">
+                                                <p>
+                                                    <mat-checkbox formControlName="rupay"></mat-checkbox>
+                                                    &nbsp;&nbsp;<img width="100"
+                                                        src="assets/img/rupay.jpg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <mat-checkbox formControlName="master"></mat-checkbox>
+                                                    &nbsp;&nbsp;<img width="100"
+                                                        src="assets/img/mastercard.png">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <mat-checkbox formControlName="visa"></mat-checkbox>&nbsp;&nbsp;<img
+                                                        width="100" src="assets/img/visa.png">
+                                                </p>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('creditnote','Credit Note')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="creditnote">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('mappartner','MAP Partner')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option" formControlName="mappartner">
+                                                <mat-radio-button value="No Processing">No Processing
+                                                </mat-radio-button>
+                                                <mat-radio-button value="Yes Processing">Yes Processing
+                                                </mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('requirebillingaddressforonlinepurchages','Require Billing
+                                                Address for Online Purchages')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="requirebillingaddressforonlinepurchages">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('requirepostalcodeforcardtransactionsequaloraboveacertainamount','Require
+                                                postal code for card transactions equal or above a certain
+                                                amount')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="requirepostalcodeforcardtransactionsequaloraboveacertainamount">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <!-- <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('requirepostalcodewhenordercontainsagiftcardorgiftcertificate','Require
+                                                postal code when order contains a gift card or gift certificate')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="requirepostalcodewhenordercontainsagiftcardorgiftcertificate">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div> -->
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('giftcard', 'Gift Card')}}
+                                        </h5>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('acceptgiftcards','Accept Gift Cards')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="acceptgiftcards">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('enablecashbackforgiftcertificatebalance','Enable Cash
+                                                Back for Gift Certificate Balance')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enablecashbackforgiftcertificatebalance">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <!-- <div class="col-sm-12 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('expiregiftcertificates', 'Expire Gift Certificates')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="expiregiftcertificates">
+                                                    <mat-option value="2 Years after Purchase Date">2 Years after
+                                                        Purchase Date</mat-option>
+                                                    <mat-option value="3 Years after Purchase Date">3 Years after
+                                                        Purchase Date</mat-option>
+                                                    <mat-option value="4 Years after Purchase Date">4 Years after
+                                                        Purchase Date</mat-option>
+                                                    <mat-option value="5 Years after Purchase Date">5 Years after
+                                                        Purchase Date</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('expiregiftcertificates').valid || (paymentform.get('expiregiftcertificates').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="paymentform.get('expiregiftcertificates').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('expiregiftcertificatesisrequired', 'Expire Gift
+                                                    Certificates is Required')}}
+                                                </small>
+                                            </div>
+                                        </div> -->
+
+                                        <div class="col-sm-12 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('applytaxon', 'Apply Tax on')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="applytaxon">
+                                                    <mat-option value="Redemption">Redemption</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('applytaxon').valid || (paymentform.get('applytaxon').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="paymentform.get('applytaxon').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('applytaxonisrequired', 'Apply Tax on is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('inactivein', 'Inactive in')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="inactivein">
+                                                    <mat-option value="12 months after being Used/Expired">12 months
+                                                        after being Used/Expired</mat-option>
+                                                    <mat-option value="24 months after being Used/Expired">24 months
+                                                        after being Used/Expired</mat-option>
+                                                    <mat-option value="36 months after being Used/Expired">36 months
+                                                        after being Used/Expired</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('inactivein').valid || (paymentform.get('inactivein').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="paymentform.get('inactivein').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('inactiveinisrequired', 'Inactive in is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <!-- <h5 class="card-title col-sm-12 mt-4 mb-0 d-none">
+                                            {{getLang('prepaidseries', 'Pre Paid Series')}}
+                                        </h5>
+                                        <div class="col-sm-6 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('allowrefunds', 'Allow Refunds')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="allowrefunds">
+                                                    <mat-option value="Yes, for unused & partially used series">Yes,
+                                                        for unused & partially used series</mat-option>
+                                                    <mat-option value="No, for unused & partially used series">No,
+                                                        for unused & partially used series</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('allowrefunds').valid || (paymentform.get('allowrefunds').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="paymentform.get('allowrefunds').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('allowrefundsisrequired', 'Allow Refunds is
+                                                    Required')}}
+                                                </small>
+                                            </div>
+                                        </div> -->
+<!-- 
+                                        <div class="col-sm-6 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('prepaidinactivein', 'Inactive in')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="prepaidinactivein">
+                                                    <mat-option value="12 months after being Used/Expired">12 months
+                                                        after being Used/Expired</mat-option>
+                                                    <mat-option value="24 months after being Used/Expired">24 months
+                                                        after being Used/Expired</mat-option>
+                                                    <mat-option value="36 months after being Used/Expired">36 months
+                                                        after being Used/Expired</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('prepaidinactivein').valid || (paymentform.get('prepaidinactivein').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="paymentform.get('prepaidinactivein').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('prepaidinactiveinisrequired', 'Inactive in is
+                                                    Required')}}
+                                                </small>
+                                            </div>
+                                        </div> -->
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('diposit', 'Deposit')}}
+                                        </h5>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('allowdiposit','Allow Deposit')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="allowdiposit">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                            {{getLang('pms', 'PMS')}}
+                                        </h5>
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('pmstype','Type')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option" formControlName="pmstype">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                            {{getLang('ach', 'ACH')}}
+                                        </h5>
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('enableach','Enable ACH')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option" formControlName="enableach">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                            {{getLang('paypal', 'PayPal')}}
+                                        </h5>
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('enablepaypal','Enable PayPal')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enablepaypal">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('paypalmobilepayments', 'PayPal Mobile Payments')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <mat-label></mat-label>
+                                                <textarea matInput placeholder="Ex. It makes me feel..."
+                                                    formControlName="paypalmobilepayments"></textarea>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('paypalmobilepayments').valid || (paymentform.get('paypalmobilepayments').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="paymentform.get('paypalmobilepayments').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('paypalmobilepaymentsisrequired', 'PayPal Mobile
+                                                    Payments is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                            {{getLang('creditaccount', 'Credit Account')}}
+                                        </h5>
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('utilizeglobalsettings','Utilize Global Settings')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="utilizeglobalsettings">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                            {{getLang('splitorders', 'Split Orders')}}
+                                        </h5>
+                                        <!-- <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('allowordertobesplit','Allow order to be split')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="allowordertobesplit">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div> -->
+
+                                        <!-- <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                            {{getLang('pointsminutes', 'Points/Minutes')}}
+                                        </h5>
+                                        <div class="col-sm-12 d-none">
+                                            <label class="col-form-label">
+                                                {{getLang('enablepointsminutes','Enable Points/Minutes')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enablepointsminutes">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div> -->
+
+                                        <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                            {{getLang('tipsgratuity', 'Tips/Gratuity')}}
+                                        </h5>
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('enabletipsgratuityforServices','Enable Tips/Gratuity for
+                                                Services')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enabletipsgratuityforServices">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('autotransfertipstopayouts','Auto Transfer Tips to
+                                                Pay-outs (requires active cash register)')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="autotransfertipstopayouts">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <!-- <div class="col-sm-6 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('paymentmethod', 'Payment Method')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="paymentmethod">
+                                                    <mat-option value="Pay tips with payroll...">Pay tips with
+                                                        payroll...</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('paymentmethod').valid || (paymentform.get('paymentmethod').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="paymentform.get('paymentmethod').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('paymentmethodisrequired', 'Payment Method is
+                                                    Required')}}
+                                                </small>
+                                            </div>
+                                        </div> -->
+<!-- 
+                                        <div class="col-sm-6 d-none" *ngIf="isPaymentEditMode">
+                                            <label class="col-form-label">
+                                                {{getLang('tipscalculatorpercentagebasedon', 'Tips Calculator
+                                                Percentage Based on')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl
+                                                    formControlName="tipscalculatorpercentagebasedon">
+                                                    <mat-option value="Service and Retail...">Service and Retail...
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <div [hidden]="paymentform.get('tipscalculatorpercentagebasedon').valid || (paymentform.get('tipscalculatorpercentagebasedon').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="paymentform.get('tipscalculatorpercentagebasedon').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('tipscalculatorpercentagebasedonisrequired', 'Tips
+                                                    Calculator Percentage Based on is Required')}}
+                                                </small>
+                                            </div>
+                                        </div> -->
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('enableservicecharge','Enable Service Charge')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-radio-group aria-label="Select an option"
+                                                formControlName="enableservicecharge">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="isPaymentEditMode">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        {{getLang('membershippaymentitems', 'Membership Payment
+                                                        Items')}}
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                                    <button data-toggle="modal" id="modalPaymentItemBtn"
+                                                        class="btn btn-primary" data-target="#myPaymentItemsModal"
+                                                        type="button">
+                                                        <i class="material-icons mr-1">add</i>
+                                                        {{getLang('addpaymentitem', 'Add Payment Item')}}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group align-items-center">
+                                                <table mat-table [dataSource]="paymentdataSource" matSort
+                                                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                                    <ng-container matColumnDef="itemname">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Item
+                                                            Name
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            {{element.paymentitemname}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <ng-container matColumnDef="action">
+                                                        <th mat-header-cell *matHeaderCellDef class="text-right">
+                                                            Action
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element; index as i"
+                                                            class="text-right">
+                                                            <button mat-raised-button type="button" matTooltip="Edit"
+                                                                [matTooltipPosition]="'above'"
+                                                                data-original-title="Edit"
+                                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                                [disabled]="disableButton"
+                                                                (click)="editPaymentItemAction(element)">
+                                                                <i class="material-icons">edit</i>
+                                                            </button>
+                                                            <button mat-raised-button type="button" matTooltip="Delete"
+                                                                [matTooltipPosition]="'above'"
+                                                                data-original-title="Delete"
+                                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                                [disabled]="btnDisable"
+                                                                (click)="deletePaymentItemAction(element)">
+                                                                <i class="material-icons">delete</i>
+                                                            </button>
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <tr mat-header-row *matHeaderRowDef="displayedPaymentItemColumns">
+                                                    </tr>
+                                                    <tr mat-row
+                                                        *matRowDef="let row; columns: displayedPaymentItemColumns;">
+                                                    </tr>
+                                                    <tr class="mat-row" *matNoDataRow>
+                                                        <td class="mat-cell" colspan="6">No data</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+
+                                            <div [hidden]="paymentform.get('membershippaymentitems').valid || (paymentform.get('membershippaymentitems').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small
+                                                    *ngIf="paymentform.get('membershippaymentitems').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('membershippaymentitemsisrequired', 'Membership
+                                                    Payment
+                                                    Items is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="isPaymentEditMode">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        {{getLang('tax', 'Tax')}}
+                                                    </label>
+                                                </div>
+
+                                                <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                                    <button data-toggle="modal" id="modalTaxBtn" class="btn btn-primary"
+                                                        data-target="#myTaxModal" type="button">
+                                                        <i class="material-icons mr-1">add</i>
+                                                        {{getLang('addtax', 'Add Tax')}}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group align-items-center">
+                                                <table mat-table [dataSource]="taxdataSource" matSort
+                                                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                                    <ng-container matColumnDef="taxname">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tax
+                                                            Name
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            {{element.taxname}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <ng-container matColumnDef="taxrate">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tax
+                                                            Rate
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            {{element.amount}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <ng-container matColumnDef="action">
+                                                        <th mat-header-cell *matHeaderCellDef class="text-right">
+                                                            Action
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element; index as i"
+                                                            class="text-right">
+                                                            <button mat-raised-button type="button" matTooltip="Edit"
+                                                                [matTooltipPosition]="'above'"
+                                                                data-original-title="Edit"
+                                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                                [disabled]="disableButton"
+                                                                (click)="editTaxesAction(element)">
+                                                                <i class="material-icons">edit</i>
+                                                            </button>
+                                                            <button mat-raised-button type="button" matTooltip="Delete"
+                                                                [matTooltipPosition]="'above'"
+                                                                data-original-title="Delete"
+                                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                                [disabled]="btnDisable"
+                                                                (click)="deleteTaxesAction(element)">
+                                                                <i class="material-icons">delete</i>
+                                                            </button>
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <tr mat-header-row *matHeaderRowDef="displayedTaxColumns">
+                                                    </tr>
+                                                    <tr mat-row *matRowDef="let row; columns: displayedTaxColumns;">
+                                                    </tr>
+                                                    <tr class="mat-row" *matNoDataRow>
+                                                        <td class="mat-cell" colspan="6">No data</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div [hidden]="paymentform.get('tax').valid || (paymentform.get('tax').pristine && !cancellationsubmitted)"
+                                                class="text-danger">
+                                                <small *ngIf="paymentform.get('tax').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('taxisrequired', 'Tax is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Payment Edit Mode Enable -->
+                                    <div *ngIf="!isPaymentEditMode">
+
+                                        <div class="row">
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('acceptchecks', 'Accept Checks')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="acceptchecks">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                                {{getLang('cash', 'Cash')}}
+                                            </h5>
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('acceptcash', 'Accept Cash')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="acceptcash">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                                {{getLang('creditcard', 'Credit Card')}}
+                                            </h5>
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('acceptcreditcard', 'Accept Credit Card')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="acceptcreditcard">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('cardtypes', 'Types')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <section class="example-section" formGroupName="cardtypes">
+                                                    <p>
+                                                        <mat-checkbox formControlName="rupay" [attr.disabled]="true"></mat-checkbox>
+                                                        &nbsp;&nbsp;<img width="100"
+                                                            src="assets/img/rupay.jpg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <mat-checkbox formControlName="master" [attr.disabled]="true"></mat-checkbox>
+                                                        &nbsp;&nbsp;<img width="100"
+                                                            src="assets/img/mastercard.png">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <mat-checkbox formControlName="visa" [attr.disabled]="true"></mat-checkbox>
+                                                        &nbsp;&nbsp;<img width="100" src="assets/img/visa.png">
+                                                    </p>
+                                                </section>
+
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('creditnote', 'Credit Note')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="creditnote">
+                                            </div>
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('mappartner', 'MAP Partner')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="mappartner">
+                                            </div>
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('requirebillingaddressforonlinepurchages',
+                                                    'Require Billing Address for online purchages')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="requirebillingaddressforonlinepurchages">
+                                            </div>
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('requirepostalcodeforcardtransactionsequaloraboveacertainamount',
+                                                    'Require postal code when order contains a gift card or gift
+                                                    certificate')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="requirepostalcodeforcardtransactionsequaloraboveacertainamount">
+                                            </div>
+<!-- 
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('requirepostalcodewhenordercontainsagiftcardorgiftcertificate',
+                                                    'Require postal code for card transactions equal or
+                                                    above a
+                                                    certain amount')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="requirepostalcodewhenordercontainsagiftcardorgiftcertificate">
+                                            </div> -->
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                                {{getLang('giftcard', 'Gift Card')}}
+                                            </h5>
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('acceptgiftcards', 'Accept Gift Cards')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="acceptgiftcards">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('enablecashbackforgiftcertificatebalance',
+                                                    'Enable
+                                                    Cash Back for Gift Certificate Balance')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="enablecashbackforgiftcertificatebalance">
+                                            </div>
+
+                                            <!-- <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('expiregiftcertificates', 'Expire Gift
+                                                    Certificates')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="expiregiftcertificates">
+                                            </div> -->
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('applytaxon', 'Apply Tax on')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="applytaxon">
+                                            </div>
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('inactivein', 'Inactive in')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="inactivein">
+                                            </div>
+
+                                            <!-- <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('prepaidseries', 'Pre Paid Series')}}
+                                            </h5>
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('allowrefunds', 'Allow Refunds')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="allowrefunds">
+                                            </div>
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('prepaidinactivein', 'Inactive in')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="prepaidinactivein">
+                                            </div> -->
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                                {{getLang('deposit', 'Deposit')}}
+                                            </h5>
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('allowdiposit', 'Allow Diposit')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="allowdiposit">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('pms', 'PMS')}}
+                                            </h5>
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('pmstype', 'Type')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="pmstype">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('ach', 'ACH')}}
+                                            </h5>
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableach', 'Enable ACH')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enableach">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('paypal', 'PayPal')}}
+                                            </h5>
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('enablepaypal', 'Enable PayPal')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enablepaypal">
+                                            </div>
+
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('paypalmobilepayments', 'PayPal Mobile
+                                                    Payments')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="paypalmobilepayments">
+                                            </div>
+
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('creditaccount', 'Credit Account')}}
+                                            </h5>
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('utilizeglobalsettings', 'Utilize Global
+                                                    Settings')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="utilizeglobalsettings">
+                                            </div>
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('splitorders', 'Split Orders')}}
+                                            </h5>
+                                            <!-- <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('allowordertobesplit', 'Allow order to be
+                                                    split')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="allowordertobesplit">
+                                            </div> -->
+
+                                            <!-- <h5 class="card-title col-sm-6 mt-4 mb-0 d-none">
+                                                {{getLang('pointsminutes', 'Points/Minutes')}}
+                                            </h5>
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('enablepointsminutes', 'Enable
+                                                    Points/Minutes')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enablepointsminutes">
+                                            </div> -->
+
+                                            <h5 class="card-title col-sm-6 mt-4 mb-0">
+                                                {{getLang('tipsgratuity', 'Tips/Gratuity')}}
+                                            </h5>
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('enabletipsgratuityforServices', 'Enable
+                                                    Tips/Gratuity for Services')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="enabletipsgratuityforServices">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('autotransfertipstopayouts', 'Auto Transfer
+                                                    Tips
+                                                    to Pay-outs (requires active cash register)')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="autotransfertipstopayouts">
+                                            </div>
+<!-- 
+                                            <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('paymentmethod', 'Payment Method')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="paymentmethod">
+                                            </div> -->
+
+                                            <!-- <div class="col-sm-12 d-none">
+                                                <label class="col-form-label">
+                                                    {{getLang('tipscalculatorpercentagebasedon', 'Tips
+                                                    Calculator Percentage Based on')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly
+                                                    formControlName="tipscalculatorpercentagebasedon">
+                                            </div> -->
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('enableservicecharge', 'Enable Service
+                                                    Charge')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input matInput readonly formControlName="enableservicecharge">
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('membershippaymentitems', 'Membership Payment
+                                                    Items')}}
+                                                </label>
+                                                <table mat-table [dataSource]="paymentdataSource" matSort
+                                                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                                    <ng-container matColumnDef="itemname">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                            Item Name
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            {{element.paymentitemname}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <tr mat-header-row
+                                                        *matHeaderRowDef="displayedPaymentItemWithoutEditColumns">
+                                                    </tr>
+                                                    <tr mat-row
+                                                        *matRowDef="let row; columns: displayedPaymentItemWithoutEditColumns;">
+                                                    </tr>
+                                                    <tr class="mat-row" *matNoDataRow>
+                                                        <td class="mat-cell" colspan="6">No data</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('tax', 'Tax')}}
+                                                </label>
+                                                <table mat-table [dataSource]="taxdataSource" matSort
+                                                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                                    <ng-container matColumnDef="taxname">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                            Tax Name
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            {{element.taxname}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <ng-container matColumnDef="taxrate">
+                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                            Tax Rate
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            {{element.amount}}
+                                                        </td>
+                                                    </ng-container>
+
+                                                    <tr mat-header-row
+                                                        *matHeaderRowDef="displayedTaxWithoutEditColumns">
+                                                    </tr>
+                                                    <tr mat-row
+                                                        *matRowDef="let row; columns: displayedTaxWithoutEditColumns;">
+                                                    </tr>
+                                                    <tr class="mat-row" *matNoDataRow>
+                                                        <td class="mat-cell" colspan="6">No data</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoadingData && isPaymentEditMode">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="row">
+                                        <div class="col-sm-12 text-right">
+                                            <button class="btn btn-default" type="button" [disabled]="btnDisable"
+                                                (click)="onPaymentCancel()">
+                                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                                            </button>
+
+                                            <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable">
+                                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </form>
+            </ng-template>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="myCancellationReasonsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form [formGroup]="cancellationreasonform"
+                (ngSubmit)="onCancellationReasonSubmit(cancellationreasonform.value,cancellationreasonform.valid)"
+                novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getLang('new','New')}} {{lookupDetail?.lookup | titlecase}}
+                    </h4>
+                    <button mat-button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"
+                        (click)="CancellationReasonCancel()">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <label class="col-form-label">
+                            {{getLang('name','Name')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="text" matInput formControlName="name">
+                        </mat-form-field>
+                        <div [hidden]="cancellationreasonform.get('name').valid || (cancellationreasonform.get('name').pristine && !submitted)"
+                            class="text-danger">
+                            <small *ngIf="cancellationreasonform.get('name').hasError('required')" class="error-label">
+                                {{getLang('nameisrequired', 'Name is required !')}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="btnDisable"
+                        (click)="CancellationReasonCancel();">
+                        <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                    </button>
+
+                    <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable">
+                        <i class="material-icons">save</i> {{getLang('save','Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myPaymentItemsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form [formGroup]="paymentitemform"
+                (ngSubmit)="onPaymentItemSubmit(paymentitemform.value,paymentitemform.valid)" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getLang('paymentitem','Payment Item')}}
+                    </h4>
+                    <button mat-button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"
+                        (click)="PaymentItemCancel()">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <label class="col-form-label">
+                            {{getLang('itemname','Item Name')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="text" matInput formControlName="itemname">
+                        </mat-form-field>
+                        <div [hidden]="paymentitemform.get('itemname').valid || (paymentitemform.get('itemname').pristine && !submitted)"
+                            class="text-danger">
+                            <small *ngIf="paymentitemform.get('itemname').hasError('required')" class="error-label">
+                                {{getLang('itemnameisrequired', 'Item Name is required !')}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="btnDisable"
+                        (click)="PaymentItemCancel();">
+                        <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                    </button>
+
+                    <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable">
+                        <i class="material-icons">save</i> {{getLang('save','Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myTaxModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form [formGroup]="taxform" (ngSubmit)="onTaxSubmit(taxform.value,taxform.valid)" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getLang('tax','Tax')}}
+                    </h4>
+                    <button mat-button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true"
+                        (click)="TaxCancel()">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <label class="col-form-label">
+                            {{getLang('taxname','Tax Name')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="text" matInput formControlName="taxname">
+                        </mat-form-field>
+                        <div [hidden]="taxform.get('taxname').valid || (taxform.get('taxname').pristine && !submitted)"
+                            class="text-danger">
+                            <small *ngIf="taxform.get('taxname').hasError('required')" class="error-label">
+                                {{getLang('taxnameisrequired', 'Tax Name is required !')}}
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="col-form-label">
+                            {{getLang('taxrate','Tax Rate (0% to 100%)')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="text" matInput formControlName="taxrate">
+                        </mat-form-field>
+                        <div [hidden]="taxform.get('taxrate').valid || (taxform.get('taxrate').pristine && !submitted)"
+                            class="text-danger">
+                            <small *ngIf="taxform.get('taxrate').hasError('required')" class="error-label">
+                                {{getLang('taxrateisrequired', 'Tax Rate is required !')}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="btnDisable"
+                        (click)="TaxCancel();">
+                        <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                    </button>
+
+                    <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable">
+                        <i class="material-icons">save</i> {{getLang('save','Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px">
+        <div class="member-img-main position-relative member-profile-img-border">
+            <img [src]="dataContent.branchlogo ? dataContent.branchlogo : '../assets/img/default-avatar.png'"
+                class="img-fluid w-100" alt="" height="500">
+            <div class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.branchname}}</h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-10">
+
+
+                <div class="d-flex align-items-center mb-3"
+                    *ngIf="dataContent.property && dataContent.property.address1">
+                    <div>{{dataContent.property.address1}}</div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3"
+                    *ngIf="dataContent.property && dataContent.property.contactnumber">
+                    <div class="mr-2"> <img src="../assets/img/phone-gray-icon.svg" alt=""></div>
+                    <div> {{dataContent.property.contactnumber}} </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3">
+                    <b>Advisor:&nbsp;</b>
+                    <div>{{dataContent.advisor ? dataContent.advisor : 'NA'}} </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3"
+                    *ngIf="license">
+                    License :&nbsp;
+                    <div *ngIf="license.users">{{license?.users}} &nbsp;Users</div>
+                    <!-- <div *ngIf="license.members"> Members  {{license?.members}}</div> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

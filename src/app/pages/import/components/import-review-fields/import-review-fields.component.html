@@ -1,0 +1,65 @@
+<div class="form-horizontal">
+  <h4 class="card-title text-center mb-4">Data Validation</h4>
+  <mat-accordion *ngIf="reviwedDataValue.length !== 0">
+    <mat-expansion-panel hideToggle #example>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <code> Error in {{reviwedDataValue.length}} rows </code>
+        </mat-panel-title>
+        <mat-panel-description style="justify-content: flex-end;">
+
+          <i class="material-icons" *ngIf="!example.expanded">play_arrow</i>
+          <i class="material-icons" *ngIf="example.expanded">arrow_drop_down</i>
+          
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="card-body form-horizontal">
+        <h4 class="card-title" *ngIf="reviwedDataValue.length !== 0">Error Details</h4>
+        <ng-container *ngFor="let items of reviwedDataValue; let i = index">
+          <div class="row">
+            <div class="col-4">
+              <div class="card-body text-center">Row {{ i+ 1}}:</div>
+            </div>
+            <div class="col-8">
+              <div *ngFor="let itm of items.details"> 
+                <div class="row">
+                  <div class="col-6">
+                    <code> Message: {{itm.message}} </code>
+                  </div>
+                  <div class="col-6">
+                    <code> Value: {{itm.context.value}} </code>
+                  </div>
+                </div>
+              </div> 
+            </div>
+          </div>
+      </ng-container>
+      </div>
+    </mat-expansion-panel>
+    
+  </mat-accordion>
+  <div class="row" *ngIf="reviwedDataValue.length == 0">
+    <div class="col-md-12 text-center">
+      <h4> No Error Found!!!! </h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right">
+      
+      <button 
+        [disabled]="submitBtnDisable" 
+        *ngIf="reviwedDataValue.length !== 0" 
+        class="btn btn-default" 
+        (click)="uploadAgain()">
+        <i class="material-icons">file_upload</i> Upload Again
+      </button>
+
+      <button 
+        class="btn btn-primary" 
+        [disabled]="submitBtnDisable" 
+        (click)="reviewData()">
+        <i class="material-icons">navigate_next</i> {{reviwedDataValue && reviwedDataValue.length !== 0 ? 'Skip Error and Confirm Import' : 'Confirm your Import'}}
+      </button>
+    </div>
+  </div>
+</div>

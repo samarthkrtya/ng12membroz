@@ -1,0 +1,48 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3 class="card-title">Member</h3>
+                <div class="wizard-container mrt20">
+                    <div class="tab-content">
+
+                        <div class="">
+
+                            <div class="card-body">
+
+                                <div class="mt-3" *ngIf="formObj">
+                                    <app-member-details 
+                                        [formObj]="this.formObj" 
+                                        [bindId]="bindId">
+                                    </app-member-details>
+                                </div>
+
+                                
+                                <div class="mt-3">
+                                    <app-product-details
+                                        *ngIf="visible"
+                                        (updateRecord)="getUpdated($event)">
+                                    </app-product-details>
+                                </div>
+
+                                <div class="mt-3">
+                                    <app-membership-offers
+                                        *ngIf="visible">
+                                    </app-membership-offers>
+                                </div>
+
+                                <div class="mt-3">
+                                    <app-payment-details
+                                        *ngIf="visible">
+                                    </app-payment-details>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

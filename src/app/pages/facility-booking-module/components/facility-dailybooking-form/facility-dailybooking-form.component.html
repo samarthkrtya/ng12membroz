@@ -1,0 +1,408 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        {{getLang('facilitybookingdetail', 'Facility Booking Detail')}}
+                    </h3>
+                    <div class="loader" *ngIf="isLoading">
+                        <svg class="circular" viewBox="25 25 50 50">
+                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+                    <div class="card" *ngIf="!isLoading">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+
+                                    <div class="row">
+                                        <div class="col-sm-12 text-right" *ngIf="displayBillBtn">
+                                            <app-viewbillbtn [btnLists]="displayBillBtnList" [displayTxt]="'View Biils'"> </app-viewbillbtn>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('customer', 'Customer')}}
+                                                <span class="text-danger">*</span>
+                                            </label> 
+
+                                            <!-- <dynamic-autocomplete [formControlName]="customerfields.fieldname"
+                                                    [dbvalue]="customerfields.dbvalue" [setting]="customerfields"
+                                                    (inputModelChange)="onCustomerSelected($event)" 
+                                                    [showDetail]="true"
+                                                    [htmlContent]="htmlContent"
+                                                    [isDisabled]="isMemberLogin"
+                                                    [redirectUrl]="redirectUrl">
+                                            </dynamic-autocomplete> -->
+                                            
+
+                                            <mat-form-field class="example-full-width" appearance="standard">
+                                                <input type="text" matInput #trigger="matAutocompleteTrigger"  [matAutocomplete]="auto" formControlName="customerid" 
+                                                  [placeholder]="getLang('searchcustomerormember', 'Search Customer or Member')" (dblclick)="trigger.openPanel()">
+                                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn2"
+                                                  (optionSelected)="onCustomerSelected()">
+                                                  <mat-option *ngIf="customerisLoadingBox" class="is-loading">
+                                                    <mat-spinner diameter="50"></mat-spinner>
+                                                  </mat-option>
+                                                  <ng-container *ngIf="!customerisLoadingBox && customerList.length > 0">
+                                                    <mat-option *ngFor="let option of customerfilteredOptions | async" [value]="option">
+                                                      {{option?.nickname}}
+                                                    </mat-option>
+                                                  </ng-container>
+                                                  <!-- <ng-container *ngIf="!customerisLoadingBox && customerList.length == 0">
+                                                    <mat-option>
+                                                      <span>{{getLang('norecord', 'No Record')}}</span>
+                                                    </mat-option>
+                                                  </ng-container> -->
+                                                </mat-autocomplete>
+                                             </mat-form-field>
+
+                                              <div class="row" *ngIf="form.get('customerid').value">
+                                                <div class="col-md-12">
+                                                 <div class="border p-3 rounded alternative-light-blue">
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <div class="media member-profile-item"><img  [src]="form.get('customerid').value.profilepic ? form.get('customerid').value.profilepic : '../assets/img/default-avatar.png'" class="profile-avatar-img mr-2 rounded-circle" alt="">
+                                                                <div class="media-body"><div class="font-500 mb-1"> {{form.get('customerid').value?.fullname}} </div> <div > <div class="d-flex"><div class="flex-grow-1"> {{form.get('customerid').value?.membershipid?.membershipname}} </div> </div> </div></div> </div>
+                                                            </div>
+                                                            <div class="col-sm-4" *ngIf="form.get('customerid').value.property && form.get('customerid').value.property.address">
+                                                                <div class="d-flex"><div class="mr-2"><img src="../assets/img/location-gray-icon.svg" alt=""></div>
+                                                                <div> {{form.get('customerid').value?.property?.address}}   <br> {{form.get('customerid').value?.property?.city}} </div></div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div *ngIf="form.get('customerid').value.primaryemail"> <div class="d-flex align-items-center mb-3"><div class="mr-2"><img src="../assets/img/email-gray-icon.svg" alt=""></div><div>{{form.get('customerid').value?.primaryemail}}</div></div> </div>
+                                                                <div *ngIf="form.get('customerid').value.mobile"> <div class="d-flex align-items-center mb-3"><div class="mr-2"><img src="../assets/img/phone-gray-icon.svg" alt=""></div><div> {{form.get('customerid').value?.mobile}} </div></div> </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    </div> 
+                                                </div>
+
+                                            <div [hidden]="form.get('customerid').valid || (form.get('customerid').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('customerid').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('customerisrequired', 'Customer is Required')}}
+                                                </small> 
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                {{getLang('facility', 'Facility')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input type="text" matInput formControlName="refid"
+                                                    [matAutocomplete]="autofac" (change)="handleEmptyInput($event)">
+                                                <mat-autocomplete #autofac="matAutocomplete" [displayWith]="displayFacFn"
+                                                    (optionSelected)="onFacilitySelected($event.option.value)"
+                                                    (closed)="onFacilityActivated()">
+                                                    <mat-option *ngFor="let option of servicefilteredOptions | async" [value]="option">
+                                                        {{option?.title}}
+                                                    </mat-option>
+                                                    <ng-container *ngIf="serviceList.length == 0" >
+                                                        <mat-option disabled="true">
+                                                            No data
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('refid').valid || (form.get('refid').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('refid').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('facilityisrequired', 'Facility is Required')}}
+                                                </small>
+                                                <small *ngIf="form.get('refid').hasError('objects')"
+                                                    class="error-label">
+                                                    {{getLang('facilityisinvalid', 'Facility is invalid')}}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <ng-container *ngIf="selectedFacility !== undefined && selectedFacility.bookingtype == 'DAILY'">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('checkin', 'Check in')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input [min]="!bindId ? today : ''" matInput
+                                                        [matDatepicker]="resultPickercin" formControlName="checkin">
+                                                    <mat-datepicker-toggle matSuffix [for]="resultPickercin">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #resultPickercin></mat-datepicker>
+                                                </mat-form-field>
+
+                                                <div [hidden]="form.get('checkin').valid || (form.get('checkin').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('checkin').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('checkinisrequired', 'Check in is Required')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('checkout', 'Check Out')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input
+                                                        [min]="this.form.controls['checkin'].value ? this.form.controls['checkin'].value : ''"
+                                                        matInput [matDatepicker]="resultPickercout"
+                                                        formControlName="checkout">
+                                                    <mat-datepicker-toggle matSuffix [for]="resultPickercout">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #resultPickercout></mat-datepicker>
+                                                </mat-form-field>
+
+                                                <div [hidden]="form.get('checkout').valid || (form.get('checkout').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('checkout').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('checkoutisrequired', 'Check out is Required')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    {{getLang('totalrooms', 'Total Rooms')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-label>{{getLang('chooseanoptn', 'Choose an option')}}</mat-label>
+                                                    <mat-select formControlName="totalrooms">
+                                                        <mat-option [value]="room" *ngFor="let room of totalrooms"
+                                                            (click)="chooseRoom(room)">{{room}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <ng-container formArrayName="occupants">
+                                                <div class="col-sm-12"
+                                                    *ngFor="let item of form.get('occupants')['controls']; let i = index">
+                                                    <label class="col-form-label">
+                                                        {{getLang('room', 'Room')}}  {{item?.value?.room}}
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="row" [formGroupName]="i">
+                                                        <div class="col-sm-3">
+                                                            <mat-form-field class="example-full-width">
+                                                                <mat-label>{{getLang('chooseanadult', 'Choose an adult')}}</mat-label>
+                                                                <mat-select formControlName="adults">
+                                                                    <mat-option [value]="adult"
+                                                                        *ngFor="let adult of totaloccupants">{{adult}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <mat-form-field class="example-full-width">
+                                                                <mat-label>{{getLang('chooseanchildren', 'Choose an childrens')}}</mat-label>
+                                                                <mat-select formControlName="childrens">
+                                                                    <mat-option [value]="child"
+                                                                        *ngFor="let child of totaloccupants">{{child}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <mat-form-field class="example-full-width">
+                                                                <mat-label>{{getLang('chooseanextrabed', 'Choose an extrabed')}}</mat-label>
+                                                                <mat-select formControlName="extrabed">
+                                                                    <mat-option [value]="bed"
+                                                                        *ngFor="let bed of totaloccupants">{{bed}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-3" *ngIf="!isMemberLogin">
+                                                            <mat-form-field class="example-full-width">
+                                                                <mat-label>{{getLang('entercost', 'Enter cost')}}</mat-label>
+                                                                <input type="number" formControlName="extracost" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-container *ngIf="selectedFacility !== undefined && selectedFacility.bookingtype == 'HOURLY'">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('bookingdate', 'Booking Date')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input [min]="!bindId ? today : ''" matInput #ref (dateChange)="bookingdateChange($event)"
+                                                        [matDatepicker]="resultPickerbooking" formControlName="bookingdate">
+                                                    <mat-datepicker-toggle matSuffix [for]="resultPickerbooking">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #resultPickerbooking></mat-datepicker>
+                                                </mat-form-field>
+
+                                                <div [hidden]="form.get('bookingdate').valid || (form.get('bookingdate').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('bookingdate').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('bookingdateisrequired', 'Booking date is Required')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                  {{getLang('timeslot', 'Time Slot')}}
+                                                  <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field>
+                                                  <input type="text" matInput formControlName="timeslot" [matAutocomplete]="autoTime">
+                                                  <mat-autocomplete #autoTime="matAutocomplete" [displayWith]="timeDisplayFn">
+                                                    <ng-container *ngIf="alltimeslotLists.length > 0">
+                                                      <mat-option *ngFor="let option of timeslotfilteredOptions | async" [value]="option">
+                                                        {{option?.displaytext}}
+                                                      </mat-option>
+                                                    </ng-container>
+                                  
+                                                    <ng-container *ngIf="alltimeslotLists.length == 0">
+                                                      <mat-option>
+                                                        <span>{{getLang('facilityisnotavailableongivendate', 'Facility is unavailable on given date')}}</span>
+                                                      </mat-option>
+                                                    </ng-container>
+                                  
+                                                  </mat-autocomplete>
+                                                </mat-form-field>
+                                                <div [hidden]="form.get('timeslot').valid || (form.get('timeslot').pristine && !submitted)"
+                                                  class="text-danger">
+                                                  <small *ngIf="form.get('timeslot').hasError('required')" class="error-label">
+                                                    {{getLang('timeslotisrequired', 'Time Slot is required !')}}
+                                                  </small>
+                                                </div>
+                                              </div>
+                                  
+                                              <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                  {{getLang('charges', 'Charges')}}
+                                                  <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                  <input matInput type="number" formControlName="cost">
+                                                </mat-form-field>
+                                              </div>
+                                  
+                                              <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                  {{getLang('taxes', 'Taxes')}}
+                                                </label>
+                                  
+                                                <mat-form-field class="example-full-width">
+                                                  <mat-select matNativeControl multiple formControlName="taxes">
+                                                    <mat-option [value]="tax" *ngFor="let tax of selectedFacility?.taxes">
+                                                      {{tax?.taxname}}
+                                                    </mat-option>
+                                                  </mat-select>
+                                                </mat-form-field>
+                                              </div>
+                                  
+                                              <!-- <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                  {{getLang('discount', 'Discount')}}
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                  <input matInput type="number" formControlName="discount">
+                                                </mat-form-field>
+                                                <div [hidden]="serviceForm.get('discount').valid || (serviceForm.get('discount').pristine && !submitted)"
+                                                  class="text-danger">
+                                                  <small *ngIf="serviceForm.get('discount').hasError('insertonlypositivenumber')" class="error-label">
+                                                    {{getLang('discountshouldbepositive ', 'Discount should be positive
+                                                    !')}}
+                                                  </small>
+                                                </div>
+                                              </div> -->
+                                  
+                                              <!-- <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                  {{getLang('status', 'Status')}}
+                                                </label>
+                                                <mat-form-field class="example-full-width" appearance="standard">
+                                                  <mat-select placeholder="Choose option" formControlName="status" matNativeControl>
+                                                    <mat-option [value]="status.code" *ngFor="let status of statusList">{{status.value}}</mat-option>
+                                                  </mat-select>
+                                                </mat-form-field>
+                                              </div> -->
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-4 text-left" *ngIf="bindId">
+                            <button class="btn btn-danger ml-2"  *ngIf="!isMemberLogin" (click)="cancelled.clickPP()"
+                                    type="button"  [disabled]="disableButton">
+                                    <i class="material-icons">close</i> {{getLang('cancelbokng', 'Cancel Booking')}}
+                            </button>
+                        </div>
+                        <div class="text-right" [ngClass]="{'col-sm-8': bindId , 'col-sm-12': !bindId }">
+                         
+                            <button class="btn btn-default" type="button" (click)="cancelbookingform()"
+                                [disabled]="disableButton">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+
+                            <button class="btn btn-primary ml-2" (click)="status = 'requested'" type="submit"
+                                [disabled]="disableButton || form.controls['status'].value != 'active'">
+                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                            </button>
+
+                            <ng-container *ngIf="!isMemberLogin;else member">
+                                <button class="btn btn-success ml-2"  *ngIf="bindId" (click)="confirmation.clickPP()"
+                                    type="button"  [disabled]="disableButton || form.controls['status'].value != 'active'">
+                                    <i class="material-icons">save</i> {{getLang('save&confrm', 'Save & Confirmed')}}
+                                </button>
+                            </ng-container>
+                            <ng-template #member>
+                                <button class="btn btn-success ml-2"  *ngIf="bindId" (click)="onlinePay()"
+                                    type="button"  [disabled]="disableButton || form.controls['status'].value != 'active'">
+                                    <i class="material-icons">payment</i> {{getLang('paynow', 'Pay Now')}}
+                                </button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+</form>
+
+
+
+<app-global-confirmation #confirmation [myForm]="form" [mySubmitted]="submitted" [fieldTxt]="'notes'" [displayTxt]="'Confirmation'" [id]="'Modal1'">
+    <button conBtn class="btn btn-success ml-2" (click)="status = 'confirmed';onSubmit(form.value,form.valid);" type="button" [disabled]="disableButton || form.controls['status'].value != 'active'" >
+        <i class="material-icons">save</i> {{getLang('save&confrm', 'Save & Confirmed')}}
+    </button>
+</app-global-confirmation>
+
+
+<app-global-confirmation #cancelled [myForm]="form" [mySubmitted]="submitted" [fieldTxt]="'notes'" [displayTxt]="'Reason'" [id]="'Modal2'">
+<button conBtn class="btn btn-danger ml-2" (click)="status = 'cancelled'; onSubmit(form.value,form.valid);" type="button" [disabled]="disableButton" >
+    <i class="material-icons">save</i> {{getLang('cancelled', 'Cancelled')}}
+</button>
+</app-global-confirmation>

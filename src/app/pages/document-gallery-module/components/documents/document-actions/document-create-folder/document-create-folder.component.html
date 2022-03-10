@@ -1,0 +1,76 @@
+<form 
+    [formGroup]="formFolder" 
+    (ngSubmit)="onSubmitFolder(formFolder.value, formFolder.valid)" 
+    novalidate
+    class="mb-0">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="dropdown inline-block text-right">
+                <button 
+                    class="dropdown-toggle btn btn-primary mr0" 
+                    data-toggle="dropdown">
+                    {{selectedParent !== 'My Drive' ? selectedParent.displayNameSelect : 'My Drive'}}
+                    <span *ngIf="folderListsDDTreeList.length == 0 || selectedParent == undefined">
+                        {{getLang('parent','Select Parent')}}
+                    </span>
+                    <b class="caret"></b>
+                </button>
+                
+                <ul class="dropdown-menu dropdown-menu-left" style="cursor:pointer;">
+                    <li>
+                        <a class="dropdown-item" (click)="changeParent('My Drive')">
+                            {{getLang('mydrive','My Drive')}}
+                        </a>
+                    </li>
+                    <li *ngFor="let opt of folderListsDDTreeList">
+                        <a class="dropdown-item" (click)="changeParent(opt)">{{opt.displayNameDD}}</a>
+                    </li>
+                    <li *ngIf="folderListsDDTreeList.length == 0">
+                        <a class="dropdown-item">
+                            {{getLang('noparent','No Parent')}}
+                        </a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+
+        <div class="col-sm-12">
+            <label class="col-form-label"> 
+                {{getLang('foldername','Folder Name')}} 
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input 
+                    matInput
+                    type="text" 
+                    formControlName="foldername">
+              </mat-form-field>
+            
+
+            <div 
+                [hidden]="formFolder.get('foldername').valid || (formFolder.get('foldername').pristine && !submittedFolder)"
+                class="alert alert-danger">
+                {{getLang('foldernamerequired','Folder Name required.')}}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-right">
+            <button 
+                data-dismiss="modal"
+                (click)="resetFolder('close')"
+                class="btn btn-default" 
+                type="button">
+                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+            </button>
+            <button 
+                class="btn btn-primary ml-2" 
+                type="submit" 
+                >
+                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+            </button>
+        </div>
+    </div>
+</form>

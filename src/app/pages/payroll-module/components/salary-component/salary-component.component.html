@@ -1,0 +1,259 @@
+<form [formGroup]="salaryComponentForm" (ngSubmit)="onSubmit(salaryComponentForm.value)" novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">Salary Component </h3>
+
+                    <div class="loader" *ngIf="isLoadingData">
+                        <svg class="circular" viewBox="25 25 50 50">
+                            <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">                               
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            Pay Head Name
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput value="" formControlName="payHeadName"
+                                                [(ngModel)]="salaryComponentModel.payHeadName">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            Display Name
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput value="" formControlName="displayName"
+                                                [(ngModel)]="salaryComponentModel.displayName">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    Pay Type
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-select formControlName="payHeadTypeID"
+                                                        [(ngModel)]="salaryComponentModel.payHeadTypeID"
+                                                        (selectionChange)="onPayTypeChange($event)">
+                                                        <mat-option *ngFor="let x of this.lookups.payHeadTypes"
+                                                            [value]="x.id">
+                                                            {{x.name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    Calculation Type
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-select formControlName="calculationTypeID"
+                                                        [(ngModel)]="salaryComponentModel.calculationTypeID"
+                                                        (selectionChange)="onCalculationTypeChange($event)">
+                                                        <mat-option *ngFor="let x of lookups.calculationTypes"
+                                                            [value]="x.id">{{x.name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12" *ngIf="salaryComponentModel.calculationTypeID == 504">
+                                                <label class="col-form-label">
+                                                    Attendance Type
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-select formControlName="attendanceTypeID"
+                                                        [(ngModel)]="salaryComponentModel.attendanceTypeID"
+                                                        (selectionChange)="onAttendanceTypeChange($event)">
+                                                        <mat-option *ngFor="let x of lookups.attendanceTypes"
+                                                            [value]="x.id">{{x.name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12" *ngIf="salaryComponentModel.calculationTypeID == 505">
+                                                <label class="col-form-label">
+                                                    Production Type
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-select formControlName="productionUnitID"
+                                                        [(ngModel)]="salaryComponentModel.productionUnitID">
+                                                        <mat-option value="1">one</mat-option>
+                                                        <mat-option value="2">two</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="row">
+                                            <div class="col-sm-12" *ngIf="salaryComponentModel.calculationTypeID == 504">
+                                                <label class="col-form-label">
+                                                    Calculation Period
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-select formControlName="calculationPeriodID"
+                                                        [(ngModel)]="salaryComponentModel.calculationPeriodID"
+                                                        (selectionChange)="onCalculationPeriodChange($event)">
+                                                        <mat-option *ngFor="let x of lookups.calculationPeriods"
+                                                            [value]="x.id">{{x.name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div> -->
+                                        <!-- <div class="row">
+                                            <div class="col-sm-12"
+                                                *ngIf="(salaryComponentModel.calculationTypeID === 504 && salaryComponentModel.calculationPeriodID !== 701)">
+                                                <label class="col-form-label">
+                                                    Calculation Basis
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-select formControlName="perDayCalculationBasisID"
+                                                        [(ngModel)]="salaryComponentModel.perDayCalculationBasisID"
+                                                        (selectionChange)="onCalBasisChange($event)">
+                                                        <mat-option *ngFor="let x of lookups.perDayCalculationBasises"
+                                                            [value]="x.id">{{x.name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div> -->
+                                        <div class="row">
+                                            <div class="col-sm-12"
+                                                *ngIf="salaryComponentModel.perDayCalculationBasisID === 802 && salaryComponentModel.calculationPeriodID !== 701 && salaryComponentModel.calculationTypeID!=501">
+                                                <label class="col-form-label">
+                                                    {{calculationPeriodName}} of Days
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput formControlName="userdefinedDays"
+                                                        [(ngModel)]="salaryComponentModel.userdefinedDays">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12" *ngIf="salaryComponentModel.calculationTypeID == 501">
+                                                <label class="col-form-label" style="text-align: left;">
+                                                    Computation Methods
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-select formControlName="computationMethodID"
+                                                        [(ngModel)]="salaryComponentModel.computationMethodID"
+                                                        (selectionChange)="onComputationChange($event)">
+                                                        <mat-option *ngFor="let x of lookups.computationMethods"
+                                                            [value]="x.id">{{x.name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-form-label">
+                                                    Is Default
+                                                </label>
+                                                <div class="mt-3">
+                                                    <mat-slide-toggle formControlName="isPrimary"
+                                                        [(ngModel)]="salaryComponentModel.isPrimary"></mat-slide-toggle>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="">
+                                            <div class="">
+                                                <label class="col-form-label">Other Configurations</label>&nbsp;&nbsp;
+                                            </div>
+                                            <div class="mt-2">
+                                                <mat-checkbox formControlName="affectNetSalaryOn"
+                                                    [(ngModel)]="salaryComponentModel.affectNetSalaryOn">
+                                                    Affect Net Salary
+                                                </mat-checkbox>
+                                            </div>
+                                            <!-- <div class="">
+                                                <mat-checkbox formControlName="canrecurringSubequentPayrollsOn"
+                                                    [(ngModel)]="salaryComponentModel.canrecurringSubequentPayrollsOn">
+                                                    Can Recurring Subsequent Payroll On
+                                                </mat-checkbox>
+                                            </div> -->
+                                            <!-- <div class="">
+                                                <mat-checkbox formControlName="taxableComponentOn"
+                                                    [(ngModel)]="salaryComponentModel.taxableComponentOn">
+                                                    It is a taxable component
+                                                </mat-checkbox>
+                                            </div> -->
+
+                                            <div class="">
+                                                <mat-checkbox formControlName="considerforEPFContributionOn"
+                                                    [(ngModel)]="salaryComponentModel.considerforEPFContributionOn">
+                                                    Consider for EPF Contribution
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="">
+                                                <mat-checkbox formControlName="considerforESIContributionOn"
+                                                    [(ngModel)]="salaryComponentModel.considerforESIContributionOn">
+                                                    Consider for ESI Contribution
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="">
+                                                <mat-checkbox formControlName="considerforGratuityOn"
+                                                    [(ngModel)]="salaryComponentModel.considerforGratuityOn">
+                                                    Consider for Gratuity
+                                                </mat-checkbox>
+                                            </div>
+                                            <!-- <div class="">
+                                                <mat-checkbox formControlName="canShowInPayslipOn"
+                                                    [(ngModel)]="salaryComponentModel.canShowInPayslipOn">
+                                                    Show this component in payslip
+                                                </mat-checkbox>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer fixed-bottom bg-white shadow-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-default" type="button" [disabled]="submitted"
+                                [routerLink]="['/pages/dynamic-list/list/salarycomponent']">
+                                <i class="material-icons">close</i>{{getLang('cancel', 'Cancel')}}
+                            </button>
+                            <button class="btn btn-primary ml-2" type="submit"
+                                [disabled]="submitted || !salaryComponentForm.valid">
+                                <span *ngIf="submitted" class="spinner-border"></span>
+                                <i *ngIf="!submitted" class="material-icons">save</i>
+                                {{ !submitted ? getLang('save', 'Save') : ''}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>

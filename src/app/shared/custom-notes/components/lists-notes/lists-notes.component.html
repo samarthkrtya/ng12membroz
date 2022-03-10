@@ -1,0 +1,11 @@
+<div class="note">
+    <div class="note_toolbar">
+        <span class="closeNotes material-icons-custom" (click)="onDismiss($event)">close</span>
+    </div>
+      <div class="content-custom-note" contenteditable="true" (blur)="onFocusOut($event)">
+          <ng-content></ng-content>
+      </div>
+    <div class="footer-custom-note">
+        <button class="material-icons-custom" (click)="record($event)">settings_voice</button>
+    </div>
+  </div>

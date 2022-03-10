@@ -1,0 +1,1482 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list [dataContent]="dataContent" [schema]="'members'" [formObj]="formObj"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+
+                <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+
+                <ng-container *ngIf="contentVisibility && dataContent">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <mat-button-toggle-group name="fontStyle" aria-label="Font Style"
+                                        [(ngModel)]="actionselected" class="mb-4">
+                                        <mat-button-toggle value="profile" (click)="buttonToggle('profile')"
+                                            *ngIf="!functionPermission.includes('Member Profile')">
+                                            {{getLang('profile','Member Profile')}}</mat-button-toggle>
+                                        <mat-button-toggle value="timeline" (click)="buttonToggle('timeline')"
+                                            *ngIf="!functionPermission.includes('Timeline')">
+                                            {{getLang('timeline','Timeline')}}</mat-button-toggle>
+                                        <mat-button-toggle value="communication" (click)="buttonToggle('communication')"
+                                            *ngIf="!functionPermission.includes('Communication')">
+                                            {{getLang('communication','Communication')}}</mat-button-toggle>
+                                        <mat-button-toggle id="memberactivitylog" value="activitylog"
+                                            (click)="buttonToggle('activitylog')"
+                                            *ngIf="!functionPermission.includes('Activity Log')">
+                                            {{getLang('activitylog','Activity Log')}}</mat-button-toggle>
+                                    </mat-button-toggle-group>
+                                </div>
+                                <div class="col-sm-4 text-right mb-lg-0 mb-3">
+                                    <span class="dropdown inline-block text-right ml-2">
+                                        <button class="dropdown-toggle btn btn-primary mrtb0" data-toggle="dropdown"
+                                            *ngIf="functionPermission.includes('Send Messages') == false || 
+                                        functionPermission.includes('Assign Membership') == false ||
+                                        functionPermission.includes('Cancel Membership') == false ||
+                                        functionPermission.includes('Freeze Membership') == false ||
+                                        functionPermission.includes('UnFreeze Membership') == false || 
+                                        functionPermission.includes('Change Membership Date') == false ||
+                                        functionPermission.includes('Wallet') == false ||
+                                        functionPermission.includes('Refund') == false ||
+                                        functionPermission.includes('Usage Summary') == false || 
+                                        functionPermission.includes('Reset Password') == false ||
+                                        functionPermission.includes('Share Document') == false ||
+                                        functionPermission.includes('Share Template') == false">
+                                            {{getLang('more','More')}}
+                                            <b class="caret"></b>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+
+                                            <ng-container *ngIf="!functionPermission.includes('Send Messages')">
+                                                <a class="dropdown-item cursor-pointer" (click)="sendMessage()"
+                                                    data-toggle="modal" data-target="#sendPopup">
+                                                    {{getLang('sendmessages', 'Send Messages')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Assign Membership')">
+                                                <a (click)="assigMembership()" class="dropdown-item cursor-pointer"
+                                                    data-toggle="modal" data-target="#myModalRenewMembership">
+                                                    {{ dataContent.membershipid ? "Renew Membership" : "Assign
+                                                    Membership"}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Cancel Membership')">
+                                                <a *ngIf="dataContent.membershipid && dataContent.status !== 'Cancelled'"
+                                                    class="dropdown-item cursor-pointer" (click)="cancelMembership()">
+                                                    {{getLang('cancelmembership', 'Cancel Membership')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Freeze Membership')">
+                                                <a *ngIf="dataContent.membershipid && dataContent.status == 'active'"
+                                                    (click)="freezeUnfreezeClick('Freeze')" data-toggle="modal"
+                                                    data-target="#myModalFreezeUnfreeze"
+                                                    class="dropdown-item cursor-pointer">
+                                                    {{getLang('freezemembership', 'Freeze Membership')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('UnFreeze Membership')">
+                                                <a *ngIf="dataContent.membershipid && dataContent.status == 'freeze'"
+                                                    (click)="freezeUnfreezeClick('Active')" data-toggle="modal"
+                                                    data-target="#myModalFreezeUnfreeze" data-backdrop="static"
+                                                    data-keyboard="false" class="dropdown-item cursor-pointer">
+                                                    {{getLang('unfreezemembership', 'UnFreeze Membership')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container
+                                                *ngIf="!functionPermission.includes('Change Membership Date')">
+                                                <a *ngIf="dataContent.membershipid && dataContent.status == 'active'"
+                                                    (click)="changeMembershipDate()" data-toggle="modal"
+                                                    data-target="#myModalchangemd" class="dropdown-item cursor-pointer">
+                                                    {{getLang('changeMembershipDate', 'Change Membership Date')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <!-- <ng-container *ngIf="!functionPermission.includes('Send Questionnaire')">
+                                            <a [routerLink]="['/pages/members/send-questionnaire/' + this.bindId]"
+                                                class="dropdown-item">
+                                                {{getLang('sendquestionnaire', 'Send Questionnaire')}}
+                                            </a>
+                                            </ng-container> -->
+
+                                            <ng-container *ngIf="!functionPermission.includes('Wallet')">
+                                                <a (click)="walletClick()" class="dropdown-item cursor-pointer">
+                                                    {{getLang('wallet', 'Wallet')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Refund')">
+                                                <a (click)="refundClick()" class="dropdown-item cursor-pointer"
+                                                    *ngIf="dataContent && dataContent.payments && dataContent.payments.length > 0">
+                                                    {{getLang('refund', 'Refund')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Usage Summary')">
+                                                <a (click)="usageClick()" class="dropdown-item cursor-pointer">
+                                                    {{getLang('memshppackgeusage', 'Usage summary')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Reset Password')">
+                                                <a data-toggle="modal" class="dropdown-item cursor-pointer"
+                                                    (click)="resetpassword.clickPP()">
+                                                    {{getLang('resetpaswrd', 'Reset password')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Share Document')">
+                                                <a class="dropdown-item cursor-pointer" data-toggle="modal"
+                                                    data-target="#myModalbtn" (click)="getMydrive()">
+                                                    Share Document
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Share Template')">
+                                                <a class="dropdown-item cursor-pointer" data-toggle="modal"
+                                                    data-target="#myModalTemplatebtn" (click)="getMyTemplate()">
+                                                    Share Template
+                                                </a>
+                                            </ng-container>
+                                        </div>
+                                    </span>
+
+
+                                    <span class="dropdown inline-block text-right ml-2">
+                                        <button class="dropdown-toggle btn btn-primary mrtb0" data-toggle="dropdown"
+                                            *ngIf="functionPermission.includes('New MemberShip Payment') == false || 
+                                        functionPermission.includes('New Bill Payment') == false ||
+                                        functionPermission.includes('New Appointment') == false ||
+                                        functionPermission.includes('New Facility Booking') == false">
+                                            {{getLang('new','New')}}
+                                            <b class="caret"></b>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+
+                                            <ng-container
+                                                *ngIf="!functionPermission.includes('New MemberShip Payment')">
+                                                <a [routerLink]="['/pages/payment-module/multiple-payment/' + this.bindId]"
+                                                    class="dropdown-item">
+                                                    {{getLang('newmembershippayment', '+ New MemberShip Payment')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('New Bill Payment')">
+                                                <a [routerLink]="['/pages/sale-module/multiple-bill/' + this.bindId]"
+                                                    class="dropdown-item">
+                                                    {{getLang('newbillpayment', '+ New Bill Payment')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('New Appointment')">
+                                                <a [routerLink]="['/pages/appointment-module/appointmentbookingform/customer/'+ bindId]"
+                                                    class="dropdown-item">
+                                                    {{getLang('newappointment', '+ New Appointment')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('New Facility Booking')">
+                                                <a [routerLink]="['/pages/facility-booking-module/facilitydailybooking/customer/'+ bindId]"
+                                                    class="dropdown-item">
+                                                    {{getLang('newfacilitybooking', '+ New Facility Booking')}}
+
+                                                </a>
+                                            </ng-container>
+
+
+
+                                            <!-- <ng-container *ngIf="!functionPermission.includes('New Bill Payment')">
+                                                <a [routerLink]="['/pages/facility-booking-module/frontdesk/' + this.bindId]"
+                                                    class="dropdown-item">
+                                                    {{getLang('sendquestionnaire', '+ New Frontdesk')}}
+                                                </a>
+                                            </ng-container> -->
+
+
+                                        </div>
+                                    </span>
+
+                                    <button type="submit" class="btn btn-primary ml-2"
+                                        [routerLink]="['/pages/dynamic-forms/form/' + _formId + '/' + bindId ]">
+                                        <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12">
+                                    <app-member-basic-details [dataContent]="dataContent">
+                                    </app-member-basic-details>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ng-container *ngIf="profileVisibility">
+                        <ng-container *ngIf="!functionPermission.includes('Activity Panel')">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-6 col-sm-6 pr-lg-0 pr-md-0 d-flex"
+                                    *ngIf="activityPanel.includes('Open Activities')">
+
+                                    <app-open-activity class="w-100" [dataContent]="dataContent" [formid]="this._formId"
+                                        [formname]="'member'" [onModel]="'Member'"
+                                        (onOpenActivityData)="getSubmittedOpenActivityData($event)"
+                                        (onCloseActivityData)="getSubmittedCloseActivityData($event)">
+                                    </app-open-activity>
+
+                                </div>
+
+                                <div class="col-lg-3 col-md-6 col-sm-6 pr-lg-0 d-flex"
+                                    *ngIf="activityPanel.includes('Close Activities')">
+
+                                    <app-close-activity class="w-100" [dataContent]="dataContent"
+                                        (onCloseActivityData)="getSubmittedCloseActivityData($event)">
+                                    </app-close-activity>
+
+                                </div>
+
+                                <div class="col-lg-3 col-md-6 col-sm-6 pr-lg-0 pr-md-0 d-flex"
+                                    *ngIf="activityPanel.includes('Appointments')">
+                                    <app-appointment class="w-100" [dataContent]="dataContent"
+                                        (addedApp)="getSubmittedAppointmentData($event)">
+                                    </app-appointment>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-6 pr-lg-0 d-flex"
+                                    *ngIf="activityPanel.includes('Attachments')">
+                                    <app-contacts-attachment class="w-100" [dataContent]="dataContent"
+                                        [formid]="_formId" (onAttachmentData)="getSubmittedAttachmentData($event)"
+                                        schema="members">
+                                    </app-contacts-attachment>
+                                </div>
+                                <!-- <div class="col-lg-3 col-md-6 col-sm-6 d-flex"
+                                    *ngIf="activityPanel.includes('Notes')">
+                                    <app-contacts-attachment class="w-100" [dataContent]="dataContent"
+                                        [formid]="_formId" (onAttachmentData)="getSubmittedAttachmentData($event)"
+                                        schema="members">
+                                    </app-contacts-attachment>
+                                </div> -->
+
+                                <div class="col-lg-3 col-md-6 col-sm-6 d-flex" *ngIf="activityPanel.includes('Notes')">
+                                    <app-contacts-notes class="w-100" [dataContent]="dataContent" [formid]="_formId"
+                                        [onModel]="'Member'" (onNotesData)="getSubmittedNotesData($event)">
+                                    </app-contacts-notes>
+                                </div>
+
+                                <div class="col-lg-3 col-md-6 col-sm-6 d-flex" *ngIf="activityPanel.includes('Alerts')">
+                                    <app-contacts-alerts class="w-100" [dataContent]="dataContent"
+                                        (onAttachmentData)="getSubmittedAttachmentData($event)" [schema]="'formdatas'"
+                                        [onModal]="'Member'">
+                                    </app-contacts-alerts>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="tabPermission.includes('Membership Payment Terms')">
+                            <mat-accordion>
+                                <mat-expansion-panel [expanded]="false">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            {{getLang('mpymnttrms','Membership Payment Terms')}}
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <app-paymentterms [dataContent]="dataContent" [reloadingStr]="reloadingStr"
+                                        (onAdded)="getSubmittedData($event)"
+                                        (onAddedData)="getSubmittedDynamicData($event)">
+                                    </app-paymentterms>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </ng-container>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Package')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('package','Package')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <app-addons [dataContent]="dataContent" [reloadingStr]="reloadingStr"
+                                            schemaname="members" (onAdded)="getSubmittedData($event)"
+                                            (onAddedData)="getSubmittedDynamicData($event)">
+                                        </app-addons>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Membership Payments')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('pymnt','Membership Payments')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="media align-items-center my-3"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="32"
+                                                                height="32" viewBox="0 0 32 32" class="mr-3">
+                                                                <g transform="translate(-16119 -9774)">
+                                                                    <rect width="32" height="32"
+                                                                        transform="translate(16119 9774)" fill="none">
+                                                                    </rect>
+                                                                    <g transform="translate(16118.1 10255.55)">
+                                                                        <path
+                                                                            d="M17.768-479.541a14.162,14.162,0,0,0-9.76,5.171,14.311,14.311,0,0,0-2.883,6.206l-.113.621-2.056.013L.9-467.512l2.476,2.482,2.482,2.482,2.482-2.482,2.476-2.482-1.881-.019a18.494,18.494,0,0,1-1.887-.063,13.485,13.485,0,0,1,.476-1.818,12.09,12.09,0,0,1,4.256-5.811,12.014,12.014,0,0,1,13.972-.194,12.042,12.042,0,0,1,4.889,12.443,11,11,0,0,1-1,2.8,11.618,11.618,0,0,1-5.385,5.384,11.417,11.417,0,0,1-3.479,1.147,15.94,15.94,0,0,1-3.786,0,12.109,12.109,0,0,1-6.394-3.178c-.295-.282-.677-.689-.859-.909l-.326-.4-.6.464c-.332.257-.683.533-.79.621l-.182.15.176.238a19.773,19.773,0,0,0,2.457,2.357A14.058,14.058,0,0,0,22.5-451.972a14.1,14.1,0,0,0,9.96-9.992,11.7,11.7,0,0,0,.439-3.573,11.694,11.694,0,0,0-.439-3.573,14.1,14.1,0,0,0-7.39-9.026,13.147,13.147,0,0,0-5.861-1.4C18.57-479.553,17.925-479.553,17.768-479.541Z"
+                                                                            transform="translate(0 0)" fill="#5cd297">
+                                                                        </path>
+                                                                        <path
+                                                                            d="M256-348.4a25.5,25.5,0,0,0,.088,3.811c.05.113,1.21,1.323,2.652,2.758l2.557,2.551.708-.708.7-.7-2.351-2.351-2.351-2.351V-352H256Z"
+                                                                            transform="translate(-239.109 -119.555)"
+                                                                            class="green-fill"></path>
+                                                                    </g>
+                                                                </g>
+                                                            </svg>
+                                                            <div class="media-body">
+                                                                <div class="mb-2">Recent Payment</div>
+                                                                <div class="font-bold">{{dataContent.recentpayment ?
+                                                                    (dataContent?.recentpayment | myCurrencyPipe) :
+                                                                    'NA'}}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="media align-items-center my-3"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="32"
+                                                                height="32" viewBox="0 0 32 32" class="mr-3">
+                                                                <g transform="translate(-16797 -9584)">
+                                                                    <rect width="32" height="32"
+                                                                        transform="translate(16797 9584)" fill="none">
+                                                                    </rect>
+                                                                    <g transform="translate(16797 9586)">
+                                                                        <g>
+                                                                            <path
+                                                                                d="M647.764,7.927a1.763,1.763,0,0,0,1.764-1.764V1.753a1.764,1.764,0,0,0-3.528,0V6.163A1.763,1.763,0,0,0,647.764,7.927Z"
+                                                                                transform="translate(-638.487)"
+                                                                                class="red-fill"></path>
+                                                                            <path
+                                                                                d="M1805.764,7.927a1.761,1.761,0,0,0,1.753-1.764V1.753a1.758,1.758,0,0,0-3.517,0V6.163A1.763,1.763,0,0,0,1805.764,7.927Z"
+                                                                                transform="translate(-1783.018)"
+                                                                                class="red-fill"></path>
+                                                                            <path
+                                                                                d="M2.814,242.33V229.665H29.186V242.33ZM30.593,219H27.337a1.413,1.413,0,0,0,0,2.826h1.849v5.722H2.814v-5.722H4.663a1.413,1.413,0,0,0,0-2.826H1.407A1.4,1.4,0,0,0,0,220.407v23.33a1.414,1.414,0,0,0,1.407,1.419H30.593A1.414,1.414,0,0,0,32,243.737v-23.33A1.4,1.4,0,0,0,30.593,219Z"
+                                                                                transform="translate(0 -216.458)"
+                                                                                class="red-fill"></path>
+                                                                            <path
+                                                                                d="M1067.4,221.82h4.387a1.41,1.41,0,0,0,0-2.82H1067.4a1.41,1.41,0,0,0,0,2.82Z"
+                                                                                transform="translate(-1053.598 -216.458)"
+                                                                                class="red-fill"></path>
+                                                                            <path
+                                                                                d="M1397.7,1375.021a.551.551,0,0,1-.406-.163l-2.379-2.379a.567.567,0,0,1,0-.8.582.582,0,0,1,.813,0l1.973,1.973,4.736-4.736a.567.567,0,0,1,.8,0,.582.582,0,0,1,0,.813l-5.13,5.13A.551.551,0,0,1,1397.7,1375.021Z"
+                                                                                transform="translate(-1378.521 -1352.826)"
+                                                                                class="red-fill"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                            </svg>
+                                                            <div class="media-body">
+                                                                <div class="mb-2">Next Due</div>
+                                                                <div><b> {{dataContent.nextduedate ?
+                                                                        (dataContent?.nextduedate | toLocaleDate) :
+                                                                        'NA'}} </b></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="media align-items-center my-3"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="32"
+                                                                height="32" viewBox="0 0 32 32" class="mr-3">
+                                                                <rect width="32" height="32" fill="none"></rect>
+                                                                <g transform="translate(0.114 0)">
+                                                                    <path
+                                                                        d="M210.753-511.689a8.342,8.342,0,0,1,5.078,2.48,8.214,8.214,0,0,1,2.318,4.337,10.876,10.876,0,0,1,0,3.116,8.234,8.234,0,0,1-2.318,4.337,8.222,8.222,0,0,1-4.393,2.374,10.961,10.961,0,0,1-3.128,0,8.236,8.236,0,0,1-4.324-2.318,8.219,8.219,0,0,1-2.374-4.393,10.872,10.872,0,0,1,0-3.116,9.122,9.122,0,0,1,1.321-3.178,11.393,11.393,0,0,1,2.187-2.193,8.763,8.763,0,0,1,3.153-1.327A13.506,13.506,0,0,1,210.753-511.689Zm-2.368,2.006a6.79,6.79,0,0,0-3.122,1.751,6.8,6.8,0,0,0-1.757,3.122,8.319,8.319,0,0,0,0,2.991,6.8,6.8,0,0,0,1.757,3.122,6.8,6.8,0,0,0,3.122,1.757,8.317,8.317,0,0,0,2.991,0A6.8,6.8,0,0,0,214.5-498.7a6.536,6.536,0,0,0,.355-8.854,6.861,6.861,0,0,0-3.975-2.237A8.726,8.726,0,0,0,208.385-509.683Z"
+                                                                        transform="translate(-198.985 511.709)"
+                                                                        class="blue-fill"></path>
+                                                                    <path
+                                                                        d="M297.663-466.688c.174.156.212.237.243.573l.037.393.343.131a1.94,1.94,0,0,1,.723.5,2.051,2.051,0,0,1,.673,1.657,1.546,1.546,0,0,1-.2.953,2.388,2.388,0,0,1-1.246,1.1l-.324.15v3.159h.15a2.311,2.311,0,0,0,.636-.249,2.345,2.345,0,0,1,.648-.249.619.619,0,0,1,.536.411.44.44,0,0,1,0,.43,2.488,2.488,0,0,1-1.664.885l-.293.031-.025.4c-.025.368-.044.43-.231.592a.447.447,0,0,1-.467.156c-.393-.056-.536-.262-.536-.766,0-.33-.019-.411-.112-.436a2.935,2.935,0,0,1-1.745-1.458,2.411,2.411,0,0,1,1.134-3.421c.274-.131.555-.255.611-.274.1-.037.112-.156.112-1.259,0-.947-.019-1.215-.081-1.215a1.763,1.763,0,0,0-.417.218,1.415,1.415,0,0,1-.486.218.623.623,0,0,1-.6-.735c.075-.355.679-.8,1.3-.953l.287-.069v-.336c0-.424.168-.642.536-.692A.453.453,0,0,1,297.663-466.688Zm.249,3.2c0,.816.006.872.106.816a1.041,1.041,0,0,0,.424-.492,1.234,1.234,0,0,0-.224-.941.768.768,0,0,0-.243-.255A2.7,2.7,0,0,0,297.912-463.491Zm-1.633,2.96a1.249,1.249,0,0,0-.33,1.707c.174.318.492.629.642.629.056,0,.075-.343.075-1.246C296.666-460.818,296.672-460.8,296.28-460.532Z"
+                                                                        transform="translate(-286.421 469.642)"
+                                                                        class="blue-fill"></path>
+                                                                    <path
+                                                                        d="M23.4-234.322a10.713,10.713,0,0,1,2.908.741c.557.206,1.044.374,1.088.374s.131-.118.2-.262a.781.781,0,0,1,.8-.517,9.409,9.409,0,0,1,2.17.679,19.268,19.268,0,0,1,1.995.8c.331.3.319.106.319,6.275,0,5.627,0,5.745-.125,5.982a.836.836,0,0,1-.375.374c-.231.118-.363.125-2.458.125H27.718l-1.9-.692c-2.057-.741-2.27-.86-2.351-1.284-.025-.131-.075-.206-.144-.206s-1.832.237-3.946.53-4.084.548-4.378.573a4.667,4.667,0,0,1-1.932-.312c-.206-.081-2.733-1.383-5.616-2.885C2.741-226.484,2.179-226.8,1.86-227.1a2.8,2.8,0,0,1-.019-4.025,2.894,2.894,0,0,1,2.633-.773c.163.037,1.62.679,3.239,1.433l2.933,1.365.081-.312a2.877,2.877,0,0,1,1.857-1.957c.175-.05.963-.206,1.757-.343a8.343,8.343,0,0,0,3.94-1.383A8.306,8.306,0,0,1,23.4-234.322Zm-1.982,1.969a6.647,6.647,0,0,0-2.476,1.047,9.89,9.89,0,0,1-4.246,1.433c-.869.15-1.632.305-1.695.343a1.152,1.152,0,0,0-.482.661,1.033,1.033,0,0,0,.363.9,1.056,1.056,0,0,0,.444.162c.163.019,1.4-.174,3.283-.5,1.657-.293,3.089-.536,3.177-.536a1,1,0,0,1,.782.542.881.881,0,0,1-.325,1.159c-.194.137-6.247,1.228-6.848,1.228a2.87,2.87,0,0,1-1.495-.461c-.175-.118-2-1-4.071-1.963C3.9-230.172,3.823-230.2,3.436-230a.955.955,0,0,0-.238,1.57c.113.1,2.526,1.39,5.359,2.866,3.671,1.919,5.278,2.723,5.566,2.8a2.386,2.386,0,0,0,.813.069c.694-.056,9.093-1.228,9.136-1.277s2.658-7.184,2.7-7.353a13.279,13.279,0,0,0-2.576-.991A6.475,6.475,0,0,0,21.421-232.353Zm5.835,5.184c-.926,2.548-1.682,4.642-1.676,4.648s.569.212,1.238.461l1.219.442h2.97L31-226.39l-.019-4.773-.969-.355a6.017,6.017,0,0,0-1.013-.324C28.969-231.824,28.187-229.718,27.255-227.169Z"
+                                                                        transform="translate(-0.999 251.748)"
+                                                                        class="blue-fill"></path>
+                                                                </g>
+                                                            </svg>
+                                                            <div class="media-body">
+                                                                <div class="mb-2">Total Payment</div>
+                                                                <div><b> {{ (dataContent.paidamount ?
+                                                                        dataContent?.paidamount : 0 )| myCurrencyPipe}}
+                                                                    </b></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="media align-items-center my-3"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="32"
+                                                                height="32" viewBox="0 0 32 32" class="mr-3">
+                                                                <g transform="translate(-17223 -9772)">
+                                                                    <rect width="32" height="32"
+                                                                        transform="translate(17223 9772)" fill="none">
+                                                                    </rect>
+                                                                    <g transform="translate(17222.949 10283.541)">
+                                                                        <path
+                                                                            d="M14.531-511.5a16.045,16.045,0,0,0-9.779,4.624,15.989,15.989,0,0,0,0,22.649,16.049,16.049,0,0,0,9.341,4.58,24.777,24.777,0,0,0,3.973-.006A16.028,16.028,0,0,0,31.274-490.56a14.481,14.481,0,0,0,.776-4.993,14.48,14.48,0,0,0-.776-4.993,16,16,0,0,0-12.989-10.874A24.258,24.258,0,0,0,14.531-511.5Zm3.566,2.59a13.505,13.505,0,0,1,9.229,5.9,13.522,13.522,0,0,1,1.17,12.739,13.507,13.507,0,0,1-10.461,8.09,17.891,17.891,0,0,1-3.967,0,13.539,13.539,0,0,1-11.375-11.4,17.3,17.3,0,0,1,0-3.942,13.517,13.517,0,0,1,5.856-9.254,13.775,13.775,0,0,1,6.419-2.252A23.343,23.343,0,0,1,18.1-508.911Z"
+                                                                            transform="translate(0 0)"
+                                                                            class="orange-fill"></path>
+                                                                        <path
+                                                                            d="M236.808-382.855a1.721,1.721,0,0,0-.467.417l-.189.271-.019,4.331c-.013,3.011,0,4.413.051,4.577a1.529,1.529,0,0,0,.657.783,1.532,1.532,0,0,0,1.086,0,1.528,1.528,0,0,0,.657-.783c.051-.17.063-1.559.051-4.577l-.019-4.331-.189-.271a1.325,1.325,0,0,0-1.042-.562A1.251,1.251,0,0,0,236.808-382.855Z"
+                                                                            transform="translate(-221.318 -120.534)"
+                                                                            class="orange-fill"></path>
+                                                                        <path
+                                                                            d="M230.617-189.631a1.97,1.97,0,0,0-.979.865,1.4,1.4,0,0,0-.139.726,1.3,1.3,0,0,0,.183.808,1.7,1.7,0,0,0,2.064.8,1.617,1.617,0,0,0,.909-.8,1.285,1.285,0,0,0,.189-.814,1.382,1.382,0,0,0-.139-.726A1.713,1.713,0,0,0,230.617-189.631Z"
+                                                                            transform="translate(-215.109 -301.7)"
+                                                                            class="orange-fill"></path>
+                                                                    </g>
+                                                                </g>
+                                                            </svg>
+                                                            <div class="media-body">
+                                                                <div class="mb-2">Total Due</div>
+                                                                <div><b> {{(dataContent.dueamount ?
+                                                                        dataContent?.dueamount : 0 ) | myCurrencyPipe}}
+                                                                    </b></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <mat-tab-group>
+                                                    <mat-tab label="Reciepts">
+                                                        <app-reciepts [dataContent]="dataContent">
+                                                        </app-reciepts>
+                                                    </mat-tab>
+                                                    <mat-tab label="Due Payment">
+                                                        <app-duepayment [dataContent]="dataContent">
+                                                        </app-duepayment>
+                                                    </mat-tab>
+                                                </mat-tab-group>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Class Schedule')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('classschedule','Class Schedule')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        
+                                        <!-- <app-member-class-schedules [bindId]="bindId" [dataContent]="dataContent"
+                                            (onAddedScheduleData)="getSubmittedScheduleData($event)"
+                                            [reloadingStr]="reloadingStr">
+                                        </app-member-class-schedules> -->
+
+                                        <app-class-schedules [bindId]="bindId" [dataContent]="dataContent"
+                                            (onAddedScheduleData)="getSubmittedScheduleData($event)"
+                                            [reloadingStr]="reloadingStr">
+                                        </app-class-schedules>
+
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Appointment List')">
+                                <mat-accordion>
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('appointmentlist','Appointment List')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+
+                                                <!-- <app-member-appointment [dataContent]="dataContent">
+                                                </app-member-appointment> -->
+
+                                                <app-appointment-list [dataContent]="dataContent">
+                                                </app-appointment-list>
+                                                
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Bill Payments')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('blpymnt','Bill Payments')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <mat-tab-group>
+                                                    <mat-tab label="Bill Payments">
+                                                        <app-billpayments [dataContent]="dataContent">
+                                                        </app-billpayments>
+                                                    </mat-tab>
+                                                    <mat-tab label="Bill">
+                                                        <app-bills [dataContent]="dataContent">
+                                                        </app-bills>
+                                                    </mat-tab>
+                                                </mat-tab-group>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Membership/Package Usage')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('membership/pckgusage','Membership/Package Usage')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <app-membershipusage [dataContent]="dataContent">
+                                        </app-membershipusage>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Chat History')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('chathistory','Chat History')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-member-live-history [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-member-live-history>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Membership Offer')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('membershipoffer','Membership Offer')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <app-membershipoffer [dataContent]="dataContent" [bindId]="bindId">
+                                        </app-membershipoffer>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <!-- <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Document')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('shareddoc','Assigned Document')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-member-shared-document-list [bindId]="bindId"
+                                                    [dataContent]="dataContent" (updateRecord)="getUpdated($event)">
+                                                </app-member-shared-document-list>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Signed Document')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('signeddocument','Signed & Acknowledged Document')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-member-signed-document-list [bindId]="bindId"
+                                                    [dataContent]="dataContent" (updateRecord)="getUpdated($event)">
+                                                </app-member-signed-document-list>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div> -->
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Contract Documents')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('contractdocuments','Contract Documents')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-contract-document-list [bindId]="bindId"
+                                                    [dataContent]="dataContent" (updateRecord)="getUpdated($event)">
+                                                </app-contract-document-list>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <app-dynamic-formdata-view [dataContent]="dataContent" [tabPermission]="tabPermission"
+                                (deleteRecord)="getSubmittedDynamicData($event)" (redirectUrl)="redirectUrl($event)">
+                            </app-dynamic-formdata-view>
+                        </div>
+
+                        <!-- <div class="mt-3">
+                            <ng-container>
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="panelOpenState">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('ActivityHistory','Activity History')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+
+                                        <app-dynamic-dispositiondata
+                                            [dispositiondata]="this.dataContent.allactivity">
+                                        </app-dynamic-dispositiondata>
+
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div> -->
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Diet Schedule')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('dietschedule','Diet Schedule')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+
+                                        <!--
+                                            formid = diettemplate
+                                            scheduleformid = recipe
+                                         -->
+
+                                        <app-week-schedules [memberid]="dataContent._id" type="diet"
+                                            formid="60ae2ba812b377184c10fceb" scheduleformid="5df8779c78ce122fa8348c79"
+                                            (onWeekScheduleData)="getSubmittedWeekScheduleData($event)">
+                                        </app-week-schedules>
+
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Workout Schedule')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('workoutschedule','Workout Schedule')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+
+                                        <!--
+                                            formid = workouttemplate
+                                            scheduleformid = Exercise
+                                         -->
+                                        <app-week-schedules [memberid]="dataContent._id" type="workout"
+                                            formid="60af51ea12b3771364ec5bc8" scheduleformid="5cb6e734a6ae2f21c476479f"
+                                            (onWeekScheduleData)="getSubmittedWeekScheduleData($event)">
+                                        </app-week-schedules>
+
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('insepection assets')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('Add Asset','Add Asset')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <app-inspection-add-assets [dataContent]="dataContent" [bindId]="bindId"
+                                            (onInspectionAssetData)="getSubmittedAssetData($event)">
+                                        </app-inspection-add-assets>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('assets schedule')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('Schedule','Schedule')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <app-inspection-schedule-assets [dataContent]="dataContent" [bindId]="bindId"
+                                            (onInspectionAssetData)="getSubmittedAssetScheduleData($event)">
+                                        </app-inspection-schedule-assets>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+
+                    </ng-container>
+
+                    <ng-container *ngIf="timelineVisibility">
+                        <app-contacts-timeline context="member" schema="members" [dataContent]="dataContent">
+                        </app-contacts-timeline>
+                    </ng-container>
+
+                    <ng-container *ngIf="communicationVisibility">
+                        <app-contacts-communication context="member" schema="members" [dataContent]="dataContent"
+                            (onResendCommunication)="onCloseResendData($event)">
+                        </app-contacts-communication>
+                    </ng-container>
+
+                    <ng-container *ngIf="activitylogVisibility">
+                        <app-contacts-activity-log context="member" schema="members" [formid]="this._formId"
+                            [dataContent]="dataContent">
+                        </app-contacts-activity-log>
+                    </ng-container>
+
+                    <ng-container *ngIf="walletVisibility">
+                        <app-member-wallet-card-issue [dataContent]="dataContent"
+                            (onIssueCard)="getSubmittedIssueCardData($event)"></app-member-wallet-card-issue>
+                        <app-member-wallet-list [displayName]="getLang('memberwallet', 'Member Wallet')"
+                            [dataContent]="dataContent"></app-member-wallet-list>
+                    </ng-container>
+
+                </ng-container>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="sendPopup" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <app-contacts-send-message *ngIf="sendMessageVisibility" [dataContent]="dataContent" [formid]="this._formId"
+                [formname]="'member'" (onCloseMessageData)="getSubmittedCloseMessageData($event)">
+            </app-contacts-send-message>
+        </div>
+    </div>
+</div>
+
+<div id="myModalFreezeUnfreeze" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form [formGroup]="freezeForm" (ngSubmit)="onFreezeSubmit(freezeForm.value, freezeForm.valid)" novalidate
+                class="form-horizontal mb-0">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span> {{freezeAction}} {{getLang('membership', 'Membership')}} </span>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" id="closeFreezeform">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                <section class="example-section row">
+                                    <mat-checkbox class="example-margin m-0 col-md-4 col-6"
+                                        formControlName="freezetoday">
+                                        {{freezeAction}} Today
+                                    </mat-checkbox>
+                                </section>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                    {{freezeAction}} {{getLang('date', 'Date')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="freezemembershipend" [matDatepicker]="picker1">
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker1></mat-datepicker>
+                                </mat-form-field>
+
+                                <div [hidden]="freezeForm.get('freezemembershipend').valid || (freezeForm.get('freezemembershipend').pristine && !freezeSubmitted)"
+                                    class="text-danger">
+                                    <small *ngIf="freezeForm.get('freezemembershipend').hasError('required')"
+                                        class="error-label">
+                                        {{freezeAction}} {{getLang('dateisrequired', 'Date is Required')}}
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" [disabled]="disablesubmit" data-dismiss="modal">
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+                    <button class="btn btn-primary ml-2" [disabled]="disablesubmit" type="submit">
+                        <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="myModalRenewMembership" class="modal fade" role="dialog" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form [formGroup]="renewMembershipForm"
+                (ngSubmit)="onRenewMembershipeSubmit(renewMembershipForm.value, renewMembershipForm.valid)" novalidate
+                class="form-horizontal mb-0">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span> {{getLang('membershipdetail', 'Membership Detail')}} </span>
+                    </h4>
+                    <button type="button" class="close" id="closeRenewMembership" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-sm-12" *ngIf="dataContent.membershipid">
+                                <div class="flex-grow-1 font-weight-bold">
+                                    <div> {{ dataContent?.membershipid?.membershipname }}
+                                    </div>
+                                    <div *ngIf="dataContent.membershipend"> {{getLang('expirydate', 'Expiry date')}} :
+                                        {{dataContent?.membershipend | toLocaleDate }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+
+                                <label class="col-form-label">
+                                    {{getLang('selectmembership', 'Select Membership')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+
+                                <dynamic-autocomplete *ngIf="contentVisibility"
+                                    [formControlName]="form_fields.fieldname" [setting]="form_fields"
+                                    [dbvalue]="form_fields.dbvalue" (inputModelChange)="inputModelChangeValue($event)">
+                                </dynamic-autocomplete>
+
+                                <div [hidden]="renewMembershipForm.get('membershipid').valid || (renewMembershipForm.get('membershipid').pristine && !renewMembershipSubmitted)"
+                                    class="text-danger">
+                                    <small *ngIf="renewMembershipForm.get('membershipid').hasError('required')"
+                                        class="error-label">
+                                        {{getLang('membershipidisrequired', 'Membership is Required')}}
+                                    </small>
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="col-form-label">
+                                    {{getLang('membershipstart', 'Membership Start')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="membershipstart"
+                                        (dateChange)="ChangeDate($event.value)" [matDatepicker]="pickermembershipstart">
+                                    <mat-datepicker-toggle matSuffix [for]="pickermembershipstart">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #pickermembershipstart></mat-datepicker>
+                                </mat-form-field>
+
+                                <div [hidden]="renewMembershipForm.get('membershipstart').valid || (renewMembershipForm.get('membershipstart').pristine && !renewMembershipSubmitted)"
+                                    class="text-danger">
+                                    <small *ngIf="renewMembershipForm.get('membershipstart').hasError('required')"
+                                        class="error-label">
+                                        {{getLang('membershipstartisrequired', 'Membership Start Date is Required')}}
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-sm-6">
+                                <label class="col-form-label">
+                                    {{getLang('membershipend', 'Membership End')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="membershipend"
+                                        [matDatepicker]="pickermembershipend"
+                                        [min]="renewMembershipForm.get('membershipstart').value ? renewMembershipForm.get('membershipstart').value : ''">
+                                    <mat-datepicker-toggle matSuffix [for]="pickermembershipend">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #pickermembershipend></mat-datepicker>
+                                </mat-form-field>
+
+                                <div [hidden]="renewMembershipForm.get('membershipend').valid || (renewMembershipForm.get('membershipend').pristine && !renewMembershipSubmitted)"
+                                    class="text-danger">
+                                    <small *ngIf="renewMembershipForm.get('membershipend').hasError('required')"
+                                        class="error-label">
+                                        {{getLang('membershipendisrequired', 'Membership End Date is Required')}}
+                                    </small>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                    {{getLang('paymentterms', 'Payment terms')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="table-responsive mt-3">
+                                    <table mat-table [dataSource]="dataSource"
+                                        class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+
+                                        <!-- Checkbox Column -->
+                                        <ng-container matColumnDef="item">
+                                            <th mat-header-cell *matHeaderCellDef>
+                                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                                    [checked]="selection.hasValue() && isAllSelected()"
+                                                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                                </mat-checkbox>
+                                            </th>
+                                            <td mat-cell *matCellDef="let row"
+                                                [ngStyle]="{'background-color': row && row.memberid ? 'rgb(244,251,228)':'' }">
+                                                <mat-checkbox (click)="$event.stopPropagation()"
+                                                    (change)="$event ? selection.toggle(row) : null"
+                                                    [checked]="selection.isSelected(row)">
+                                                </mat-checkbox>
+                                            </td>
+                                        </ng-container>
+
+                                        <!-- paymentitemname Column -->
+                                        <ng-container matColumnDef="title">
+                                            <th mat-header-cell *matHeaderCellDef>{{getLang('title','Title')}} </th>
+                                            <td mat-cell *matCellDef="let element"
+                                                [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+                                                {{element?.paymentitem?.paymentitemname}} </td>
+                                        </ng-container>
+
+
+                                        <!-- period Column -->
+                                        <ng-container matColumnDef="period">
+                                            <th mat-header-cell *matHeaderCellDef>{{getLang('period','Period')}} </th>
+                                            <td mat-cell *matCellDef="let element"
+                                                [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+                                                {{element.period}} </td>
+                                        </ng-container>
+
+                                        <!-- Tenure Column -->
+                                        <ng-container matColumnDef="tenure">
+                                            <th mat-header-cell *matHeaderCellDef>{{getLang('tenure','Tenure')}} </th>
+                                            <td mat-cell *matCellDef="let element"
+                                                [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+                                                <ng-container *ngIf="!element.isedit">{{element?.tenure}}</ng-container>
+                                                <ng-container *ngIf="element.isedit && element.oldtenure == 1">
+                                                    {{element?.tenure}}</ng-container>
+                                                <ng-container *ngIf="element.isedit && element.oldtenure > 1">
+                                                    <input id="tenure" type="number" min="1" name="tenure"
+                                                        (change)="onchangeamountofpaymentterm()" class="form-control"
+                                                        [(ngModel)]="element.tenure"
+                                                        [ngModelOptions]="{standalone: true}" placeholder="Tenure">
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+
+
+
+                                        <!-- Amount Column -->
+                                        <ng-container matColumnDef="amount">
+                                            <th mat-header-cell *matHeaderCellDef>{{getLang('amount','Amount')}} </th>
+                                            <td mat-cell *matCellDef="let element"
+                                                [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+
+                                                <ng-container *ngIf="!element.isedit">{{element?.amount}}</ng-container>
+                                                <ng-container *ngIf="element.isedit">
+                                                    <input id="amount" type="number" name="amount"
+                                                        (change)="onchangeamountofpaymentterm()" class="form-control"
+                                                        [(ngModel)]="element.amount"
+                                                        [ngModelOptions]="{standalone: true}" placeholder="Amount">
+                                                </ng-container>
+
+                                            </td>
+                                        </ng-container>
+
+                                        <!-- Discount Column -->
+                                        <ng-container matColumnDef="discount">
+                                            <th mat-header-cell *matHeaderCellDef>{{getLang('discount','Discount')}}
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"
+                                                [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+                                                <ng-container *ngIf="!element.isedit">{{element?.discount}}
+                                                </ng-container>
+                                                <ng-container *ngIf="element.isedit">
+                                                    <input id="discount" type="number" name="discount"
+                                                        (change)="onchangeamountofpaymentterm()" class="form-control"
+                                                        [(ngModel)]="element.discount"
+                                                        [ngModelOptions]="{standalone: true}" placeholder="Discount">
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+
+                                        <!-- Tax Amount Column -->
+                                        <ng-container matColumnDef="taxamount">
+                                            <th mat-header-cell *matHeaderCellDef>{{getLang('taxamnt','Tax Amount')}}
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"
+                                                [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+                                                {{element.taxamount}} </td>
+                                        </ng-container>
+
+                                        <!-- Total Amount Column -->
+                                        <ng-container matColumnDef="totalamount">
+                                            <th mat-header-cell *matHeaderCellDef>{{getLang('totalamnt','Total
+                                                Amount')}} </th>
+                                            <td mat-cell *matCellDef="let element"
+                                                [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+                                                <ng-container *ngIf="!element.isedit">{{element?.totalamount}}
+                                                </ng-container>
+                                                <ng-container *ngIf="element.isedit">
+                                                    <input id="totalamount" type="number" min="1"
+                                                        (change)="onchangetotalamountofpaymentterm()" name="totalamount"
+                                                        class="form-control" [(ngModel)]="element.totalamount"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        placeholder="Total Amount">
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="action">
+                                            <th mat-header-cell *matHeaderCellDef class="text-right"> Action</th>
+                                            <td mat-cell *matCellDef="let item" class="text-right"
+                                                [ngStyle]="{'background-color': item && item.memberid ? 'rgb(244,251,228)':'' }">
+
+                                                <button *ngIf="!item.isedit" (click)="editElement(item)" type="button"
+                                                    class="btn btn-link btn-primary btn-just-icon" matTooltip="Edit"
+                                                    [disabled]="disableBtn" [matTooltipPosition]="'above'">
+                                                    <i class="material-icons">edit</i>
+                                                </button>
+
+                                                <button *ngIf="!item.isedit && item.memberid"
+                                                    (click)="deleteElement(item)" type="button"
+                                                    class="btn btn-link btn-primary btn-just-icon" matTooltip="Delete"
+                                                    [disabled]="disableBtn" [matTooltipPosition]="'above'">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
+
+                                                <button *ngIf="item.isedit" (click)="updatePayTerms(item)" type="button"
+                                                    class="btn btn-link btn-primary btn-just-icon" matTooltip="Save"
+                                                    [disabled]="disableBtn" [matTooltipPosition]="'above'">
+                                                    <i class="material-icons">save</i>
+                                                </button>
+
+                                                <button *ngIf="item.isedit" (click)="item.isedit = !item.isedit"
+                                                    type="button" class="btn btn-link btn-primary btn-just-icon"
+                                                    matTooltip="Cancel" [disabled]="disableBtn"
+                                                    [matTooltipPosition]="'above'">
+                                                    <i class="material-icons">cancel</i>
+                                                </button>
+
+                                            </td>
+                                        </ng-container>
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" [disabled]="disablesubmit" data-dismiss="modal">
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+                    <button class="btn btn-primary ml-2" [disabled]="disablesubmit" type="submit">
+                        <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModalchangemd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form [formGroup]="changeMembershipForm"
+                (ngSubmit)="onChangeMembershipDateSubmit(changeMembershipForm.value, changeMembershipForm.valid)"
+                novalidate class="form-horizontal mb-0">
+
+                <div class="modal-header">
+                    <h4 class="modal-title"> {{getLang('changemembershipdate', 'Change Membership Date')}} </h4>
+                    <button mat-button type="button" id="closecmd" class="close" data-dismiss="modal"
+                        aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-sm-12" *ngIf="dataContent.membershipid">
+                                <div class="flex-grow-1 font-weight-bold">
+                                    <div> {{ dataContent?.membershipid?.membershipname }}
+                                    </div>
+                                    <div *ngIf="dataContent.membershipend"> {{getLang('expirydate', 'Expiry date')}} :
+                                        {{dataContent?.membershipend | toLocaleDate }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                    {{getLang('Membershipstartdate', 'Membership Start Date')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <input #ref matInput formControlName="changeMembershipStartDate"
+                                        [matDatepicker]="pickerChangeMembershipStart1"
+                                        (dateInput)="membershipStartDateValueChange(ref.value)">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerChangeMembershipStart1">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #pickerChangeMembershipStart1></mat-datepicker>
+                                </mat-form-field>
+                                <div [hidden]="changeMembershipForm.get('changeMembershipStartDate').valid || (changeMembershipForm.get('changeMembershipStartDate').pristine && !changeMembershipSubmitted)"
+                                    class="text-danger">
+                                    <small
+                                        *ngIf="changeMembershipForm.get('changeMembershipStartDate').hasError('required')"
+                                        class="error-label">
+                                        {{getLang('enddateisrequired', 'Start Date is Required')}}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                    {{getLang('Membershipenddate', 'Membership End Date')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <input matInput formControlName="changeMembershipEndDate"
+                                        [matDatepicker]="pickerChangeMembershipEnd1">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerChangeMembershipEnd1">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #pickerChangeMembershipEnd1></mat-datepicker>
+                                </mat-form-field>
+                                <div [hidden]="changeMembershipForm.get('changeMembershipEndDate').valid || (changeMembershipForm.get('changeMembershipEndDate').pristine && !changeMembershipSubmitted)"
+                                    class="text-danger">
+                                    <small
+                                        *ngIf="changeMembershipForm.get('changeMembershipEndDate').hasError('required')"
+                                        class="error-label">
+                                        {{getLang('enddateisrequired', 'End Date is Required')}}
+                                    </small>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" id="cancelbtn" [disabled]="disablesubmit"
+                        data-dismiss="modal">
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+
+                    <button class="btn btn-primary ml-2" [disabled]="disablesubmit" type="submit">
+                        <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<app-reset-password #resetpassword [dataContent]="dataContent" [formObj]="formObj" [bindId]="bindId">
+</app-reset-password>
+
+<div class="modal fade" id="myModalbtn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{getLang('document','Document')}}
+                </h4>
+                <button mat-button type="button" id="docClose" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <ng-container
+                    *ngIf="documentdataSource && documentdataSource.data && documentdataSource.data.length > 0;else emtyTmp">
+
+                    <div fxLayout="row" *ngIf="isLoadingPU" fxLayoutAlign="space-around center"
+                        style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                        <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                    </div>
+                    <div class="row" *ngIf="!isLoadingPU">
+                        <div class="col-md-12">
+
+                            <div class="table-responsive" *ngIf="mydriveData.length > 0">
+
+                                <table mat-table [dataSource]="documentdataSource" matSort
+                                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                    <ng-container matColumnDef="select">
+                                        <th mat-header-cell *matHeaderCellDef></th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <section class="example-section">
+                                                <mat-checkbox type="checkbox" [(ngModel)]="element.checked"
+                                                    [disabled]="disableBtn"> </mat-checkbox>
+                                            </section>
+                                        </td>
+                                    </ng-container>
+
+
+                                    <ng-container matColumnDef="name">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <img class="mr-2" [src]="getAttachmentPath(element.type)"
+                                                style="width: 45px;">
+                                            {{element.name}}
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="size">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.sizeType}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="createdAt">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'medium'}}
+                                        </td>
+                                    </ng-container>
+
+
+                                    <ng-container matColumnDef="addedby">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created by </th>
+                                        <td mat-cell *matCellDef="let element"> Me </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="documentdisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: documentdisplayedColumns;"></tr>
+                                </table>
+                                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                            </div>
+
+                            <div class="d-flex justify-content-center" *ngIf="mydriveData.length == 0">
+                                <h3 class="text-center"> You do not have any documents in My Drive. ! </h3>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn btn-outline-primary m-0 mr-2" (click)="documentredirect()">
+                                        <i class="material-icons">add</i> please upload new document here
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-template #emtyTmp>
+                    <h3 class="text-center"> You do not have any documents in My Drive. ! </h3>
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn btn-outline-primary m-0 mr-2"
+                            [routerLink]="['/pages/document-gallery/documents']">
+                            <i class="material-icons">add</i> please upload new document here
+                        </button>
+                    </div>
+                </ng-template>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="disableBtn">
+                    <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                </button>
+                <button *ngIf="mydriveData.length > 0" class="btn btn-primary ml-2" type="button" (click)="saveShared()"
+                    [disabled]="disableBtn">
+                    <i class="material-icons">save</i> {{getLang('save','Save')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModalTemplatebtn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{getLang('template','Template')}}
+                </h4>
+                <button mat-button type="button" id="teClose" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <ng-container
+                    *ngIf="templatedataSource && templatedataSource.data && templatedataSource.data.length > 0;else emtyTmp">
+
+                    <div fxLayout="row" *ngIf="isLoadingPU" fxLayoutAlign="space-around center"
+                        style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                        <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                    </div>
+
+                    <div class="row" *ngIf="!isLoadingPU">
+
+                        <div class="col-md-12">
+
+                            <div class="table-responsive" *ngIf="templates.length > 0">
+                                <table mat-table [dataSource]="templatedataSource" matSort
+                                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                    <ng-container matColumnDef="select">
+                                        <th mat-header-cell *matHeaderCellDef></th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <section class="example-section">
+                                                <mat-checkbox type="checkbox" [(ngModel)]="element.checked"
+                                                    [disabled]="disableBtn"> </mat-checkbox>
+                                            </section>
+                                        </td>
+                                    </ng-container>
+
+
+                                    <ng-container matColumnDef="name">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <img class="mr-2" [src]="getAttachmentPath(element.type)"
+                                                style="width: 45px;">
+                                            {{element.name}}
+                                        </td>
+                                    </ng-container>
+
+
+                                    <!-- Weight Column -->
+                                    <ng-container matColumnDef="createdAt">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'medium'}}
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- Symbol Column -->
+                                    <ng-container matColumnDef="addedby">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created by </th>
+                                        <td mat-cell *matCellDef="let element"> Me </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="templatedisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: templatedisplayedColumns;"></tr>
+                                </table>
+
+                            </div>
+                            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+                            <div class="d-flex justify-content-center" *ngIf="templates.length == 0">
+                                <code> No records found. please contact to support </code>
+                            </div>
+
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-template #emtyTmp>
+                    <h3 class="text-center"> You do not have any Template in My Drive. ! </h3>
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn btn-outline-primary m-0 mr-2"
+                            [routerLink]="['/pages/document-gallery/documents']">
+                            <i class="material-icons">add</i> please upload new Template here
+                        </button>
+                    </div>
+                </ng-template>
+
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="disableBtn">
+                    <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                </button>
+                <button *ngIf="templates.length > 0" class="btn btn-primary ml-2" type="button"
+                    (click)="saveSharedTemplate()" [disabled]="disableBtn">
+                    <i class="material-icons">save</i> {{getLang('assign','Assign')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

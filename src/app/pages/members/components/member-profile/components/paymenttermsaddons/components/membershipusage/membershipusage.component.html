@@ -1,0 +1,77 @@
+<div class="table-responsive mt-3">
+    <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+        <ng-container matColumnDef="docnumber">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('docnumber','Doc Number')}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.docnumber}}
+            </td>
+        </ng-container>
+<!--
+        <ng-container matColumnDef="membership">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('membership','Item')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.refid?.itemname}}
+            </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="usage">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('usage','Usage')}} </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.usage}}
+            </td>
+        </ng-container>
+
+         <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('qty','Qty')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.qty}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cost">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('cost','Cost')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.cost != null ? (element.cost| myCurrencyPipe): element.cost}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="discount">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('discount','Discount')}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.discount != null ? (element.discount| myCurrencyPipe): element.discount}}
+            </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>{{getLang('date','Date')}}</th>
+          <td mat-cell *matCellDef="let element">
+              {{element.createdAt | toLocaleDate}}
+          </td>
+      </ng-container>
+
+<!--
+        <ng-container matColumnDef="saved">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('saved','Saved')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.saved != null ? (element.saved| myCurrencyPipe) : element.paidamount}}
+            </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="text-right"> Action </th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+                <button [routerLink]="['/pages/dynamic-preview-list/bill/' + element.billid ]"
+                    class="btn btn-link btn-primary btn-just-icon"
+                    matTooltip="Preview"
+                    [matTooltipPosition]="'above'">
+                    <i class="material-icons">preview</i>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+    </table>
+</div>

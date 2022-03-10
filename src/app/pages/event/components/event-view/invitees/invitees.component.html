@@ -1,0 +1,161 @@
+<div class="row">
+    <div class="col-xl-12">
+        <mat-tab-group class="frontdesk-tab-card">
+            <mat-tab label="Member">
+                <ng-template matTabContent>
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                                (click)="onNewclk('member')" type="button">New Member
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive mt-3">
+                                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100 table-hover table-membroz">
+                              
+                                  <ng-container matColumnDef="fullname">
+                                    <th mat-header-cell *matHeaderCellDef>{{getLang('fullname','Fullname')}}</th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{element?.fullname}}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <ng-container matColumnDef="membership">
+                                    <th mat-header-cell *matHeaderCellDef>{{getLang('membership','Membership')}} </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{element?.membershipid?.membershipname}}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <ng-container matColumnDef="email">
+                                    <th mat-header-cell *matHeaderCellDef>{{getLang('email','Email')}} </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{element.property.primaryemail}}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <ng-container matColumnDef="mobile">
+                                    <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('mobile','Mobile')}} </th>
+                                    <td mat-cell *matCellDef="let element" class="text-right">
+                                      {{element?.property?.mobile }}
+                                    </td>
+                                  </ng-container>
+                                  
+                              
+                                  <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}} </th>
+                                    <td mat-cell *matCellDef="let element" class="text-right">
+                                        <button mat-raised-button
+                                            type="button"
+                                            matTooltip="Delete" [matTooltipPosition]="'above'"
+                                            class="btn btn-link btn-primary btn-just-icon edit"
+                                            (click)="onDelete('member',element._id)">  
+                                            <i class="material-icons">delete</i>
+                                        </button>
+        
+                                    </td>
+                                  </ng-container>
+                              
+                                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                </table>
+                                <mat-paginator #paginator
+                                        [pageSize]="5"
+                                        [pageSizeOptions]="[5, 10, 20]">
+                                 </mat-paginator>
+                              </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Customer">
+                <ng-template matTabContent>
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                                (click)="onNewclk('prospect')" type="button">New Customer
+                            </button>
+                        </div>
+                    </div>
+
+                
+
+                    <div class="table-responsive mt-3">
+                        <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 w-100 table-hover table-membroz">
+                      
+                          <ng-container matColumnDef="fullname">
+                            <th mat-header-cell *matHeaderCellDef>{{getLang('fullname','Fullname')}}</th>
+                            <td mat-cell *matCellDef="let element">
+                              {{element?.fullname}}
+                            </td>
+                          </ng-container> 
+                      
+                          <ng-container matColumnDef="email">
+                            <th mat-header-cell *matHeaderCellDef>{{getLang('email','Email')}} </th>
+                            <td mat-cell *matCellDef="let element">
+                              {{element?.property?.primaryemail}}
+                            </td>
+                          </ng-container>
+                      
+                          <ng-container matColumnDef="mobile">
+                            <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('mobile','Mobile')}} </th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                              {{element?.property?.mobile }}
+                            </td>
+                          </ng-container>
+                                                
+                          <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}} </th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                                <button mat-raised-button
+                                    type="button"
+                                    matTooltip="Delete" [matTooltipPosition]="'above'"
+                                    class="btn btn-link btn-primary btn-just-icon edit"
+                                    (click)="onDelete('prospect' ,element._id)">
+                                    <i class="material-icons">delete</i>
+                                </button>
+
+                            </td>
+                          </ng-container>
+                      
+                          <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                          <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                        </table>
+                        <mat-paginator #paginator2
+                                        [pageSize]="5"
+                                        [pageSizeOptions]="[5, 10, 20]">
+                        </mat-paginator>
+                      </div>
+
+                      
+
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+
+
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal" style="size: 200%;">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">List of {{formname == 'member' ? 'Members' : 'Customers'}}</h4>
+                <button type="button" class="close" id="closeid" (click)="onClose()"
+                    data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-dynamic-sublist #sharedusers [formname]="formname" *ngIf="sharedVisibility" [text]="'Save'"
+                    [users]="selectedUsers" (submitData)="getSubmittedData($event , formname)">
+                </app-dynamic-sublist>
+            </div>
+
+        </div>
+    </div>
+</div>

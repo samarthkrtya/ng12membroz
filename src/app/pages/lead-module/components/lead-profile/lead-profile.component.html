@@ -1,0 +1,211 @@
+<div class="main-content">
+    <div class="container-fluid">        
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list
+                    [dataContent]= "dataContent"
+                    [schema]="'enquiries'"
+                    [formObj]="formObj"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+
+                <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center" style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+
+                <ng-container *ngIf="contentVisibility && dataContent">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="actionselected" class="mb-4">
+                                        <mat-button-toggle value="profile" (click)="buttonToggle('profile')" *ngIf="!functionPermission.includes('Enquiry Profile')" >{{getLang('profile','Enquiry Profile')}}</mat-button-toggle>
+                                        <mat-button-toggle value="timeline" (click)="buttonToggle('timeline')" *ngIf="!functionPermission.includes('Timeline')">{{getLang('timeline','Timeline')}}</mat-button-toggle>
+                                        <mat-button-toggle value="communication" (click)="buttonToggle('communication')" *ngIf="!functionPermission.includes('Communication')" >{{getLang('communication','Communication')}}</mat-button-toggle>
+                                        <!-- <mat-button-toggle value="activitylog" id="activitylog" (click)="buttonToggle('activitylog')" *ngIf="!functionPermission.includes('Activity Log')">{{getLang('activitylog','Activity Log')}}</mat-button-toggle> -->
+                                    </mat-button-toggle-group>
+                                </div>
+                                <div class="col-sm-3 text-right mb-lg-0 mb-3">
+                                    <span class="dropdown inline-block text-right ml-2">
+                                        <button 
+                                            class="dropdown-toggle btn btn-primary mrtb0"
+                                            data-toggle="dropdown">
+                                            {{getLang('more', 'More')}} 
+                                            <b class="caret"></b>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <ng-container *ngIf="!functionPermission.includes('Send Messages')">
+                                                <a 
+                                                    class="dropdown-item cursor-pointer" 
+                                                    (click)="sendMessage()" 
+                                                    href="#"
+                                                    data-toggle="modal" 
+                                                    data-target="#sendPopup" 
+                                                    data-backdrop="static" 
+                                                    data-keyboard="false">
+                                                    {{getLang('sendmessages', 'Send Messages')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Convert To Customer')">
+                                                <a *ngIf="!dataContent.prospectid" class="dropdown-item cursor-pointer" (click)="convert('Customer')">
+                                                    {{getLang('converttocustomer', 'Convert To Customer')}}
+                                                </a>
+                                            </ng-container>
+                                            
+                                            <ng-container *ngIf="!functionPermission.includes('Convert To Member')">
+                                                <a *ngIf="!dataContent.memberid" class="dropdown-item cursor-pointer" (click)="convert('Member')">
+                                                    {{getLang('converttomember', 'Convert To Member')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Sales Won')">
+                                                <a *ngIf="!dataContent.prospectid" class="dropdown-item cursor-pointer" (click)="salesWon()">
+                                                    {{getLang('saleswon', 'Sales Won')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Assign to')">
+                                                <a class="dropdown-item cursor-pointer" (click)="assignTo()">
+                                                    {{getLang('assignto', 'Assign To')}}
+                                                </a>
+                                            </ng-container>
+
+                                        </div>
+                                    </span>
+                                    <button  type="submit" class="btn btn-primary ml-2" [routerLink]="['/pages/dynamic-forms/form/' + _formId + '/' + bindId ]">
+                                        <i class="material-icons">edit</i>{{getLang('edit', 'Edit')}} 
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12">
+                                    <app-lead-basic-details
+                                        [dataContent]="dataContent">
+                                    </app-lead-basic-details>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <ng-container *ngIf="profileVisibility">
+
+                        <div class="mb-3" *ngIf="stageLists && stageLists.length > 0">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 pr-lg-0 pr-md-0 d-flex">
+                                    <div class="arrow-steps clearfix">
+                                        <div 
+                                            (dblclick)="stageClick(item)"
+                                            class="step" 
+                                            [ngClass]="currentStage == item.name ? 'current' : ''"
+                                            *ngFor="let item of stageLists"> 
+                                            <span> {{item.name}} </span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-0">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-6 col-sm-6 pr-lg-0 pr-md-0 d-flex">
+                                    
+                                    <app-open-activity 
+                                        class="w-100" 
+                                        [dataContent]="dataContent"
+                                        [formid]="this._formId"
+                                        [formname]="'promotion'"
+                                        [onModel]="'Enquiry'"
+                                        (onOpenActivityData)="getSubmittedOpenActivityData($event)"
+                                    ></app-open-activity>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-6 pr-lg-0 d-flex">
+                                    <app-close-activity 
+                                        class="w-100" 
+                                        [dataContent]="dataContent"
+                                        (onCloseActivityData)="getSubmittedCloseActivityData($event)"
+                                        >
+                                    </app-close-activity>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-6 pr-lg-0 pr-md-0 d-flex">
+                                    <app-contacts-notes
+                                        class="w-100" 
+                                        [dataContent]="dataContent"
+                                        formid="6017ec5299e17f384c243b5b"
+                                        [onModel]="'Enquiry'"
+                                        (onNotesData)="getSubmittedNotesData($event)">
+                                    </app-contacts-notes>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
+
+                                    <app-contacts-attachment
+                                        class="w-100" 
+                                        [dataContent]="dataContent" 
+                                        [formid]="_formId"
+                                        (onAttachmentData)="getSubmittedAttachmentData($event)"
+                                        schema="enquiries">
+                                    </app-contacts-attachment>
+
+                                    
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <ng-container *ngIf="!functionPermission.includes('Activity Log')">
+                                <app-contacts-activity-log
+                                    context="enquiry"
+                                    schema="enquiries"
+                                    [formid]="_formId"
+                                    [dataContent]= "dataContent">
+                                </app-contacts-activity-log>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="timelineVisibility">
+                        <app-contacts-timeline
+                            context="enquiry"
+                            schema="enquiries"
+                            [dataContent]= "dataContent">
+                        </app-contacts-timeline>
+                    </ng-container>
+    
+                    <ng-container *ngIf="communicationVisibility">
+                        <app-contacts-communication
+                            context="enquiry"
+                            schema="enquiries"
+                            [dataContent]= "dataContent"
+                            (onResendCommunication)="onCloseResendData($event)">
+                        </app-contacts-communication>
+                    </ng-container>
+
+                    <!-- <ng-container *ngIf="activitylogVisibility">
+                        
+                    </ng-container> -->
+
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="sendPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <app-contacts-send-message
+                *ngIf="sendMessageVisibility"
+                [dataContent]="dataContent"
+                [formid]="this._formId"
+                [formname]="'promotion'"
+                (onCloseMessageData)="getSubmittedCloseMessageData($event)">
+            </app-contacts-send-message>
+        </div>
+    </div>
+</div>

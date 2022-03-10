@@ -1,0 +1,621 @@
+<div class="main-content">
+  <div class="container-fluid">
+
+    <div class="loader" *ngIf="isLoading">
+      <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+      </svg>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="card-title mt-lg-3 mt-0 mb-0"> Getting Started</h3>
+      </div>
+    </div>
+    <div class="row membroz-row">
+      <div class="col-xl-9 col-lg-8 col-md-8 col-sm-6 membroz-col">
+        <div class="card mb-0" *ngIf="dataContent  && dataContent.content">
+          <div class="card-body">
+            <div class="row membroz-row">
+              <div
+                class="col-xl-auto col-lg-auto col-md-3 col-sm-4 membroz-col mt-sm-0 text-center px-xl-4 px-lg-3 col-4">
+                <ng-container *ngIf="dataContent.content == 100;else notmpl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+                  <g transform="translate(-1063.236 -218.236)">
+                    <g transform="translate(1076.749 237.12)">
+                      <g  transform="translate(0)">
+                        <path class="svg-fill-green-custom-icon" d="M42.344,68.627a2.149,2.149,0,0,0-3.039,0L13.563,94.37l-9.9-9.9A2.149,2.149,0,0,0,.629,87.514L12.043,98.928a2.149,2.149,0,0,0,3.039,0L42.344,71.666A2.149,2.149,0,0,0,42.344,68.627Z" transform="translate(0 -67.997)" />
+                      </g>
+                    </g>
+                    <g class="svg-stroke-green-custom-icon" transform="translate(1063.236 218.236)" fill="none" stroke-width="2">
+                      <circle cx="35" cy="35" r="35" stroke="none"/>
+                      <circle cx="35" cy="35" r="34" fill="none"/>
+                    </g>
+                  </g>
+                </svg>
+              </ng-container>
+              <ng-template #notmpl>
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="69.908" viewBox="0 0 70 69.908">
+                  <g transform="translate(-14.148 497.609)">
+                    <path  d="M46.389-497.578a34.114,34.114,0,0,0-12.8,3.658,32.577,32.577,0,0,0-9.332,6.817,35.854,35.854,0,0,0-9.925,21.113,28.6,28.6,0,0,0-.145,4.907,24.116,24.116,0,0,0,.579,5.539,7.779,7.779,0,0,0,1.9-.279,8.742,8.742,0,0,0-.159-1.219,46.627,46.627,0,0,1-.217-8.448,34.37,34.37,0,0,1,7.2-17.7,33.065,33.065,0,0,1,15.234-10.7,31.517,31.517,0,0,1,10.547-1.719,32.737,32.737,0,0,1,19.748,6.729,45.582,45.582,0,0,1,6.062,6.009,25.9,25.9,0,0,1,2.083,3.085c-.029.015-.955-.323-2.069-.749l-2.011-.793-.318.705c-.55,1.234-.81,1.043,3.5,2.718,2.141.837,3.906,1.513,3.921,1.5.029-.044,2.127-7.949,2.141-8.1a5.623,5.623,0,0,0-1.866-.632c-.014.015-.275.955-.579,2.086s-.579,2.174-.637,2.307c-.072.191-.3-.073-.984-1.1a34.077,34.077,0,0,0-4.514-5.539,34.746,34.746,0,0,0-18.822-9.785,26.551,26.551,0,0,0-5.064-.426C48.227-497.622,46.664-497.608,46.389-497.578Z" transform="translate(0)" class="svg-fill-dark-gray-333-icon"/>
+                    <path  d="M116.4-414.727a2.066,2.066,0,0,0-.388.976c-.057.373-.3,1.91-.546,3.389l-.445,2.714-1.393.574-1.407.56-2.757-2.01c-2.082-1.522-2.872-2.025-3.2-2.025-.359,0-.775.345-2.613,2.2s-2.2,2.254-2.2,2.628c0,.33.488,1.091,2.025,3.188l2.025,2.757-.574,1.393c-.5,1.221-.632,1.407-.991,1.493-.215.057-1.752.316-3.4.56-2.3.359-3.058.531-3.274.747s-.258.531-.258,3.418.029,3.188.258,3.418c.2.2.919.373,2.843.675,1.407.215,2.944.46,3.4.56l.847.158.574,1.407.574,1.393-2.025,2.757c-1.536,2.1-2.025,2.858-2.025,3.188,0,.373.345.775,2.2,2.628s2.254,2.2,2.628,2.2c.316,0,1.106-.488,3.188-2.025l2.771-2.01,1.321.531c.732.3,1.364.574,1.422.617s.33,1.565.617,3.374c.531,3.389.617,3.719,1.02,3.877.115.043,1.608.086,3.3.086,2.8,0,3.1-.029,3.346-.273.2-.2.359-.89.661-2.829.215-1.407.459-2.944.56-3.4l.158-.847,1.407-.574,1.393-.574,2.757,2.025c2.1,1.522,2.872,2.025,3.2,2.025.359,0,.775-.345,2.613-2.2s2.2-2.254,2.2-2.613c0-.33-.5-1.106-2.025-3.2l-2.025-2.757.574-1.393.574-1.407,3.475-.574c2.843-.474,3.518-.632,3.676-.862s.2-.948.2-3.4c0-3.59,0-3.6-1.249-3.791-.373-.057-1.91-.3-3.389-.546l-2.714-.445-.574-1.407-.574-1.393,2.025-2.757c1.522-2.1,2.025-2.872,2.025-3.2,0-.359-.345-.775-2.2-2.613s-2.254-2.2-2.613-2.2c-.33,0-1.106.5-3.2,2.025a18.592,18.592,0,0,1-2.944,1.939c-.086-.043-.718-.3-1.393-.574-1.422-.574-1.221-.115-1.867-4.308-.359-2.3-.531-3.059-.747-3.274s-.531-.258-3.417-.258C116.9-415,116.658-414.986,116.4-414.727Zm5.873,5.055a24.355,24.355,0,0,0,.7,3.475,2.646,2.646,0,0,0,.991.46,14.841,14.841,0,0,1,2,.8,6.484,6.484,0,0,0,1.551.56,13.145,13.145,0,0,0,3.058-1.953l2.671-1.938,1.35,1.35,1.35,1.35-1.953,2.671a14.4,14.4,0,0,0-1.953,3.016,6.954,6.954,0,0,0,.56,1.551,15.829,15.829,0,0,1,.8,2.025,2.646,2.646,0,0,0,.46.991,24.356,24.356,0,0,0,3.475.7l3.245.5v3.877l-3.26.517a24.145,24.145,0,0,0-3.475.689,2.946,2.946,0,0,0-.445.991,14.843,14.843,0,0,1-.8,2,6.317,6.317,0,0,0-.56,1.565,12.985,12.985,0,0,0,1.953,3.044l1.953,2.657-1.35,1.35-1.35,1.35-2.671-1.939a13.146,13.146,0,0,0-3.058-1.953,6.485,6.485,0,0,0-1.551.56,14.845,14.845,0,0,1-2,.8,2.646,2.646,0,0,0-.991.46,24.354,24.354,0,0,0-.7,3.475l-.517,3.245h-3.848l-.517-3.245a24.355,24.355,0,0,0-.7-3.475,2.646,2.646,0,0,0-.991-.46,20.051,20.051,0,0,1-2.039-.818,7,7,0,0,0-1.522-.589,18.493,18.493,0,0,0-3.015,1.982l-2.685,1.967-1.35-1.364-1.364-1.35,1.953-2.657a12.425,12.425,0,0,0,1.953-3.044,6.318,6.318,0,0,0-.56-1.565,17.039,17.039,0,0,1-.8-2,2.646,2.646,0,0,0-.459-.991,20.549,20.549,0,0,0-3.475-.7l-3.245-.517v-3.848l3.245-.517a20.55,20.55,0,0,0,3.475-.7,2.646,2.646,0,0,0,.459-.991,14.842,14.842,0,0,1,.8-2,6.318,6.318,0,0,0,.56-1.565,12.987,12.987,0,0,0-1.953-3.044l-1.953-2.656,1.364-1.35,1.35-1.364,2.656,1.953a12.424,12.424,0,0,0,3.044,1.953,6.316,6.316,0,0,0,1.565-.56,14.939,14.939,0,0,1,2.01-.8,1.912,1.912,0,0,0,1.019-.546,22.2,22.2,0,0,0,.646-3.331c.258-1.666.488-3.1.517-3.2.057-.144.517-.172,1.967-.144l1.9.043Z" transform="translate(-70.679 -70.472)" class="svg-fill-dark-gray-333-icon"/>
+                    <path  d="M200.876-317.618a8.061,8.061,0,0,0-4.07,2.424,8.059,8.059,0,0,0-2.424,4.129,9.427,9.427,0,0,0,.764,6.568,11.7,11.7,0,0,0,3.747,3.747,9.464,9.464,0,0,0,8.61,0,11.347,11.347,0,0,0,3.673-3.658,9.338,9.338,0,0,0,.073-8.7,11.7,11.7,0,0,0-3.747-3.747A9.6,9.6,0,0,0,200.876-317.618Zm4.863,2.189a7.434,7.434,0,0,1,4.231,4.584,7.979,7.979,0,0,1-.147,4.584,7.434,7.434,0,0,1-4.584,4.231,7.979,7.979,0,0,1-4.584-.147,7.434,7.434,0,0,1-4.231-4.584,7.979,7.979,0,0,1,.147-4.584,7.574,7.574,0,0,1,4.467-4.217A8.53,8.53,0,0,1,205.74-315.429Z" transform="translate(-154.046 -153.838)" class="svg-fill-dark-gray-333-icon"/>
+                    <path  d="M92.919-300.682l-.666.132.188,1.2a50.5,50.5,0,0,1,.2,8.625,34.733,34.733,0,0,1-7.2,17.558,32.7,32.7,0,0,1-36.068,10.711,39.685,39.685,0,0,1-7.6-3.688,34.769,34.769,0,0,1-9.332-9.315,5.436,5.436,0,0,1-.666-1.117,17.915,17.915,0,0,1,2.054.749l2.011.793.318-.705c.55-1.234.81-1.043-3.487-2.733-2.141-.837-3.906-1.513-3.921-1.484-.043.044-2.127,7.934-2.156,8.1a5.975,5.975,0,0,0,1.866.632c.014-.015.275-.955.579-2.086.767-2.88.68-2.733,1.143-1.91a39.82,39.82,0,0,0,4.789,6.024,33.223,33.223,0,0,0,9.259,6.759,31.521,31.521,0,0,0,6.93,2.645,28.771,28.771,0,0,0,8.84,1.014,24.86,24.86,0,0,0,5.57-.4,34.755,34.755,0,0,0,18.822-9.8,33.649,33.649,0,0,0,6.8-9.624,33.8,33.8,0,0,0,3.559-14.693,35.218,35.218,0,0,0-.477-7.243C94.177-300.888,93.989-300.917,92.919-300.682Z" transform="translate(-10.622 -168.923)" class="svg-fill-dark-gray-333-icon"/>
+                  </g>
+                </svg>
+              </ng-template>
+                
+              </div>
+              <div class="col-xl-10 col-lg-8 col-md-9 col-sm-8 col-8 membroz-col">
+                <h4>Your Setup Progress  {{i}} </h4>
+                <p>Finish these tasks to start using your system properly</p>
+                <div class="d-flex align-items-center">
+                  <div class="mr-2 font-weight-bold">{{dataContent && dataContent.content ?
+                    dataContent?.content : 0}}%</div>
+                  <mat-progress-bar mode="determinate"
+                    [value]="dataContent && dataContent.content ? dataContent.content : 0" class="setup-progressbar">
+                  </mat-progress-bar>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <ng-container *ngFor="let itemContent of dataContent | keys;">
+          <div class="card mb-0" *ngIf="itemContent.key == 'company'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.company" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.company ?  'svg-stroke-green-custom-icon' : 'svg-stroke-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+
+                <span class="ml-3">Company Profile {{i}}</span>
+              </h5>
+              <p>Company profile setup is mandatory for the system. Update your company profile with logo,
+                address, timezone, locale and currency.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Company Profile', 'https://www.youtube.com/embed/QSm-wqryH4I')" >
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"   [routerLink]="['/pages/admins/admin-settings']">
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'member'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.member" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.member ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Member</span>
+              </h5>
+              <p>Member database is core of your system. update member profile like name, address, dob, joinining date and membership detail.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Member', 'https://www.youtube.com/embed/KJ0bXp4dMKU')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"  [routerLink]="['/pages/dynamic-forms/form/599673a925f548d7dbbd7c86']">
+                  + Add Member
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'membership'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.membership" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.membership ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Membership</span>
+              </h5>
+              <p>System allows you to create different types of memberships and packages you offer to members &
+                customers. Membership require tenure and cost detail.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Create Membership', 'https://www.youtube.com/embed/6s8DxzBRGVU')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/dynamic-forms/form/5a3366a50861a9670928e5c9']">
+                  + Add Membership
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'package'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.package" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.package ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Package</span>
+              </h5>
+              <p>System allows you to create different types of packages you offer to members &
+                customers. Package require tenure and cost detail.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Create Package', 'https://www.youtube.com/embed/6s8DxzBRGVU')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/dynamic-forms/form/5e9d35232b81e32990416dd5']">
+                  + Add Package
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'inspectiontemplate'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.inspectiontemplate" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.inspectiontemplate ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Inspection Template</span>
+              </h5>
+              <p>System allows you to create different types of inspection template.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Create Inspection Template', 'https://www.youtube.com/embed/6s8DxzBRGVU')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/dynamic-forms/form/612dcc1deea98f7642a14d60']">
+                  + Add Inspection Template
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'user'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.user" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.user ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Staff</span>
+              </h5>
+              <p>Add new team member and give him access to the system with role and permission. New user will receive
+                email for first time login.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Staff', 'https://www.youtube.com/embed/mTq29vQgTDI')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0" [routerLink]="['/pages/dynamic-forms/form/598998cb6bff2a0e50b3d793']">
+                  + Add Staff
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'enquiry'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.enquiry" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.enquiry ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Enquiry</span>
+              </h5>
+              <p>Add new lead, call and make followup, convert and close deal</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Enquiry', 'https://www.youtube.com/embed/rJAHtyaEF-w')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0" [routerLink]="['/pages/dynamic-forms/form/59f430a7bd4e4bb2fb72ec7d']">
+                + Add Enquiry
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'prospect'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.prospect" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.prospect ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Customer</span>
+              </h5>
+              <p>System allows you to create different types of packages you offer to members &
+                customers. Package require tenure and cost detail.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Create Customer', 'https://www.youtube.com/embed/6s8DxzBRGVU')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/dynamic-forms/form/5af03fe1dbd19f20e03ac67c']">
+                  + Add Customer
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'reminder'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.reminder" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.reminder ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Reminder Scheduler</span>
+              </h5>
+              <p>Are you tired out sending payment reminder email manually? Use Automation to set reminders emails/sms
+                for payment dues, birthday wishes, appointments, membership expiry or event dates. </p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Reminder Scheduler', 'https://www.youtube.com/embed/2VWfnOlushs')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/integration-module/scheduler-integration']">
+                  Setup Reminders
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'paymentgateway'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.paymentgateway" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.paymentgateway ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Payment gateways</span>
+              </h5>
+              <p>Are you looking to collect membership fees and bill payment Online ? System offers you preconfigure
+                payment gateways like Stripe, PayPal, Razorpay, PayU to use from. Send payment links and start
+                collecting payment directly to your bank account. </p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Payment gateways', 'https://www.youtube.com/embed/Rbf1Y6hXD48')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/integration-module/lists/paymentgateway']">
+                  Setup Payment Gateway
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'service'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.service" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.service ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Service</span>
+              </h5>
+              <p>Service is what you offer to the customers and get paid. Add new service in the system is super easy.
+                Add title,
+                time, providers, along with staff commission and rate.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Service', 'https://www.youtube.com/embed/HU-GeBwMkJ8')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/service-module/form']">
+                  + Add Service
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'facility'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.facility" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.facility ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Facility</span>
+              </h5>
+              <p>Facility is what you offer to the customers and get paid. Add new facility in the system is super easy.
+                Add title,
+                time, no of units along with rate.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Facility', 'https://www.youtube.com/embed/DY6TmcRLGRM')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/service-module/asset-form']">
+                  + Add Facility
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'product'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.product" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.product ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Product</span>
+              </h5>
+              <p>Are you running POS and selling items to your customers ? Add billable item to your store and
+                start selling. You can set sales/purchase rate, discount and inventory setting with ease.</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Product', 'https://www.youtube.com/embed/MPOmBt8Kyi8')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"
+                  [routerLink]="['/pages/product-module/form']">
+                  + Add Product
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-0" *ngIf="itemContent.key == 'import'">
+            <div class="card-body">
+              <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g transform="translate(-233 -465)">
+                      <g *ngIf="dataContent.import" transform="translate(237.979 471.732)">
+                        <g  transform="translate(0)">
+                          <path class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"  d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z" transform="translate(0 -67.997)"  stroke-width="0.7"/>
+                        </g>
+                      </g>
+                      <g [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" transform="translate(233 465)" fill="none" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="12" stroke="none"/>
+                        <circle cx="12" cy="12" r="11.25" fill="none"/>
+                      </g>
+                    </g>
+                  </svg>
+                <span class="ml-3">Import Data</span>
+              </h5>
+              <p>Do you have historical database in excel or csv. Start importing members, customers, payments and booking data with Import wizards and save time to</p>
+              <div class="d-flex justify-content-end">
+                <button  class="btn btn btn-outline-primary m-0 mr-2" type="button" data-toggle="modal" data-target="#watchvideo" (click)="watchVideo('Import Data', 'https://www.youtube.com/embed/8MJAPT7JSfA')">
+                  <i class="material-icons">play_arrow</i> Watch Video
+                </button>
+                <button class="btn btn-primary m-0"  [routerLink]="['/pages/import/599673a925f548d7dbbd7c86']">
+                  Upload
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+
+
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 membroz-col mt-sm-0" *ngIf="dataContent">
+        <div class="card mb-0">
+          <div class="p-3">
+            <h4 class="card-title">Help Center</h4>
+            <ul class="list-unstyled link-list mb-0">
+              <li><a href="#" target="_blank" (click)="goToLink('www.membroz.com/documents/company-profile/')">Company
+                  setup</a>
+              </li>
+              <li><a [routerLink]="['/pages/dynamic-list/list/payment']">Payment item & tax</a></li>
+              <li><a href="#">Membership & Package</a></li>
+              <li><a href="#">Payment Terms</a></li>
+              <li><a href="#">My Profile</a></li>
+              <li><a href="#">User & Designation</a></li>
+              <li><a href="#">View & print receipt</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="card mb-0">
+          <div class="p-3">
+            <h4 class="card-title">Videos</h4>
+            <ul class="list-unstyled link-list mb-0">
+              <li><a href="#">General Videos</a></li>
+              <li><a href="#">CRM & Marketing</a></li>
+              <li><a href="#">Sales & Purchase</a></li>
+              <li><a href="#">Leave & Payroll</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="card mb-0">
+          <div class="p-3 text-center">
+            <svg class="svg-fill-secondary-icon my-3" xmlns="http://www.w3.org/2000/svg" width="57.499" height="64"
+              viewBox="0 0 57.499 64">
+              <g transform="translate(-26 511.832)">
+                <path
+                  d="M52.634-511.715A18.783,18.783,0,0,0,36.528-497.4c-.425,1.838-.525,3.326-.525,8.09,0,5.039.038,5.377.788,6.365a4.385,4.385,0,0,0,1.05.913l.638.375.05,1.188a3.683,3.683,0,0,0,1.1,2.876,3.664,3.664,0,0,0,2.726,1.1l1.038.063.325.638a11.935,11.935,0,0,0,1.688,2.476l.613.713-1.063,2.113-1.063,2.113-3.6,1.213c-4.727,1.6-6.14,2.351-8.44,4.552a18.827,18.827,0,0,0-5.664,11.091A18.13,18.13,0,0,0,26-449.495c0,.688.05.838.363,1.188l.363.413,27.959.038,27.959.025.4-.35c.338-.313.4-.463.45-1.113a13.347,13.347,0,0,0-.15-2.126,18.826,18.826,0,0,0-5.677-11.191c-2.3-2.2-3.714-2.951-8.44-4.552l-3.6-1.213-1.063-2.113L63.5-472.6l.613-.713a13.76,13.76,0,0,0,3.076-6.465c.113-.625.238-1.25.263-1.388.063-.263.138-.275,1.651-.325a5.157,5.157,0,0,0,2.176-.313,4.326,4.326,0,0,0,1.913-1.9c.25-.55.263-.775.3-5.2.025-2.8-.013-5.164-.1-6a18.294,18.294,0,0,0-5.289-11.3A18.656,18.656,0,0,0,52.634-511.715Zm5.189,2.676a15.935,15.935,0,0,1,8.39,4.489,15.985,15.985,0,0,1,4.652,9.416l.113.788H68.564l-.163-1.275a12.616,12.616,0,0,0-6.99-9.916,13.3,13.3,0,0,0-6.652-1.313,13.3,13.3,0,0,0-6.652,1.313,12.616,12.616,0,0,0-6.99,9.916l-.163,1.275H39.742c-1.088,0-1.213-.025-1.175-.225.025-.113.113-.663.188-1.213a16.257,16.257,0,0,1,2.513-6.327,19.338,19.338,0,0,1,4.339-4.4,16.924,16.924,0,0,1,6.4-2.576c.513-.075,1.075-.163,1.25-.188A23.512,23.512,0,0,1,57.823-509.039Zm-.163,4.864a9.862,9.862,0,0,1,4.614,2.138,10.1,10.1,0,0,1,3.7,7.54l.075,1.413-.55-.088a31.738,31.738,0,0,1-4.689-1.063,21.207,21.207,0,0,1-6.8-3.951c-1.15-1.038-1.35-1.163-2-1.163a12.98,12.98,0,0,0-4.677,1.15,11.981,11.981,0,0,0-2.938,2.113l-.8.8.075-.6a10.834,10.834,0,0,1,2.326-4.939,10.561,10.561,0,0,1,5.952-3.389A28.162,28.162,0,0,1,57.66-504.175Zm-5.314,7.865A23.151,23.151,0,0,0,64.563-490.8a7.927,7.927,0,0,1,1.288.25,54.476,54.476,0,0,1-.463,6c-.675,5.489-1.25,7.24-3.089,9.516a10.584,10.584,0,0,1-5.039,3.276,13.455,13.455,0,0,1-5,0,10.6,10.6,0,0,1-5.339-3.651,6.912,6.912,0,0,1-.663-.963,3.614,3.614,0,0,1,1.225-.1l1.213.012.375.638a3.631,3.631,0,0,0,2.138,1.676,12.628,12.628,0,0,0,5.064-.163,4.236,4.236,0,0,0,1.9-1.9,4.209,4.209,0,0,0,0-3.026,4.236,4.236,0,0,0-1.9-1.9,12.627,12.627,0,0,0-5.064-.163,3.631,3.631,0,0,0-2.138,1.676l-.375.638-1.838.013a8.1,8.1,0,0,1-1.851-.1c0-.05-.088-.488-.188-.963a84.528,84.528,0,0,1-1.138-9.566l-.075-1.563.988-1.313a19.365,19.365,0,0,1,1.838-2.088,9.185,9.185,0,0,1,5.164-2.276A2.345,2.345,0,0,1,52.346-496.31Zm-11.291,5.052c.038.338.1,1.275.138,2.1s.163,2.226.263,3.126.175,1.726.175,1.851c0,.213-.1.238-1.188.188s-1.213-.063-1.525-.388l-.35-.338-.038-3.564-.038-3.564H40.98Zm29.935,2.976-.038,3.564-.35.338c-.313.325-.425.35-1.526.388s-1.188.025-1.188-.188c0-.125.088-.963.175-1.851s.213-2.326.263-3.189.1-1.8.138-2.1l.063-.525h2.5Zm-28.922,7.09c.025.163.113.638.188,1.075s.175.875.213.988c.125.313-.7.1-1.088-.275-.25-.263-.313-.463-.35-1.188l-.05-.875h.513C41.918-481.468,42.005-481.418,42.068-481.193ZM55.6-478.567a1.153,1.153,0,0,1-.075,1.751l-.413.375-1.676-.05c-1.6-.038-1.688-.05-1.988-.363a1.127,1.127,0,0,1-.188-1.526c.425-.525.663-.588,2.4-.55C55.21-478.9,55.26-478.892,55.6-478.567Zm6.99,9.616.825,1.651-.338.938c-.45,1.25-1.338,3.339-1.963,4.577l-.5.988L58.5-462.912l-2.113-2.113.538-.563c.3-.313,1.488-1.563,2.638-2.788s2.126-2.213,2.151-2.213S62.124-469.851,62.587-468.951Zm-11.666,6.077c-1.075,1.125-1.976,2.038-2,2.038a44.78,44.78,0,0,1-2.226-4.864l-.6-1.538.738-1.488.725-1.488,2.663,2.651,2.651,2.638Zm3.976-6.152h1.838l-1.013,1.063c-.563.588-1.05,1.075-1.088,1.1a12.067,12.067,0,0,1-1.25-1.163c-1.138-1.138-1.163-1.188-.75-1.1A16.7,16.7,0,0,0,54.9-469.026Zm-10.266,4.939a52.462,52.462,0,0,0,5.439,10c.638.925,1.438,2.151,1.8,2.726l.638,1.025H28.538l.113-.85a16.241,16.241,0,0,1,8.04-11.929,59.4,59.4,0,0,1,7.165-2.563A6.09,6.09,0,0,1,44.631-464.087Zm24.058-.625a42.182,42.182,0,0,1,3.989,1.525,16.189,16.189,0,0,1,8.19,12l.113.85H57.01l.638-1.025c.363-.575,1.163-1.8,1.8-2.726a50.15,50.15,0,0,0,5.214-9.5c.388-.925.725-1.788.763-1.913s.125-.213.188-.213S67.051-465.262,68.689-464.712Zm-11.716,3.9c1.263,1.263,2.288,2.338,2.288,2.4a24.782,24.782,0,0,1-1.338,2.1c-.75,1.1-1.726,2.6-2.2,3.326a7.335,7.335,0,0,1-.963,1.338,7.334,7.334,0,0,1-.963-1.338c-.475-.725-1.463-2.238-2.213-3.339A12.639,12.639,0,0,1,50.3-458.5c.075-.188,4.214-4.589,4.326-4.589C54.659-463.087,55.722-462.061,56.973-460.811Z"
+                  transform="translate(0)" />
+                <path
+                  d="M356.8-115.759a1.479,1.479,0,0,0-.8,1.139,1.434,1.434,0,0,0,1.139,1.189.844.844,0,0,0,.876-.3.963.963,0,0,0,.426-.9.947.947,0,0,0-.413-.889A1.027,1.027,0,0,0,356.8-115.759Z"
+                  transform="translate(-288.739 -346.455)" />
+                <path
+                  d="M392.251-96.787a1.234,1.234,0,0,0-.751,1.139c0,.438.113.588,1.2,1.715a15.411,15.411,0,0,1,1.74,2.141c.6,1.027,1.039,1.34,1.69,1.227a1.143,1.143,0,0,0,.927-.927c.213-.726-.876-2.529-2.5-4.144C393.366-96.825,392.915-97.05,392.251-96.787Z"
+                  transform="translate(-319.813 -363.077)" />
+              </g>
+            </svg>
+            <h5 class="card-title">Let us help you get setup</h5>
+            <p>Sometimes it's just easier with another human</p>
+            <button class="btn btn-outline-primary m-0 mb-3" type="button" data-toggle="modal" data-target="#schedulecall">
+              <i class="material-icons">call</i> Schedule Call
+            </button> 
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<div id="watchvideo" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" *ngIf="selectedTitle"> {{selectedTitle}}</h4>
+        <button type="button" class="close" data-dismiss="modal" id="closeBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+          <div class="embed-responsive embed-responsive-16by9" *ngIf="vdourl">
+            <iframe width="560" height="315" [src]="vdourl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="schedulecall" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"> Schedule Call</h4>
+        <button type="button" class="close" data-dismiss="modal" id="closesclBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+         
+          <div class="col-md-6"  *ngIf="workingHours">
+            <mat-calendar (selectedChange)="onDateChanged($event)" [dateFilter]="disableDate"  style="width: 300px;"></mat-calendar>
+             <label class="col-form-label">
+              <i class="material-icons">language</i>  {{getLang('timezone', 'Time zone')}} :  {{_loginUserBranch?.timezone}}
+          </label>
+          </div>
+
+          <div class="col-md-6" *ngIf="availslots.length > 0">
+            <label class="col-form-label">
+                {{getLang('availableslots', 'Available Slots')}} {{selectedDate ? (selectedDate | toLocaleDate)  : ''}}
+                <span class="text-danger">*</span>
+            </label>
+            <div class="mt-2">
+                <section class="example-section row">
+                    <mat-checkbox class="example-margin m-0 col-4"
+                        [(ngModel)]="slot.checked" (change)="dayChecked(slot , $event)"  *ngFor="let slot of availslots">
+                        {{slot?.starttime}}
+                    </mat-checkbox>
+                </section>
+            </div>
+           </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" [disabled]="disableBtn" type="button" data-dismiss="modal" >
+            <i class="material-icons">close</i> Cancel
+        </button>
+
+        <button class="btn btn-primary ml-2" [disabled]="disableBtn" type="button" (click)="saveSchedule()">
+            <i class="material-icons">save</i> Submit Request
+        </button>
+    </div>
+    </div>
+  </div>
+</div>

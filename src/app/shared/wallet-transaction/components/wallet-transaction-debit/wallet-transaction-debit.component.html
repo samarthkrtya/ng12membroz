@@ -1,0 +1,232 @@
+<form role="form" id="payment-form" method="POST">
+    <div class="row">
+
+        <div class="col-sm-12" >
+            <label class="col-form-label">
+                {{getLang('cardnmbr', 'CARD NUMBER')}}
+              <span class="text-danger">*</span>
+            </label>
+            <div class="mt-2">
+               
+                    <input 
+                        #firstName
+                        matInput
+                        type="password"
+                        class="form-control"
+                        name="cardNumber"
+                        placeholder="Valid Card Number"
+                        [disabled]="sendOtpVisibility"
+                        required 
+                        [(ngModel)]="cardnumber"
+                        (ngModelChange)="modelChangedValue($event)"
+                        (keyup.enter)="modelChanged()"
+                        autofocus/>
+                
+          
+            </div>
+        </div>
+
+    </div>
+    <div *ngIf="visibility">
+
+        <div class="row" *ngIf="memberDetails && memberDetails.profilepic">
+            <div class="col-sm-12">
+
+                
+
+                <div class="mt-2">
+                    <div class="form-group">
+                        <div class="row membroz-row">
+
+
+                            <div class="col s10 text-center">
+                                <img class="center img" [src]="memberDetails.profilepic" />
+                            </div>
+
+                            
+                            <!-- <div 
+                                class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 membroz-col d-flex flex-grow-1 mb-3"
+                                >
+                                <div class="position-relative d-flex">
+                                    <img 
+                                        [src]="memberDetails.profilepic"
+                                        
+                                        class="img-fluid img-add-product">
+                                        
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="row">
+
+            <div class="col-sm-7" >
+                <label class="col-form-label">
+                    {{getLang('membrsname', 'Members Name')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="tel" 
+                            class="form-control" 
+                            name="membername"
+                            placeholder="Member Name"
+                            [(ngModel)]="membername"
+                            readonly />
+                        
+                    </mat-form-field>
+              
+                </div>
+            </div>
+
+            <div class="col-sm-5 pull-right" >
+                <label class="col-form-label">
+                    {{getLang('membernmbr', 'Members Number')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="text" 
+                            class="form-control"
+                            name="membernumber"
+                            placeholder="membernumber"
+                            [(ngModel)]="membernumber"
+                            readonly/>
+                    </mat-form-field>              
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-12" >
+                <label class="col-form-label">
+                    {{getLang('visitorname', 'Visitor Name')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="tel" 
+                            class="form-control" 
+                            name="visitorname"
+                            placeholder="Visitor Name"
+                            [(ngModel)]="visitorname"
+                            readonly />
+                        
+                    </mat-form-field>
+              
+                </div>
+            </div>
+
+            
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-12" >
+                <label class="col-form-label">
+                    {{getLang('balance', 'Balance')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="text" 
+                            class="form-control" 
+                            name="balance"
+                            [(ngModel)]="balance"
+                            readonly />
+                    </mat-form-field>              
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-sm-12" >
+                <label class="col-form-label">
+                    {{getLang('debitPts', 'Debit Pts.')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="number" 
+                            class="form-control" 
+                            name="debitpoint"
+                            [(ngModel)]="debitpoint" />
+                    </mat-form-field>              
+                </div>
+            </div>                  
+        </div>
+        <div class="row">
+
+            <div class="col-sm-12" >
+                <label class="col-form-label">
+                    {{getLang('billdetail', 'Bill Detail (OR QR Code)')}}
+                  
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="text" 
+                            class="form-control" 
+                            name="txnref"
+                            [(ngModel)]="txnref" />
+                    </mat-form-field>              
+                </div>
+            </div>                    
+        </div>
+        <div class="row" *ngIf="iswalletotpenable && otpCodeVisibility">
+
+            <div class="col-sm-12" >
+                <label class="col-form-label">
+                    {{getLang('otpcode', 'OTP Code')}}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="mt-2">
+                    <mat-form-field class="example-full-width">
+                        <input 
+                            matInput
+                            type="text" 
+                            class="form-control" 
+                            name="otpcode"
+                            [(ngModel)]="otpcode" />
+                    </mat-form-field>              
+                </div>
+            </div>                      
+        </div>
+        <div class="row" *ngIf="balance !== 0">
+            <div class="col-sm-6">
+                <button 
+                    (click)="pay()"
+                    class="subscribe btn btn-success btn-lg btn-block" 
+                    type="button">
+                    {{getLang('pay', 'Pay')}}
+                </button>
+            </div>
+            <div class="col-sm-6">
+                <button 
+                    (click)="reset()"
+                    class="subscribe btn btn-danger btn-lg btn-block" 
+                    type="button">
+                    {{getLang('reset', 'Reset')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

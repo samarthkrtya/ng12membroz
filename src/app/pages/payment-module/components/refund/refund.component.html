@@ -1,0 +1,356 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        {{getLang('refund', 'Refund')}}
+                        {{docnumber ? '(#' + docnumber + ')' : ''}}
+                    </h3>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="loader" *ngIf="isLoading">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <div class="row" *ngIf="!isLoading">
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                <span> {{getLang('customer', 'Customer')}}</span>
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                          
+                                        <!-- <dynamic-autocomplete [formControlName]="customerfields.fieldname"
+                                                    [dbvalue]="customerfields.dbvalue" [setting]="customerfields"
+                                                    (inputModelChange)="inputModelChangeValue($event)">
+                                        </dynamic-autocomplete> -->
+
+                                        <mat-form-field class="example-full-width" appearance="standard">
+                                            <input type="text" matInput #trigger="matAutocompleteTrigger"  [matAutocomplete]="auto" formControlName="customerid"
+                                              [placeholder]="getLang('searchcustomerormember', 'Search Customer or Member')" (dblclick)="trigger.openPanel()">
+                                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                              (optionSelected)="inputModelChangeValue()">
+                                              <mat-option *ngIf="customerisLoadingBox" class="is-loading">
+                                                <mat-spinner diameter="50"></mat-spinner>
+                                              </mat-option>
+                                              <ng-container *ngIf="!customerisLoadingBox && customerList.length > 0">
+                                                <mat-option *ngFor="let option of customerfilteredOptions | async" [value]="option">
+                                                  {{option?.nickname}}
+                                                </mat-option>
+                                              </ng-container>
+                                              <!-- <ng-container *ngIf="!customerisLoadingBox && customerList.length == 0">
+                                                <mat-option>
+                                                  <span>{{getLang('norecord', 'No Record')}}</span>
+                                                </mat-option>
+                                              </ng-container> -->
+                                            </mat-autocomplete>
+                                          </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('invoice', 'Invoice')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <mat-select matNativeControl formControlName="invoice"
+                                                    (selectionChange)="selectInvoice($event.value)">
+                                                    <mat-option [value]="invoice" *ngFor="let invoice of invoiceList">
+                                                        {{invoice?.docnumber}}
+                                                    </mat-option>
+                                                    <mat-option *ngIf="isLoadingInvoice" class="is-loading">
+                                                        <mat-spinner diameter="50"></mat-spinner>
+                                                    </mat-option>
+                                                    <mat-option *ngIf="invoiceList.length == 0 && !isLoadingInvoice "
+                                                        disabled="'true'">
+                                                        No Invoice
+                                                    </mat-option>
+
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('invoice').valid || (form.get('invoice').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('invoice').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('invoiceisrequired', 'Invoice is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12" *ngIf="previousRedundList && previousRedundList.length > 0">
+                                            <div class="table-responsive">
+                                                <table class="table table-membroz">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="30%">
+                                                                {{getLang('docnumber', 'Docnumber')}}
+                                                            </th>
+                                                            <th width="20%">
+                                                                {{getLang('date', 'Date')}}
+                                                            </th>
+                                                            <th width="20%">
+                                                                {{getLang('amount', 'Amount')}}
+                                                            </th>
+                                                            <th width="20%">
+                                                                {{getLang('totalamount', 'Totalamount')}}
+                                                            </th>
+                                                            <th class="text-right td-actions" width="10%">
+                                                                {{getLang('adjustment', 'Adjustment')}}
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr *ngFor="let items of previousRedundList;let i = index">
+                                                            <td>
+                                                                {{items?.docnumber}}
+                                                            </td>
+                                                            <td>
+                                                                {{items?.date  | toLocaleDate}}
+                                                            </td>
+                                                            <td>
+                                                                {{items?.amount}}
+                                                            </td>
+                                                            <td>
+                                                                {{items?.totalamount}}
+                                                            </td>
+                                                            <td class="text-right td-actions">
+                                                                {{items?.adjustment}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('reason', 'Reason')}}
+                                            </label>
+                                            <dynamic-autocomplete [formControlName]="reason_fields.fieldname"
+                                                [setting]="reason_fields" [dbvalue]="reason_fields.dbvalue">
+                                            </dynamic-autocomplete>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('date', 'Date')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <mat-form-field>
+                                                <input matInput [matDatepicker]="picker1" formControlName="date">
+                                                <mat-datepicker-toggle matSuffix [for]="picker1">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('date').valid || (form.get('date').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('date').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('dateisrequired', 'Date is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                       
+                                        <div class="col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-membroz">
+                                                        <thead>
+                                                            <tr>
+                                                                <th width="20%">
+                                                                    {{getLang('itemname', 'Item Name')}}
+                                                                </th>
+                                                                <th width="20%">
+                                                                    {{getLang('date', 'Date')}}
+                                                                </th>
+                                                                <th width="20%">
+                                                                    {{getLang('status', 'Status')}}
+                                                                </th>
+                                                                <th width="20%">
+                                                                    {{getLang('amount', 'Amount')}}
+                                                                    
+                                                                </th>
+                                                                <th width="20%">
+                                                                    {{getLang('paidamount', 'Paid Amount')}}
+                                                                    
+                                                                </th>
+                                                                <th width="20%" class="text-right">
+                                                                    {{getLang('balance', 'Balance')}}
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let items of itemTbl;let i = index">
+                                                                <td>
+                                                                    {{items?.paymentterms &&
+                                                                    items?.paymentterms?.paymentitem ?
+                                                                    items?.paymentterms?.paymentitem?.paymentitemname :
+                                                                    '---'}}
+                                                                </td>
+                                                                <td>
+                                                                    {{items?.scheduledate | toLocaleDate }}
+                                                                </td>
+                                                                <td>
+                                                                    {{items?.status}}
+                                                                </td>
+                                                                <td>
+                                                                    {{items?.amount}}
+                                                                </td>
+                                                                <td>
+                                                                    {{items?.paidamount}}
+                                                                    
+                                                                </td>
+                                                                <td class="text-right">
+                                                                    {{items?.balance}}
+                                                                </td>
+                                                            </tr>
+                                                            <ng-container *ngIf="!itemTbl || itemTbl.length == 0">
+                                                                <tr colspan="6">
+                                                                    <span> No Item !</span>
+                                                                </tr>
+                                                            </ng-container>
+                                                            
+                                                            <tr>
+                                                                <td colspan="4" class="text-right">
+                                                                    {{getLang('discount', 'Discount')}}
+                                                                </td>
+                                                                <td class="text-right" colspan="2">{{discount}} </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td colspan="4" class="text-right">
+                                                                    {{getLang('tax', 'Tax')}}
+                                                                </td>
+                                                                <td class="text-right" colspan="2">{{taxamount}} </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="4" class="text-right bold">
+                                                                    {{getLang('total', 'Total')}}
+                                                                </td>
+                                                                <td class="text-right bold" colspan="2">
+                                                                    {{(tempgrandtotal)}}
+                                                                </td>
+                                                            </tr>
+                                                            
+                                                            <tr *ngIf="previousrefundamount">
+                                                                <td colspan="4" class="text-right bold">
+                                                                    {{getLang('refundedamnt', 'Refuned Amounts')}}
+                                                                </td>
+                                                                <td class="text-right bold" style="width: 20%;" colspan="2">
+                                                                    {{(previousrefundamount)}}
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td colspan="4" class="text-right bold">Refund amount</td>
+                                                                <td class="text-right bold" colspan="2">
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input type="number" matInput
+                                                                            class="form-control text-right"
+                                                                            formControlName="adjustment" oninput="this.value = Math.abs(this.value)">
+                                                                    </mat-form-field>
+                                                                </td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>                                             
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('notes', 'Notes')}}
+                                            </label>
+                                            <mat-form-field>
+                                                <textarea matInput formControlName="notes"></textarea>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">{{getLang('attachment',
+                                                'Attachment')}}</label>
+                                            <div>
+                                                <img class="loading" src="assets/img/image-loader.GIF"
+                                                    style="height: 100px; width: 100px; display: none">
+                                            </div>
+                                            <div class="btn btn-primary btn-file">
+                                                <label class="upload_button mb-0" for="fileupload"><i
+                                                        class="material-icons">cloud_upload</i>
+                                                    {{getLang('upload', 'Upload')}}
+                                                </label>
+                                                <input formControlName="attachment" type="file" id="fileupload"
+                                                    #fileInput ng2FileSelect [style.display]="'none'"
+                                                    [uploader]="customeUploader" (change)="fileInput.value=''"
+                                                    multiple />
+                                            </div>
+                                            <div class="mt-2">
+                                                <span class="upload-tag badge badge-pill d-flex mb-2"
+                                                    *ngFor="let item of formImageArray">
+                                                    <span class="d-flex flex-grow-1 align-items-center">
+                                                        <i
+                                                            class="material-icons d-flex align-items-center mr-2">link</i>
+                                                        <span (click)="downloadlink(item.attachment)">
+                                                            {{item.originalfilename}}.{{item.extension}}</span>
+                                                    </span>
+                                                    <i class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                                                        (click)="removeImg(item.attachment)">{{getLang('clear',
+                                                        'clear')}}
+                                                    </i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-membroz">
+                                                    <tbody>
+                                                        <tr *ngIf="this.form.get('adjustment').value">
+                                                            <td colspan="4" class="text-right bold">
+                                                                {{getLang('grandtotal', 'Grand Total')}}
+                                                            </td>
+                                                            <td class="text-right bold" colspan="2">
+                                                                {{(grandtotal - previousrefundamount)}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                            <button (click)="this._router.navigate(['/pages/dynamic-list/list/'+ this.formname])" [disabled]="disableButton" class="btn btn-default"
+                                type="button">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+                            <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+                                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>

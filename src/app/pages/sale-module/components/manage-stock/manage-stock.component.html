@@ -1,0 +1,81 @@
+<form [formGroup]="stockform" (ngSubmit)="onSubmit(stockform.value)">
+
+<div class="main-content">
+        <div class="container-fluid">  
+            <div class="row">
+                 <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        STOCK TRIGGER
+                    </h3>
+                 
+                    <div class="card">       
+                    <div class="card-body">             
+                   <div class="material-datatables1">
+                <div class="table-responsive">
+                  <table id="datatables"
+                  class="mat-elevation-z8 w-100 table-hover table-membroz table table-striped"
+                  cellspacing="0" width="100%" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th width="30%">Item Name</th>
+                          <th class="text-center">Category</th>
+                          <th class="text-center">Quantity</th>
+                          <th class="text-center">Unit</th>
+                          <th class="text-center" width="20%">Min Quantity</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let item of inventoriesList">
+                        <td style="text-transform: uppercase"> {{item?.name}}</td>
+                        <td class="text-center"> {{item?.category ? item?.category : '---'}}</td>
+                        <td class="text-center">
+                          {{item?.inventoryqty}}
+                        </td>
+                        <td class="text-center"> {{item?.unit}}</td>
+                        <td><mat-form-field class="example-full-width">
+                            <mat-label></mat-label>
+                            <input style="text-align: center;" matInput type="number"
+                            [(ngModel)]="item.triggerqty"
+                            [ngModelOptions]="{standalone: true}"
+                            placeholder="Min Trigger Quantity" name="minquantity" 
+                            >
+                          </mat-form-field> 
+                         </td>                
+                       </tr>
+                </tbody>
+              </table>
+                </div>
+                
+             
+
+            </div>
+            </div>
+
+</div>
+</div>
+</div>
+            </div>
+        
+            </div>
+            <footer class="footer fixed-bottom bg-white shadow-top">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-sm-12 text-right">
+                      <button class="btn btn-default" 
+                      type="button"
+                      [disabled]="isDisable"
+                      [routerLink]="['/pages/dynamic-list/list/product']">                      
+                      <i class="material-icons">close</i> Cancel
+                      </button>
+                      
+                      <button class="btn btn-primary ml-2"
+                      type="submit"
+                      [disabled]="isDisable">
+                      <i class="material-icons">save</i> Save
+                      </button>
+                    </div>
+                  </div>
+                  </div>
+              </footer>
+            </form>        
+

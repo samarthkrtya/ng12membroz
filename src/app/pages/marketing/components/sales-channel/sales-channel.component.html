@@ -1,0 +1,71 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list [dataContent]="dataContent"
+                    [schema]="formObj.schemaname" [formObj]="formObj"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+                <div fxLayout="row" *ngIf="isLoadingData" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+                <div class="card">
+                    <div class="card-body" *ngIf="dataContent  && !isLoadingData">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h4 class="card-title">
+                                    {{formObj.dispalyformname}} {{getLang('details','Details')}}
+                                </h4>
+                            </div>
+                            <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                <span class="dropdown inline-block text-right ml-2">
+                                    <button class="dropdown-toggle btn btn-primary mrtb0" data-toggle="dropdown">
+                                        {{getLang('more','More')}}
+                                        <b class="caret"></b>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item">
+                                            {{getLang('exportasCSV','Export as CSV')}}
+                                        </a>
+                                    </div>
+                                </span>
+                                <button type="submit" class="btn btn-primary ml-2"
+                                    [routerLink]="['/pages/dynamic-forms/form/' + formObj._id+ '/' + bindId ]">
+                                    <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <app-sales-channel-details [dataContent]="dataContent">
+                                </app-sales-channel-details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <mat-accordion *ngIf="dataContent">
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{getLang('saleschannel','Sales Channel')}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <div fxLayout="row" *ngIf="isLoadingChannel" fxLayoutAlign="space-around center"
+                            style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                            <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                        </div>
+                        <app-sales-channel-hierarchy *ngIf="!isLoadingChannel" [dataContent]="dataContent"
+                            (addedSalesChannel)="addedSalesChannelValue($event)">
+                        </app-sales-channel-hierarchy>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,189 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3 class="card-title">
+                    {{getLang('cashbackterms', 'Cashback Terms')}}
+                </h3>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <span class="dropdown mb-1 d-inline-block">
+                                    <button class="dropdown-toggle btn btn-primary" data-toggle="dropdown"
+                                        [disabled]="disableBtn">
+                                        Add Terms
+                                        <b class="caret"></b>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" 
+                                        *ngIf="categoryList.length !== 0">
+                                      
+                                            <a *ngFor="let opt of categoryList" class="dropdown-item" (click)="addNewOffer(opt)">{{opt?.property?.title ? opt?.property?.title
+                                                : opt?.property?.name ? opt?.property?.name : '---'}} </a>
+                                      
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="loader" *ngIf="isLoadingData">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                    stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+
+
+                        <div class="content form-horizontal" *ngIf="!isLoadingData">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div *ngIf="cashbacktermsList.length > 0">
+                                        <div class="secondary-bg-white-color p-2">
+                                            <div class="row">
+                                                <div
+                                                    class="col-md-2">
+                                                    <label class="mb-0">
+                                                        Category
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">
+                                                        Min (₹)
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">
+                                                        Max (₹)
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">
+                                                        Method
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">
+                                                        Cashback
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-2 text-md-right">
+                                                    <label class="mb-0">
+                                                        Actions
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content form-horizontal">
+                            <ng-container *ngIf="cashbacktermsList.length != 0;else emty">
+                                <div class="row" *ngFor="let item of cashbacktermsList">
+                                    <div class="col-md-12">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-2">
+                                                <label class="col-form-label pl-2" >
+                                                    {{item?.category?.property?.title ?
+                                                    item?.category?.property?.title : item?.category?.property?.name
+                                                    ? item?.category?.property?.name : '---'}}
+                                                </label>
+                                           </div>
+                                            <div class="label-floating is-empty col-md-2">
+                                                <mat-form-field class="example-full-width" appearance="standard">
+                                                    <input id="minamount" type="number" matInput name="minamount"
+                                                        [(ngModel)]="item.minamount" placeholder="Min"
+                                                        [disabled]="item.isEnableEdit" onkeypress="return event.charCode != 45">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="label-floating is-empty col-md-2">
+                                                <mat-form-field class="example-full-width" appearance="standard">
+                                                    <input type="number" matInput name="maxamount"
+                                                        [(ngModel)]="item.maxamount" placeholder="Max"
+                                                        [disabled]="item.isEnableEdit" onkeypress="return event.charCode != 45">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="label-floating is-empty col-md-2">
+                                                <mat-form-field class="example-full-width" appearance="standard">
+                                                    <mat-select [(ngModel)]="item.cashbackmethod" name="method"
+                                                        [disabled]="item.isEnableEdit" placeholder="Choose Method">
+                                                        <mat-option value="Percentage"> Percentage </mat-option>
+                                                        <mat-option value="Fix"> Fix </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="label-floating is-empty col-md-2">
+                                                <mat-form-field class="example-full-width" appearance="standard"
+                                                    *ngIf="item.cashbackmethod == 'Percentage'">
+                                                    <input type="number" matInput name="Cashbackper"
+                                                        [(ngModel)]="item.cashbackper" placeholder="Per (%)"
+                                                        [disabled]="item.isEnableEdit" onkeypress="return event.charCode != 45">
+                                                </mat-form-field>
+                                                <mat-form-field class="example-full-width" appearance="standard"
+                                                    *ngIf="item.cashbackmethod == 'Fix'">
+                                                    <input type="number" matInput name="Cashbackamount"
+                                                        [(ngModel)]="item.cashbackamount" placeholder="Amount"
+                                                        [disabled]="item.isEnableEdit" onkeypress="return event.charCode != 45" >
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="label-floating is-empty col-md-2 text-md-right" >
+
+                                                <button mat-raised-button *ngIf="item.isEnableAdd" type="button"
+                                                    matTooltip="Done" [matTooltipPosition]="'above'"
+                                                    data-original-title="Done"
+                                                    class="btn btn-link btn-primary btn-just-icon edit"
+                                                    (click)="submitTerms(item)" [disabled]="disableBtn">
+                                                    <i class="material-icons">done</i>
+                                                </button>
+
+
+                                                <button mat-raised-button *ngIf="item.isEnableEdit" type="button"
+                                                    matTooltip="Edit" [matTooltipPosition]="'above'"
+                                                    data-original-title="Edit"
+                                                    class="btn btn-link btn-primary btn-just-icon edit"
+                                                    (click)="editTerms(item)" [disabled]="disableBtn">
+                                                    <i class="material-icons">edit</i>
+                                                </button>
+
+
+                                                <button mat-raised-button *ngIf="item.isEnableAdd" type="button"
+                                                    matTooltip="Close" [matTooltipPosition]="'above'"
+                                                    data-original-title="Close"
+                                                    class="btn btn-link btn-primary btn-just-icon edit"
+                                                    (click)="getCashback()" [disabled]="disableBtn">
+                                                    <i class="material-icons">close</i>
+                                                </button>
+
+                                                <button mat-raised-button *ngIf="item.isEnableEdit" type="button"
+                                                    matTooltip="Delete" [matTooltipPosition]="'above'"
+                                                    data-original-title="Delete"
+                                                    class="btn btn-link btn-primary btn-just-icon edit"
+                                                    (click)="onDelete(item)" [disabled]="disableBtn">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-template #emty>
+                                <div class="text-center">
+                                    <h4>
+                                        No cashback terms available !!
+                                    </h4>
+                                </div>
+                            </ng-template>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

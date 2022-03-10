@@ -1,0 +1,10 @@
+<div class="oc-h-bar oc-border" *ngIf="hasManager"></div>
+<div class="oc-box oc-border oc-background" style="cursor: pointer;">
+	
+	<div class="oc-designation oc-bdr-btm">{{salesDesignation?.designation}}-[{{salesDesignation.many == true ? '&#8734;' : 1}}] </div>	
+	<div class="oc-designation" *ngIf="salesDesignation.userList.length == 0"> No User</div>
+	<div class="oc-designation" *ngFor="let us of salesDesignation.userList">{{us.userid != undefined && us.userid.fullname != undefined ? us.userid.fullname : '---'}} 
+		<!-- - [{{us.head != undefined && us.head != null && us.head.fullname != undefined ? us.head.fullname : '---'}}] -->
+	</div>
+</div>
+<div class="oc-h-bar oc-border" *ngIf="salesDesignation?.subordinates.length"></div>

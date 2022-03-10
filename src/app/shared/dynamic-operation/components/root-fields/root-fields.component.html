@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-sm-12">
+    <mat-selection-list class="mat-list-direction-row" *ngIf="rootfieldLists.length !== 0"
+      (selectionChange)="checkUncheckEvent($event)" dragula="ITEMS" [(dragulaModel)]="rootfieldLists">
+      <mat-list-option class="mat-primary" checkboxPosition="before" [selected]="item.display"
+        *ngFor="let item of rootfieldLists" [value]="item.fieldname">
+        <!-- <span style="font-weight: bold" *ngFor="let item2 of item.pfields"> {{item2}} >> </span> -->
+        {{item.displayname ? item.displayname : item.formdisplaytext ? item.formdisplaytext : item.fieldname}}
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-sm-12 text-right">
+    <button class="btn btn-primary" [disabled]="btnDisable" type="button" (click)="updateValue()">
+      <i class="material-icons">save</i> Save
+    </button>
+  </div>
+</div>

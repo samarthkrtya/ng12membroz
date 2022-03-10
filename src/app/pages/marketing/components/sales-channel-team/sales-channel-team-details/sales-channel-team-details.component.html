@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px">
+        <div class="member-img-main position-relative member-profile-img-border">
+            <img [src]="dataContent.profilepic ? dataContent.profilepic : '../assets/img/image_placeholder.jpg'"
+                class="img-fluid w-100" alt="">
+
+            <div class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.salesteamname}}</h3>
+         <div class="row">
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent.teamhead && dataContent.teamhead.fullname">
+                <div class="d-flex align-items-center mb-3" >
+                    <div class="mr-2"> <img src="../assets/img/member-card-gray-icon.svg" alt=""></div>
+                    <div>{{getLang('teamhead','Team Head')}} : 
+                        <span class="brand-secondary">{{ dataContent?.teamhead && dataContent?.teamhead?.fullname ?
+                            (dataContent?.teamhead?.fullname ) : '---'}} </span>
+                    </div>
+                </div>
+            </div>
+        <!--
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-2"> <img src="../assets/img/member-card-gray-icon.svg" alt=""></div>
+                    <div> {{getLang('tenure','Tenure(Month) :')}} <span class="brand-secondary"> {{dataContent?.property &&
+                            dataContent?.property?.tenure ? dataContent?.property?.tenure : '---'}}
+                        </span></div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>

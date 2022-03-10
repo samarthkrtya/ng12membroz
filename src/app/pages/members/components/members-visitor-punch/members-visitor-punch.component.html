@@ -1,0 +1,133 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="card-title">Visitor Checkin</h3>
+                <div class="card">                    
+                    <div class="card-body">
+                        <div class="row payment-container">
+                            <div class="col-xs-12 col-md-6">
+                                <div class="tab-content">
+                                    <div class="panel panel-default credit-card-box">
+                                        <div class="panel-body">
+                                            <div class="">
+                                                <ul class="nav nav-pills nav-pills-warning">
+                                                    <li 
+                                                        class="nav-item"
+                                                        id="cardClick" 
+                                                        (click)="randomValueClick('card')" 
+                                                        [ngClass]="cardEnabled ? 'd-block': 'd-none'">
+                                                        <a href="#pill1" data-toggle="tab" class="nav-link">
+                                                        {{getLang('membrcard', 'MEMBER CARD')}}
+                                                        </a>
+                                                    </li>
+                                                    <li 
+                                                        class="nav-item"
+                                                         (click)="randomValueClick('mobile')" 
+                                                        id="mobileClick" 
+                                                        [ngClass]="mobileEnabled ? 'd-block': 'd-none'">
+                                                        <a href="#pill2" data-toggle="tab" class="nav-link">
+                                                            {{getLang('mobilotp', 'MOBILE OTP')}}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content tab-space">
+                                                    <div 
+                                                        class="tab-pane" 
+                                                        id="pill1" 
+                                                        [ngClass]="cardEnabled ? 'd-block': 'd-none'">
+                                                        <app-checkin
+                                                            [checkindata]="this.data$"
+                                                            *ngIf="cardVisibility"
+                                                            (onAttendanceData)="getSubmittedData($event)">
+                                                        </app-checkin>
+                                                    </div>
+                                                    <div 
+                                                        class="tab-pane" 
+                                                        id="pill2" 
+                                                        [ngClass]="mobileEnabled ? 'd-block': 'd-none'">
+                                                        <app-checkin-otp
+                                                            [checkindata]="this.data$"
+                                                            *ngIf="mobileVisibility"
+                                                            (onAttendanceData)="getSubmittedData($event)">
+                                                        </app-checkin-otp>
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <!-- <div *ngIf="!cardVisibility && !mobileVisibility" class="text-danger">
+                                                    <mat-error> <span class="error-label">No wallet permission found!!! </span> </mat-error>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 pr-xl-0">
+
+                                <div class="card member-profile-card mb-0 mt-0 mt-lg-3 shadow-none" >
+                                    <div class="card-body p-0 member-profile-main">
+                                         <div class="border-bottom p-3">   
+                                             <div class="d-flex">
+
+                                                <mat-form-field
+                                                    class="example-full-width common-search-size w-auto pt-0"
+                                                    appearance="standard" >
+                                                    <span
+                                                        class="input-group-prepend"
+                                                        matPrefix>
+                                                        <span class="input-group-text pl-0">
+                                                            <i class="material-icons">search</i>
+                                                        </span>
+                                                    </span>
+                                                    <input  type="text" matInput name="search" [(ngModel)]="searchText" placeholder="Search" #input>
+                                                    
+                                                </mat-form-field>
+                                             </div>
+                                            
+                                         </div>
+                                         <div [@listAnimation]="data$.length">
+                                            <ng-container *ngFor="let item of obs | async | filter: searchText; let i = index">
+
+                                            <div 
+                                                
+                                                class="media border-bottom p-2 member-profile-item cursor-pointer">
+
+                                                <img [src]="item?.membrozid?.profilepic ? item?.membrozid?.profilepic : '../assets/img/default-avatar.png'" src=""
+                                                class="profile-avatar-img mr-3 rounded-circle" alt="">
+                                                <div class="media-body">
+                                                    <div class="font-500 mb-1"> {{item?.membrozid?.fullname}} </div>
+                                                    <div class="d-flex">
+                                                        <div class="flex-grow-1">  {{item?.membrozid?.membershipid?.membershipname}}</div> 
+                                                        
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        
+                                                        <div class="flex-grow-1">{{item?.membrozid?.status}}</div>
+                                                        <div class="text-danger">
+                                                            <button class="btn btn-danger" (click)="checkout(item)"> Checkout </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            </ng-container>
+
+                                            
+                                
+                                            <div class="text-center">
+                                                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                                                <!-- <button type="button" [disabled]="currentPage == totalPages" class="btn btn-link font-16 mat-raised-button mat-button-base" (click)="loadMore()">Load More</button> -->
+                                            </div>
+                                        </div>
+                                          
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>

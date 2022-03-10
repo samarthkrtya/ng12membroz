@@ -1,0 +1,96 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <ng-container *ngIf="globalFilter">
+          <div class="card mb-0" *ngIf="!isMob">
+            <div class="card-body" *ngIf="!noDashboardPermission">
+              <div class="row" *ngIf="this._authService.auth_role['roletype'] != 'M'">
+                <div class="col-sm-2 col-md-2 text-right" *ngIf="dashboardrows.length != 0 ">
+                  <mat-form-field>
+                    <mat-select name="filter" [(ngModel)]="selectedPeriod"
+                      (selectionChange)="onSelectValue($event.value)">
+                      <mat-option value="ALL">ALL Time </mat-option>
+                      <mat-option value="Today">Today </mat-option>
+                      <mat-option value="Last Week">Last Week </mat-option>
+                      <mat-option value="Last 1 Month">Last 1 Month </mat-option>
+                      <mat-option value="Last 3 Months">Last 3 Months </mat-option>
+                      <mat-option value="Last 6 Months">Last 6 Months </mat-option>
+                      <mat-option value="Last 12 Months">Last 12 Months </mat-option>
+                      <mat-option value="Pick a Date Range">Pick a Date Range </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                  <!-- <p class="mrt10"> All the details on your Dashboard. </p> -->
+                </div>
+                <div class="col-sm-2 col-md-2 text-left">
+                  <!-- <button id="gtmodal" type="submit" role="button" data-toggle="modal" data-target="#getting-started-modal" class="btn btn-primary mr0"> Getting Started </button> -->
+                </div>
+
+              </div>
+              <div class="row" *ngIf="this._authService.auth_role['roletype'] == 'M'">
+
+                <div class="col-sm-10 col-md-10">
+                  <!-- <p class="mrt10"> All the details on your Dashboard. </p> -->
+                </div>
+                <div class="col-sm-2 col-md-2 text-left">
+                  <!-- <button id="gtmodalmember" type="submit" role="button" data-toggle="modal" data-target="#getting-started-modal-member" class="btn btn-primary mr0"> Getting Started </button> -->
+                </div>
+
+              </div>
+
+
+              <div class="row" *ngIf="calendarVisibility == true">
+                <div class="col-sm-3">
+                  <!-- <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" [(ngModel)]="daterangepickermodel"></my-date-range-picker> -->
+                  <mat-form-field>
+                    <mat-date-range-input [rangePicker]="picker">
+                      <input matStartDate [(ngModel)]="daterangepickermodel.beginJsDate" placeholder="Start date"
+                        #dateRangeStart>
+                      <input #dateRangeEnd (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)" matEndDate
+                        [(ngModel)]="daterangepickermodel.endJsDate" placeholder="End date">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-2">
+                  <button class="btn btn-primary" (click)="submitDateRange()"> <i class="material-icons">assignment</i>
+                    Submit</button>
+                </div>
+                <div class="col-sm-7"></div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <app-dashboard-row 
+          [dataparam]="dateParams" 
+          [rows]="dashboardrows"
+          *ngIf="!noDashboardPermission && !isdataLoading"> 
+        </app-dashboard-row>
+        
+        <div class="card mrt0" *ngIf="noDashboardPermission">
+          <div class="card-content">
+            <div class="row">
+              <div class="col-sm-12">
+                <h4 class="mrt10 text-center"> No Dashboard Permission </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="card mrt0" *ngIf="dashboardrows.length == 0 && !isRoleInfoLoading"> -->
+        <div class="card mrt0" *ngIf="dashboardrows.length == 0 && !noDashboardPermission">
+          <div class="card-content">
+            <div class="row">
+              <div class="col-sm-12">
+                <h4 class="mrt10 text-center"> No Dashboard Data </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

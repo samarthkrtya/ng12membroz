@@ -1,0 +1,1663 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="row" *ngIf="!isPermission">
+                    <!-- d-none-->
+                    <div class="col-md-6 col-lg-6 col-xl-5 ml-auto d-flex align-items-center flex-column mb-5 mb-md-0">
+                        <h1 class="error-page-head">403</h1>
+                        <div class="error-page-head-2 mb-2">Access Denied</div>
+                        <div class="mb-3 text-center">You don't have permission to access the page</div>
+                        <a href="#" class="btn btn-primary">Go Back</a>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-5 mr-auto d-flex align-items-center justify-content-center">
+                        <img src="assets/img/403.svg" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-12" *ngIf="isPermission">
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">Attendance</h3>
+                    <ng-container *ngIf="!deleteButton">
+                    <div class="">
+                        <button class="btn btn-primary ml-2" type="button" *ngIf="!displayDeleteButton "
+                            (click)="onClickDeleteAttendance()">
+                            {{ langResource['deleteattendance'] ? langResource['deleteattendance'] : 'Delete Attendance'}}
+                        </button>
+                    </div>
+                    <div class="">
+                        <button class="btn btn-primary ml-2" type="button" *ngIf="displayOnDeleteCheck"
+                            (click)="onDeleteMassAttendance()">
+                            {{ langResource['deleteattendance'] ? langResource['deleteattendance'] : 'Delete Mass Attendance'}}
+                        </button>
+                    </div>
+                    <div class="">
+                        <button class="btn btn-primary ml-2" type="button" *ngIf="displayDeleteButton"
+                            (click)="onCancelDeleteAttendance()">
+                            {{ langResource['massattendance'] ? langResource['massattendance'] : 'Cancel Delete
+                            Attendance'}}
+                        </button>
+                    </div>
+                    </ng-container>
+                    <ng-container *ngIf="!addButton">
+                    <div class="">
+                        <button class="btn btn-primary ml-2" type="button" *ngIf="!displayCheckbox"
+                            (click)="onClickMassAttendance()">
+                            {{ langResource['massattendance'] ? langResource['massattendance'] : 'Mass Attendance'}}
+                        </button>
+                    </div>
+                    <div class="">
+                        <button class="btn btn-primary ml-2" type="button" data-toggle="modal"
+                            data-target="#attendanceModal" *ngIf="displayOnCheck">
+                            {{ langResource['addattendance'] ? langResource['addattendance'] : 'Add Mass Attendance'}}
+                        </button>
+                    </div>
+                    <div class="">
+                        <button class="btn btn-primary ml-2" type="button" *ngIf="displayCheckbox"
+                            (click)="onCancelMassAttendance()">
+                            {{ langResource['massattendance'] ? langResource['massattendance'] : 'Cancel Mass
+                            Attendance'}}
+                        </button>
+                    </div>
+                    </ng-container>
+                    <!-- <div class="">
+                        <button class="btn btn-primary ml-2" type="button" [routerLink]="['/pages/import/5c39cc933ed32610b098fac4']">
+                            {{   langResource['import'] ? langResource['import'] : 'Import Attendance'}}
+                        </button>
+                    </div> -->
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-3">
+                                        <div class="mb-md-0 mb-3">
+                                            <mat-button-toggle-group #group="matButtonToggleGroup">
+                                                <mat-button-toggle value="Week" (change)="onValChange($event.value)"
+                                                    checked="true">Week</mat-button-toggle>
+                                                <mat-button-toggle value="Month" (change)="onValChange($event.value)">
+                                                    Month</mat-button-toggle>
+                                            </mat-button-toggle-group>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 text-md-right">
+                                        <span
+                                            class="attend-text-green font-weight-bold attend-working-box mb-lg-0 mb-3">Working
+                                            Days </span> <span
+                                            class="ml-md-3 ml-1 attend-text-orange font-weight-bold attend-holiday-box mb-lg-0 mb-3">Holiday
+                                            & Weekend days </span> <span
+                                            class="ml-md-3 ml-1 attend-text-red font-weight-bold attend-absent-box mb-lg-0 mb-3">Absent
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="row" *ngIf="group.value=='Week'">
+                                    <div class="col-md-12">
+
+                                        <div class="row mb-1">
+
+                                            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6" >
+                                                
+                                                <mat-form-field class="example-full-width" appearance="standard">
+                                                    <span class="input-group-prepend" matPrefix>
+                                                          <i class="material-icons">search</i>&nbsp;&nbsp;&nbsp;
+                                                      </span>
+
+                                                <input 
+                                                placeholder="Search Staff"
+                                                 type="text"
+                                                aria-label="Number" matInput 
+                                                [formControl]="myControl1" 
+                                                [matAutocomplete]="auto"
+                                                (click)="preloaddata()" 
+                                                (keyup.enter)="enter()"
+                                                (change)="handleEmptyInput($event)">
+                                              <mat-autocomplete #auto="matAutocomplete" 
+                                              [displayWith]="displayFn"
+                                              (optionSelected)="optionSelected($event.option)">
+                                                <mat-option *ngIf="isLoading" class="is-loading">
+                                                  <mat-spinner diameter="50"></mat-spinner>
+                                                </mat-option>
+                                                <ng-container *ngIf="!isLoading && userData.length > 0">
+                  
+                                                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option.fullname">
+                                                
+                                                        {{option.fullname}}
+                                                    
+                                                  </mat-option>
+                                                </ng-container>
+                                              </mat-autocomplete>
+                  
+                  
+                                            </mat-form-field>
+                                            
+                                            </div>
+                                            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+                                                </div>
+                                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                                                <form [formGroup]="staffFormGroup">
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Staff" name="staff" multiple
+                                                            formControlName="staff">
+                                                            <app-mat-option-select-all></app-mat-option-select-all>
+                                                            <mat-option *ngFor="let item of userData"
+                                                                [value]="item._id"> {{item.fullname}} </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </form>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-5 col-md-6 col-sm-6 ml-auto">
+
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-label>Select Week</mat-label>
+                                                    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                                        <input matStartDate formControlName="start"
+                                                            (dateChange)="startDateSelection()">
+                                                        <input matEndDate formControlName="end"
+                                                            (dateChange)="endDateSelection()">
+                                                    </mat-date-range-input>
+                                                    <mat-datepicker-toggle matSuffix [for]="picker">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-date-range-picker #picker></mat-date-range-picker>
+                                                </mat-form-field>
+
+                                            </div>
+                                        </div>
+
+                                        <div fxLayout="row" *ngIf="!calendarVisibility"
+                                            fxLayoutAlign="space-around center"
+                                            style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                                            <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                                        </div>
+                                        <div class="table-responsive table-scroll" *ngIf="calendarVisibility">
+                                            <table class="table table-bordered table-membroz table-attendance">
+
+                                                <thead>
+                                                    <tr>
+                                                        <th>Employee Name </th>
+                                                        <th>Designation</th>
+                                                        <!-- <th>Designation </th> -->
+                                                        <ng-container *ngFor="let i of daysInRange">
+                                                            <th style="text-align: center;">
+                                                                {{i.date}}
+                                                            </th>
+                                                        </ng-container>
+                                                        <th>Total </th>
+                                                    </tr>
+                                                    <!-- <tr>
+                                                        <td>Designation</td>
+                                                        <ng-container *ngFor="let u of attendanceArrayWeek">
+                                                            <td style="text-align: center;">{{u.designation}}</td>
+                                                        </ng-container>
+                                                    </tr> -->
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let u of attendanceArrayWeek;let j=index">
+                                                        <td>{{u.fullname}}</td>
+                                                        <td>{{u.designation}}</td>
+                                                        <td
+                                                            [ngClass]="{'working-bg' : u.day1.type==='workingday', 'absent-bg' : u.day1.type=='Absent', 'holiday-bg' : u.day1.type=='Holiday'}">
+                                                            <a data-toggle="modal" data-target="#myModal"
+                                                                (click)="onClick(u.id, u.fullname, u.day1)">
+                                                                <div *ngIf="u.day1.type==='workingday'"
+                                                                    style="text-align: center;">{{u.day1.checkin}} -
+                                                                    {{u.day1.checkout}}</div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day1.type==='workingday'">
+                                                                    {{u.day1.workhours}} </div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day1.type!='workingday'">-</div>
+                                                            </a>
+                                                            <div style="float: right;" *ngIf="displayCheckbox">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day1.type==='Absent'">
+                                                                    <mat-checkbox (click)="onChecked(u.day1)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                            <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day1.type==='workingday'">
+                                                                    <mat-checkbox (click)="onDelete(u.day1)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            [ngClass]="{'working-bg' : u.day2.type==='workingday', 'absent-bg' : u.day2.type=='Absent', 'holiday-bg' : u.day2.type=='Holiday'}">
+                                                            <a data-toggle="modal" data-target="#myModal"
+                                                                (click)="onClick(u.id, u.fullname, u.day2)">
+                                                                <div *ngIf="u.day2.type==='workingday'"
+                                                                    style="text-align: center;">{{u.day2.checkin}} -
+                                                                    {{u.day2.checkout}}</div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day2.type==='workingday'">
+                                                                    {{u.day2.workhours}} </div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day2.type!='workingday'">-</div>
+                                                            </a>
+                                                            <div style="float: right;" *ngIf="displayCheckbox">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day2.type==='Absent'">
+                                                                    <mat-checkbox (click)="onChecked(u.day2)">
+                                                                    </mat-checkbox>
+                                                                </section>
+                                                            </div>
+                                                            <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day2.type==='workingday'">
+                                                                    <mat-checkbox (click)="onDelete(u.day2)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            [ngClass]="{'working-bg' : u.day3.type==='workingday', 'absent-bg' : u.day3.type=='Absent', 'holiday-bg' : u.day3.type=='Holiday'}">
+                                                            <a data-toggle="modal" data-target="#myModal"
+                                                                (click)="onClick(u.id, u.fullname, u.day3)">
+                                                                <div *ngIf="u.day3.type==='workingday'"
+                                                                    style="text-align: center;">{{u.day3.checkin}} -
+                                                                    {{u.day3.checkout}}</div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day3.type==='workingday'">
+                                                                    {{u.day3.workhours}} </div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day3.type!='workingday'">-</div>
+                                                            </a>
+                                                            <div style="float: right;" *ngIf="displayCheckbox">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day3.type==='Absent'">
+                                                                    <mat-checkbox (click)="onChecked(u.day3)">
+                                                                    </mat-checkbox>
+                                                                </section>
+                                                            </div>
+                                                            <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day3.type==='workingday'">
+                                                                    <mat-checkbox (click)="onDelete(u.day3)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            [ngClass]="{'working-bg' : u.day4.type==='workingday', 'absent-bg' : u.day4.type=='Absent', 'holiday-bg' : u.day4.type=='Holiday'}">
+                                                            <a data-toggle="modal" data-target="#myModal"
+                                                                (click)="onClick(u.id, u.fullname, u.day4)">
+                                                                <div *ngIf="u.day4.type==='workingday'"
+                                                                    style="text-align: center;">{{u.day4.checkin}} -
+                                                                    {{u.day4.checkout}}</div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day4.type==='workingday'">
+                                                                    {{u.day4.workhours}} </div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day4.type!='workingday'">-</div>
+                                                            </a>
+                                                            <div style="float: right;" *ngIf="displayCheckbox">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day4.type==='Absent'">
+                                                                    <mat-checkbox (click)="onChecked(u.day4)">
+                                                                    </mat-checkbox>
+                                                                </section>
+                                                            </div>
+                                                            <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day4.type==='workingday'">
+                                                                    <mat-checkbox (click)="onDelete(u.day4)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            [ngClass]="{'working-bg' : u.day5.type==='workingday', 'absent-bg' : u.day5.type=='Absent', 'holiday-bg' : u.day5.type=='Holiday'}">
+                                                            <a data-toggle="modal" data-target="#myModal"
+                                                                (click)="onClick(u.id, u.fullname, u.day5)">
+                                                                <div *ngIf="u.day5.type==='workingday'"
+                                                                    style="text-align: center;">{{u.day5.checkin}} -
+                                                                    {{u.day5.checkout}}</div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day5.type==='workingday'">
+                                                                    {{u.day5.workhours}} </div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day5.type!='workingday'">-</div>
+                                                            </a>
+                                                            <div style="float: right;" *ngIf="displayCheckbox">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day5.type==='Absent'">
+                                                                    <mat-checkbox (click)="onChecked(u.day5)">
+                                                                    </mat-checkbox>
+                                                                </section>
+                                                            </div>
+                                                            <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day5.type==='workingday'">
+                                                                    <mat-checkbox (click)="onDelete(u.day5)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            [ngClass]="{'working-bg' : u.day6.type==='workingday', 'absent-bg' : u.day6.type=='Absent', 'holiday-bg' : u.day6.type=='Holiday'}">
+                                                            <a data-toggle="modal" data-target="#myModal"
+                                                                (click)="onClick(u.id, u.fullname, u.day6)">
+                                                                <div *ngIf="u.day6.type==='workingday'"
+                                                                    style="text-align: center;">{{u.day6.checkin}} -
+                                                                    {{u.day6.checkout}}</div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day6.type==='workingday'">
+                                                                    {{u.day6.workhours}} </div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day6.type!='workingday'">-</div>
+                                                            </a>
+                                                            <div style="float: right;" *ngIf="displayCheckbox">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day6.type==='Absent'">
+                                                                    <mat-checkbox (click)="onChecked(u.day6)">
+                                                                    </mat-checkbox>
+                                                                </section>
+                                                            </div>
+                                                            <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day6.type==='workingday'">
+                                                                    <mat-checkbox (click)="onDelete(u.day6)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            [ngClass]="{'working-bg' : u.day7.type==='workingday', 'absent-bg' : u.day7.type=='Absent', 'holiday-bg' : u.day7.type=='Holiday'}">
+                                                            <a data-toggle="modal" data-target="#myModal"
+                                                                (click)="onClick(u.id, u.fullname, u.day7)">
+                                                                <div *ngIf="u.day7.type==='workingday'"
+                                                                    style="text-align: center;">{{u.day7.checkin}} -
+                                                                    {{u.day7.checkout}}</div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day7.type==='workingday'">
+                                                                    {{u.day7.workhours}} </div>
+                                                                <div style="text-align: center;"
+                                                                    *ngIf="u.day7.type!='workingday'">-</div>
+                                                            </a>
+                                                            <div style="float: right;" *ngIf="displayCheckbox">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day7.type==='Absent'">
+                                                                    <mat-checkbox (click)="onChecked(u.day7)">
+                                                                    </mat-checkbox>
+                                                                </section>
+                                                            </div>
+                                                            <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                <section class="example-section row"
+                                                                    *ngIf="u.day7.type==='workingday'">
+                                                                    <mat-checkbox (click)="onDelete(u.day7)">
+                                                                    </mat-checkbox>
+                                                                  
+                                                                </section>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>Present {{u.totalPresent}} / Hours {{u.workingHours}}
+                                                            </div>
+                                                            <div>Absent {{u.absentDays}} </div>
+                                                        </td>
+                                                        <!-- <td *ngFor="let u of attendanceArrayWeek"
+                                                            style="text-align: center;">
+                                                            <div>
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day1)" >
+                                                                    <div [ngClass]="{'working-bg' : u.day1.type==='workingday', 'absent-bg' : u.day1.type=='Absent', 'holiday-bg' : u.day1.type === 'Holiday'}"
+                                                                        *ngIf="j==0"> {{u.day1.checkin}} -
+                                                                        {{u.day1.checkout}}<div
+                                                                            *ngIf="u.day1.type==='workingday'">
+                                                                            {{u.day1.workhours}} </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day2)">
+                                                                    <div [ngClass]="{'working-bg' : u.day2.type==='workingday', 'absent-bg' : u.day2.type=='Absent', 'holiday-bg' : u.day2.type === 'Holiday'}"
+                                                                        *ngIf="j==1"> {{u.day2.checkin}} -
+                                                                        {{u.day2.checkout}}<div
+                                                                            *ngIf="u.day2.type==='workingday'">
+                                                                            {{u.day2.workhours}} </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day3)">
+                                                                    <div [ngClass]="{'working-bg' : u.day3.type==='workingday', 'absent-bg' : u.day3.type=='Absent', 'holiday-bg' : u.day3.type === 'Holiday'}"
+                                                                        *ngIf="j==2"> {{u.day3.checkin}} -
+                                                                        {{u.day3.checkout}}<div
+                                                                            *ngIf="u.day3.type==='workingday'">
+                                                                            {{u.day3.workhours}} </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day4)">
+                                                                    <div [ngClass]="{'working-bg' : u.day4.type==='workingday', 'absent-bg' : u.day4.type=='Absent', 'holiday-bg' : u.day4.type === 'Holiday'}"
+                                                                        *ngIf="j==3"> {{u.day4.checkin}} -
+                                                                        {{u.day4.checkout}}<div
+                                                                            *ngIf="u.day4.type==='workingday'">
+                                                                            {{u.day4.workhours}} </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day5)">
+                                                                    <div [ngClass]="{'working-bg' : u.day5.type==='workingday', 'absent-bg' : u.day5.type=='Absent', 'holiday-bg' : u.day5.type === 'Holiday'}"
+                                                                        *ngIf="j==4"> {{u.day5.checkin}} -
+                                                                        {{u.day5.checkout}}<div
+                                                                            *ngIf="u.day5.type==='workingday'">
+                                                                            {{u.day5.workhours}} </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day6)">
+                                                                    <div [ngClass]="{'working-bg' : u.day6.type==='workingday', 'absent-bg' : u.day6.type=='Absent', 'holiday-bg' : u.day6.type === 'Holiday'}"
+                                                                        *ngIf="j==5"> {{u.day6.checkin}} -
+                                                                        {{u.day6.checkout}}<div
+                                                                            *ngIf="u.day6.type==='workingday'">
+                                                                            {{u.day6.workhours}} </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day7)">
+                                                                    <div [ngClass]="{'working-bg' : u.day7.type==='workingday', 'absent-bg' : u.day7.type=='Absent', 'holiday-bg' : u.day7.type === 'Holiday'}"
+                                                                        *ngIf="j==6"> {{u.day7.checkin}} -
+                                                                        {{u.day7.checkout}}<div
+                                                                            *ngIf="u.day7.type==='workingday'">
+                                                                            {{u.day7.workhours}} </div>
+                                                                    </div>
+                                                                </a>
+                                                                <div style="float: right;"  *ngIf="displayCheckbox">
+                                                                    <section class="example-section row" *ngIf="u.day1.type==='Absent' && j==0">
+                                                                            <mat-checkbox  (click)="onChecked(u.day1)"></mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;"  *ngIf="displayCheckbox">
+                                                                    <section class="example-section row" *ngIf="u.day2.type==='Absent' && j==1">
+                                                                            <mat-checkbox  (click)="onChecked(u.day2)"></mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;"  *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"  *ngIf="u.day3.type==='Absent' && j==2">
+                                                                            <mat-checkbox (click)="onChecked(u.day3)"></mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;"  *ngIf="displayCheckbox">
+                                                                    <section class="example-section row" *ngIf="u.day4.type==='Absent' && j==3">
+                                                                            <mat-checkbox  (click)="onChecked(u.day4)"></mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;"  *ngIf="displayCheckbox">
+                                                                    <section class="example-section row" *ngIf="u.day5.type==='Absent' && j==4">
+                                                                            <mat-checkbox  (click)="onChecked(u.day5)"></mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;"  *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"  *ngIf="u.day6.type==='Absent' && j==5">
+                                                                            <mat-checkbox  (click)="onChecked(u.day6)"></mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;"  *ngIf="displayCheckbox">
+                                                                    <section class="example-section row" *ngIf="u.day7.type==='Absent' && j==6" >
+                                                                            <mat-checkbox (click)="onChecked(u.day7)"></mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </td> -->
+
+                                                    </tr>
+                                                    <!-- <tr>
+                                                        <td>Total</td>
+                                                        <td *ngFor="let u of attendanceArrayWeek">
+                                                            <div>Present {{u.totalPresent}} / Hours {{u.workingHours}}
+                                                            </div>
+                                                            <div>Absent {{u.absentDays}} </div>
+                                                        </td>
+                                                    </tr> -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" *ngIf="group.value=='Month'">
+                                    <div class="col-md-12">
+
+                                        <div class="row mb-1">
+                                            <!-- <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6" >
+                                                
+                                                <mat-form-field class="example-full-width w-auto pt-0 nav-search-size" appearance="standard">
+                                                    <span class="input-group-prepend" matPrefix>
+                                                          <i class="material-icons">search</i>&nbsp;&nbsp;&nbsp;
+                                                      </span>
+
+                                                <input placeholder="Search Staff" type="text"
+                                                aria-label="Number" matInput
+                                                 [formControl]="myControl2"
+                                                  [matAutocomplete]="auto"
+                                                (click)="preloaddata()"  (keyup.enter)="enter1()" (change)="handleEmptyInput1($event)">
+                                              <mat-autocomplete #auto="matAutocomplete" 
+                                              (optionSelected)="optionSelected1($event.option)"
+                                               [displayWith]="displayFn1">
+                                                <mat-option *ngIf="isLoading" class="is-loading">
+                                                  <mat-spinner diameter="50"></mat-spinner>
+                                                </mat-option>
+                                                <ng-container *ngIf="!isLoading && userData.length > 0">
+                                                  <mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.fullname">
+                                                        {{option.fullname}}
+                                                  </mat-option>
+                                                </ng-container>
+                                              </mat-autocomplete>
+                  
+                  
+                                            </mat-form-field>
+                                           
+                                            </div> -->
+
+                                            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+                                                <form [formGroup]="staffMonthlyFormGroup">
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Staff" name="staff" multiple
+                                                            formControlName="staff">
+                                                            <app-mat-option-select-all></app-mat-option-select-all>
+                                                            <mat-option *ngFor="let item of userData"
+                                                                [value]="item._id"> {{item.fullname}} </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </form>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-5 col-md-6 col-sm-6 ml-auto">
+
+                                                <mat-form-field dateFormat1>
+                                                    <mat-label>Select Month</mat-label>
+                                                    <input matInput [matDatepicker]="dp" [formControl]="date1">
+                                                    <mat-datepicker-toggle matSuffix [for]="dp">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #dp startView="multi-year"
+                                                        (yearSelected)="chosenYearHandler($event,$event)"
+                                                        (monthSelected)="chosenMonthHandler($event,$event, dp)"
+                                                        panelClass="example-month-picker">
+                                                    </mat-datepicker>
+                                                </mat-form-field>
+
+                                            </div>
+                                        </div>
+
+
+
+                                        <div fxLayout="row" *ngIf="!calendarVisibility"
+                                            fxLayoutAlign="space-around center"
+                                            style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                                            <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                                        </div>
+                                        <div class="table-responsive table-scroll" *ngIf="calendarVisibility">
+                                            <table class="table table-bordered table-membroz table-attendance">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Employee Name </th>
+                                                        <th>Designation </th>
+                                                        <th *ngFor="let i of daysInMonth">{{i.date}}</th>
+                                                        <th>Total </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container>
+                                                        <tr *ngFor="let u of attendanceArray">
+                                                            <td>{{u.fullname}}</td>
+                                                            <td>{{u.designation}}</td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day1.type==='workingday', 'absent-bg' : u.day1.type=='Absent', 'holiday-bg' : u.day1.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day1)">
+                                                                    <div *ngIf="u.day1.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day1.checkin}} -
+                                                                        {{u.day1.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day1.type==='workingday'">
+                                                                        {{u.day1.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day1.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day1.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day1)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day1.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day1)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day2.type==='workingday', 'absent-bg' : u.day2.type=='Absent', 'holiday-bg' : u.day2.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day2)">
+                                                                    <div *ngIf="u.day2.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day2.checkin}} -
+                                                                        {{u.day2.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day2.type==='workingday'">
+                                                                        {{u.day2.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day2.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day2.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day2)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day2.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day2)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day3.type==='workingday', 'absent-bg' : u.day3.type=='Absent', 'holiday-bg' : u.day3.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day3)">
+                                                                    <div *ngIf="u.day3.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day3.checkin}} -
+                                                                        {{u.day3.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day3.type==='workingday'">
+                                                                        {{u.day3.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day3.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day3.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day3)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day3.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day3)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day4.type==='workingday', 'absent-bg' : u.day4.type=='Absent', 'holiday-bg' : u.day4.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day4)">
+                                                                    <div *ngIf="u.day4.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day4.checkin}} -
+                                                                        {{u.day4.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day4.type==='workingday'">
+                                                                        {{u.day4.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day4.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day4.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day4)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day4.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day4)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day5.type==='workingday', 'absent-bg' : u.day5.type=='Absent', 'holiday-bg' : u.day5.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day5)">
+                                                                    <div *ngIf="u.day5.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day5.checkin}} -
+                                                                        {{u.day5.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day5.type==='workingday'">
+                                                                        {{u.day5.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day5.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day5.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day5)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day5.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day5)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day6.type==='workingday', 'absent-bg' : u.day6.type=='Absent', 'holiday-bg' : u.day6.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day6)">
+                                                                    <div *ngIf="u.day6.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day6.checkin}} -
+                                                                        {{u.day6.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day6.type==='workingday'">
+                                                                        {{u.day6.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day6.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day6.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day6)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day6.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day6)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day7.type==='workingday', 'absent-bg' : u.day7.type=='Absent', 'holiday-bg' : u.day7.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day7)">
+                                                                    <div *ngIf="u.day7.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day7.checkin}} -
+                                                                        {{u.day7.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day7.type==='workingday'">
+                                                                        {{u.day7.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day7.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day7.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day7)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day7.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day7)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day8.type==='workingday', 'absent-bg' : u.day8.type=='Absent', 'holiday-bg' : u.day8.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day8)">
+                                                                    <div *ngIf="u.day8.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day8.checkin}} -
+                                                                        {{u.day8.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day8.type==='workingday'">
+                                                                        {{u.day8.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day8.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day8.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day8)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day8.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day8)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day9.type==='workingday', 'absent-bg' : u.day9.type=='Absent', 'holiday-bg' : u.day9.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day9)">
+                                                                    <div *ngIf="u.day9.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day9.checkin}} -
+                                                                        {{u.day9.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day9.type==='workingday'">
+                                                                        {{u.day9.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day9.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day9.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day9)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day9.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day9)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day10.type==='workingday', 'absent-bg' : u.day10.type=='Absent', 'holiday-bg' : u.day10.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day10)">
+                                                                    <div *ngIf="u.day10.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day10.checkin}}
+                                                                        - {{u.day10.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day10.type==='workingday'">
+                                                                        {{u.day10.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day10.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day10.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day10)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day10.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day10)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day11.type==='workingday', 'absent-bg' : u.day11.type=='Absent', 'holiday-bg' : u.day11.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day11)">
+                                                                    <div *ngIf="u.day11.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day11.checkin}}
+                                                                        - {{u.day11.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day11.type==='workingday'">
+                                                                        {{u.day11.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day11.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day11.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day11)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day11.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day11)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day12.type==='workingday', 'absent-bg' : u.day12.type=='Absent', 'holiday-bg' : u.day12.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day12)">
+                                                                    <div *ngIf="u.day12.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day12.checkin}}
+                                                                        - {{u.day12.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day12.type==='workingday'">
+                                                                        {{u.day12.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day12.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day12.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day12)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day12.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day12)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day13.type==='workingday', 'absent-bg' : u.day13.type=='Absent', 'holiday-bg' : u.day13.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day13)">
+                                                                    <div *ngIf="u.day13.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day13.checkin}}
+                                                                        - {{u.day13.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day13.type==='workingday'">
+                                                                        {{u.day13.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day13.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day13.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day13)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day13.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day13)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day14.type==='workingday', 'absent-bg' : u.day14.type=='Absent', 'holiday-bg' : u.day14.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day14)">
+                                                                    <div *ngIf="u.day14.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day14.checkin}}
+                                                                        - {{u.day14.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day14.type==='workingday'">
+                                                                        {{u.day14.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day14.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day14.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day14)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day14.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day14)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day15.type==='workingday', 'absent-bg' : u.day15.type=='Absent', 'holiday-bg' : u.day15.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day15)">
+                                                                    <div *ngIf="u.day15.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day15.checkin}}
+                                                                        - {{u.day15.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day15.type==='workingday'">
+                                                                        {{u.day15.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day15.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day15.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day15)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day15.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day15)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day16.type==='workingday', 'absent-bg' : u.day16.type=='Absent', 'holiday-bg' : u.day16.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day16)">
+                                                                    <div *ngIf="u.day16.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day16.checkin}}
+                                                                        - {{u.day16.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day16.type==='workingday'">
+                                                                        {{u.day16.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day16.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day16.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day16)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day16.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day16)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day17.type==='workingday', 'absent-bg' : u.day17.type=='Absent', 'holiday-bg' : u.day17.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day17)">
+                                                                    <div *ngIf="u.day17.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day17.checkin}}
+                                                                        - {{u.day17.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day17.type==='workingday'">
+                                                                        {{u.day17.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day17.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day17.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day17)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day17.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day17)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day18.type==='workingday', 'absent-bg' : u.day18.type=='Absent', 'holiday-bg' : u.day18.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day18)">
+                                                                    <div *ngIf="u.day18.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day18.checkin}}
+                                                                        - {{u.day18.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day18.type==='workingday'">
+                                                                        {{u.day18.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day18.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day18.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day18)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day18.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day18)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day19.type==='workingday', 'absent-bg' : u.day19.type=='Absent', 'holiday-bg' : u.day19.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day19)">
+                                                                    <div *ngIf="u.day19.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day19.checkin}}
+                                                                        - {{u.day19.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day19.type==='workingday'">
+                                                                        {{u.day19.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day19.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day19.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day19)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day19.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day19)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day20.type==='workingday', 'absent-bg' : u.day20.type=='Absent', 'holiday-bg' : u.day20.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day20)">
+                                                                    <div *ngIf="u.day20.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day20.checkin}}
+                                                                        - {{u.day20.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day20.type==='workingday'">
+                                                                        {{u.day20.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day20.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day20.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day20)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day20.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day20)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day21.type==='workingday', 'absent-bg' : u.day21.type=='Absent', 'holiday-bg' : u.day21.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day21)">
+                                                                    <div *ngIf="u.day21.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day21.checkin}}
+                                                                        - {{u.day21.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day21.type==='workingday'">
+                                                                        {{u.day21.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day21.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day21.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day21)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day21.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day21)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day22.type==='workingday', 'absent-bg' : u.day22.type=='Absent', 'holiday-bg' : u.day22.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day22)">
+                                                                    <div *ngIf="u.day22.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day22.checkin}}
+                                                                        - {{u.day22.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day22.type==='workingday'">
+                                                                        {{u.day22.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day22.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day22.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day22)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day22.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day22)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day23.type==='workingday', 'absent-bg' : u.day23.type=='Absent', 'holiday-bg' : u.day23.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day23)">
+                                                                    <div *ngIf="u.day23.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day23.checkin}}
+                                                                        - {{u.day23.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day23.type==='workingday'">
+                                                                        {{u.day23.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day23.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day23.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day23)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day23.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day23)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day24.type==='workingday', 'absent-bg' : u.day24.type=='Absent', 'holiday-bg' : u.day24.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day24)">
+                                                                    <div *ngIf="u.day24.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day24.checkin}}
+                                                                        - {{u.day24.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day24.type==='workingday'">
+                                                                        {{u.day24.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day24.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day24.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day24)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day24.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day24)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day25.type==='workingday', 'absent-bg' : u.day25.type=='Absent', 'holiday-bg' : u.day25.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day25)">
+                                                                    <div *ngIf="u.day25.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day25.checkin}}
+                                                                        - {{u.day25.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day25.type==='workingday'">
+                                                                        {{u.day25.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day25.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day25.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day25)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day25.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day25)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day26.type==='workingday', 'absent-bg' : u.day26.type=='Absent', 'holiday-bg' : u.day26.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day26)">
+                                                                    <div *ngIf="u.day26.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day26.checkin}}
+                                                                        - {{u.day26.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day26.type==='workingday'">
+                                                                        {{u.day26.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day26.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day26.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day26)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day26.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day26)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                [ngClass]="{'working-bg' : u.day27.type==='workingday', 'absent-bg' : u.day27.type=='Absent', 'holiday-bg' : u.day27.type=='Holiday'}">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day27)">
+                                                                    <div *ngIf="u.day27.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day27.checkin}}
+                                                                        - {{u.day27.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day27.type==='workingday'">
+                                                                        {{u.day27.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day27.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day27.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day27)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day27.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day27)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td [ngClass]="{'working-bg' : u.day28.type==='workingday', 'absent-bg' : u.day28.type=='Absent', 'holiday-bg' : u.day28.type=='Holiday'}"
+                                                                *ngIf="daysInMonth.length==28 || daysInMonth.length>28">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day28)">
+                                                                    <div *ngIf="u.day28.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day28.checkin}}
+                                                                        - {{u.day28.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day28.type==='workingday'">
+                                                                        {{u.day28.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day28.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day28.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day28)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day28.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day28)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td [ngClass]="{'working-bg' : u.day29.type==='workingday', 'absent-bg' : u.day29.type=='Absent', 'holiday-bg' : u.day29.type=='Holiday'}"
+                                                                *ngIf="daysInMonth.length==29 || daysInMonth.length>29">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day29)">
+                                                                    <div *ngIf="u.day29.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day29.checkin}}
+                                                                        - {{u.day29.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day29.type==='workingday'">
+                                                                        {{u.day29.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day29.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day29.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day29)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day29.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day29)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td [ngClass]="{'working-bg' : u.day30.type==='workingday', 'absent-bg' : u.day30.type=='Absent', 'holiday-bg' : u.day30.type=='Holiday'}"
+                                                                *ngIf="daysInMonth.length==30 || daysInMonth.length>30">
+                                                                <a data-toggle="modal" data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day30)">
+                                                                    <div *ngIf="u.day30.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day30.checkin}}
+                                                                        - {{u.day30.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day30.type==='workingday'">
+                                                                        {{u.day30.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day30.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day30.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day30)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day30.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day30)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+                                                            <td [ngClass]="{'working-bg' : u.day31.type==='workingday', 'absent-bg' : u.day31.type=='Absent', 'holiday-bg' : u.day31.type=='Holiday'}"
+                                                                *ngIf="daysInMonth.length==31"><a data-toggle="modal"
+                                                                    data-target="#myModal"
+                                                                    (click)="onClick(u.id, u.fullname, u.day31)">
+                                                                    <div *ngIf="u.day31.type==='workingday'"
+                                                                        style="text-align: center;">{{u.day31.checkin}}
+                                                                        - {{u.day31.checkout}}</div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day31.type==='workingday'">
+                                                                        {{u.day31.workhours}} </div>
+                                                                    <div style="text-align: center;"
+                                                                        *ngIf="u.day31.type!='workingday'">-</div>
+                                                                </a>
+                                                                <div style="float: right;" *ngIf="displayCheckbox">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day31.type==='Absent'">
+                                                                        <mat-checkbox (click)="onChecked(u.day31)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                                <div style="float: right;" *ngIf="displayDeleteButton">
+                                                                    <section class="example-section row"
+                                                                        *ngIf="u.day31.type==='workingday'">
+                                                                        <mat-checkbox (click)="onDelete(u.day31)">
+                                                                        </mat-checkbox>
+                                                                    </section>
+                                                                </div>
+                                                            </td>
+
+                                                            <td>
+                                                                <div>Present {{u.totalPresent}} / Hours
+                                                                    {{u.workingHours}}</div>
+                                                                <div>Absent {{u.absentDays}}</div>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
+
+                                                </tbody>
+                                            </table>
+                                            <!-- <nav class="ng2-smart-pagination-nav">
+                                                <ul *ngIf="pager.pages" class="ng2-smart-pagination pagination">
+                                                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                                        <a (click)="setPage(1)" class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                First
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                First
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                                        <a (click)="setPage(pager.currentPage - 1)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                previous
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                previous
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li *ngFor="let page of pager.pages"
+                                                        [ngClass]="{active:pager.currentPage === page}">
+                                                        <a (click)="setPage(page)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            {{page}}
+                                                        </a>
+                                                    </li>
+                                                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                                        <a (click)="setPage(pager.currentPage + 1)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                Next
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                Next
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                                        <a (click)="setPage(pager.totalPages)"
+                                                            class="ng2-smart-page-link page-link">
+                                                            <span aria-hidden="true">
+                                                                Last
+                                                            </span>
+                                                            <span class="sr-only">
+                                                                Last
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <ul class="ng2-smart-pagination pagination pull-right">
+                                                    <li>
+                                                        Showing
+                                                        {{this.pager.startIndex + 1}}
+                                                        to
+                                                        {{this.pager.endIndex + 1}}
+                                                        of
+                                                        {{this.attendanceArray.length}}
+                                                        records
+                                                    </li>
+                                                </ul>
+                                            </nav> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="media member-profile-item cursor-pointer" >
+                    <img [src]="selectedUser?.profilepic ? selectedUser.profilepic  : '../assets/img/default-avatar.png'"
+                        class="user-avatar-img-70 mr-3 rounded-circle" alt="">
+                    <div class="media-body">
+                        <h5 class="modal-title">{{selectedUser?.fullname}}</h5>
+                        <div class="font-500">{{selectedUser?.designationid?.title}} </div>
+                        <div class="font-500">Date: {{modaldate | toLocaleDate}} </div>                        
+                    </div>
+                </div>                
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="col-form-label">
+                            Check-In Time
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="time" placeholder="HH:MM" [(ngModel)]="checkinTime"
+                                (ngModelChange)="valueChanged($event, daysInRange)">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="col-form-label">
+                            Check-Out Time
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="time" placeholder="HH:MM" matInput [(ngModel)]="checkoutTime"
+                                (ngModelChange)="valueChanged1($event,daysInRange)">
+                        </mat-form-field>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" #closeBtn>
+                    <i class="material-icons">close</i>Cancel
+                </button>
+                <button class="btn btn-primary ml-2" type="submit" [disabled]="!disableBtn"
+                    (click)="onUpdate(modalDate,checkinTime,checkoutTime)">
+                    <i class="material-icons">save</i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="attendanceModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- <div class="modal-header"> 
+                <h4 class="modal-title">{{modalName}} Attendance</h4>
+            </div> -->
+            <div class="modal-body">
+                <!-- <h5 class="modal-title">Date : {{modaldate | toLocaleDate}} </h5> -->
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="col-form-label">
+                            Check-In Time
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="time" placeholder="HH:MM" [(ngModel)]="checkinTime"
+                                (ngModelChange)="valueChanged($event, daysInRange)">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="col-form-label">
+                            Check-Out Time
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="time" placeholder="HH:MM" matInput [(ngModel)]="checkoutTime"
+                                (ngModelChange)="valueChanged1($event,daysInRange)">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" #closeBtn1>
+                    <i class="material-icons">close</i>Cancel
+                </button>
+                <button class="btn btn-primary ml-2" type="submit"
+                    (click)="onAddMassAttendance(checkinTime,checkoutTime)">
+                    <i class="material-icons">save</i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

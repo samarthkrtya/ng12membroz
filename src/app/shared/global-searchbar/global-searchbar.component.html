@@ -1,0 +1,81 @@
+<form class="navbar-form">
+    <div class="row">
+        <div class="col-xl-12">
+
+       
+    <div class="input-group nav-search-main">
+        <mat-form-field class="example-full-width w-auto pt-0 nav-search-size" appearance="standard" >
+
+         <span class="input-group-prepend" matPrefix>
+            <span  class="input-group-text pl-0">
+                <i class="material-icons">search</i>
+            </span>
+        <!--    <div class="dropdown-menu">
+                <a class="dropdown-item" (click)="changeAction(item)" *ngFor="let item of formLists"> {{item.dispalyformname}}</a>
+            </div> -->
+        </span>  
+        
+            <input 
+                placeholder="Search Here"
+                type="text"
+                aria-label="Number"
+                matInput
+                [formControl]="myControl"
+                [matAutocomplete]="auto"
+                (change)="handleEmptyInput($event)">
+
+                <mat-autocomplete 
+                    #auto="matAutocomplete" 
+                    [displayWith]="displayFn" 
+                    (optionSelected)="optionSelected($event.option)">
+
+                    <mat-option *ngIf="isLoading" class="is-loading">
+                        <mat-spinner diameter="50"></mat-spinner>
+                    </mat-option>
+
+                    <ng-container *ngIf="!isLoading">
+    
+                        <div class="mat-optgroup-media">
+
+                            <mat-option 
+                                *ngFor="let option of filteredOptions" 
+                                [value]="option">
+                                
+                                <div class="media py-2 member-profile-item cursor-pointer" >
+                                    
+    
+                                    <div class="media-body">
+                                        
+                                        <div class="d-flex">
+                                            <div class="flex-grow-1"> 
+                                                <div class="font-500 mb-1">
+                                                    <span>{{option?.nickname}}</span> <span *ngIf="option.membernumber" > |   {{option?.membernumber}}</span> 
+                                                </div>
+                                            </div>
+                                            <div class="fc-today-button font-500">
+                                                <i class="material-icons" *ngIf="option.type == 'M'"> workspace_premium </i>
+                                                <i class="material-icons" *ngIf="option.type == 'C'"> face </i>
+                                                <i class="material-icons" *ngIf="option.type == 'U'"> person </i>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="flex-grow-1"> {{option?.mobile}}</div>
+                                            <div class="fc-today-button font-14" *ngIf="option?.primaryemail">{{option?.primaryemail}}</div>
+                                        </div>
+                                    </div>
+    
+                                    
+                                </div>
+    
+                            </mat-option>
+                        </div>
+                    </ng-container>
+                </mat-autocomplete>
+    
+        </mat-form-field>
+       
+    </div>
+
+   </div>
+</div>
+  </form>

@@ -1,0 +1,56 @@
+<form 
+    [formGroup]="formFolder" 
+    (ngSubmit)="onSubmitFolder(formFolder.value, formFolder.valid)" 
+    novalidate
+    class="mb-0">
+    <div class="row">
+        <div class="col-sm-12">
+            <label class="col-form-label"> {{getLang('oldname','Old Name')}} </label>
+            <mat-form-field class="example-full-width">
+                <input 
+                    matInput
+                    readonly
+                    type="text" 
+                    formControlName="oldname">
+            </mat-form-field>
+            <div 
+                [hidden]="formFolder.get('oldname').valid || (formFolder.get('oldname').pristine && !submittedFolder)"
+                class="alert alert-danger">
+                {{getLang('oldnamerequired','Old Name is required.')}}
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <label class="col-form-label"> {{getLang('newname','New Name')}} </label>
+            <mat-form-field class="example-full-width">
+                <input 
+                    matInput
+                    type="text" 
+                    formControlName="newname">
+              </mat-form-field>
+            <div 
+                [hidden]="formFolder.get('newname').valid || (formFolder.get('newname').pristine && !submittedFolder)"
+                class="alert alert-danger">
+                {{getLang('newnamerequired','New Name required.')}}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-right">
+            <button 
+                data-dismiss="modal"
+                (click)="resetFolder('close')"
+                class="btn btn-default" 
+                type="button">
+                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+            </button>
+            <button 
+                class="btn btn-primary ml-2" 
+                type="submit" 
+                >
+                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+            </button>
+        </div>
+    </div>
+</form>

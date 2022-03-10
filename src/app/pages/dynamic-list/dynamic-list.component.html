@@ -1,0 +1,553 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card" *ngIf="isFilterListing"></div>
+                <div class="card" *ngIf="isFilterListing">
+                    <app-dynamictab
+                        *ngIf="!isLoadForms && _commonDataService.filterDataForDynamicPagesparams['search'][0] && isFilterListing"
+                        [formObj]=" formlistname  ? subformObj : formObj"
+                        [activeTab]="_commonDataService.filterDataForDynamicPagesparams['tabname']"
+                        [isLoadTabs]="isLoadTabs"
+                        [isLoadPermission]="isLoadPermission"
+                        [bindId]="_commonDataService.filterDataForDynamicPagesparams['search'][0]['searchvalue']"
+                        [classid]="classid"
+                        [courseid]="courseid"
+                        [viewVisibility]="viewVisibility"
+                        (onPermissionLoadData)="onLoadData($event)">
+                    </app-dynamictab>
+
+                    <div class="card-body" *ngIf="isLoadForms">
+                        <div class="loader">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                    stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">{{formlistTitle}}</h3>
+                    <div class="">
+                        <button
+                            type="submit"
+                            *ngIf="addPermission && !ishideaddbutton && formlistaddbuttonurl != '' && !isFilterListing"
+                            class="btn btn-primary"
+                            [routerLink]="[formlistaddbuttonurl]"
+                            [queryParams]="querystring">
+                            <i class="material-icons">add</i> {{   langResource['add'] ? langResource['add'] : 'Add'}} {{dispalyformname}}
+                        </button>
+                    </div>
+                </div>
+                <div class="card" *ngIf="viewVisibility && !isLoadPermission">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="loader" *ngIf="isConvertloading">
+                                    <svg class="circular" viewBox="25 25 50 50">
+                                        <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6 text-left">
+                                <div class="d-flex">
+                                    <ng-container *ngIf="!isButtonEnable && formList && formList.massoperation">
+                                        <span class="dropdown inline-block text-right mr-2">
+                                            <button
+                                                class="dropdown-toggle btn btn-primary mrtb0"
+                                                data-toggle="dropdown">
+                                                {{   langResource['action'] ? langResource['action'] : 'Action'}}
+                                                <b class="caret"></b>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a
+                                                    *ngFor="let item of formList.massoperation"
+                                                    class="dropdown-item"
+                                                    (click)="logSelection(item)">
+                                                    {{langResource[item.menu] ? langResource[item.menu] : item.menu}}
+                                                </a>
+                                            </div>
+                                        </span>
+                                    </ng-container>
+                                    <form class="input-group" role="search">
+                                        <div class="form-group ">
+                                            <input #gsearch type="text" placeholder="Search" class="form-control"
+                                                id="global_search_terms">
+                                            <span class="material-input"></span>
+                                        </div>
+                                        <span class="input-group-append">
+                                            <button type="submit" mat-raised-button
+                                                class="btn btn-primary btn-just-icon btn-search-grid"
+                                                (click)="globalSearch()">
+                                                <i class="material-icons">search</i>
+                                                <div class="ripple-container"></div>
+                                            </button>
+                                        </span>
+                                        <div *ngIf="this.filterFieldList && this.filterFieldList.length > 0">
+                                            <button
+
+                                                (click)="advanceSearchFilter()"
+                                                class="btn btn-primary btn-simple help-btn ml-2"
+                                                [ngClass]="filterFieldListLoad ? '' : 'btn-primary'"
+                                                matTooltip="Advance Search Filter" [matTooltipPosition]="'above'"
+                                                data-original-title="Advance Search Filter"
+                                               >
+                                                <i class="material-icons help-font">filter_alt</i>
+                                        </button>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-6 col-lg-6 col-md-6 text-right">
+
+                                <span class="dropdown inline-block text-right  ml-2" *ngIf="isAllBranchViewPermission">
+                                    <button class="dropdown-toggle btn btn-primary mrtb0"
+                                        data-toggle="dropdown">{{selectedBranchName}}
+                                        <b class="caret"></b>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        
+                                        <a class="dropdown-item" (click)="onSelectBranch('ALL Branch')">
+                                            ALL Branch
+                                        </a>
+
+                                        <a class="dropdown-item" *ngFor="let br of branchList">
+                                            <a (click)="onSelectBranch(br)">{{br.branchname}}</a>
+                                        </a>
+                                    </div>
+                                </span>
+
+
+                                <span class="dropdown inline-block text-right ml-2">
+                                    <button *ngIf="!ishidemorebutton" class="dropdown-toggle btn btn-primary mrtb0"
+                                        data-toggle="dropdown">
+                                        {{   langResource['more'] ? langResource['more'] : 'More'}}
+                                        <b class="caret"></b>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+
+                                        <a class="dropdown-item" (click)="convertToCSVExpo()" *ngIf="exportCSV">
+                                            {{   langResource['exprtcsv'] ? langResource['exprtcsv'] : 'Export as CSV'}}
+                                        </a>
+
+                                        <a class="dropdown-item" *ngIf="isFilterListing && import" (click)="addFunction('/pages/import/' + _formId)">
+                                            {{   langResource['import'] ? langResource['import'] : 'Import'}}
+                                        </a>
+
+                                        <a class="dropdown-item" *ngIf="!isFilterListing && import && importPermission" [routerLink]="['/pages/import/' + _formId]">
+                                            {{   langResource['import'] ? langResource['import'] : 'Import'}}
+                                        </a>
+
+                                        <a
+                                            class="dropdown-item"
+                                            *ngIf="formSchemaName == 'promotions'"
+                                            target="_blank"
+                                            href="https://res.cloudinary.com/dlopjt9le/raw/upload/v1563456036/crriz05qzgghvechxxrp.xlsx"
+                                            download>
+                                            {{   langResource['smplcsv'] ? langResource['smplcsv'] : 'Sample CSV'}}
+                                        </a>
+
+                                    </div>
+                                </span>
+
+                                <button mat-raised-button
+                                    id="select_field_btn"
+                                    class="btn btn-primary btn-simple help-btn ml-2"
+                                    matTooltip="Add Remove Columns" [matTooltipPosition]="'above'"
+                                    data-original-title="Add Remove Columns"
+
+                                    data-toggle="modal"
+                                    data-target="#addEditFormListItem"
+                                    data-backdrop="static"
+                                    data-keyboard="false">
+                                    <i class="material-icons help-font">playlist_add</i>
+                                </button>
+
+                                <button mat-raised-button
+                                    id="ref_btn"
+                                    class="btn btn-primary btn-simple help-btn ml-2"
+
+                                    matTooltip="Refresh" [matTooltipPosition]="'above'"
+                                    data-original-title="Refresh"
+
+
+                                    data-backdrop="static"
+                                    data-keyboard="false"
+                                    (click)="reloadList()">
+                                    <i class="material-icons help-font">refresh</i>
+                                </button>
+
+                                <span class="dropdown inline-block text-right ml-2">
+                                    <button class="dropdown-toggle btn btn-primary"
+                                        data-toggle="dropdown">{{pageSize}}
+                                        <span class="caret scdrp-mrl"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                       <a class="dropdown-item" *ngFor="let item of recordPerPageLists" (click)="onSelectValue(item)">{{item}}</a>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="loader" *ngIf="isLoadingResults">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                    stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+
+                        <app-search-filter-render
+                            *ngIf="filterFieldListLoad"
+                            [filterfieldListsi]="filterFieldList"
+                            [listFilterParamsi]="listFilterParams"
+                            [searchfields]="listFilterParams"
+                            [filterModei]="filterMode"
+                            [langResource]="langResource"
+                            (searchfilterSubmitData)="reloadFilterList()"
+                            (resetfilterData)="resetFilter()">
+                        </app-search-filter-render>
+
+                        <div class="table-responsive">
+                            <table
+                                mat-table
+                                [dataSource]="dataSource"
+                                matSort 
+                                (matSortChange)="sortData($event)"
+                                class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                <!-- Checkbox Column -->
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox
+                                        (change)="$event ? masterToggle() : null"
+                                        [checked]="selection.hasValue() && isAllSelected()"
+                                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                    </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                    <mat-checkbox
+                                        (click)="$event.stopPropagation()"
+                                        (change)="$event ? selection.toggle(row) : null"
+                                        [checked]="selection.isSelected(row)">
+                                    </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Position Column -->
+                                <ng-container *ngFor="let item of headerRowtemp; let i = index ; trackBy: trackByIndex" [matColumnDef]="item.name">
+                                    <!-- <ng-container  > -->
+                                    <th class="action-justify-content-end {{item.fieldname}}"
+                                        mat-header-cell
+                                        *matHeaderCellDef
+                                        mat-sort-header  >
+                                        <ng-container *ngIf="item.isDisplayOnList">
+                                        {{langResource[item.fieldname] ? langResource[item.fieldname] : item.displayname ? item.displayname : item.fieldname}}
+                                    </ng-container>
+                                    </th>
+
+                                    <td mat-cell *matCellDef="let element" [ngClass]="item.name == 'Action' ? 'text-right text-nowrap' : ''">
+
+                                        <ng-container *ngIf="item.name !== 'Action'; else actionBlock">
+                                            <ng-container *ngIf="item.isDisplayOnList">
+                                            <ng-container *ngIf="i == 0; else spanBlock">
+                                                <a class="cursor-pointer" (click)="redirect(element)">
+                                                    {{element[item.name]}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-template #spanBlock>
+                                                <ng-container [ngSwitch]="item.fieldtype">
+                                                    <ng-container *ngSwitchCase="'html'">
+                                                        <span [innerHTML]="element[item.name]"></span>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'longtext'">
+                                                        <a class="cursor-pointer" data-toggle="modal" data-target="#displayLongtext" (click)="renderText(element[item.fieldname])" data-backdrop="static" data-keyboard="false">
+                                                            ...View More
+                                                        </a>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'textarea'">
+                                                        {{element[item.name]}}
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'boolean'">
+                                                        <span class="cursor-pointer" [ngClass]="{'fc-today-button': (item.name === 'status' || item.name === 'wfstatus')}"   (click)="redirect(element)">
+                                                            <button
+                                                                mat-raised-button
+                                                                type="button"
+                                                                class="btn btn-link btn-primary btn-just-icon edit">
+                                                                <i class="material-icons"> {{istrue(element[item.name])}} </i>
+                                                            </button>
+                                                        </span>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchDefault>
+                                                        <span class="cursor-pointer" [ngClass]="{'fc-today-button': (item.name === 'status' || item.name === 'wfstatus')}"   (click)="redirect(element)">
+                                                            {{element[item.name]}}
+                                                        </span>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </ng-template>
+                                        </ng-container>
+                                        </ng-container>
+
+
+                                        <ng-template #actionBlock>
+
+                                            <!-- && element['status'] && element['status'] != 'deleted'" -->
+                                            <button mat-raised-button
+                                                *ngIf="this.customBtn.isShow && checkEditPermission(element['_id'])"
+                                                type="button"
+                                                [matTooltip]="customBtn.title" [matTooltipPosition]="'above'"
+                                                data-original-title="Edit"
+                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                (click)="actionlistRecord(this.customBtn.propertObj, element['_id'], element)">
+                                                <i class="material-icons">{{this.customBtn.propertObj.icon}}</i>
+                                            </button>
+
+                                            <button mat-raised-button
+                                                *ngIf="this.editBtn.isShow && checkEditPermission(element['_id'])"
+                                                type="button"
+                                                [matTooltip]="editBtn.title ? editBtn.title : 'Edit'" [matTooltipPosition]="'above'"
+                                                data-original-title="Edit"
+                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                (click)="actionlistRecord(this.editBtn.propertObj, element['_id'], element)">
+                                                <i class="material-icons">{{this.editBtn.propertObj.icon}}</i>
+                                            </button>
+
+                                            <button mat-raised-button
+                                                *ngIf="this.deleteBtn.isShow && checkDeletePermission(element['_id'])"
+                                                type="button"
+                                                matTooltip="Delete" [matTooltipPosition]="'above'"
+                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                (click)="actionlistRecord(this.deleteBtn.propertObj, element['_id'], element )">
+                                                <i class="material-icons">delete</i>
+                                            </button>
+
+                                            <button mat-raised-button
+                                                *ngIf="this.cancelBtn.isShow && checkDeletePermission(element['_id'])"
+                                                type="button"
+                                                matTooltip="Reset Password" [matTooltipPosition]="'above'"
+                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                (click)="actionlistRecord(this.cancelBtn.propertObj, element['_id'], element)">
+                                                <i class="material-icons">exit_to_app</i>
+                                            </button>
+
+                                            <button mat-raised-button
+                                                *ngIf="this.popupBtn.isShow"
+                                                type="button"
+                                                matTooltip="Reset Password" [matTooltipPosition]="'above'"
+                                                data-toggle="modal" [attr.data-target]="this.popupBtn.actionurl"
+                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                (click)="actionlistRecord(this.popupBtn.propertObj, element['_id'], element)">
+                                                <i class="material-icons">{{this.popupBtn.propertObj.icon}}</i>
+                                            </button>
+
+                                        </ng-template>
+
+                                    </td>
+                                   <!-- </ng-container> -->
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                        </div>
+
+                        <div class="row" *ngIf="!isLoadingResults && totalPages && totalCount">
+                            <div class="col-sm-12 col-md-5">
+                                <div class="dataTables_info">Showing {{(pageSize * (currentPage - 1)) + 1}} to {{pageSize + (pageSize * (currentPage - 1))}} of {{totalCount}}  entries</div>
+                            </div>
+                            <div class="col-sm-12 col-md-7 d-flex justify-content-end">
+                                <div class="dataTables_paginate paging_full_numbers" id="datatables_paginate">
+                                    
+                                    <ul class="pagination">
+
+                                        <li class="paginate_button page-item first" (click)="changePage(1)" [ngClass]="(currentPage == 1 ) ? 'disabled' : ''" (click)="changePage(1)">
+                                            <a class="page-link cursor-pointer">First</a>
+                                        </li>
+
+                                        <li class="paginate_button page-item previous" (click)="changePage(currentPage - 1)" [ngClass]="(currentPage == 1) ? 'disabled' : ''">
+                                            <a class="page-link cursor-pointer">Previous</a>
+                                        </li>
+
+                                        <!-- <li class="paginate_button page-item" *ngFor="let item of pagination; let pageNum = index;" [ngClass]="(currentPage == item) ? 'active' : ''" (click)="changePage(item)">
+                                            <a class="page-link cursor-pointer">{{ item }}</a>
+                                        </li> -->
+
+                                        <li  class="paginate_button page-item">
+
+                                            <mat-form-field class="mat-form-field-space-remove">
+                                                <select 
+                                                    matNativeControl 
+                                                    [(ngModel)]="currentPage" 
+                                                    (change)="changePage($event.target.value)">
+                                                    <option *ngFor="let item of pagination; let pageNum = index;"  [value]="item">
+                                                        {{item}} 
+                                                    </option>
+                                                </select>
+                                            </mat-form-field>
+
+                                        </li>
+
+                                        <li class="paginate_button page-item next" (click)="changePage(currentPage + 1)" [ngClass]="(currentPage == totalPages) ? 'disabled' : ''">
+                                            <a class="page-link cursor-pointer">Next</a>
+                                        </li>
+
+                                        <li class="paginate_button page-item last" (click)="changePage(totalPages)" [ngClass]="(currentPage == totalPages) ? 'disabled' : ''">
+                                            <a class="page-link cursor-pointer">Last</a>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card" *ngIf="isLoadPermission">
+                    <div class="card-header card-header-icon" data-background-color="rose">
+                        <i class="material-icons">card_membership</i>
+                    </div>
+                    <div class="loader">
+                        <svg class="circular" viewBox="25 25 50 50">
+                            <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="card" *ngIf="!viewVisibility && !isLoadPermission">
+                    <div class="card-header card-header-icon" data-background-color="rose">
+                        <i class="material-icons">card_membership</i>
+                    </div>
+                    <div class="card-body">
+                        {{   langResource['nopermission'] ? langResource['nopermission'] : 'You have No permission for this Tab'}}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addEditFormListItem" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title">
+                    {{   langResource['lstngfld'] ? langResource['lstngfld'] : 'Listing Field'}}
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" id="closeAddFields">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-horizontal" *ngIf="formList && formList.selectfields&& formList.selectfields.length !== 0">
+                        <app-select-fields
+
+                            [langResource]="langResource"
+                            [formList]="formList"
+                            (selectfiledSubmitData)="selectfiledSubmitData($event)">
+                        </app-select-fields>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div id="resetpasswd" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+
+                <h4 class="modal-title">
+                    {{   langResource['resetpassfor'] ? langResource['resetpassfor'] : 'Reset Password for'}}
+                    {{(changePassUsername != undefined) ? changePassUsername : 'User'}}</h4>
+                    <button type="button" class="close" data-dismiss="modal" id="resetpwdclose" (click)="close()">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-12 mb-3 mt-3">
+                            <mat-slide-toggle [(ngModel)]="automaticgn" (change)="getPassword($event.checked)">  {{ langResource['autogenpass'] ? langResource['autogenpass'] : 'Automatically generate a password'}}</mat-slide-toggle>
+                        </div>
+                        <div class="col-sm-12" >
+                            <label class="col-form-label">
+                                {{   langResource['newpass'] ? langResource['newpass'] : 'New Password'}}
+                            </label>
+                            <form class="example-form">
+                                <mat-form-field class="example-full-width">
+                                  <input type="password" id="newpasswd" matInput [(ngModel)]="currentpassword" (ngModelChange)="validatePasswd()"  [ngModelOptions]="{standalone: true}" >
+                                  <mat-icon matSuffix class="cursor-pointer" *ngIf="!hidepasswd" (click)="showPassword()">visibility</mat-icon>
+                                  <mat-icon matSuffix class="cursor-pointer" *ngIf="hidepasswd" (click)="showPassword()">visibility_off</mat-icon>
+                                </mat-form-field>
+                                  <div  *ngIf="!validpasswd" class="text-danger">
+                                        <small  class="error-label">
+                                            {{getLang('invalidpass', 'Invalid password')}}
+                                        </small>
+                                </div>
+                              </form>
+                              <div class="mb-4 text-warning" >
+                                {{   langResource['mustchars'] ? langResource['mustchars'] : 'Must have at least 8 characters'}}
+                              </div>
+                          </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default d-none d-sm-block" data-dismiss="modal" (click)="close()">
+                            <i class="material-icons">close</i>
+                            {{   langResource['cancel'] ? langResource['cancel'] : 'Cancel'}}
+                        </button>
+                        <button type="button" class="btn btn-success ml-2" (click)="updatePassword()">
+                            <i class="material-icons"></i>
+                            {{   langResource['chngpass'] ? langResource['chngpass'] : 'Change Password'}}
+                        </button>
+                        <button type="button" class="btn btn-primary ml-2" (click)="sendlinkResetPassword()">
+                            <i class="material-icons"></i>
+                            {{   langResource['sendlink'] ? langResource['sendlink'] : 'Send link to Reset'}}
+                        </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="displayLongtext" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    {{ langResource['moredetail'] ? langResource['moredetail'] : 'More Detail'}}
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" id="closeContent" (click)="displayContent = null">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="printid">
+                    <div [innerHTML]="displayContent | safeHtml"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default d-none d-sm-block mb-3" data-dismiss="modal" (click)="displayContent = null" >
+                    <i class="material-icons">close</i>
+                    {{   langResource['cancel'] ? langResource['cancel'] : 'Cancel'}}
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+

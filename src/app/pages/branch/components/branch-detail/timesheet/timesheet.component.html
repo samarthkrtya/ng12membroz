@@ -1,0 +1,68 @@
+
+<div class="material-datatables1">
+    <div class="table-responsive">
+
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input>
+      </mat-form-field>
+
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+        <ng-container matColumnDef="Fullname">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Fullname </th>
+          <td mat-cell *matCellDef="let element; let i = index;"> {{element.fullname}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Checkin">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Time </th>
+          <td mat-cell *matCellDef="let element"> {{element.checkin}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Checkout">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> End Time </th>
+          <td mat-cell *matCellDef="let element"> {{element.checkout}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Action">
+          <th mat-header-cell *matHeaderCellDef class="text-right"> Action</th>
+          <td mat-cell *matCellDef="let element" class="text-right">
+            <button mat-raised-button type="button" matTooltip="Approve"
+            [matTooltipPosition]="'above'" data-original-title="Approve" class="btn btn-link btn-primary btn-just-icon approve"
+            (click)="onClickbutton('Approved', element)">
+            <i class="material-icons">done</i>
+            </button>
+
+            <button mat-raised-button type="button" matTooltip="Decline" [matTooltipPosition]="'above'"
+            data-original-title="Decline" class="btn btn-link btn-primary btn-just-icon deny"
+            (click)="onClickbutton('Declined', element)">
+            <i class="material-icons">unpublished</i>
+            </button>
+
+            <button mat-raised-button type="button"
+            matTooltip="Edit" [matTooltipPosition]="'above'" data-original-title="Edit"
+            class="btn btn-link btn-primary btn-just-icon edit"
+            (click)="actionlistRecord(element._id)">
+            <i class="material-icons">edit</i>
+           </button>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="6">No data matching the filter "{{input.value}}"</td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+
+  </div>

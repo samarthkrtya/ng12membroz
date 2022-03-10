@@ -1,0 +1,325 @@
+<div class="d-block">
+  <div class="card white-box-full-order">
+    <div class="card-body">
+      <div class="loader" *ngIf="isLoadingCart">
+        <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+      </div>
+      <h4 class="card-title"> {{getLang('summary', 'Summary')}} </h4>
+      <div class="mb-5">
+        <table class="table">
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <section class="example-section">
+                    <mat-checkbox #oau (change)="checkIOU($event)" class="mb-0">
+                      <div class="font-16">{{getLang('includeiouamount', 'Include IOU Amount')}} </div>
+                    </mat-checkbox>
+                  </section>
+                </div>
+                <div>
+                  <!-- {{billModel.outstandingamount | myCurrencyPipe}} -->
+                  {{customeroutstandingamount | myCurrencyPipe}}
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold font-18 px-0">{{getLang('billamount', 'Bill Amount')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0">{{grandtotal | myCurrencyPipe}}</td>
+          </tr>
+          <!-- <tr>
+            <td class="font-weight-bold font-18 px-0">
+              <div> Discount </div>
+            </td>
+            <td class="font-weight-bold font-18 text-right px-0">- ₹120</td>
+          </tr> -->
+          <ng-container *ngIf="!iouChecked" >
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="row">
+                <div class="col-xl-5 col-lg-7">
+                  <div class="input-group">
+                    <div class="form-group flex-grow-1">
+                      <input type="text" class="form-control" disabled
+                        [placeholder]="getLang('promotionalcode', 'Promotional code') " aria-label="Promotional code"
+                        [(ngModel)]="couponBox.couponcode" aria-describedby="button-addon2">
+                    </div>
+                    <div class="input-group-append d-block">
+                      <button class="btn btn-primary" data-toggle="modal" data-target="#couponModal"  type="button" id="button-addon2">
+                        <i class="material-icons">redeem</i>
+                        {{getLang('apply', 'Apply')}}</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-7 col-lg-5" *ngIf="couponBox.value">
+                  <div class="mt-2 d-flex">
+                    <a href="javascript:void(0)" (click)="onRemoveCoupon()" [class.disabled]="couponBox.disableDelete">
+                      <img src="../../../../../assets/img/pos-delete-icon.svg" alt=""> </a>
+                    <span class="flex-grow-1 ml-2"> {{getLang('appliedcoupon', 'Applied Coupon')}} </span>
+                    <span class="text-right"> - {{couponBox.value | myCurrencyPipe}} </span>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <section class="example-section">
+                    <mat-checkbox [disabled]="walletDetail.disabled" (change)="checkWallet($event)" class="mb-0">
+                      <div class="font-16">{{getLang('usewalletbalance', 'Use Wallet balance')}}
+                        {{walletDetail.value}} </div>
+                    </mat-checkbox>
+                  </section>
+                </div>
+                <div *ngIf="walletDetail.used"> - {{walletDetail.used | myCurrencyPipe}}</div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+
+          <tr class="border-bottom" *ngIf="paymentDate">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('paymentdate', 'Payment Date')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0"> {{paymentDate | toLocaleDate }}</td>
+          </tr>
+
+
+          <tr class="border-bottom">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('payableamount', 'Payable Amount')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0"> {{payamount  | myCurrencyPipe}}</td>
+          </tr>
+
+          <tr class="border-bottom d-none">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('paidamnt', 'Paid Amount')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0"> {{paidamount | myCurrencyPipe}}</td>
+          </tr>
+
+        </table>
+      </div>
+
+      <ng-container>
+        <h4 class="card-title"> {{getLang('paymentmethod', 'Payment Method')}} </h4>
+
+        <table class="table">
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <section class="example-section">
+                    <mat-checkbox #cash class="mb-0" [(ngModel)]="cashPayment.checked">
+                      <div class="font-16">{{cashPayment.mode}} </div>
+                    </mat-checkbox>
+                  </section>
+                </div>
+                <div *ngIf="cashPayment.checked">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="number" style="text-align: right;" [(ngModel)]="cashPayment.cashamount"
+                      (ngModelChange)="onChangePA()" oninput="this.value = Math.abs(this.value)">
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <section class="example-section">
+                    <mat-checkbox class="mb-0" [(ngModel)]="chaquePayment.checked">
+                      <div class="font-16">{{chaquePayment.mode}} </div>
+                    </mat-checkbox>
+                  </section>
+                </div>
+                <div *ngIf="chaquePayment.checked">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="number" style="text-align: right;" [(ngModel)]="chaquePayment.chaqueamount"
+                      oninput="this.value = Math.abs(this.value)" (ngModelChange)="onChangePA()">
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- <tr *ngIf="chaquePayment.checked">
+          <div class="row">
+            <div class="col-sm-6 col-xl-4 col-lg-6 col-md-6">
+              <label class="col-form-label">
+                {{getLang('chequenumber', 'Chaque Number')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput type="text" [(ngModel)]="chaquePayment.chaquenumber">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-xl-4 col-lg-6 col-md-6">
+              <label class="col-form-label">
+                {{getLang('chequedate', 'Chaque Date')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field>
+                <input matInput [matDatepicker]="pickercq" [(ngModel)]="chaquePayment.chaquedate">
+                <mat-datepicker-toggle matSuffix [for]="pickercq"></mat-datepicker-toggle>
+                <mat-datepicker #pickercq color="primary"></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-xl-4 col-lg-6 col-md-6">
+              <label class="col-form-label">
+                {{getLang('chqamnt', 'Amount')}}
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput type="number" [(ngModel)]="chaquePayment.chaqueamount"
+                  oninput="this.value = Math.abs(this.value)" (ngModelChange)="onChangePA()">
+              </mat-form-field>
+            </div>
+          </div>
+        </tr> -->
+
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <section class="example-section">
+                    <mat-checkbox class="mb-0" [(ngModel)]="cardPayment.checked">
+                      <div class="font-16">{{cardPayment.mode}} </div>
+                    </mat-checkbox>
+                  </section>
+                </div>
+                <div *ngIf="cardPayment.checked">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="number" style="text-align: right;" [(ngModel)]="cardPayment.cardamount"
+                      oninput="this.value = Math.abs(this.value)" (ngModelChange)="onChangePA()">
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- <tr *ngIf="cardPayment.checked">
+          <div class="row">
+            <div class="col-sm-6 col-xl-4 col-lg-6 col-md-6">
+              <label class="col-form-label">
+                {{getLang('cardnumber', 'Card Number')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput type="text" [(ngModel)]="cardPayment.cardnumber">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-xl-4 col-lg-6 col-md-6">
+              <label class="col-form-label">
+                {{getLang('carddate', 'TID number')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput type="text" [(ngModel)]="cardPayment.tidnumber">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-xl-4 col-lg-6 col-md-6">
+              <label class="col-form-label">
+                {{getLang('cardamnt', 'Amount')}}
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput type="number" [(ngModel)]="cardPayment.cardamount"
+                  oninput="this.value = Math.abs(this.value)" (ngModelChange)="onChangePA()">
+              </mat-form-field>
+            </div>
+          </div>
+        </tr> -->
+        </table>
+      </ng-container>
+
+      <div class="row">
+        <div class="offset-xl-9 col-xl-3 offset-lg-7 col-lg-5">
+          <ng-container *ngIf="isMemberLogin;else userTemp" >
+              <button type="button" *ngIf="billModel && billModel._id"
+              [disabled]="disableBtn" class="btn btn-primary btn-block"
+              (click)="onlinePay(billModel._id)">
+              {{getLang('paynow', 'Pay Now')}}
+            </button>
+        </ng-container>
+
+        <ng-template #userTemp>
+            <button type="button" *ngIf="billPaymentInp && billPaymentInp._id && billModel && billModel._id"
+            [disabled]="disableBtn" class="btn btn-success btn-block"
+            [routerLink]="['/pages/sale-module/multiple-bill/'+formname+'/'+billModel._id]">
+            {{getLang('newpayment', 'New Payment')}}
+          </button>
+
+          <button type="button" [disabled]="disableBtn" (click)="onPay()" class="btn btn-success btn-block">
+            <ng-container *ngIf="billPaymentInp && billPaymentInp._id;else updateTemp">
+              {{getLang('updatepayment', 'Update Payment')}}
+            </ng-container>
+            <ng-template #updateTemp>
+              {{getLang('paynow', 'Pay Now')}}
+            </ng-template>
+          </button>
+        </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="couponModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ConfirmModalLabel"> {{getLang('srchcopn', 'Search Coupons')}} </h5>
+          <button type="button" id="close"   class="close" data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <label class="col-form-label">
+                {{getLang('fullname', 'Full Name')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width" appearance="standard">
+                <input type="text" matInput [matAutocomplete]="auto" [(ngModel)]="couponBox.couponobject"
+                  placeholder="Enter Coupon"
+                  (keyup)="enterCoupon($event)">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" >
+                  <ng-container *ngIf="couponList.length > 0">
+                    <mat-option *ngFor="let option of couponfilteredOptions | async" [value]="option">
+                      {{option.couponcode}}
+                    </mat-option>
+                  </ng-container>
+                  <ng-container *ngIf="couponList.length == 0">
+                    <mat-option>
+                      <span>{{getLang('norecord', 'No Record')}}</span>
+                    </mat-option>
+                  </ng-container>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" [disabled]="couponBox && couponBox.disabled" data-dismiss="modal" 
+            class="btn btn-default">
+            <i class="material-icons">close</i>
+            {{getLang('cancel', 'Cancel')}}
+          </button>
+          <button type="button" (click)="applyCpn()" [disabled]="couponBox && couponBox.disabled" class="btn btn-primary ml-2">
+            <i class="material-icons">redeem</i>
+            {{getLang('aplyvpn', 'Apply Coupon')}}
+          </button>
+        </div>
+      </div> 
+  </div>
+</div>

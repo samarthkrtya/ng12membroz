@@ -1,0 +1,78 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="offset-xl-1 col-xl-10">
+        <div class="text-center" *ngIf="isLoading">
+          <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+          </div>
+        </div>
+
+        <ng-container *ngIf="!isLoading">
+          <h3 class="card-title mb-0" *ngIf="Integrated.length > 0">You have already configured survey & feedback
+            integration</h3>
+
+          <div class="row" *ngIf="Integrated.length > 0">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex" *ngFor="let existInt of Integrated">
+              <div class="card w-100 text-center">
+                <div class="card-body">
+                  <div class="justify-content-center mb-3">
+                    <img [src]="existInt.property && existInt.property.logo ?  existInt.property.logo : '../../assets/img/image_placeholder.jpg'" width="50" height="50" alt="">
+                    <span class="img-add-product-delete">
+                      <button mat-raised-button type="button" [disabled]="disableBtn" class="btn btn-just-icon btn-link"
+                        (click)="onDelete(existInt.formdata._id)">
+                        <i class="material-icons">cancel</i>
+                      </button>
+                    </span>
+                  </div>
+                  <h4 class="card-title">
+                    {{existInt.title ? existInt?.title : '---'}}
+                  </h4>
+                  <!-- <p>
+                    {{existInt.detail ? existInt?.detail : '---'}}
+                  </p> -->
+                  <!-- <a [routerLink]="[existInt.configurl]" [class.disabled]="disableBtn" class="btn btn-primary">Config</a> -->
+                  <a [routerLink]="[existInt.degnurl]" [class.disabled]="disableBtn" class="btn btn-outline-primary ml-3">Designer
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="card-title mb-0" *ngIf="NotIntegrated.length > 0">
+            Available survey & feedback integration
+          </h3>
+
+          <div class="row" *ngIf="NotIntegrated.length > 0">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex" *ngFor="let existInt of NotIntegrated">
+              <div class="card w-100 text-center">
+                <div class="card-body">
+                  <div class="justify-content-center mb-3">
+                    <img [src]="existInt.property && existInt.property.logo ?  existInt.property.logo : '../../assets/img/image_placeholder.jpg'" width="50"  height="50" alt="">
+                  </div>
+                  <h4 class="card-title">
+                    {{existInt.formname ? existInt?.formname : '---'}}
+                  </h4>
+                  <!-- <p>
+                    {{existInt.detail ? existInt?.detail : '---'}}
+                  </p> -->
+                  <button type="button" class="btn btn-primary ml-3" (click)="onActivate(existInt)"
+                    [disabled]="disableBtn">
+                    Activate
+                  </button>
+                  <button type="button" [routerLink]="[existInt.degnurl]" class="btn btn-outline-primary ml-3"
+                    [disabled]="disableBtn">Designer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

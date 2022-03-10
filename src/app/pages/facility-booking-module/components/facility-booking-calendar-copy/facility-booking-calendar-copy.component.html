@@ -1,0 +1,227 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">{{getLang('calendar','Calendar')}}</h3>
+                    <div class="">
+                        <button id="myModalAppointmentBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalAppointment" (click)="addfacilitybooking()">
+                            <i class="material-icons">add</i>{{getLang('makefacilitybooking','Add Booking')}} 
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <ng-container *ngIf="serviceLists && serviceLists.length > 0;else emtyTmp">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 text-md-right">
+                                            <div class="ts-blue-box ts-text-blue mb-1">
+                                                {{getLang('requested','Requested')}}
+                                            </div> 
+
+                                            <div class="ts-pink-box ts-text-pink btn-sm mb-1 ml-1 ml-lg-2">
+                                                {{getLang('confirmed','Confirmed')}}
+                                            </div>
+
+                                            <div class="attend-text-green attend-working-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('checkout','Check Out')}}
+                                            </div>
+    
+                                            <div class="attend-text-red attend-absent-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('cancel','Cancel')}}
+                                            </div>
+    
+                                            <div class="attend-text-orange attend-holiday-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('noshow','No Show')}}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-end mb-1">
+                                        <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+                                            <mat-form-field>
+                                                <mat-label>Date</mat-label>
+                                                <input matInput [matDatepicker]="picker" [(ngModel)]="date" (dateChange)="dateChange(date)">
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+                                            
+                                                <mat-form-field >
+                                                    <mat-select placeholder="Status" name="status" multiple (selectionChange)="onStatusChanges($event.value)" [(ngModel)]="selectedStatus">
+                                                        <app-mat-option-select-all></app-mat-option-select-all>
+                                                        <mat-option *ngFor="let item of status" [value]="item.id"> {{item.name}} </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                        </div>
+
+
+                                        <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+                                            <form [formGroup]="serviceFormGroup">
+                                                <mat-form-field >
+                                                    <mat-select placeholder="Facility" name="service" multiple formControlName="service">
+                                                        <app-mat-option-select-all></app-mat-option-select-all>
+                                                        <mat-option *ngFor="let item of serviceLists"  [value]="item._id"> {{item.title}} </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div fxLayout="row" *ngIf="!calendarVisibility" fxLayoutAlign="space-around center" style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                                                <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                                            </div>
+                                            <div>
+                                                <full-calendar *ngIf="calendarVisibility" [options]="calendarOptions"></full-calendar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #emtyTmp>
+                            <h3 class="text-center"> No Facility available ! </h3>
+                            <div class="d-flex justify-content-center">
+                              <button 
+                                class="btn btn btn-outline-primary m-0 mr-2" 
+                                [routerLink]="['/pages/service-module/asset-form']">
+                                  <i class="material-icons" >add</i> Add Facility to Complete the Setup
+                              </button>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-info btn-lg d-none" >{{getLang('openmodal','Open Modal')}}</button>
+<div id="myModalAppointment" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('appointment','Appointment')}}</h4>
+                <button type="button" id="appointmentClose" (click)="cancel()" class="close " data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <app-facility-booking-multiple
+                    *ngIf="addfacilitybookingVisibility"
+                    #appintmentadd
+                    [dataContent]="dataContent"
+                    [passondate]="date"
+                    type="multi"
+                    (onBookingData)="getSubmittedData($event)">
+                </app-facility-booking-multiple>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="myModal" [style.display]="showModal ? 'block' : 'none'">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> {{selectedfacilitybooking?.title}}  </h4>
+                <button type="button" class="close" data-dismiss="modal" (click) = "hide()">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="media mb-4" >
+                    <img 
+                        [src]="selectedfacilitybooking?.memberprofilepic"
+                        class="profile-avatar-img mr-3 rounded-circle" 
+                        alt="">
+                    <div class="media-body">
+                        <div class="font-bold mb-1">{{selectedfacilitybooking?.attendee?.fullname}} </div>
+                        <div class="d-flex">
+                            <div class="flex-grow-1"> {{selectedfacilitybooking?.attendee?.property?.mobile}}</div>
+                            <div class="text-gray"><small>Booked on {{selectedfacilitybooking?.createdAt | date: 'MMM d, y'}}</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="list-unstyled"  *ngIf="this.selectedfacilitybooking">
+
+                    <li class="media mb-3"><mat-icon class="mat-icon material-icons mr-2">schedule</mat-icon>
+                        <div class="media-body">
+                            <div> {{selectedfacilitybooking?.timeslot?.starttime}} - {{selectedfacilitybooking?.timeslot?.endtime}} </div>
+                            <div class="text-gray"><small>{{selectedfacilitybooking?.createdAt | date: 'EEEE, MMMM d'}}</small></div>
+                        </div>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedfacilitybooking && this.selectedfacilitybooking.billid">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="viewBill(this.selectedfacilitybooking?.billid)">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">feed</mat-icon>
+                            {{getLang('viewbill','View Bill')}} 
+                        </button>
+                    </li>
+
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedfacilitybooking.status == 'requested'">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('confirmed')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">done</mat-icon>
+                            {{getLang('confirmed','Confirmed')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="checkStatus(this.selectedfacilitybooking.status)">
+                        <button class="btn btn-link-gray m-0 p-0" [routerLink]="['/pages/facility-booking-module/frontdesk/checkout/' + this.selectedfacilitybooking?._id]">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">shopping_cart</mat-icon>
+                            {{getLang('checkout','Checkout')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="checkStatus(this.selectedfacilitybooking.status)">
+                        <button class="btn btn-link-gray m-0 p-0" [routerLink]="['/pages/facility-booking-module/frontdesk/product/' + this.selectedfacilitybooking?._id ]">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">add</mat-icon>
+                            {{getLang('addproduct','Add Product')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="checkStatus(this.selectedfacilitybooking.status)">
+                        <button class="btn btn-link-gray m-0 p-0" [routerLink]="['/pages/facility-booking-module/frontdesk/service/' + this.selectedfacilitybooking?._id ]">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">task_alt</mat-icon>
+                            {{getLang('addanotherservice','Add Another Service')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedfacilitybooking && this.selectedfacilitybooking.status && this.selectedfacilitybooking.status !== 'cancel'">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('cancel')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">clear</mat-icon>
+                            {{getLang('cancel','Cancel')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedfacilitybooking && this.selectedfacilitybooking.status && this.selectedfacilitybooking.status !== 'cancel'">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('noshow')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">visibility_off</mat-icon>
+                            {{getLang('noshow','No Show')}}
+                        </button>
+                    </li>
+
+                </ul>
+
+
+                
+            </div>
+
+            <!-- Modal footer -->
+            
+
+        </div>
+    </div>
+</div>

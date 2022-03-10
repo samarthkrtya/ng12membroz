@@ -1,0 +1,71 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-10 ml-auto mr-auto">
+        <div class="row mt-lg-3 mt-0">
+          <h3 class="col-sm-6 card-title align-self-center mb-sm-0 mt-0 mb-3">Chat</h3>
+        </div>
+        <div class="loader" *ngIf="isLoading">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+          </svg>
+        </div>
+        <div class="row" *ngIf="!isLoading">
+          <div class="col-lg-12 col-md-7 pr-md-0">
+
+            <div *ngFor="let x of messages; let i = index">
+
+              <div *ngIf="sender && x.user._id == sender._id">
+                <div class="row">
+
+                  <div class="col-md-6"> </div>
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="border-bottom p-3">
+                        <div class="media mb-3">
+                          <img
+                            [src]="sender && sender.profilepic ? sender.profilepic :  'https://randomuser.me/api/portraits/women/31.jpg'"
+                            class="profile-avatar-img mr-3 rounded-circle" alt="">
+                          <div class="media-body">
+                            <div class="font-500 mb-1">{{sender && sender.fullname ?
+                              sender.fullname : '---'}} </div>
+                            <div class="font-weight-bold">{{x?.createdAt | date :'short'}}</div>
+                          </div>
+                        </div>
+                        <div [innerHtml]="x.text"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="receiver && x.user._id == receiver._id">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="border-bottom p-3">
+                        <div class="media mb-3">
+                          <img
+                            [src]="receiver && receiver.profilepic ? receiver.profilepic :  'https://randomuser.me/api/portraits/women/31.jpg'"
+                            class="profile-avatar-img mr-3 rounded-circle" alt="">
+                          <div class="media-body">
+                            <div class="font-500 mb-1">{{receiver && receiver.fullname ?
+                              receiver.fullname : '---'}} </div>
+                            <div class="font-weight-bold">{{x?.createdAt | date :'short'}}</div>
+                          </div>
+                        </div>
+
+                        <div [innerHtml]="x.text"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6"> </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+<div class="row membroz-row">
+    <div class="membroz-col mb-3">
+        <span 
+            class="btn-file text-center add-upload-inner-vcenter" 
+            data-toggle="modal" 
+            data-target="#myModalSection">
+        <label 
+            class="upload_button mb-0 add-upload-main cursor-pointer">
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="18.77"
+                height="18.77" 
+                viewBox="0 0 18.77 18.77">
+                <g transform="translate(-807.636 -666.636)">
+                    <line 
+                        x2="11.858" 
+                        y2="11.858"
+                        transform="translate(817.021 667.636) rotate(45)"
+                        fill="none" 
+                        stroke="#949494"
+                        stroke-linecap="round" 
+                        stroke-width="1" />
+                    <line 
+                        x1="11.858" 
+                        y2="11.858"
+                        transform="translate(817.021 667.636) rotate(45)"
+                        fill="none" 
+                        stroke="#949494"
+                        stroke-linecap="round" 
+                        stroke-width="1" />
+                </g>
+            </svg>
+            <div class="mt-2 add-img-text"> {{getLang('addsection', 'Add Section')}}</div>
+        </label>
+        </span>
+    </div>
+</div>
+
+<div id="myModalSection" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form 
+                [formGroup]="form" 
+                (ngSubmit)="onSubmit(form.value, form.valid)" 
+                novalidate 
+                class="mb-0">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getLang('addsection', 'Add Section')}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    
+                    <input hidden="true" matInput formControlName="_id">
+                    <input hidden="true" matInput formControlName="sectionname">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-form-label"> 
+                              {{getLang('displayname', 'Display Name')}} 
+                            </label>
+                            
+                            <mat-form-field>
+                                <input matInput formControlName="sectiondisplayname">
+                            </mat-form-field>
+              
+                            <div 
+                                [hidden]="form.get('sectiondisplayname').valid || (form.get('sectiondisplayname').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="form.get('sectiondisplayname').hasError('sectiondisplayname')" class="error-label">
+                                    {{getLang('sectiondisplaynameisrequired', 'Display Name is Required')}}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button 
+                        [disabled]="isdisablesavebutton"
+                        class="btn btn-default" 
+                        type="button" 
+                        data-dismiss="modal">
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+                    <button 
+                        [disabled]="isdisablesavebutton"
+                        class="btn btn-primary ml-2" 
+                        type="submit">
+                        <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

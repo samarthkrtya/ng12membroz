@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px">
+        <div class="member-img-main position-relative member-profile-img-border">
+            <img [src]="dataContent.profilepic ? dataContent.profilepic : '../assets/img/default-avatar.png'"
+                class="img-fluid w-100" alt="">
+            <div class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.category.property.name}}</h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+
+             
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.title">
+                  <div>{{dataContent.title}}
+                  </div>
+                </div>
+              
+            
+           
+            </div>
+       
+        </div>
+    </div>
+</div>

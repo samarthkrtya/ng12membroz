@@ -1,0 +1,82 @@
+<div class="member-profile-card mt-0" >
+    <div class="p-0 member-profile-main">
+         <div class="border-bottom">   
+             <div class="d-flex">
+
+                <mat-form-field
+                    class="example-full-width common-search-size w-auto pt-0"
+                    appearance="standard" >
+                    <span
+                        class="input-group-prepend"
+                        matPrefix>
+                        <span class="input-group-text pl-0">
+                            <i class="material-icons">search</i>
+                        </span>
+                    </span>
+                    <input  type="text" matInput name="search" [(ngModel)]="searchText" placeholder="Search" #input>
+                    
+                </mat-form-field>
+             </div>
+            
+         </div>
+         <div [@listAnimation]="data$.length">
+            <ng-container *ngFor="let item of obs | async | filter: searchText; let i = index">
+
+            <div 
+                
+                class="media border-bottom p-2 member-profile-item cursor-pointer">
+
+                <img src="./assets/img/default-avatar.png" class="profile-avatar-img mr-3 rounded-circle" alt="">
+                <div class="media-body">
+                    <div class="font-500 mb-1"> {{item?.disposition}} </div>
+                    <div class="d-flex">
+                        <div class="flex-grow-1">  </div> 
+                    </div>
+                    <div class="d-flex">
+                        
+                        <div class="flex-grow-1">{{item?.type}}</div>
+                        <div class="flex-grow-1">{{item?.addedby}}</div>
+                        <div class="flex-grow-1">{{item?.updatedAt | date:'medium'}}</div>
+
+                        <div class="text-danger expandCollapse">
+                            <button class="btn btn-link p-0 m-0"  (click)="toggle(item.id)"> 
+                                {{ !hideRuleContent[item.id]  ? 'Read More': 'Read Less' }}
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="expandCollapseContent" *ngIf="hideRuleContent[item.id]">
+
+                            <div class="row">
+
+                                <div class="col-sm-12" >
+                                    <h5 class="card-title mb-0 mt-3">Submited Data</h5>
+                                    <div class="row">
+                                        <div class="col-sm-6" *ngFor="let item of item.fields | keyvalue">
+                                            <label class="col-form-label">
+                                                {{item.key}}
+                                            </label>
+                                            <div class="mt-2">
+                                                {{item.value}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            </ng-container>
+
+            
+
+            <div class="text-center">
+                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                <!-- <button type="button" [disabled]="currentPage == totalPages" class="btn btn-link font-16 mat-raised-button mat-button-base" (click)="loadMore()">Load More</button> -->
+            </div>
+        </div>
+          
+    </div>
+</div>

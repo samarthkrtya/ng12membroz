@@ -1,0 +1,680 @@
+<div class="card" *ngIf="isLoadingData">
+    <div class="card-body text-center">
+        <div class="col-xl-12">
+            <div 
+                fxLayout="row"
+                fxLayoutAlign="space-around center"
+                style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                
+                <mat-spinner 
+                    diameter="50" 
+                    strokeWidth="5">
+                </mat-spinner>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<form 
+    [formGroup]="form" 
+    novalidate 
+    (ngSubmit)="onSubmit(form.value, form.valid)"
+    class="form-horizontal">
+
+    <div class="row">
+        <div class="col-xl-12">
+
+            <div class="card">
+                
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-sm-6">
+                            <h4 class="card-title">
+                                {{getLang('Product details', 'Product Details')}}
+                            </h4>
+                        </div>
+
+                        <div  class="col-sm-6 text-right mb-lg-0 mb-3">
+
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="offset-xl-1 col-xl-10">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <div class="flex-grow-1">
+                                            
+                                            <div class="row">
+                    
+                                                <div class="col-sm-3">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('product','Product')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width" >
+                                                        <input 
+                                                            required
+                                                            type="text"
+                                                            aria-label="Number"
+                                                            matInput
+                                                            [formControl]="product"
+                                                            [matAutocomplete]="auto">
+
+                                                        <mat-autocomplete 
+                                                            #auto="matAutocomplete"
+                                                            [displayWith]="bankdisplayFn"
+                                                            (optionSelected)="optionProductSelected($event.option)">
+
+                                                            <mat-option 
+                                                                *ngIf="productisLoadingBox" 
+                                                                class="is-loading">
+                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                            </mat-option>   
+
+                                                            <mat-option 
+                                                                *ngFor="let option of prodictFilteredOptions | async" 
+                                                                [value]="option">
+                                                                {{option.membershipname}}
+                                                            </mat-option>
+
+                                                        </mat-autocomplete>
+
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('product').valid || (form.get('product').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('product').hasError('required')" class="error-label">
+                                                            {{getLang('productisrequired', 'product is Required')}}
+                                                        </small>
+                                                    </div>
+                    
+                                                </div>
+                    
+                                                <div class="col-sm-3">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('year','Year')}}
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            formControlName="year" 
+                                                            readonly>
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('year').valid || (form.get('year').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('year').hasError('required')" class="error-label">
+                                                            {{getLang('yearisrequired', 'year is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                    
+                                                <div class="col-sm-3">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('season','Season')}}
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input 
+                                                            matInput 
+                                                            formControlName="season"
+                                                            type="text"  
+                                                            readonly>
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('season').valid || (form.get('season').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('season').hasError('required')" class="error-label">
+                                                            {{getLang('seasonisrequired', 'season is Required')}}
+                                                        </small>
+                                                    </div>
+
+                                                </div>
+                    
+                                                <div class="col-sm-3">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('apartment','Apartment')}}
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input 
+                                                            matInput
+                                                            formControlName="apartment"
+                                                            type="text" 
+                                                            readonly>
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('apartment').valid || (form.get('apartment').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('apartment').hasError('required')" class="error-label">
+                                                            {{getLang('apartmentisrequired', 'apartment is Required')}}
+                                                        </small>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                    
+                                            <div class="row">
+
+                                                <div class="col-sm-6">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('product price', 'Product Price')}}
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            readonly
+                                                            formControlName="price" >
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('price').valid || (form.get('price').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('price').hasError('required')" class="error-label">
+                                                            {{getLang('priceisrequired', 'price is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('payment type', 'Payment Type')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    
+                                                    <mat-radio-group 
+                                                        aria-label="Select an option" 
+                                                        formControlName="paymenttype">
+
+                                                        <mat-radio-button 
+                                                            *ngFor="let item of paymenttypeLists" 
+                                                            [value]="item.id"
+                                                            (change)="paymenttypeChange($event)">
+                                                            {{item.name}}
+                                                        </mat-radio-button>
+
+                                                    </mat-radio-group>
+
+                                                    <div 
+                                                        [hidden]="form.get('paymenttype').valid || (form.get('paymenttype').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('paymenttype').hasError('required')" class="error-label">
+                                                            {{getLang('paymenttypeisrequired', 'Payment Type is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                    
+                                            </div>
+                                            
+                                            <div class="row"  *ngIf="form.get('paymenttype').value == 'full'">
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('discount', 'Discount %')}}
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="number"
+                                                            (keydown)="discountRestriction($event, inputNumber)" 
+                                                            #inputNumber
+                                                            (input)="discountOnChange($event.target.value)"
+                                                            formControlName="discount" >
+                                                    </mat-form-field>
+
+                                                    <input
+                                                        type="hidden"
+                                                        formControlName="discountamount">
+
+                                                    <div 
+                                                        [hidden]="form.get('discount').valid || (form.get('discount').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('discount').hasError('required')" class="error-label">
+                                                            {{getLang('discountisrequired', 'discount is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('GST', 'GST %')}}
+                                                    </label>
+
+                                                    <mat-form-field class="example-full-width" >
+                                                        <mat-select 
+                                                            formControlName="gst" 
+                                                            multiple>
+                                                            
+                                                            <mat-option 
+                                                                *ngFor="let option of gstLists" 
+                                                                [value]="option._id">
+                                                                {{option.taxname}}
+                                                            </mat-option>
+
+                                                        </mat-select>
+                                                    </mat-form-field>
+                    
+                                                    <!-- <mat-form-field class="example-full-width" >
+                                                        <input 
+                                                            type="text"
+                                                            aria-label="Number"
+                                                            matInput
+                                                            [formControl]="gst"
+                                                            [matAutocomplete]="autogst">
+
+                                                        <mat-autocomplete 
+                                                            #autogst="matAutocomplete"
+                                                            [displayWith]="gstdisplayFn"
+                                                            (optionSelected)="optionGstSelected($event.option)">
+
+                                                            <mat-option 
+                                                                *ngIf="gstisLoadingBox" 
+                                                                class="is-loading">
+                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                            </mat-option>   
+
+                                                            <mat-option 
+                                                                *ngFor="let option of gstFilteredOptions | async" 
+                                                                [value]="option">
+                                                                {{option?.taxname}}
+                                                            </mat-option>
+
+                                                        </mat-autocomplete>
+
+                                                    </mat-form-field> -->
+
+                                                    <div 
+                                                        [hidden]="form.get('gst').valid || (form.get('gst').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('gst').hasError('required')" class="error-label">
+                                                            {{getLang('gstisrequired', 'gst is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('full payment amount', 'Full Payment Amount')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            formControlName="fullpaymentamount" >
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('fullpaymentamount').valid || (form.get('fullpaymentamount').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('fullpaymentamount').hasError('required')" class="error-label">
+                                                            {{getLang('fullpaymentamountisrequired', 'fullpaymentamount is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row"  *ngIf="form.get('paymenttype').value == 'emi'">
+
+                                                <div class="col-sm-6">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('dp amount', 'Dp Amount')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            formControlName="dpamount" 
+                                                            (input)="emiCalculator()">
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('dpamount').valid || (form.get('dpamount').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('dpamount').hasError('required')" class="error-label">
+                                                            {{getLang('dpamountisrequired', 'dpamount is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <!-- <div class="col-sm-6">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('dp amount(%)', 'Dp Amount (%) ')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            formControlName="dppercentageamount" >
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('dppercentageamount').valid || (form.get('dppercentageamount').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('dppercentageamount').hasError('required')" class="error-label">
+                                                            {{getLang('dppercentageamountisrequired', 'dppercentageamount is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+
+                                            <div class="row"  *ngIf="form.get('paymenttype').value == 'emi'">
+
+                                                <div class="col-sm-6">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('emi tenure', 'EMI Tenure')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="number"
+                                                            formControlName="emitenure" 
+                                                            (input)="emiCalculator()">
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('emitenure').valid || (form.get('emitenure').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('emitenure').hasError('required')" class="error-label">
+                                                            {{getLang('emitenureisrequired', 'emitenure is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('emi startdate', 'EMI Start Date ')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+
+                                                    <mat-form-field class="example-full-width">
+                                                        <input 
+                                                            matInput 
+                                                            [matDatepicker]="picker" 
+                                                            formControlName="emistartdate">
+                                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                        <mat-datepicker #picker></mat-datepicker>
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('emistartdate').valid || (form.get('emistartdate').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('emistartdate').hasError('required')" class="error-label">
+                                                            {{getLang('emistartdateisrequired', 'emistartdate is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row"  *ngIf="form.get('paymenttype').value == 'emi'">
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('actual emi amount', 'Actual EMI Amount')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="number"
+                                                            formControlName="actualemiamount" 
+                                                            readonly>
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('actualemiamount').valid || (form.get('actualemiamount').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('actualemiamount').hasError('required')" class="error-label">
+                                                            {{getLang('actualemiamountisrequired', 'actualemiamount is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('discount', 'Discount (%) ')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            formControlName="discount" 
+                                                            (keydown)="discountRestriction($event, inputNumberemi)" 
+                                                            #inputNumberemi
+                                                            (input)="emiCalculator()">
+                                                    </mat-form-field>
+
+                                                    <input
+                                                        type="hidden"
+                                                        formControlName="discountamount">
+                                                    
+
+                                                    <div 
+                                                        [hidden]="form.get('discount').valid || (form.get('discount').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('discount').hasError('required')" class="error-label">
+                                                            {{getLang('discountisrequired', 'discount is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('emi amount', 'EMI Amount')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="number"
+                                                            formControlName="emiamount"
+                                                            readonly >
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('emiamount').valid || (form.get('emiamount').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('emiamount').hasError('required')" class="error-label">
+                                                            {{getLang('emiamountisrequired', 'emiamount is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row"  *ngIf="form.get('paymenttype').value == 'emi'">
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('interest', 'interest (%)')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            formControlName="interest" 
+                                                            (input)="emiCalculator()">
+                                                    </mat-form-field>
+
+                                                    <div 
+                                                        [hidden]="form.get('interest').valid || (form.get('interest').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('interest').hasError('required')" class="error-label">
+                                                            {{getLang('interestisrequired', 'interest is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('gst', 'GST (%)')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+
+                                                    <mat-form-field class="example-full-width" >
+                                                        <mat-select 
+                                                            formControlName="gst" 
+                                                            multiple>
+                                                            
+                                                            <mat-option 
+                                                                *ngFor="let option of gstLists" 
+                                                                [value]="option._id">
+                                                                {{option.taxname}}
+                                                            </mat-option>
+
+                                                        </mat-select>
+                                                    </mat-form-field>
+                    
+
+                                                    <!-- <mat-form-field class="example-full-width" >
+                                                        <input 
+                                                            type="text"
+                                                            aria-label="Number"
+                                                            matInput
+                                                            [formControl]="gst"
+                                                            [matAutocomplete]="autogst">
+
+                                                        <mat-autocomplete 
+                                                            #autogst="matAutocomplete"
+                                                            [displayWith]="gstdisplayFn"
+                                                            (optionSelected)="optionGstSelected($event.option)">
+
+                                                            <mat-option 
+                                                                *ngIf="gstisLoadingBox" 
+                                                                class="is-loading">
+                                                                <mat-spinner diameter="50"></mat-spinner>
+                                                            </mat-option>   
+
+                                                            <mat-option 
+                                                                *ngFor="let option of gstFilteredOptions | async" 
+                                                                [value]="option">
+                                                                {{option?.taxname}}
+                                                            </mat-option>
+
+                                                        </mat-autocomplete>
+
+                                                    </mat-form-field> -->
+                                                    
+
+                                                    <div 
+                                                        [hidden]="form.get('gst').valid || (form.get('gst').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('gst').hasError('required')" class="error-label">
+                                                            {{getLang('gstisrequired', 'gst is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                    
+                                                    <label class="col-form-label">
+                                                        {{getLang('emiplanstatus', 'EMI Plan Status')}}
+                                                        <span class="text-danger ng-star-inserted">*</span>
+                                                    </label>
+                    
+                                                    <mat-form-field class="example-full-width">
+                                                        <input
+                                                            matInput 
+                                                            type="text"
+                                                            formControlName="emiplanstatus" >
+                                                    </mat-form-field>
+                                                    
+
+                                                    <div 
+                                                        [hidden]="form.get('emiplanstatus').valid || (form.get('emiplanstatus').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('emiplanstatus').hasError('required')" class="error-label">
+                                                            {{getLang('emiplanstatusisrequired', 'emiplanstatus is Required')}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                    
+                                        </div>
+                                        <div class="ml-3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+            
+                        <div class="col-sm-12 text-right">
+
+                            <button 
+                                class="btn btn-default" 
+                                type="button">
+                                <i class="material-icons">close</i> 
+                                {{getLang('cancel', 'Cancel')}}
+                            </button>
+
+                            <button 
+                                id="submit"
+                                class="btn btn-primary ml-2" 
+                                type="submit">
+                                <i class="material-icons">save</i> 
+                                {{getLang('save', 'Save')}}
+                            </button>
+
+                        </div>
+                            
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</form>
+

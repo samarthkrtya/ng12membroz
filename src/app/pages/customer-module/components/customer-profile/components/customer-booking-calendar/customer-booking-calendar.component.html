@@ -1,0 +1,157 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+
+            <div class="col-xl-12">
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">{{getLang('calendar','Calendar')}}</h3>
+                    <div >
+                        <button id="myModalAppointmentBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalAppointment" (click)="addAppointment()">
+                            <i class="material-icons">add</i>{{getLang('addappointment','Add Appointment')}} 
+                        </button>
+                    </div>
+                </div>
+
+            <div class="col-md-12">
+                
+                <div fxLayout="row" *ngIf="!calendarVisibility" fxLayoutAlign="space-around center" style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+                
+                <div>
+                    <full-calendar 
+                        *ngIf="calendarVisibility" 
+                        [options]="calendarOptions">
+                    </full-calendar>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button type="button" class="btn btn-info btn-lg d-none" >{{getLang('openmodal','Open Modal')}}</button>
+<div id="myModalAppointment" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('appointment','Appointment')}}</h4>
+                <button type="button" id="appointmentClose" (click)="cancel()" class="close " data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-appointment-booking
+                    *ngIf="addAppointmnet"
+                    #appintmentadd
+                    [dataContent]="dataContent"
+                    [customerid]="bindId"
+                    [passondate]="date"
+                    type="multi"
+                    (onAppointmentData)="getSubmittedData($event)">
+                </app-appointment-booking>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="myModal" [style.display]="showModal ? 'block' : 'none'">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> {{selectedAppointment?.title}}  </h4>
+                <button type="button" class="close" data-dismiss="modal" (click) = "hide()">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="media mb-4" >
+                    <img 
+                        [src]="selectedAppointment?.memberprofilepic"
+                        class="profile-avatar-img mr-3 rounded-circle" 
+                        alt="">
+                <div class="media-body">
+                    <div class="font-bold mb-1">{{selectedAppointment?.attendee?.fullname}} </div>
+                    <div class="d-flex">
+                        <div class="flex-grow-1"> {{selectedAppointment?.attendee?.property?.mobile}}</div>
+                        <div class="text-gray"><small>Booked on {{selectedAppointment?.createdAt | date: 'MMM d, y'}}</small></div>
+                    </div>
+                </div>
+                </div>
+                <ul class="list-unstyled"  *ngIf="this.selectedAppointment">
+                    <li class="media mb-3"><mat-icon class="mat-icon material-icons mr-2">schedule</mat-icon>
+                        <div class="media-body">
+                            <div> {{selectedAppointment?.timeslot?.starttime}} - {{selectedAppointment?.timeslot?.endtime}} </div>
+                            <div class="text-gray"><small>{{selectedAppointment?.createdAt | date: 'EEEE, MMMM d'}}</small></div>
+                        </div>
+                    </li>
+                    <li class="mb-3" *ngIf="this.selectedAppointment && this.selectedAppointment.billid">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="viewBill(this.selectedAppointment?.billid)">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">feed</mat-icon>
+                           {{getLang('viewbill','View Bill')}} 
+                        </button>
+                    </li>
+                    
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedAppointment.status == 'requested'">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('confirmed')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">done</mat-icon>
+                            {{getLang('confirmed','Confirmed')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="checkStatus(this.selectedAppointment.status) && checkOnlineMeet(this.selectedAppointment) && (!this.selectedAppointment.billid)">
+                        <button class="btn btn-link-gray m-0 p-0" [routerLink]="['/pages/appointment-module/frontdesk/' + this.selectedAppointment?._id]">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">shopping_cart</mat-icon>
+                            {{getLang('checkout','Checkout')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="checkStatus(this.selectedAppointment.status) && checkOnlineMeet(this.selectedAppointment) && (!this.selectedAppointment.billid)">
+                        <button class="btn btn-link-gray m-0 p-0" [routerLink]="['/pages/appointment-module/frontdesk/product/' + this.selectedAppointment?._id ]">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">add</mat-icon>
+                            {{getLang('addproduct','Add Product')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="checkStatus(this.selectedAppointment.status) && checkOnlineMeet(this.selectedAppointment) && (!this.selectedAppointment.billid)">
+                        <button class="btn btn-link-gray m-0 p-0" [routerLink]="['/pages/appointment-module/frontdesk/service/' + this.selectedAppointment?._id ]">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">task_alt</mat-icon>
+                            {{getLang('addanotherservice','Add Another Service')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="!checkOnlineMeet(this.selectedAppointment)">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="redirect(this.selectedAppointment)">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">timer</mat-icon>
+                            {{getLang('startnow','Start Now')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel' && (!this.selectedAppointment.billid)">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('cancel')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">clear</mat-icon>
+                            {{getLang('cancel','Cancel')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'noshow'">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('noshow')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">visibility_off</mat-icon>
+                            {{getLang('noshow','No Show')}}
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" (click) = "hide()">{{getLang('close','Close')}}</button>
+            </div> -->
+
+        </div>
+    </div>
+</div>

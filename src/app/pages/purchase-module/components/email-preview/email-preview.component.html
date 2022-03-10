@@ -1,0 +1,149 @@
+<form class="form-horizontal" [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                  <h4 class="card-title">
+                    {{ langResource['newemail'] ? langResource['newemail'] : 'New Email'}}
+                  </h4>
+                  <div class="loader" *ngIf="isLoading">
+                    <svg class="circular" viewBox="25 25 50 50">
+                      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                    </svg>
+                  </div>
+
+                  <div class="row" *ngIf="!isLoading">
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        {{ langResource['sendto'] ? langResource['sendto'] : 'Send To'}}
+                        <span class="text-danger">*</span>
+                      </label>
+
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="sendto">
+                      </mat-form-field>
+                      <div [hidden]="form.get('sendto').valid || (form.get('sendto').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('sendto').hasError('required')" class="error-label">
+                          {{langResource['sendtoreq'] ? langResource['sendtoreq'] : 'Send To is required !'}}
+                        </small>
+                      </div>
+                      <span class="help-block"></span>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        {{ langResource['cc'] ? langResource['cc'] : 'CC'}}
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="cc">
+                      </mat-form-field>
+                      <span class="help-block"></span>
+                    </div>
+
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        {{ langResource['subject'] ? langResource['subject'] : 'Subject'}}
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="subject">
+                      </mat-form-field>
+                      <div [hidden]="form.get('subject').valid || (form.get('subject').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('subject').hasError('required')" class="error-label">
+                          {{ langResource['subjectreq'] ? langResource['subjectreq'] : 'Subject is required !'}}
+                        </small>
+                      </div>
+                      <span class="help-block"></span>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        {{ langResource['body'] ? langResource['body'] : 'Body'}}
+                        <span class="text-danger">*</span>
+                      </label>
+                      <angular-editor formControlName="content" placeholder="'Enter text here...'"></angular-editor>
+                      <div [hidden]="form.get('content').valid || (form.get('content').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('content').hasError('required')" class="error-label">
+                          {{ langResource['bodyreq'] ? langResource['bodyreq'] : 'Body required !'}}
+                        </small>
+                      </div>
+                      <span class="help-block"></span>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <div class="form-group">
+
+                        <img class="loading" src="assets/img/image-loader.GIF"
+                          style="height: 100px; width: 100px; display: none">
+
+
+                        <div class="btn btn-primary btn-file">
+                          <label class="upload_button mb-0" for="fileupload">
+                            <i class="material-icons">cloud_upload</i>
+                            {{ langResource['upload'] ? langResource['upload'] : 'Upload'}}
+                          </label>
+                          <input type="file" id="fileupload" #fileInput ng2FileSelect [style.display]="'none'"
+                            [uploader]="customeUploader" (change)="fileInput.value=''" />
+
+
+                          <input type="hidden" id="attachment" formControlName="attachment" [(ngModel)]="attachment">
+                        </div>
+
+                        <div class="mt-2" *ngIf="attachment">
+                          <span class="upload-tag badge badge-pill d-flex mb-2">
+                            <span class="d-flex flex-grow-1 align-items-center">
+                              <i class="material-icons d-flex align-items-center mr-2">link</i>
+                              <span
+                                (click)="downloadlink(attachment)">{{attachment?.originalfilename}}.{{attachment?.extension}}</span>
+                            </span>
+                            <i class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                              (click)="removeImg()">clear</i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <div class="row">
+            <div class="col-sm-12 text-right">
+              <button class="btn btn-default" type="button"
+                [routerLink]="['/pages/dynamic-preview-list/'+this.formObj.formname+'/'+this.bindId]">
+                <i class="material-icons">close</i>
+                {{ langResource['cancel'] ? langResource['cancel'] : 'Cancel'}}
+              </button>
+              <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+                <i class="material-icons">send</i>
+                {{ langResource['send'] ? langResource['send'] : 'Send'}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+</form>

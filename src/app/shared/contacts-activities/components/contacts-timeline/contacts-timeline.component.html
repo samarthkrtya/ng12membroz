@@ -1,0 +1,154 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-0">
+            <div class="card-body">
+                <h4 class="card-title">
+                    {{context | titlecase }} {{getLang('timeline','Timeline')}}
+                </h4>
+
+                <div class="row">
+                    <div class="offset-xl-1 col-xl-10">
+                        <div class="advance-filter-main">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label class="col-form-label" title="messagetype">
+                                        {{getLang('msjtype','Message Type')}}
+                                    </label>
+                                    <mat-form-field class="example-full-width">
+                                        <input
+                                            type="text"
+                                            aria-label="Number"
+                                            matInput
+                                            [formControl]="myControl"
+                                            [matAutocomplete]="auto"
+                                            (keyup.enter)="enter()"
+                                            (change)="handleEmptyInput($event)">
+                                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event.option)">
+                                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                {{option}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3"  *ngIf="!isLoading && historyList.length == 0">
+                    <div class="text-center">
+                        {{getLang('noactavlbl','No activities available !')}}
+                    </div>
+                </div>
+                <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center" style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+            </div>
+        </div>
+                <div class="row" *ngIf="historyList.length > 0">
+                    <div class="col-md-12">
+                        <div class="card-plain">
+                            <div >
+                                <ul class="m-0 p-0 timeline ul-activitytimeline" [@listAnimation]="historyList.length">
+                                    <li [ngClass]="{ 'timeline-inverted' : (i%2 == 0) , '' : (i%2 == 1) } "
+                                        *ngFor="let item of historyList; let i = index">
+                                        <div
+                                            [ngClass]="getClass('timeline-badge-line-height timeline-badge ',item)">
+
+                                            <i class="material-icons"
+                                                *ngIf="item?.messagetype == 'memberships'">{{getLang('cardmembership','card_membership')}}</i>
+                                            <i class="material-icons"
+                                                *ngIf="item?.messagetype == 'members'">{{getLang('acntbox','account_box')}}</i>
+                                            <i class="material-icons"
+                                                *ngIf="item?.messagetype == 'payments'">{{getLang('pymnt','payment')}}</i>
+                                            <i class="material-icons"
+                                                *ngIf="item?.messagetype == 'wallets'">{{getLang('acntblncwallet','account_balance_wallet')}}</i>
+                                            <i class="material-icons"
+                                                *ngIf="item?.messagetype == 'appointments'">{{getLang('schdl','schedule')}}</i>
+                                            <i class="material-icons"
+                                                *ngIf="item?.messagetype == 'enquiries'">{{getLang('addtask','add_task')}}</i>
+                                        </div>
+
+                                        <div class="timeline-panel">
+                                            <div class="timeline-heading">
+                                                <button type="button"
+                                                class="btn btn-link font-16 m-0 p-0"
+                                                (click)="clickMore(item)" data-toggle="modal"
+                                                data-target="#myModal" data-backdrop="static"
+                                                data-keyboard="false">
+                                                {{item.message}}
+                                            </button>
+                                            </div>
+                                            <div class="timeline-body">
+                                                <div *ngFor="let key of Object.keys(item.section)">
+                                                    <div *ngIf="key == 'Date' || key == 'Payment Date';else strTem">
+                                                        {{key}} :
+                                                        {{item.section[key] | date : 'MMM d, y, h:mm a' }}</div>
+                                                    <ng-template #strTem> {{key}} : {{item.section[key]}}
+                                                    </ng-template>
+                                                </div>
+                                                <hr>
+                                            </div>
+                                            <h6>
+                                                <i class="ti-time"></i>
+                                                {{item.createdAt | date : 'MMM d, y, h:mm a' }}
+                                                <i class="ti-time"></i>
+                                                {{item.updatedby }}
+                                            </h6>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12 text-center">
+                        <button
+                            type="button"
+                            class="btn btn-link font-16"
+                            (click)="changePage(this.currentPage + 1)"
+                            [disabled]="disableBtn">
+                               {{getLang('loadmore','Load More')}}
+                        </button>
+                    </div>
+
+                </div>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{selectedMessage}} </h4>
+                <button id="closePopup" type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="selectedSection  && selectedSection != null">
+                    <div class="row" *ngFor="let key of Object.keys(selectedSection)">
+                        <label class="col-sm-5 label-on-left">
+                            {{key}}
+                        </label>
+                        <div class="col-sm-7">
+                            <span>{{selectedSection[key]}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="selectedSection == null">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span>{{getLang('nodtlavlbl','No detail available !')}} </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+  style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+  <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+</div>
+ <ng-container class="mat-tree-node-auto" *ngIf="!isLoading && dataSource.data.length > 0">
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+      <button mat-icon-button disabled></button>
+      <mat-checkbox class="checklist-leaf-node" [checked]="checklistSelection.isSelected(node)"
+        (change)="todoLeafItemSelectionToggle(node, $event)">{{node.item}}   </mat-checkbox>
+    </mat-tree-node>
+
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+      <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.item">
+        <mat-icon class="mat-icon-rtl-mirror">
+          {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+      <mat-checkbox [checked]="descendantsAllSelected(node)" [indeterminate]="descendantsPartiallySelected(node)"
+        (change)="todoItemSelectionToggle(node, $event)">{{node.item}}
+      </mat-checkbox>
+    </mat-tree-node>
+  </mat-tree>
+</ng-container> 
+
+<ng-container *ngIf="!isLoading && dataSource.data.length == 0" >
+  <h3 class="text-center"> No Record Found ! </h3>
+        <div class="d-flex justify-content-center" *ngIf="routerLink">
+          <button class="btn btn btn-outline-primary m-0 mr-2" [routerLink]="[routerLink]">
+              <i class="material-icons" >add</i> Add New 
+          </button>
+        </div>
+</ng-container>

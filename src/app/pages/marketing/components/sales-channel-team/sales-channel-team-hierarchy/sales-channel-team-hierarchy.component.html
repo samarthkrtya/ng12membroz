@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12">
+        <ng-saleschannelteam-chart [salesDesignation]="salesTeamDesignation"
+            (updateSalesChannelOrg)="updateSalesTeamDesignation($event)"></ng-saleschannelteam-chart>
+    </div>
+</div>
+
+<input type="hidden" data-toggle="modal" id="saleschntmModal" data-target="#saleschntm" data-keyboard="false">
+
+<div class="modal fade" id="saleschntm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{getLang('addsaleteamdetail','Add Sales Team Detail')}} </h4>
+                <button mat-button type="button" id="closedesg" class="close" data-dismiss="modal" aria-hidden="true"
+                    (click)="clearSalesChannelTeamDesignationForm()">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="col-form-label"> {{getLang('names','Names')}} </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label"> {{getLang('head','Head')}} </label>
+                    </div>
+                </div>
+                <div class="row" *ngFor="let user of userListByDesignation">
+                    <div class="col-md-6">
+                        <section class="example-section">
+                            <mat-checkbox class="example-margin" [disabled]="user.disable"
+                                (change)="checkUncheckEvent($event)" [id]="user._id" [(ngModel)]="user.checked"
+                                [value]="user._id">
+                                {{user?.fullname ? user?.fullname : '---' | async}}
+                            </mat-checkbox>
+                        </section>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <mat-select (selectionChange)="onItemSelect($event.value)" [(ngModel)]="user.head" placeholder="Select Head First">
+                                <mat-option *ngFor="let opt of posHeadUserList" [value]="opt._id"
+                                    [attr.disabled]="opt.disable">
+                                    {{opt.fullname}}
+                                </mat-option>
+                                <mat-option *ngIf="posHeadUserList.length == 0" disabled>No Head User</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row" *ngIf="userListByDesignation.length == 0">
+                    <span class="col-md-12 text-center">No User For this Designation</span>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal"
+                    (click)="clearSalesChannelTeamDesignationForm()" [disabled]="btnDisable">
+                    <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                </button>
+
+                <button class="btn btn-primary ml-2" type="button" (click)="updateSalesChannelTeam()"
+                    [disabled]="btnDisable">
+                    <i class="material-icons">save</i> {{getLang('save','Save')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

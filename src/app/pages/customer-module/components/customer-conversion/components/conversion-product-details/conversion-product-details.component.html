@@ -1,0 +1,242 @@
+<div [formGroup]="formGroup">
+    <mat-accordion class="example-headers-align" multi>
+
+    <mat-expansion-panel expanded>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Product Details
+            </mat-panel-title>
+            <mat-panel-description></mat-panel-description>
+        </mat-expansion-panel-header>
+        
+
+        <div class="row">
+
+            <div class="col-sm-12">
+
+                <label class="col-form-label">
+                    {{getLang('selectmembership', 'Select Membership')}}
+                    <span class="text-danger">*</span>
+                </label>
+
+                <dynamic-autocomplete  
+                    [formControlName]="form_fields.fieldname"
+                    [setting]="form_fields"
+                    [dbvalue]="form_fields.dbvalue"
+                    (inputModelChange)="inputModelChangeValue($event)">
+                </dynamic-autocomplete>
+
+                
+                <div
+                    [hidden]="formGroup.controls['membershipid'].valid || (formGroup.controls['membershipid'].pristine && !submitted)"
+                    class="text-danger">
+
+                    <small *ngIf="formGroup.controls['membershipid'].hasError('required')" class="error-label">
+                        {{getLang('membershipidisrequired', 'Membership is Required')}}
+                    </small>
+                </div>
+
+
+            </div>
+
+            <div class="col-sm-6">
+                <label class="col-form-label">
+                    {{getLang('membershipstart', 'Membership Start')}}
+                    <span class="text-danger">*</span>
+                </label>
+
+                <mat-form-field class="example-full-width">
+                    <input
+                        matInput
+                        formControlName="membershipstart"
+                        (dateChange)="ChangeDate($event)"
+                        [matDatepicker]="pickermembershipstart">
+                    <mat-datepicker-toggle matSuffix [for]="pickermembershipstart">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #pickermembershipstart></mat-datepicker>
+                </mat-form-field>
+
+                
+                <div
+                    [hidden]="formGroup.controls['membershipstart'].valid || (formGroup.controls['membershipstart'].pristine && !submitted)"
+                    class="text-danger">
+
+                    <small *ngIf="formGroup.controls['membershipstart'].hasError('required')" class="error-label">
+                        {{getLang('membershipstartisrequired', 'Membership Start is Required')}}
+                    </small>
+                </div>
+
+                
+
+            </div>
+
+            <div class="col-sm-6">
+                <label class="col-form-label">
+                    {{getLang('membershipend', 'Membership End')}}
+                    <span class="text-danger">*</span>
+                </label>
+
+                <mat-form-field >
+                    <input 
+                        matInput 
+                        formControlName="membershipend"
+                        [matDatepicker]="picker3" 
+                        (click)="picker3.open()">
+
+                    <mat-datepicker-toggle 
+                        matSuffix 
+                        [for]="picker3">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker3></mat-datepicker>
+
+                </mat-form-field>
+
+                <div
+                    [hidden]="formGroup.controls['membershipend'].valid || (formGroup.controls['membershipend'].pristine && !submitted)"
+                    class="text-danger">
+
+                    <small *ngIf="formGroup.controls['membershipend'].hasError('required')" class="error-label">
+                        {{getLang('membershipendisrequired', 'Membership End is Required')}}
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12">
+
+                <label class="col-form-label">
+                    {{getLang('paymentterms', 'Payment terms')}}
+                    <span class="text-danger">*</span>
+                </label>
+
+                <div class="table-responsive mt-3">
+                    <table mat-table [dataSource]="dataSource"
+                    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                    <!-- Checkbox Column -->
+                    <ng-container matColumnDef="item">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <mat-checkbox (change)="$event ? masterToggle() : null"
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" [ngStyle]="{'background-color': row && row.memberid ? 'rgb(244,251,228)':'' }">
+                            <mat-checkbox (click)="$event.stopPropagation()"
+                                (change)="_setSelection($event, row)"
+                                [checked]="selection.isSelected(row)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+
+
+                    <!-- period Column -->
+                    <ng-container matColumnDef="period">
+                        <th mat-header-cell *matHeaderCellDef>{{getLang('period','Period')}} </th>
+                        <td mat-cell *matCellDef="let element" [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }"> {{element.period}} </td>
+                    </ng-container>
+
+                    <!-- Tenure Column -->
+                    <ng-container matColumnDef="tenure">
+                        <th mat-header-cell *matHeaderCellDef>{{getLang('tenure','Tenure')}} </th>
+                        <td mat-cell *matCellDef="let element" [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }"> 
+                            <ng-container *ngIf="!element.isedit">{{element?.tenure}}</ng-container>
+                            <ng-container *ngIf="element.isedit && element.oldtenure == 1">{{element?.tenure}}</ng-container>
+                            <ng-container *ngIf="element.isedit && element.oldtenure > 1">
+                                <input
+                                    id="tenure"
+                                    type="number"
+                                    min="1"
+                                    name="tenure"
+                                    (change)="onchangeamountofpaymentterm()"
+                                    class="form-control"
+                                    [(ngModel)]="element.tenure"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="Tenure">
+                            </ng-container>
+                         </td>
+                    </ng-container>
+
+                  
+
+                    <!-- Amount Column -->
+                    <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef>{{getLang('amount','Amount')}} </th>
+                        <td mat-cell *matCellDef="let element" [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }"> 
+                            
+                            <ng-container *ngIf="!element.isedit">{{element?.amount}}</ng-container>
+                            <ng-container *ngIf="element.isedit">
+                                <input
+                                    id="amount"
+                                    type="number"
+                                    name="amount"
+                                    (change)="onchangeamountofpaymentterm()"
+                                    class="form-control"
+                                    [(ngModel)]="element.amount"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="Amount">
+                            </ng-container>
+                            
+                        </td>
+                    </ng-container>
+
+                    <!-- Discount Column -->
+                    <ng-container matColumnDef="discount">
+                        <th mat-header-cell *matHeaderCellDef>{{getLang('discount','Discount')}}
+                        </th>
+                        <td mat-cell *matCellDef="let element"[ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }"> 
+                            <ng-container *ngIf="!element.isedit">{{element?.discount}}</ng-container>
+                            <ng-container *ngIf="element.isedit">
+                                <input
+                                    id="discount"
+                                    type="number"
+                                    name="discount"
+                                    (change)="onchangeamountofpaymentterm()"
+                                    class="form-control"
+                                    [(ngModel)]="element.discount"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="Discount" >
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Tax Amount Column -->
+                    <ng-container matColumnDef="taxamount">
+                        <th mat-header-cell *matHeaderCellDef>{{getLang('taxamnt','Tax Amount')}}
+                        </th>
+                        <td mat-cell *matCellDef="let element" [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }"> {{element.taxamount}} </td>
+                    </ng-container>
+
+                    <!-- Total Amount Column -->
+                    <ng-container matColumnDef="totalamount">
+                        <th mat-header-cell *matHeaderCellDef>{{getLang('totalamnt','Total Amount')}} </th>
+                        <td mat-cell *matCellDef="let element" [ngStyle]="{'background-color': element && element.memberid ? 'rgb(244,251,228)':'' }">
+                            <ng-container *ngIf="!element.isedit">{{element?.totalamount}}</ng-container>
+                            <ng-container *ngIf="element.isedit">
+                                <input
+                                    id="totalamount"
+                                    type="number"
+                                    min="1"
+                                    (change)="onchangetotalamountofpaymentterm()"
+                                    name="totalamount"
+                                    class="form-control"
+                                    [(ngModel)]="element.totalamount"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="Total Amount">
+                            </ng-container>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+
+                
+            </div>
+        </div>
+
+    </mat-expansion-panel>
+
+    </mat-accordion>
+</div>

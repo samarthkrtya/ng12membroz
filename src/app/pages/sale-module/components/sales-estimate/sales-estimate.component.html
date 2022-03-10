@@ -1,0 +1,573 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div fxLayout="row" *ngIf="isLoadingData" fxLayoutAlign="space-around center"
+      style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+      <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+    </div>
+
+    <div class="row table-item-gutters" *ngIf="!isLoadingData">
+      <div class="col-xl-4 col-lg-4 col-md-5 pr-md-0">
+        <div class="card mb-0">
+          <div class="px-3">
+            <mat-form-field class="example-full-width" appearance="standard">
+              <input type="text" matInput  #trigger="matAutocompleteTrigger" [matAutocomplete]="auto" [(ngModel)]="searchMember"
+                [placeholder]="getLang('searchcustomerormember', 'Search Customer or Member')"
+                (keyup)="enterCustomer($event)" (dblclick)="trigger.openPanel()">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngIf="customerisLoadingBox" class="is-loading">
+                  <mat-spinner diameter="50"></mat-spinner>
+                </mat-option>
+                <ng-container *ngIf="!customerisLoadingBox && customerList.length > 0">
+                  <mat-option *ngFor="let option of customerfilteredOptions | async" [value]="option">
+                    {{option.nickname}}
+                  </mat-option>
+                </ng-container>
+                <ng-container *ngIf="!customerisLoadingBox && customerList.length == 0">
+                  <mat-option>
+                    <span>{{getLang('norecord', 'No Record')}}</span>
+                  </mat-option>
+                </ng-container>
+              </mat-autocomplete>
+              <mat-icon matPrefix *ngIf="!searchMember" >search</mat-icon>
+              <button matSuffix  class="btn btn-just-icon btn-link m-0 p-0"  [disabled]="disableBtn" (click)="clearMember()" *ngIf="searchMember && searchMember._id">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="card pos-itembill-card mb-0">
+          <div class="d-flex customer-name-p ">
+            <div class="flex-grow-1 font-weight-bold">
+              <div *ngIf="searchMember">
+                <div>{{searchMember?.fullname}} {{searchMember?.membernumber ? ' | ' + searchMember?.membernumber : ''}}
+                </div>
+                <div>{{searchMember?.email}}</div>
+                <div>{{searchMember?.mobile}}</div>
+              </div>
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customerModal"
+                *ngIf="!isDisableEdit"> {{getLang('newcustomer', 'New Customer')}}
+              </button>
+            </div>
+          </div>
+          <div class="loader" *ngIf="isLoadingCart">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-membroz table-pos">
+              <thead>
+                <tr>
+                  <th>{{getLang('order', 'Order')}}</th>
+                  <th class="text-center">{{getLang('qty', 'Qty')}}</th>
+                  <th class="text-right">{{getLang('price', 'Price')}}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let items of cartItemList">
+                  <td>{{items?.item?.itemname}}</td>
+                  <td class="text-center text-nowrap">
+                    <a href="javascript:void(0)" [class.disabled]="items.quantity == 1" (click)="onSubtrct(items.item)">
+                      <img src="../../../../../assets/img/pos-minus-icon.svg" alt="" class="mr-2">
+                    </a>
+                    {{items.quantity}}
+                    <a href="javascript:void(0)" (click)="onAdd(items.item)">
+                      <img class="ml-2" src="../../../../../assets/img/pos-plus-icon.svg" alt="">
+                    </a>
+                  </td>
+                  <td class="text-right"> {{items?.item?.sale?.rate | myCurrencyPipe}} </td>
+                  <td class="text-right">
+                    <a href="javascript:void(0)" [class.disabled]="disableBtn" (click)="onRemove(items.item)">
+                      <img src="../../../../../assets/img/pos-delete-icon.svg" alt=""> </a>
+                  </td>
+                </tr>
+                <ng-container *ngIf="cartItemList.length == 0">
+                  <span class="px-3">{{getLang('noproduct', 'No Product')}}</span>
+                </ng-container>
+              </tbody>
+            </table>
+
+            <table class="table table-membroz table-pos" *ngIf="type == 'asset'">
+              <tbody>
+                <th colspan="4"> Facility</th>
+                <tr *ngFor="let item of assetcartList">
+                  <td style="padding-right: 0 !important;vertical-align: top;">
+                    <div class="font-weight-600">{{item?.title}} </div>
+                  </td>
+                  <td colspan="3" class="text-right align-top">
+                      <div>{{item?.cost | myCurrencyPipe}}</div>
+                      <div *ngIf="item.discount">{{item?.discount | myCurrencyPipe}}</div>
+                      <div>
+                        <a href="javascript:void(0)" [class.disabled]="disableBtn" (click)="onRemoveAsset(item)"> 
+                          <img src="../../../../../assets/img/pos-delete-icon.svg" alt=""> </a>
+                      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="table table-membroz table-pos" *ngIf="type == 'service'">
+              <tbody>
+                <th colspan="4" > Appointments</th>
+                <tr *ngFor="let item of servicecartList">
+                  <td style="padding-right: 0 !important;vertical-align: top;"><div class="font-weight-600"> {{item?.title}}</div> </td>
+                  <td colspan="2" class="text-right align-top">
+                    <div>
+                    {{item?.cost | myCurrencyPipe}}
+                  </div>
+                  <div>
+                    <a href="javascript:void(0)" [class.disabled]="disableBtn" (click)="onRemoveService(item)">
+                      <img src="../../../../../assets/img/pos-delete-icon.svg" alt="">
+                    </a>
+                  </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="table table-membroz table-pos">
+              <tr>
+                <td colspan="4">&nbsp;</td>
+              </tr>
+              <tr *ngIf="discount">
+                <td class="border-bottom" colspan="3">{{getLang('discount', 'Discount')}}</td>
+                <td class="text-right border-bottom">{{discount | myCurrencyPipe}} </td>
+              </tr>
+              <tr>
+                <td class="font-weight-bold border-bottom" colspan="3">{{getLang('subtotal', 'Subtotal')}}</td>
+                <td class="text-right font-weight-bold border-bottom">{{subtotal | myCurrencyPipe}}</td>
+              </tr>
+              <!-- <tr>
+                <td class="border-bottom" colspan="2">Tax Detail</td>
+                <td class="text-right border-bottom">
+                  <table>
+                    <tr *ngFor="let taxes of taxesList">
+                      <td> {{taxes?.taxname}} </td>
+                      <td> {{taxes?.amount | myCurrencyPipe}} </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr> -->
+              <tr *ngIf="packagediscount">
+                <td class="font-weight-bold border-bottom font-18" colspan="3">{{getLang('packagediscount', 'Package
+                  discount')}}</td>
+                <td class="text-right font-weight-bold border-bottom font-18">{{packagediscount | myCurrencyPipe}}
+                </td>
+              </tr>
+              <tr *ngIf="taxamount">
+                <td class="border-bottom" colspan="3">{{getLang('tax', 'Tax')}}</td>
+                <td class="text-right border-bottom">{{taxamount | myCurrencyPipe}}</td>
+              </tr>
+              <tr>
+                <td class="font-weight-bold border-bottom font-18" colspan="3">{{getLang('grandtotal', 'Grand
+                  Total')}}</td>
+                <td class="text-right font-weight-bold border-bottom font-18">{{grandtotal | myCurrencyPipe}}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="customer-name-p">
+            <div class="row">
+              <div class="col-12">
+                <button type="button" [disabled]="disableBtn" (click)="onNewQutn()"
+                  class="btn btn-primary btn-block">{{getLang('save', 'Save')}}</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-xl-8 col-lg-8 col-md-7">
+        <div class="pr-md-0">
+          <div class="row">
+            <div class="col-xl-12">
+
+              <mat-tab-group class="frontdesk-tab-card" [(selectedIndex)]="selectedIndexes"
+                >
+                <mat-tab label="Estimate">
+                  <ng-template matTabContent>
+                    <div class="card px-3 mt-0">
+                      <div class="row">
+                        <div class="col-md-5 col-lg-6 col-xl-3 mr-auto">
+                          <mat-form-field class="example-full-width">
+                            <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker"
+                              (dateChange)="onDateChanged()" placeholder="Estimate date" [disabled]="isDisableEdit">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-7 col-lg-6 col-xl-4 ml-auto">
+                           </div>
+                      </div>
+                    </div>
+
+                    <div class="loader" *ngIf="isLoading['appointment']">
+                      <svg class="circular" viewBox="25 25 50 50">
+                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                          stroke-miterlimit="10" />
+                      </svg>
+                    </div>
+
+                    <div class="row card-item-gutters mt-3">
+                      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 d-flex">
+                        <div class="card pos-menu-card w-100" (click)="newAppointment()">
+                          <div class="card-body p-2">
+                            <div class="d-flex flex-column align-items-center">
+                              <div class="d-flex align-items-center my-3">
+                                <div class="badge badge-customer-name" style="background-color :crimson">
+                                  New
+                                </div>
+                              </div>
+                              <div class="fd-customer-title mb-1">New Estimate
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 d-flex"
+                        *ngFor="let app of quotationList;let i = index">
+                        <div class="card pos-menu-card w-100" [ngClass]="{'selected': app.selected}">
+                          <div class="card-body p-2" (click)="onClickApp(app)">
+                            <div class="d-flex flex-column align-items-center">
+                              <div class="d-flex align-items-center my-3">
+                                <div class="badge badge-customer-name">
+                                  {{app?.shrname}}
+                                </div>
+                              </div>
+                              <div class="fd-customer-title mb-1">{{ app.customerid ?
+                                app?.customerid?.fullname :
+                                '---'}}
+                              </div>
+                              <div class="text-center mb-1 font-13">{{app?.docnumber}}
+                              </div>
+                              <div class="text-center mb-1 font-13">{{app?.totalamount | myCurrencyPipe}}
+                              </div> 
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </ng-template>
+                </mat-tab>
+                <mat-tab label="Product">
+                  <div class="card px-3 mt-0">
+                    <div class="row">
+                      <div class="col-md-7 col-lg-6 col-xl-5 ml-auto">
+                        <mat-form-field class="example-full-width pt-0" appearance="standard">
+                          <input matInput #gsearch placeholder="Search item name or barcode" id="global_search_terms"
+                            [(ngModel)]="searchBox.value" (ngModelChange)="onSearchItem()">
+                          <span class="material-input"></span>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+
+                  <mat-tab-group [(selectedIndex)]="searchBox.index">
+                    <mat-tab label="All">
+                      <div class="row card-item-gutters mt-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 d-flex" *ngFor="let item of billItemList">
+                          <div class="card pos-menu-card w-100" (click)="onAdd(item)"
+                            [ngClass]="{'selected': item.quantity && item.quantity > 0}">
+                            <ng-container *ngIf="item.quantity && item.quantity > 0">
+                              <div class="box-item-selected">{{item?.quantity}}</div>
+                            </ng-container>
+                            <img
+                              [src]="item.imagegallery && item.imagegallery.length > 0 ?  item.imagegallery[0].attachment : '../../../../../assets/img/image_placeholder.jpg'"
+                              class="card-img-top" alt="">
+                            <div class="card-body p-2">
+                              <div class="card-item-title mb-1">{{item?.itemname}}</div>
+                              <div class="card-item-price">{{item?.sale?.rate | myCurrencyPipe}}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </mat-tab>
+                    <ng-container *ngFor="let itemList of billItemListGrp">
+                      <mat-tab [label]="itemList[0].category">
+                        <div class="row card-item-gutters mt-3">
+                          <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 d-flex" *ngFor="let item of itemList">
+                            <div class="card pos-menu-card w-100" (click)="onAdd(item)"
+                              [ngClass]="{'selected': item.quantity && item.quantity > 0}">
+                              <ng-container *ngIf="item.quantity && item.quantity > 0">
+                                <div class="box-item-selected">{{item?.quantity}}</div>
+                              </ng-container>
+                              <img
+                                [src]="item.imagegallery && item.imagegallery.length > 0 ?  item.imagegallery[0].attachment : '../../../../../assets/img/image_placeholder.jpg'"
+                                class="card-img-top" alt="">
+                              <div class="card-body p-2">
+                                <div class="card-item-title mb-1">{{item?.itemname}}</div>
+                                <div class="card-item-price">{{item?.sale?.rate | myCurrencyPipe}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </mat-tab>
+                    </ng-container>
+                  </mat-tab-group>
+                </mat-tab>
+                <mat-tab label="Service" *ngIf="type == 'service'">
+                  <div class="card px-3 mt-0">
+                    <div class="row">
+                      <div class="col-md-7 col-lg-6 col-xl-5 ml-auto">
+                        <mat-form-field class="example-full-width pt-0" appearance="standard">
+                          <input matInput #gsearch placeholder="Search service" id="global_search_terms"
+                            [(ngModel)]="searchService.value" (ngModelChange)="onSearchService()">
+                          <span class="material-input"></span>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <mat-tab-group [(selectedIndex)]="searchService.index">
+                    <mat-tab label="All">
+                      <div class="row card-item-gutters mt-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 d-flex" *ngFor="let item of serviceList">
+                          <div class="card pos-menu-card w-100" data-toggle="modal" data-target="#serviceModal"
+                            (click)="onClickService(item._id)" [ngClass]="{'selected': item.selected}">
+                            <img
+                              [src]="item.gallery && item.gallery.length > 0 ?  item.gallery[0].attachment : '../../../../../assets/img/image_placeholder.jpg'"
+                              class="card-img-top" alt="">
+                            <div class="card-body p-2">
+                              <div class="card-item-title mb-1">{{item?.title}}</div>
+                              <div class="card-item-price">{{(item?.charges) | myCurrencyPipe}}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </mat-tab>
+                    <ng-container *ngFor="let itemList of serviceListGrp">
+                      <mat-tab [label]="itemList[0].categoryname">
+                        <div class="row card-item-gutters mt-3">
+                          <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 d-flex" *ngFor="let item of itemList">
+                            <div class="card pos-menu-card w-100" data-toggle="modal" data-target="#serviceModal"
+                              (click)="onClickService(item._id)" [ngClass]="{'selected': item.selected}">
+                              <img
+                                [src]="item.gallery && item.gallery.length > 0 ?  item.gallery[0].attachment : '../../../../../assets/img/image_placeholder.jpg'"
+                                class="card-img-top" alt="">
+                              <div class="card-body p-2">
+                                <div class="card-item-title mb-1">{{item?.title}}</div>
+                                <div class="card-item-price">{{(item?.charges | myCurrencyPipe)}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </mat-tab>
+                    </ng-container>
+                  </mat-tab-group>
+                </mat-tab>
+                <mat-tab label="Facility" *ngIf="type == 'asset'">
+                  <div class="card px-3 mt-0">
+                    <div class="row">
+                      <div class="col-md-7 col-lg-6 col-xl-5 ml-auto">
+                        <mat-form-field class="example-full-width pt-0" appearance="standard">
+                          <input matInput #gsearch placeholder="Search facility" id="global_search_terms"
+                            [(ngModel)]="searchAsset.value" (ngModelChange)="onSearchAsset()">
+                          <span class="material-input"></span>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <mat-tab-group [(selectedIndex)]="searchAsset.index">
+                    <mat-tab label="All">
+                      <div class="row card-item-gutters mt-3">
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 d-flex" *ngFor="let item of assetList">
+                          <div class="card pos-menu-card w-100" data-toggle="modal" data-target="#serviceModal"
+                            (click)="onClickService(item._id)" [ngClass]="{'selected': item.selected}">
+                            <img
+                              [src]="item.gallery && item.gallery.length > 0 ?  item.gallery[0].attachment : '../../../../../assets/img/image_placeholder.jpg'"
+                              class="card-img-top" alt="">
+                            <div class="card-body p-2">
+                              <div class="card-item-title mb-1">{{item?.title}}</div>
+                              <div class="card-item-price">{{(item?.charges) | myCurrencyPipe}}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </mat-tab>
+                    <ng-container *ngFor="let itemList of assetListGrp">
+                      <mat-tab [label]="itemList[0].categoryname">
+                        <div class="row card-item-gutters mt-3">
+                          <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 d-flex" *ngFor="let item of itemList">
+                            <div class="card pos-menu-card w-100" data-toggle="modal" data-target="#serviceModal"
+                            (click)="onClickService(item._id)" [ngClass]="{'selected': item.selected}">
+                              <img
+                                [src]="item.gallery && item.gallery.length > 0 ?  item.gallery[0].attachment : '../../../../../assets/img/image_placeholder.jpg'"
+                                class="card-img-top" alt="">
+                              <div class="card-body p-2">
+                                <div class="card-item-title mb-1">{{item?.title}}</div>
+                                <div class="card-item-price">{{(item?.charges | myCurrencyPipe)}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </mat-tab>
+                    </ng-container>
+                  </mat-tab-group>
+                </mat-tab>
+              </mat-tab-group>
+
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="customerModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <form [formGroup]="form" (ngSubmit)="onSubmitProspect(form.value,form.valid)" novalidate>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ConfirmModalLabel"> {{getLang('newcustomer', 'New Customer')}} </h5>
+          <button type="button" id="close" (click)="form.reset();" class="close" data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="col-form-label">
+                {{getLang('fullname', 'Full Name')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput formControlName="fullname" type="text">
+              </mat-form-field>
+              <div [hidden]="form.get('fullname').valid || (form.get('fullname').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('fullname').hasError('required')" class="error-label">
+                  {{getLang('fullnameisrequired', 'Fullname is Required')}}
+                </small>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label class="col-form-label">
+                {{getLang('mobile', 'Mobile')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput formControlName="mobile" type="number">
+              </mat-form-field>
+              <div [hidden]="form.get('mobile').valid || (form.get('mobile').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('mobile').hasError('required')" class="error-label">
+                  {{getLang('mobileisrequired', 'Mobile is Required')}}
+                </small>
+                <small *ngIf="form.get('mobile').hasError('onlyvalidmobilenumber')" class="error-label">
+                  {{getLang('validnumberisrequired', 'Valid Mobile is Required')}}
+                </small>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label class="col-form-label">
+                {{getLang('email', 'Email')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput formControlName="email" type="text">
+              </mat-form-field>
+              <div [hidden]="form.get('email').valid || (form.get('email').pristine && !submitted)" class="text-danger">
+                <small *ngIf="form.get('email').hasError('required')" class="error-label">
+                  {{getLang('emailisrequired', 'Email is Required')}}
+                </small>
+                <small *ngIf="form.get('email').hasError('email')" class="error-label">
+                  {{getLang('validemailisrequired', 'Valid email is required')}}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" [disabled]="disableBtn" data-dismiss="modal" (click)="form.reset()"
+            class="btn btn-default">
+            <i class="material-icons">close</i>
+            {{getLang('cancel', 'Cancel')}}</button>
+          <button type="submit" [disabled]="disableBtn" class="btn btn-primary ml-2">
+            <i class="material-icons">save</i>
+            {{getLang('save', 'Save')}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="serviceModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmitService()" novalidate>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ConfirmModalLabel"> {{serviceForm.get('title').value}} </h5>
+          <button type="button" id="closeservice" (click)="closeService()" class="close"
+            data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+
+            <div class="col-sm-6">
+              <label class="col-form-label">
+                {{getLang('charges', 'Charges')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput type="number" formControlName="cost">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6">
+              <label class="col-form-label">
+                {{getLang('taxes', 'Taxes')}}
+              </label>
+
+              <mat-form-field class="example-full-width">
+                <mat-select matNativeControl multiple formControlName="taxes">
+                  <mat-option [value]="tax" *ngFor="let tax of serviceForm.get('taxes').value">
+                    {{tax?.taxname}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6">
+              <label class="col-form-label">
+                {{getLang('discount', 'Discount')}}
+              </label>
+              <mat-form-field class="example-full-width">
+                <input matInput type="number" formControlName="discount">
+              </mat-form-field>
+            </div>
+
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" [disabled]="disableBtn" data-dismiss="modal" (click)="closeService()"
+            class="btn btn-default">
+            <i class="material-icons">close</i>
+            {{getLang('cancel', 'Cancel')}}</button>
+          <button type="submit" [disabled]="disableBtn" class="btn btn-primary ml-2">
+            <i class="material-icons">save</i>
+            {{getLang('save', 'Save')}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

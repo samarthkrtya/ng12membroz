@@ -1,0 +1,26 @@
+<mat-form-field 
+    class="example-full-width">
+	<input 
+        type="text" 
+        aria-label="Number" 
+        matInput 
+        [formControl]="myControl" 
+        [matAutocomplete]="auto"
+        (keyup.enter)="enter()">
+    <mat-autocomplete 
+        #auto="matAutocomplete"
+        [displayWith]="displayFn"
+        (optionSelected)="optionSelected($event.option)">
+        <mat-option 
+            *ngFor="let option of filteredOptions | async" 
+            [value]="option">
+            {{option.fullname}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+
+<div class="text-danger" *ngIf="notAvilable">
+    <small class="error-label">
+        Staff is not Available
+    </small>
+</div>

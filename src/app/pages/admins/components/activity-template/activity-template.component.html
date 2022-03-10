@@ -1,0 +1,294 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)"
+    novalidate>
+<div class="main-content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                  <h3 class="card-title">
+                    {{getLang('actvttemplt', 'Activity Template')}}
+                  </h3>
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="offset-xl-1 col-xl-10">
+        
+                          <div class="loader" *ngIf="isLoading">
+                            <svg class="circular" viewBox="25 25 50 50">
+                              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                            </svg>
+                          </div>
+        
+                          <div class="row" *ngIf="!isLoading">
+
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                {{getLang('title', 'Title')}}
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                  <input matInput formControlName="title">
+                                </mat-form-field>
+                                <div [hidden]="form.get('title').valid || (form.get('title').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="form.get('title').hasError('required')" class="error-label">
+                                    {{getLang('titleisrequired', 'Title is Required')}}
+                                  </small>
+                                </div>
+                            </div>
+
+
+                             
+
+
+
+
+                            <div class="col-sm-6">
+                              <label class="col-form-label">
+                                {{getLang('form', 'Form')}}
+                                <span class="text-danger">*</span>
+                              </label>
+                              <dynamic-autocomplete [formControlName]="formfields.fieldname" [setting]="formfields"
+                                [dbvalue]="formfields.dbvalue" (inputModelChange)="selectedForm($event)" >
+                              </dynamic-autocomplete>        
+                              <div [hidden]="form.get('formid').valid || (form.get('formid').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="form.get('formid').hasError('required')" class="error-label">
+                                  {{getLang('formidisrequired', 'Form is Required')}}
+                                </small>
+                              </div>
+                            </div>
+
+                            
+
+                            <div class="col-sm-6">
+                                <label class="col-form-label">
+                                    {{getLang('type', 'Type')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <mat-select  matInput formControlName="dispositionid" >
+                                        <mat-option [value]="disptn"  *ngFor="let disptn of dispositionDDTreeList">
+                                            {{disptn?.displayNameDD}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="col-sm-12">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('dueday', 'Due Day')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="number" formControlName="dueday">
+                                        </mat-form-field>
+                                      <div [hidden]="form.get('dueday').valid || (form.get('dueday').pristine && !submitted)"
+                                          class="text-danger">
+                                          <small *ngIf="form.get('dueday').hasError('required')" class="error-label">
+                                              {{getLang('dayisrequired', 'Day is Required')}}
+                                          </small>
+                                      </div>
+                                    </div>
+
+
+                                      <div class="col-sm-6">
+                                          <label class="col-form-label">
+                                              {{getLang('priority', 'Priority')}}
+                                              <span class="text-danger">*</span>
+                                          </label>
+                                          <mat-form-field class="example-full-width">
+                                          <mat-select  matInput formControlName="priority" >
+                                            <mat-option value="moderate">
+                                                {{getLang('moderate', 'Moderate')}}
+                                            </mat-option>
+                                            <mat-option value="high">
+                                                {{getLang('high', 'High')}}
+                                            </mat-option>
+                                            <mat-option value="low">
+                                                {{getLang('low', 'Low')}}
+                                            </mat-option>
+                                        </mat-select>
+                                      </mat-form-field>
+                                  </div>
+
+
+                            <div class="col-sm-4 d-none">
+                                <label class="col-form-label">
+                                    {{getLang('schedule', 'Schedule')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <mat-select  matInput formControlName="timeschedule" >
+                                        <mat-option value="before">
+                                            {{getLang('before', 'Before')}}
+                                        </mat-option>
+                                        <mat-option value="after">
+                                            {{getLang('after', 'After')}}
+                                        </mat-option>
+                                        <mat-option value="on">
+                                            {{getLang('on', 'On')}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-4 d-none">
+                                <label class="col-form-label">
+                                    {{getLang('type', 'Type')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <mat-select  matInput formControlName="duetype" >
+                                        <mat-option [value]="type"  *ngFor="let type of dueType">
+                                            {{type}}
+                                        </mat-option> 
+                                    </mat-select>
+                                </mat-form-field>
+ 
+                                <div [hidden]="form.get('duetype').valid || (form.get('duetype').pristine && !submitted)"
+                                    class="text-danger">
+                                    <small *ngIf="form.get('duetype').hasError('required')" class="error-label">
+                                    {{getLang('typeisrequired', 'Type is Required')}}
+                                    </small>
+                                </div>
+                                </div>
+                                </div>
+                            </div>
+ 
+
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                  {{ langResource['content'] ? langResource['content'] : 'Content'}}
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <angular-editor formControlName="content" placeholder="'Enter text here...'"></angular-editor>
+                                <div [hidden]="form.get('content').valid || (form.get('content').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="form.get('content').hasError('required')" class="error-label">
+                                    {{ langResource['contentreq'] ? langResource['contentreq'] : 'content required !'}}
+                                  </small>
+                                </div>
+                                <span class="help-block"></span>
+                              </div>
+
+
+                              <div class="col-sm-12">
+                                <label class="col-form-label">
+                                    {{ langResource['attachment'] ? langResource['attachment'] : 'Attachment'}}
+                                    <span class="text-danger">*</span>
+                                  </label>
+
+                                <div class="form-group">
+          
+                                  <img class="loading" src="assets/img/image-loader.GIF"
+                                    style="height: 100px; width: 100px; display: none">
+          
+          
+                                  <div class="btn btn-primary btn-file">
+                                    <label class="upload_button mb-0" for="fileupload">
+                                      <i class="material-icons">cloud_upload</i>
+                                      {{ langResource['upload'] ? langResource['upload'] : 'Upload'}}
+                                    </label>
+                                    <input type="file" id="fileupload" #fileInput ng2FileSelect [style.display]="'none'"
+                                      [uploader]="customeUploader" (change)="fileInput.value=''" />
+          
+          
+                                    <input type="hidden" id="attachment" [(ngModel)]="attachment" [ngModelOptions]="{standalone: true}">
+                                  </div>
+          
+                                  <div class="mt-2" *ngIf="attachment">
+                                    <span class="upload-tag badge badge-pill d-flex mb-2">
+                                      <span class="d-flex flex-grow-1 align-items-center">
+                                        <i class="material-icons d-flex align-items-center mr-2">link</i>
+                                        <span
+                                          (click)="downloadlink(attachment.attachment)">{{attachment?.originalfilename}}.{{attachment?.extension}}</span>
+                                      </span>
+                                      <i class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                                        (click)="removeImg()">clear</i>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+              
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  {{getLang('assingeeuser', 'Assingee Users')}}
+                                  <span class="text-danger">*</span>
+                                </label>
+
+                                <mat-form-field class="example-full-width">
+                                    <mat-select  matInput formControlName="assingeeuser" multiple >
+                                        <mat-option [value]="user._id"  *ngFor="let user of userList">
+                                            {{user?.fullname}}
+                                        </mat-option> 
+                                    </mat-select>
+                                </mat-form-field>
+                                
+                                <div [hidden]="form.get('assingeeuser').valid || (form.get('assingeeuser').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="form.get('assingeeuser').hasError('required')" class="error-label">
+                                    {{getLang('assingeeuserisrequired', 'Assingee Users is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-6">
+                                <label class="col-form-label">
+                                  {{getLang('assingeerole', 'Assingee Role')}}
+                                  <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <mat-select  matInput formControlName="assingeerole"  multiple>
+                                        <mat-option [value]="role._id"  *ngFor="let role of roleList">
+                                            {{role?.rolename}}
+                                        </mat-option> 
+                                    </mat-select>
+                                </mat-form-field>
+                                       
+                                <div [hidden]="form.get('assingeerole').valid || (form.get('assingeerole').pristine && !submitted)"
+                                  class="text-danger">
+                                  <small *ngIf="form.get('assingeerole').hasError('required')" class="error-label">
+                                    {{getLang('formidisrequired', 'Assingee Role is Required')}}
+                                  </small>
+                                </div>
+                              </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+        </div>
+    </div> 
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+              <div class="row">
+                <div class="col-sm-12 text-right">
+                  <button class="btn btn-default" type="button" [routerLink]="['/pages/dynamic-list/list/activitytemplate']"
+                    [disabled]="disableButton">
+                    <i class="material-icons">close</i> Cancel
+                  </button>
+    
+                  <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+                    <i class="material-icons">save</i> Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+</form>

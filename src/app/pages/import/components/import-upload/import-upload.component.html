@@ -1,0 +1,67 @@
+<div class="form-horizontal">
+    <h4 class="card-title text-center mb-4">Upload File</h4>
+    <div class="row">
+         <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 offset-md-2 col-md-8 offset-sm-2 col-sm-8 text-center">
+             <div class="wizard-upload-main">
+                <div class="btn btn-primary btn-file">
+
+                    <label class="upload_button mb-0" for="fileupload"><i class="material-icons">cloud_upload</i> Upload </label>
+                    <input 
+                      type="file" 
+                      id="fileupload" 
+                      #fileInput
+                      ng2FileSelect 
+                      [style.display]="'none'"
+                      [uploader]="uploader"
+                      (change)="fileInput.value=''" 
+                      multiple />
+                </div>
+
+                <div class="file" *ngIf="response['file']" id="upload_status">
+                    <div class="status">
+                        Uploading... {{response['progress']}}%
+                        <div *ngIf="!response['status']">In progress</div>
+                        
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" role="progressbar" [style.width.%]="response['progress']"></div>
+                    </div>
+                </div>
+
+                <div class="mt-2" >
+                    <span class="upload-tag badge badge-pill d-flex mb-2" *ngIf="selectedFile"> 
+                        <span class="d-flex flex-grow-1 align-items-center"> 
+                            <i class="material-icons d-flex align-items-center mr-2">link</i>  
+                            <span > {{getFileName(original_filename)}}.{{selectedFileExtension}}</span>
+                        </span> 
+                        <i (click)="removeUpload()" class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer">clear</i>
+                    </span>
+                </div>
+                    <div class="mt-3 mb-3">
+                        <a
+                            *ngIf="sampleCsvPath"
+                            target="_blank"
+                            [href]="sampleCsvPath"
+                            download>Use our sample file
+                        </a>
+                    </div>
+                    <div><span class="font-weight-bold">Note:</span> Choose CSV, XLS as the file format</div>    
+
+             </div>   
+         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button 
+                class="btn btn-default"
+                [routerLink]="[returnUrlValue]">
+                <i class="material-icons">close</i> Cancel</button>
+            <button 
+                *ngIf="importUrlValue" 
+                class="btn btn-primary" 
+                (click)="onUpload()">
+                <i class="material-icons">save</i> Next
+            </button>
+        </div>
+    </div>
+</div>

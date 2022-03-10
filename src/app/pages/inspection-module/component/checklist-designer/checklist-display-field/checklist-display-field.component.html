@@ -1,0 +1,326 @@
+<ng-container [ngSwitch]="item.fieldtype">
+
+    <ng-container *ngSwitchCase="'text'">
+      <mat-form-field class="example-full-width">
+        <input matInput value="">
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'number'">
+      <mat-form-field class="example-full-width">
+        <input matInput  type="number" value="" [min]="item.min" [max]="item.max">
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'long_text'">
+      <mat-form-field class="example-full-width">
+        <input
+            type="text"
+            matInput
+            value>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+          <textarea matInput> </textarea>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'checkbox'">
+      <mat-selection-list>
+        <mat-list-option  
+          class="mat-primary" 
+          checkboxPosition="before" 
+          *ngFor="let look of item.lookupdata" 
+          [value]="look.key">
+            {{look.value}}
+        </mat-list-option>
+    </mat-selection-list>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'radio'">
+      <mat-radio-group
+        aria-labelledby="example-radio-group-label"
+        class="example-radio-group">
+        <mat-radio-button
+          class="example-radio-button"
+          *ngFor="let look of item.lookupdata; let i = index"
+          [value]="look.value">
+          {{look.value}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'list'">
+      <mat-form-field class="example-full-width">
+        <input
+          matInput
+          [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let opt of item.lookupdata" [value]="opt.value">
+            <span>{{ opt.value }}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'datepicker'">
+      <mat-form-field>
+        <input
+          matInput
+          [matDatepicker]="resultPicker">
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="resultPicker">
+        </mat-datepicker-toggle>
+        <mat-datepicker #resultPicker></mat-datepicker>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'time_only'">
+      <mat-form-field class="example-full-width">
+        <input  matInput type="time"> 
+        <mat-hint>{{getLang('hhmm', 'HH / MM')}}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'multi_selected_list'">
+      <mat-form-field class="example-full-width">
+        <mat-select
+          multiple>
+          <mat-option value="">Select</mat-option>
+          <mat-option
+            *ngFor="let opt of item.lookupdata"
+            [value]="opt.value">
+            {{opt.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'attachment'">
+      <div class="row membroz-row">
+        <div class="membroz-col mb-3">
+          <span class="btn-file text-center add-upload-inner-vcenter">
+            <label 
+              class="upload_button mb-0 add-upload-main">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="18.77"
+                height="18.77" 
+                viewBox="0 0 18.77 18.77">
+                  <g transform="translate(-807.636 -666.636)">
+                      <line 
+                          x2="11.858" 
+                          y2="11.858"
+                          transform="translate(817.021 667.636) rotate(45)"
+                          fill="none" 
+                          stroke="#949494"
+                          stroke-linecap="round" 
+                          stroke-width="1" />
+                      <line 
+                          x1="11.858" 
+                          y2="11.858"
+                          transform="translate(817.021 667.636) rotate(45)"
+                          fill="none" 
+                          stroke="#949494"
+                          stroke-linecap="round" 
+                          stroke-width="1" />
+                  </g>
+                </svg>
+                <div class="mt-2 add-img-text"> {{getLang('addimage', 'Add image')}}</div>
+            </label>
+          </span>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'gallery'">
+      <div class="row membroz-row">
+        <div class="membroz-col mb-3">
+          <span class="btn-file text-center add-upload-inner-vcenter">
+            <label 
+              class="upload_button mb-0 add-upload-main">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="18.77"
+                height="18.77" 
+                viewBox="0 0 18.77 18.77">
+                  <g transform="translate(-807.636 -666.636)">
+                      <line 
+                          x2="11.858" 
+                          y2="11.858"
+                          transform="translate(817.021 667.636) rotate(45)"
+                          fill="none" 
+                          stroke="#949494"
+                          stroke-linecap="round" 
+                          stroke-width="1" />
+                      <line 
+                          x1="11.858" 
+                          y2="11.858"
+                          transform="translate(817.021 667.636) rotate(45)"
+                          fill="none" 
+                          stroke="#949494"
+                          stroke-linecap="round" 
+                          stroke-width="1" />
+                  </g>
+                </svg>
+                <div class="mt-2 add-img-text"> {{getLang('addimage', 'Add image')}}</div>
+            </label>
+          </span>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'editor'">
+      <angular-editor 
+        [placeholder]="'Enter text here...'">
+      </angular-editor>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'readonly'">
+      <mat-form-field class="example-full-width">
+        <input type="text" matInput readonly>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'category_list'">
+      <mat-form-field class="example-full-width">
+        <mat-select [formControl]="pokemonControl" [multiple]="item.multiselect">
+          <mat-optgroup *ngFor="let group of pokemonGroups" [label]="group.name"
+                        [disabled]="group.disabled">
+            <mat-option *ngFor="let pokemon of group.pokemon" [value]="pokemon.value">
+              {{pokemon.viewValue}}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'hidden'">
+      <mat-form-field class="example-full-width">
+        <input type="text" matInput readonly>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'disclaimer'">
+      <mat-form-field class="example-full-width" [hidden]="true">
+        <input
+          matInput
+          type="text"
+          class="example-margin"
+          readonly>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'mobile'">
+      <mat-form-field class="example-full-width">
+        <input type="number" matInput value="">
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'alternatenumber'">
+      <mat-form-field class="example-full-width">
+        <input type="number" matInput value="">
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'whatsappnumber'">
+      <ngx-intl-tel-input
+        [cssClass]="'custom form-control'"
+        [preferredCountries]="preferredCountries"
+        [enableAutoCountrySelect]="false"
+        [enablePlaceholder]="true"
+        [searchCountryFlag]="true"
+        [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+        [selectFirstCountry]="false"
+        [selectedCountryISO]="CountryISO.India"
+        [maxLength]="15"
+        [phoneValidation]="true"
+        [separateDialCode]="separateDialCode">
+      </ngx-intl-tel-input>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'lookup'">
+      <mat-form-field>
+        <mat-select>
+          <mat-option value="one">First option</mat-option>
+          <mat-option value="two">Second option</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'form'">
+      <mat-form-field>
+        <mat-select>
+          <mat-option value="one">First option</mat-option>
+          <mat-option value="two">Second option</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'fullname'">
+      <mat-form-field appearance="legacy">
+        <input matInput>
+        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'primaryemail'">
+      <mat-form-field class="example-full-width">
+        <input matInput>
+        <mat-icon matSuffix>email</mat-icon>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'secondaryemail'">
+      <mat-form-field class="example-full-width">
+        <input matInput>
+        <mat-icon matSuffix>email</mat-icon>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'calendar_timer'">
+
+      <mat-form-field class="example-full-width">
+        <input 
+            matInput 
+            [ngxMatDatetimePicker]="picker" >
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker 
+            #picker 
+            [showSpinners]="true"
+            >
+        </ngx-mat-datetime-picker>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'rating'">
+      <div class="mt-2">
+        <ngb-rating [(rate)]="currentRate" max=5></ngb-rating>
+      </div>
+    </ng-container>
+    
+    <ng-container *ngSwitchCase="'signaturepad'">
+      <ngx-signature-pad #testPad></ngx-signature-pad>
+      <button (click)="clear()">clear</button>
+      <button (click)="getImage()" [disabled]="isInValid()">get image</button>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'product'">
+      <mat-form-field>
+        <mat-select>
+          <mat-option value="one">Product 1</mat-option>
+          <mat-option value="two">Product 2</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'service'">
+      <mat-form-field>
+        <mat-select>
+          <mat-option value="one">Service 1</mat-option>
+          <mat-option value="two">Service 2</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  
+</ng-container>

@@ -1,0 +1,273 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+        <app-item-list [dataContent]="dataContent" [schema]="'members'" [formObj]="formObj"
+          (onItemListsData)="getSubmittedItemListsData($event)">
+        </app-item-list>
+      </div>
+
+      <div class="col-xl-9">
+
+        <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center"
+          style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+          <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+        </div>
+
+        <ng-container *ngIf="contentVisibility && dataContent">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                  <app-package-basic-details [dataContent]="dataContent">
+                  </app-package-basic-details>
+                </div>
+
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 d-flex">
+              <mat-tab-group>
+                <mat-tab [label]="'Destination'">
+                  <ng-template matTabContent>
+                    <ng-container *ngFor="let destination of dataContent.destinations">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                Day
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="destination.day" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                roomtype
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="destination.roomtype" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                destination
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="destination.destination" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                Nights
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="destination.nights" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                Includes 
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="destination.includes" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                cost
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="destination.cost" disabled>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-template>
+                </mat-tab>
+
+                <mat-tab [label]="'Transfer'">
+                  <ng-template matTabContent>
+                    <ng-container *ngFor="let transfer of dataContent.transfer">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                Day
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="transfer.day" disabled>
+                              </mat-form-field>
+                            </div>
+                           
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                from
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="transfer.from" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                to
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="transfer.to" disabled>
+                              </mat-form-field>
+                            </div> 
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                transfertype
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="transfer.transfertype" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                cost
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="transfer.cost" disabled>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-template>
+                </mat-tab>
+
+                <mat-tab [label]="'Flight'">
+                  <ng-template matTabContent>
+                    <ng-container *ngFor="let flight of dataContent.flight">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                Day
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="flight.day" disabled>
+                              </mat-form-field>
+                            </div>
+                          
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                from
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="flight.from" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                to
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="flight.to" disabled>
+                              </mat-form-field>
+                            </div> 
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                duration
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="flight.duration" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                cost
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="flight.cost" disabled>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-template>
+                </mat-tab>
+
+                <mat-tab [label]="'Activity'">
+                  <ng-template matTabContent>
+                    <ng-container *ngFor="let activity of dataContent.activity">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                Day
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="activity.day" disabled>
+                              </mat-form-field>
+                            </div>
+                          
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                Event
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="activity.event" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                to
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="activity.to" disabled>
+                              </mat-form-field>
+                            </div> 
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                duration
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="activity.duration" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                includes
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="activity.includes" disabled>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="col-form-label">
+                                cost
+                              </label>
+                              <mat-form-field class="example-full-width">
+                                <input matInput [value]="activity.cost" disabled>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-template>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </div>
+
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

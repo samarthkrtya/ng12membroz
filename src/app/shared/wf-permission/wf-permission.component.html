@@ -1,0 +1,51 @@
+<ng-container *ngIf="isOnlyBtn;else isBtn">
+    <button mat-raised-button type="button"  matTooltip="Review" [matTooltipPosition]="'above'"
+         (click)="onClickbutton('approver')" *ngIf="isReviewBtn"
+        class="btn btn-link btn-primary btn-just-icon" [disabled]="btnDisable">
+        <i class="material-icons">playlist_add_check</i>
+    </button>
+    <button mat-raised-button type="button" matTooltip="Approve" [matTooltipPosition]="'above'"
+    (click)="onClickbutton('Approved')" *ngIf="isApproveBtn"
+        class="btn btn-link btn-primary btn-just-icon" [disabled]="btnDisable">
+        <i class="material-icons">done</i>
+    </button>
+    <button mat-raised-button type="button"  matTooltip="Decline" [matTooltipPosition]="'above'"  (click)="onClickbutton('Declined')" *ngIf="isReviewBtn || isApproveBtn"
+        class="btn btn-link btn-primary btn-just-icon" [disabled]="btnDisable">
+        <i class="material-icons">unpublished</i>
+    </button>
+
+
+
+
+</ng-container>
+
+<ng-template #isBtn>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="alert alert-warning" *ngIf="displayText">
+                <button mat-button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <i class="material-icons">close</i>
+                </button>
+                <span>  {{displayText}}</span>
+              </div>
+
+        </div>
+        <div class="col-md-4 text-right">
+            <button type="button" (click)="onClickbutton('approver')" *ngIf="isReviewBtn"
+                class="btn btn-success" [disabled]="btnDisable">
+                <i class="material-icons">playlist_add_check</i>
+                Review
+            </button>
+            <button type="button" (click)="onClickbutton('Approved')" *ngIf="isApproveBtn"
+                class="btn btn-success" [disabled]="btnDisable">
+                <i class="material-icons">done</i>
+                Approve
+            </button>
+            <button type="button" (click)="onClickbutton('Declined')" *ngIf="isReviewBtn || isApproveBtn"
+                class="btn btn-danger" [disabled]="btnDisable">
+                <i class="material-icons">unpublished</i>
+                Decline
+            </button>
+        </div>
+    </div>
+</ng-template>

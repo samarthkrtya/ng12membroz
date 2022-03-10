@@ -1,0 +1,460 @@
+<ng-container *ngIf="!isLoading">
+  <div class="row">
+    
+    <div class="col-md-12">
+      <label class="col-form-label">
+        Trigger
+      </label>
+      <mat-form-field >
+        <mat-select matNativeControl [(ngModel)]="_dispositionruleModel.trigger">
+          <mat-option value="Disposition Change">Disposition Change</mat-option>
+          <mat-option value="Number of Attempts">Number of Attempts</mat-option>
+          <mat-option value="Overdue follow up">Overdue follow up</mat-option>
+          <mat-option value="Repeated Disposition">Repeated Disposition</mat-option>
+          <mat-option value="Disposition Updated">Disposition Updated</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.trigger == 'Disposition Change'">
+      <label class="col-form-label">
+        From Disposition
+      </label>
+      <mat-form-field >
+        <mat-select matNativeControl [(ngModel)]="_dispositionruleModel.fromdispositionid">
+          <mat-option value="Any">Any</mat-option>
+          <mat-option *ngFor="let opt of dispositionDDTreeList" [value]="opt._id">{{opt.displayNameDD}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.trigger == 'Disposition Change'">
+      <label class="col-form-label">
+        To Disposition
+      </label>
+      <mat-form-field >
+        <mat-select matNativeControl [(ngModel)]="_dispositionruleModel.todispositionid">
+          <mat-option value="Any">Any</mat-option>
+          <mat-option *ngFor="let opt of dispositionDDTreeList" [value]="opt._id">{{opt.displayNameDD}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.trigger == 'Number of Attempts' || _dispositionruleModel.trigger =='Repeated Disposition'">
+      <label class="col-form-label">
+        Number of Attempts
+      </label>
+      <mat-form-field class="example-full-width">
+        <input matInput name="noofattempts" [(ngModel)]="_dispositionruleModel.numberofattempt">
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.trigger == 'Overdue follow up'">
+      <label class="col-form-label">
+        Days Overdue
+      </label>
+      <mat-form-field class="example-full-width">
+        <input matInput name="duedays" [(ngModel)]="_dispositionruleModel.duedays">
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.trigger == 'Repeated Disposition' || _dispositionruleModel.trigger == 'Disposition Updated'">
+      <label class="col-form-label">
+        Disposition
+      </label>
+      <mat-form-field >
+        <mat-select 
+          matNativeControl 
+          [(ngModel)]="_dispositionruleModel.disposition" 
+          (selectionChange)="changeDesposition()">
+          <mat-option value="Any">Any</mat-option>
+          <mat-option *ngFor="let opt of dispositionDDTreeList" [value]="opt._id">{{opt.displayNameDD}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.trigger == 'Disposition Updated'">
+      <label class="col-form-label"></label>
+      <div class="row">
+        <div class="col-sm-3">
+          FILTER
+        </div>
+        <div class="col-sm-9">
+          <div *ngFor="let item of conditions">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field class="example-full-width">
+                  <mat-select
+                    [(ngModel)]="item.fieldname"
+                    (ngModelChange)="onFieldChange($event, item)"
+                    [ngModelOptions]="{standalone: true}">
+                    <mat-option value="">
+                      None
+                    </mat-option>
+                    <mat-option *ngFor="let item1 of FormfieldList" [value]="item1.fieldname">
+                      {{item1.fielddisplaytext}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <div *ngIf="item.fieldtype == 'Number'">
+                  <mat-form-field class="example-full-width">
+                    <select 
+                      matNativeControl
+                      (ngModelChange)="onFieldTypeChange($event, item)" 
+                      [(ngModel)]="item.operator"
+                      [ngModelOptions]="{standalone: true}">
+                      <option value="">Select</option>
+                      <option value="="> = </option>
+                      <option value="!="> != </option>
+                      <option value="<"> < </option>
+                      <option value="<="> <=  </option>
+                      <option value=">"> > </option>
+                      <option value=">="> >= </option>
+                      <option value="between"> Between </option>
+                      <option value="not_between"> not between </option>
+                      <option value="is_empty"> is empty </option>
+                      <option value="is_not_empty"> is not empty </option>
+                    </select>
+                  </mat-form-field>
+                </div>
+                <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                  <mat-form-field class="example-full-width">
+                    <select 
+                      matNativeControl
+                      (ngModelChange)="onFieldTypeChange($event, item)"
+                      [(ngModel)]="item.operator"
+                      [ngModelOptions]="{standalone: true}">
+                      <option value="">Select</option>
+                      <option value="is"> is </option>
+                      <option value="isnt"> isnt </option>
+                      <option value="is_before"> is before </option>
+                      <option value="is_after"> is after </option>
+                      <option value="between"> Between </option>
+                      <option value="not_between"> not between </option>
+                      <option value="age_in_days"> Age in Days </option>
+                      <option value="due_in_days"> Due in Days </option>
+                    </select>
+                  </mat-form-field>
+                </div>
+                <div *ngIf="item.fieldtype !== 'Number' && item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker'">
+                  <mat-form-field class="example-full-width">
+                    <select 
+                      matNativeControl
+                      (ngModelChange)="onFieldTypeChange($event, item)" 
+                      [(ngModel)]="item.operator"
+                      [ngModelOptions]="{standalone: true}">
+                      <option value=""> None </option>
+                      <option value="is"> is </option>
+                      <option value="isnt"> isnt </option>
+                      <option value="contains"> contains </option>
+                      <option value="doesnt_contain"> doesnt contain </option>
+                      <option value="starts_with"> starts with </option>
+                      <option value="ends_with"> ends with </option>
+                      <option value="is_empty"> is empty </option>
+                      <option value="is_not_empty"> is not empty </option>
+                    </select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="col-md-12" *ngIf="item.operator !== 'between' && item.operator !== 'not_between'">
+                  <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                    <div *ngIf="item.operator == 'age_in_days' || item.operator == 'due_in_days'">
+                      <mat-form-field class="example-full-width">
+                        <input matInput [(ngModel)]="item.fieldvalue" [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </div>
+                    <div *ngIf="item.operator !== 'age_in_days' && item.operator !== 'due_in_days'">
+                      <mat-form-field>
+                        <input 
+                            matInput [matDatepicker]="resultPicker"
+                            [(ngModel)]="item.fieldvalue"
+                            [ngModelOptions]="{standalone: true}">
+                          <span class="help-block" style="margin-top: 11px;display: block;">
+                              {{gDateFormat}}
+                          </span>
+                          <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                          <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form'  && item.fieldtype !== 'ObjectID'">
+                    <mat-form-field class="example-full-width">
+                      <input matInput [(ngModel)]="item.fieldvalue" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                    <mat-form-field class="example-full-width">
+                      <mat-select [(ngModel)]="item.fieldvalue" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let items of dynamicValueLists[item.fieldname]" [value]="items.name">
+                          {{item.name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+              </div>
+
+              <div class="col-md-12" *ngIf="item.operator == 'between' || item.operator == 'not_between'">
+                <div class="col-md-6">
+                  <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                    <mat-form-field>
+                      <input 
+                        matInput 
+                        [matDatepicker]="resultPicker"
+                        [(ngModel)]="item.fieldvalue"
+                        placeholder=""
+                        [ngModelOptions]="{standalone: true}">
+                        <span class="help-block" style="margin-top: 11px;display: block;">
+                            {{gDateFormat}}
+                        </span>
+                        <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form' && item.fieldtype !== 'ObjectID'">
+                    <mat-form-field class="example-full-width">
+                      <input matInput [(ngModel)]="item.fieldvalue" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                    <mat-form-field class="example-full-width">
+                      <mat-select [(ngModel)]="item.fieldvalue" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let items of dynamicValueLists[item.fieldname]" [value]="items.name">
+                          {{item.name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                    <mat-form-field>
+                      <input 
+                        matInput 
+                        [matDatepicker]="resultPicker"
+                        [(ngModel)]="item.fieldvalue2"
+                        placeholder="" 
+                        [ngModelOptions]="{standalone: true}">
+                      <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                      <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form' && item.fieldtype !== 'ObjectID'">
+                    <mat-form-field class="example-full-width">
+                      <input matInput [(ngModel)]="item.fieldvalue2">
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                    <mat-form-field class="example-full-width">
+                      <mat-select [(ngModel)]="item.fieldvalue" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let items of dynamicValueLists[item.fieldname]" [value]="items.name">
+                          {{item.name}}
+                        </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div class="col-sm-2">
+                <a
+                  (click)="addItem(item.index)"
+                  class="addCriteria">
+                </a>
+                <a *ngIf="item.index !== 1"
+                  class="removeCriteria"
+                  (click)="deleteItem(item.index)">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <label class="col-form-label">
+        Action
+      </label>
+      <mat-form-field >
+        <mat-select
+          (selectionChange)="onchangeAction()"
+          matNativeControl
+          [(ngModel)]="_dispositionruleModel.action">
+          <mat-option value="Call api"> Call api </mat-option>
+          <mat-option value="Change prospect handler"> Change prospect handler </mat-option>
+          <mat-option value="Change Disposition"> Change Disposition </mat-option>
+          <mat-option value="Create Task"> Create Task </mat-option>
+          <mat-option value="Mapped Object"> Mapped Object </mat-option>
+          <mat-option value="Permission"> Permission </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Call api'">
+      <label class="col-form-label">
+        Api Url
+      </label>
+      <mat-form-field class="example-full-width">
+        <input matInput name="actionvalue" [(ngModel)]="_dispositionruleModel.actionvalue">
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Change prospect handler'">
+      <label class="col-form-label">
+        New Handler
+      </label>
+      <mat-form-field class="example-full-width">
+        <mat-select matNativeControl *ngIf="userDDList" [(ngModel)]="_dispositionruleModel.actionvalue" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let items of userDDList" [value]="items.id">
+            {{items.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Change prospect handler'">
+      <label class="col-form-label">
+        Is Followup
+      </label>
+
+      <mat-checkbox
+        id="isfollowup" 
+        name="isfollowup"
+        class="example-margin"
+        [(ngModel)]="_dispositionruleModel.isfollowup"
+        [checked]="_dispositionruleModel.isfollowup == true">
+      </mat-checkbox>
+
+      
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Create Task'">
+      <label class="col-form-label">
+        Task
+      </label>
+      <mat-form-field class="example-full-width">
+        <mat-select *ngIf="userTaskDDList" [(ngModel)]="_dispositionruleModel.actionvalue" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let items of userTaskDDList" [value]="items.id">
+            {{items?.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Change Disposition'">
+      <label class="col-form-label">
+        New Disposition
+      </label>
+      <mat-form-field >
+        <mat-select matNativeControl [(ngModel)]="_dispositionruleModel.actionvalue" [ngModelOptions]="{standalone: true}">
+          <mat-option value="Any">Any</mat-option>
+          <mat-option *ngFor="let opt of dispositionDDTreeList" [value]="opt._id">{{opt.displayNameDD}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Mapped Object'">
+      <label class="col-form-label">
+        Form
+      </label>
+      <mat-form-field class="example-full-width">
+        <mat-select [(ngModel)]="_dispositionruleModel.actionvalue" [ngModelOptions]="{standalone: true}" (ngModelChange)="getFieldsBYForm($event)">
+          <mat-option *ngFor="let items of _allForms" [value]="items.id">
+            {{items.name}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Permission'">
+      <label class="col-form-label">
+        Select role
+        <span class="text-danger">*</span>
+      </label>
+      <mat-form-field class="example-full-width">
+        <mat-select  [(ngModel)]="_dispositionruleModel.selroleid" multiple>
+          <mat-option *ngFor="let item of _rolelists" [value]="item.id">{{item.itemName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Permission'">
+      <label class="col-form-label">
+        Select User
+        <span class="text-danger">*</span>
+      </label>
+      <mat-form-field class="example-full-width">
+        <mat-select  [(ngModel)]="_dispositionruleModel.seluserid" multiple>
+          <mat-option *ngFor="let item of userPermissionList" [value]="item.id">{{item.itemName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12" *ngIf="_dispositionruleModel.action == 'Permission'">
+      <label class="col-form-label">
+        <span class="text-danger">*</span>
+      </label>
+      <button mat-raised-button color="primary" (click)="PermissionEnbl()" data-target="#record_permission" data-toggle="modal"><i class="material-icons">add</i> Record Permission </button>
+    </div>
+
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-sm-12 text-right">
+      <button class="btn btn-default" type="button" >
+        <i class="material-icons">close</i> Cancel
+      </button>
+      
+      <button class="btn btn-primary ml-2" type="button" [disabled]="disablesavebtn" (click)="onSubmitDispositionRule()">
+          <i class="material-icons">save</i> Add Rules
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive" *ngIf="this.dispositionModel && this.dispositionModel.rules && this.dispositionModel.rules.length > 0">
+    <table class="w-100 table-hover table-membroz">
+      <thead>
+        <tr>
+          <th>Trigger</th>
+          <th>Action</th>
+          <th>From Disposition</th>
+          <th>To Disposition</th>
+          <th class="disabled-sorting text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of this.dispositionModel.rules">
+            <td>{{item.trigger}}</td>
+            <td>{{item.action}}</td>
+            <td *ngIf="item.fromdispositionid">{{getDispositionName(item.fromdispositionid)}}</td>
+            <!-- <td *ngIf="item.fromdispositionid">{{item.fromdispositionid.disposition}}</td> -->
+            <td *ngIf="!item.fromdispositionid"></td>
+            <td *ngIf="item.todispositionid">{{getDispositionName(item.todispositionid)}}</td>
+            <!-- <td *ngIf="item.todispositionid">{{item.todispositionid.disposition}}</td> -->
+            <td *ngIf="!item.todispositionid"></td>
+            <td class="td-actions text-right nowrap">
+              <button class="btn btn-success"  matTooltip="Edit" (click)="getdispositonruledata(item)">
+                <i class="material-icons">edit</i>
+              </button>
+              <button class="btn btn-danger"  matTooltip="Remove" (click)="removeRules(item)">
+                <i class="material-icons">delete</i>
+              </button>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isLoading">
+  <div class="row">
+    <div class="loader">
+      <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2" stroke-miterlimit="10" />
+      </svg>
+    </div>
+  </div>
+</ng-container>

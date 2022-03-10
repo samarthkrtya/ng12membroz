@@ -1,0 +1,436 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="card-title">Payroll Process Begin</h3>
+                <div class="row">
+                    <div class="col-md-6 col-lg-6 col-xl-3 d-flex pr-md-0 pr-lg-0 pr-xl-0">
+                        <div class="card mt-0">
+                            <div class="card-body">
+
+                                <div class="d-flex flex-wrap">
+                                    <div class="mr-4 mr-md-5 mr-lg-5 mr-xl-5">
+                                        <div>Payroll Period</div>
+                                        <h5 class="mt-0">{{selectedMonthName}} {{payroll.year}}</h5>
+                                    </div>
+                                    <!-- <div class="mr-4 mr-md-5 mr-lg-5 mr-xl-5">
+                                        <div>Payroll Cost</div>
+                                        <h5 class="mt-0">₹23,33,333.00</h5>
+                                    </div> -->
+                                    <div class="">
+                                        <div>Net Pay</div>
+                                        <h5 class="mt-0">₹{{getPayrollNetPay()}}</h5>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-primary ml-2"
+                                        (click)="exportAsExcel()">
+                                        <i class="material-icons">download</i>
+                                            Export As Excel
+                                    </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-6 col-lg-6 col-xl-3 d-flex pr-xl-0">
+                        <div class="card mt-0">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">Taxes </div>
+                                    <h5 class="mt-0 ml-3">₹4,000</h5>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">Pre-Tax Deductions</div>
+                                    <h5 class="mt-0 ml-3">₹0.00</h5>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">Post-Tax Deductions</div>
+                                    <h5 class="mt-0 ml-3 mb-0">₹0.00</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-md-4 col-lg-4 col-xl-2 d-flex pr-md-0 pr-lg-0 pr-xl-0">
+                        <div class="card mt-0">
+                            <div class="card-body">
+
+                                <div class="text-center">
+                                    <div>Total</div>
+                                    <h2 class="mt-0 mb-0">{{payroll.employeesalary.length}}</h2>
+                                    <h5 class="m-0">Employees</h5>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-lg-8 col-xl-4 d-flex">
+                        <div class="card mt-0">
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="d-flex flex-wrap" *ngIf="payroll">
+
+                                            <div class="mr-4 mr-md-5 mr-lg-5 mr-xl-5 text-center">
+                                                <div>Working Days</div>
+                                                <h5 class="mt-0"> {{payroll.workingdays}} </h5>
+                                            </div>
+                                            <div class="mr-4 mr-md-5 mr-lg-5 mr-xl-5 text-center">
+                                                <div>Weekly offs</div>
+                                                <h5 class="mt-0"> {{payroll.weeklyoffdays}}</h5>
+                                            </div>
+                                            <div class="mr-4 mr-md-5 mr-lg-5 mr-xl-5 text-center">
+                                                <div>Holidays</div>
+                                                <h5 class="mt-0"> {{payroll.holidays}}</h5>
+                                            </div>
+
+                                            <div class="mr-4 mr-md-5 mr-lg-5 mr-xl-5 text-center">
+                                                <div>Payment Date</div>
+                                                <h5 *ngIf="payroll.paymentdate != null" class="mt-0">
+                                                    {{paymentdate | date}}
+
+                                                    <!-- {{paymentdate.getDate()}}
+                                                    {{getMonth(paymentdate.getMonth() + 1)}}
+                                                    {{paymentdate.getFullYear()}} -->
+                                                </h5>
+                                                <!-- <h5 class="mt-0">7 May 2021</h5> -->
+                                            </div>
+                                            <div>
+                                                <div>Status</div>
+                                                <div class="mt-1">
+                                                    <span
+                                                        class="attend-text-green font-weight-bold attend-working-box mb-lg-0 mb-3">
+                                                        {{payrollStatus}} </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="row"  *ngIf="isDisplay">
+                    <div class="col-md-12 ">
+                        <div class="card mt-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8"></div>
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Search Staff By Category</mat-label>
+                                            <mat-select (selectionChange)="onCategorySelect($event.value)">
+                                                <mat-option *ngFor="let c of categoryData" [value]="c._id">{{c.property.title}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <!-- <div class="d-flex flex-wrap"> -->
+                                    <!-- <div class="mr-4 mr-md-5 mr-lg-5 mr-xl-5" style="text-align: right;"> -->
+                                       
+                                    <!-- </div> -->
+                                <!-- </div> -->
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+
+                <div class="loader" *ngIf="isLoadingResults">
+                    <svg class="circular" viewBox="25 25 50 50">
+                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                            stroke-miterlimit="10" />
+                    </svg>
+                </div>
+
+                <div class="card mt-0">
+                    <div class="card-body">
+                        <div class="material-datatables1" *ngIf="payrollType && payrollType == 'Salary Component'">
+                            <div class="table-responsive" #TABLE>
+                                <table mat-table [dataSource]="dataSource" matSort matSortActive="desc"
+                                    class="mat-elevation-z8 w-100 table-hover table-membroz" matSortDisableClear>
+
+                                    <ng-container matColumnDef="slno">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>SL NO</th>
+                                        <td mat-cell *matCellDef="let element; let i = index;"> {{i + 1}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="employeename">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.employeeid &&
+                                            element.employeeid.fullname
+                                            ? element.employeeid.fullname :
+                                            element.fullname}} </td>
+
+                                        <!-- <td mat-cell *matCellDef="let element"> {{element.employeeid.fullname}} </td> -->
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="desgination">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Desgination</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.desgination}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="actualsalary">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Actual Salary</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.actualsalary}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="paiddays">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Paid Days</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.paiddays}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="presentdays">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Present Days</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.presentdays}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="paidleave">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Paid Leave</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.paidleave}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="absentdays">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Absent Days</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.absentdays}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="overtime">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Overtime</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.overtime}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="overtimeamount">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Overtime Amount</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.overtimeamount}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="cf">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>CF</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.cf}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="earnings">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Earnings</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.earnings}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="statutorydeductions">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Statutory Deductions</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.statutorydeductions}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="advance">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Advance</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.advance}}"
+                                                [(ngModel)]="element.advance"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="bonus">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Bonus</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.bonus}}"
+                                                [(ngModel)]="element.bonus" (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="deduction">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Deduction</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.deduction}}"
+                                                [(ngModel)]="element.deduction"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="taxamount">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tax Amount</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.taxamount}}"
+                                                [(ngModel)]="element.taxamount"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="commission">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Commission</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.commission}}"
+                                                [(ngModel)]="element.commission"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="netonhand">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Net on Hand</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.netonhand}} </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                </table>
+                                <mat-paginator #paginator [pageSizeOptions]="[100, 200]" 
+                                    showFirstLastButtons></mat-paginator>           
+                            </div>
+                        </div>
+                        <div class="material-datatables1" *ngIf="payrollType && payrollType == 'Hourly Rate'">
+                            <div class="table-responsive" #TABLE>
+                                <table mat-table [dataSource]="dataSource" matSort matSortActive="desc"
+                                    class="mat-elevation-z8 w-100 table-hover table-membroz" matSortDisableClear>
+
+                                    <ng-container matColumnDef="slno">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>SL NO</th>
+                                        <td mat-cell *matCellDef="let element; let i = index;"> {{i + 1}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="employeename">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee Name</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.employeeid &&
+                                            element.employeeid.fullname
+                                            ? element.employeeid.fullname :
+                                            element.fullname}} </td>
+
+                                        <!-- <td mat-cell *matCellDef="let element"> {{element.employeeid.fullname}} </td> -->
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="desgination">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Desgination</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.desgination}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="hourlyrate">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Hourly Rate</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.hourlyPay}} </td>
+                                    </ng-container> <ng-container matColumnDef="totalhours">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Hours</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.totalHours}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="earnings">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Earnings</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.earnings}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="advance">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Advance</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.advance}}"
+                                                [(ngModel)]="element.advance"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="bonus">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Bonus</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.bonus}}"
+                                                [(ngModel)]="element.bonus" (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="deduction">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Deduction</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.deduction}}"
+                                                [(ngModel)]="element.deduction"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="taxamount">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tax Amount</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.taxamount}}"
+                                                [(ngModel)]="element.taxamount"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="commission">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Commission</th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <input class="form-control" type="number" name="{{element.commission}}"
+                                                [(ngModel)]="element.commission"
+                                                (change)="calculateSalary($event,element)">
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="netonhand">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Net on Hand</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.netonhand}} </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+                                </table>
+                                <mat-paginator #paginator [pageSizeOptions]="[100, 200]" 
+                                    showFirstLastButtons></mat-paginator>           
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-sm-6">
+                                <button (click)="back()" type="button" class="btn btn-default ml-1">
+                                    <i class="material-icons">keyboard_arrow_left</i>
+                                    Back
+                                </button>
+                            </div>
+                            <div class="col-sm-6 text-right">
+
+                                <button *ngIf="isActive && !submitted" [disabled]="submitted"
+                                    (click)="savePayroll('active')" type="button" class="btn btn-primary ml-2">
+                                    <span *ngIf="submitted" class="spinner-border"></span>
+                                    <i *ngIf="!submitted" class="material-icons">save</i>
+                                    {{ !submitted ? 'Save As Draft': ''}}
+                                </button>
+
+                                <button *ngIf="isActive" [disabled]="submitted" (click)="savePayroll('paid')"
+                                    type="button" class="btn btn-primary ml-2">
+                                    <span *ngIf="submitted" class="spinner-border"></span>
+                                    <i *ngIf="!submitted" class="material-icons">save</i>
+                                    {{ !submitted ? 'Process Payroll': ''}}
+                                </button>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer fixed-bottom bg-white shadow-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-0 col-xl-12">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <!-- <button (click)="back()" type="button" class="btn btn-default ml-1"
+                                [routerLink]="['/pages/payroll-module/payroll-process/lists/']">
+                                <i class="material-icons">keyboard_arrow_left</i>
+                                Back
+                            </button> -->
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <button *ngIf="isActive && !submitted" [disabled]="submitted"
+                                (click)="savePayroll('active')" type="button" class="btn btn-primary ml-2">
+                                <span *ngIf="submitted" class="spinner-border"></span>
+                                <i *ngIf="!submitted" class="material-icons">save</i>
+                                {{ !submitted ? 'Save As Draft': ''}}
+                            </button>
+
+                            <button *ngIf="isActive" [disabled]="submitted" (click)="savePayroll('paid')" type="button"
+                                class="btn btn-primary ml-2">
+                                <span *ngIf="submitted" class="spinner-border"></span>
+                                <i *ngIf="!submitted" class="material-icons">save</i>
+                                {{ !submitted ? 'Process Payroll': ''}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>

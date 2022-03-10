@@ -1,0 +1,84 @@
+<div class="row">
+    <div class="col-lg-6"></div>
+    <div class="col-lg-6">
+        <div class="input-group d-flex justify-content-end">
+            <mat-form-field 
+                class="example-full-width common-search-size w-auto pt-0" 
+                appearance="standard" >
+                <span 
+                    class="input-group-prepend" 
+                    matPrefix>
+                    <span class="input-group-text pl-0">
+                        <i class="material-icons">search</i>
+                    </span>
+                </span>
+                <input 
+                    matInput 
+                    (keyup)="applyFilter($event.target.value)" 
+                    placeholder="Search">
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+<div class="row d-flex">
+    <div class="col-sm-6 align-self-center">
+        <h4 class="card-title mb-sm-2 mb-3"> All Folders &amp; Files </h4>
+    </div>
+    <div class="col-sm-6 text-right align-self-center"></div>
+</div>
+<div class="table-responsive">
+    <table 
+        mat-table 
+        [dataSource]="dataSource" 
+        matSort
+        class="mat-elevation-z8 w-100 table-hover table-membroz">
+        
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let element">
+                <img class="mr-2" [src]="getAttachmentPath(element.type)" style="width: 15px; width: 15px;">
+                {{element.name}} 
+            </td>
+        </ng-container>
+  
+        <!-- Weight Column -->
+        <ng-container matColumnDef="size">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+            <td mat-cell *matCellDef="let element"> {{element.sizeType}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'medium'}} </td>
+        </ng-container>
+  
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="addedby">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created by </th>
+            <td mat-cell *matCellDef="let element"> {{element.addedby}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="text-right" mat-sort-header> Action </th>
+            <td mat-cell *matCellDef="let element" class="text-right"> 
+                <button 
+                    class="btn btn-link btn-primary btn-just-icon"  
+                    data-toggle="dropdown" 
+                    matTooltip="More" 
+                    [matTooltipPosition]="'above'">
+                    <i class="material-icons">more_vert</i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" (click)="recover(element)">
+                        <i class="material-icons mr-3 font-18">delete</i> Recover
+                    </a>
+                </div>
+            </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+</div>

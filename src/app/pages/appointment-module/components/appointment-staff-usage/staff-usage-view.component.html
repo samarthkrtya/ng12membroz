@@ -1,0 +1,242 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">{{getLang('calendar','Staff Calendar')}}</h3>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <ng-container>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="d-md-flex mb-3" style="text-align: right;">
+                                        <div class="flex-md-grow-1">
+                                            <div class="ts-blue-box ts-text-blue mb-1">
+                                                {{getLang('requested','Requested')}}
+                                            </div>
+                                            <div type="button" class="ts-blue-box ts-text-blue mb-1 ml-1 ml-lg-2">
+                                                {{getLang('onhold','On Hold')}}
+                                            </div>
+                                            <div class="ts-pink-box ts-text-pink btn-sm mb-1 ml-1 ml-lg-2">
+                                                {{getLang('confirmed','Confirmed')}}
+                                            </div>
+                                            <div type="button"  class="ts-green-box ts-text-green btn-sm mb-1 ml-1 ml-lg-2">
+                                                {{getLang('completed','Completed')}}
+                                            </div>
+                                            <div class="attend-text-green attend-working-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('notstarted','Not Started')}}
+                                            </div>
+                                            <div class="attend-text-orange attend-holiday-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('noshow','No Show')}}
+                                            </div>
+                                            <div class="attend-text-red attend-absent-box mb-1 ml-1 ml-lg-2">
+                                                {{getLang('cancel','Cancel')}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div fxLayout="row" *ngIf="!calendarVisible" fxLayoutAlign="space-around center" style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                                                <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                                            </div>
+                                            <div>
+                                                <full-calendar 
+                                                    *ngIf="calendarVisible" 
+                                                    [options]="calendarOptions">
+                                            </full-calendar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="myModal" [style.display]="showModal ? 'block' : 'none'">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> {{selectedAppointment?.title}}  </h4>
+                <button type="button" class="close" data-dismiss="modal" (click) = "hide()">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <ng-container  *ngIf="isLoadingModal;else content">
+                    <div fxLayout="row" *ngIf="!calendarVisibility" fxLayoutAlign="space-around center" style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                        <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                    </div>
+                </ng-container>
+                <ng-template #content>
+                <div class="media mb-4">
+                    <img 
+                        [src]="selectedAppointment?.memberprofilepic"
+                        class="profile-avatar-img mr-3 rounded-circle" 
+                        alt="">
+                    <div class="media-body">
+                        <a class="btn btn-link btn-primary mat-raised-button" (click)="openprofile(this.selectedAppointment)" >
+                            <span class="font-bold mb-1">{{this.selectedAppointment?.attendeename}}</span>
+                            <span class="font-bold mb-1" *ngIf="this.selectedAppointment?.groupsize"> [ {{this.selectedAppointment?.groupsize}} ]</span>
+                        </a>
+                        <div class="d-flex">
+                            <div class="flex-grow-1"> {{selectedAppointment?.attendee?.property?.mobile}}</div>
+                            <div class="text-gray"><small>Booked on {{selectedAppointment?.createdAt | date: 'MMM d, y'}}</small></div>
+                        </div>
+                    </div>
+                </div>               
+                <ul class="list-unstyled"  *ngIf="this.selectedAppointment">
+
+                    <li class="media mb-3"><mat-icon class="mat-icon material-icons mr-2">schedule</mat-icon>
+                        <div class="media-body">
+                            <div> {{selectedAppointment?.timeslot?.starttime}} - {{selectedAppointment?.timeslot?.endtime}} </div>
+                            <div class="text-gray"><small>{{selectedAppointment?.date | date: 'EEEE, MMMM d'}}</small></div>
+                        </div>
+                    </li>
+
+                    <li class="media mb-3">
+                        <div class="media-body">
+                            <div class="font-bold mb-1"> {{selectedAppointment?.host?.fullname}}</div>
+                            <div class="text-gray"><small> Status: {{selectedAppointment?.status}}</small></div>
+                        </div>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedAppointment.status !== 'checkout' && !this.selectedAppointment.packageid">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="edit()">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1" >edit</mat-icon>
+                            {{getLang('edit','Edit')}}
+                        </button>
+                    </li>
+
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedAppointment.status == 'requested'">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('confirmed')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">done</mat-icon>
+                            {{getLang('confirmed','Confirmed')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel' && this.selectedAppointment.status !== 'checkout'">
+                        <button class="btn btn-link-gray m-0 p-0"  (click)="CancelAppointment()" data-toggle="modal" data-target="#myModalCancelAppointment">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">clear</mat-icon>
+                            {{getLang('cancel','Cancel')}} 
+                        </button>
+                    </li>
+
+                    <li class="mb-3" *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'noshow'  && this.selectedAppointment.status !== 'checkout'">
+                        <button class="btn btn-link-gray m-0 p-0" (click)="appointmentStatus('noshow')">
+                            <mat-icon class="mat-icon material-icons font-24 mr-1">visibility_off</mat-icon>
+                            {{getLang('noshow','No Show')}}
+                        </button>
+                    </li>
+
+                </ul>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button type="button" id="myModalAppointmentBtn" data-toggle="modal" data-target="#myModalAppointment" class="btn btn-info btn-lg d-none" >{{getLang('openmodal','Open Modal')}}</button>
+<div id="myModalAppointment" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('appointment','Appointment')}}</h4>
+                <button type="button" id="appointmentClose" (click)="cancel()" class="close " data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-appointment-booking
+                    *ngIf="addAppointmnet"
+                    #appintmentadd
+                    [passondate]="date"
+                    type="multi"
+                    [isEdit]="isEdit"
+                    [isReschedule]="isReschedule"
+                    [selectedAppointment]="this.selectedAppointment"
+                    (onAppointmentData)="getSubmittedData($event)">
+                </app-appointment-booking>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div id="myModalCancelAppointment" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cancel Appointment</h4>
+                <button type="button" class="close" id="cancelAppointmentCloseBtn" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <p> Are you Sure that you would like to cancel the following appointment </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="text-gray"> {{selectedAppointment?.attendeename}} </div>
+                            <div class="text-gray"> {{selectedAppointment?.title}} </div>
+                            <div class="text-gray">{{selectedAppointment?.timeslot?.starttime}} - {{selectedAppointment?.timeslot?.endtime}} </div>
+                        </div>
+                        <div class="col-md-6"> 
+                             
+                            <mat-form-field appearance="fill">
+                                <mat-label>Cancallation Reason <code> * </code> </mat-label>
+                                <mat-select [(ngModel)]="cancallationreason">
+                                    <mat-option value="">Select Reason</mat-option>
+                                    <mat-option *ngFor="let reason of cancellationReasonLists" [value]="reason.code">
+                                    {{reason.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-6 text-left">
+                            <button 
+                                data-dismiss="modal"
+                                class="btn btn-default" 
+                                type="button">
+                                <i class="material-icons">close</i> {{getLang('donotcancel', 'Do Not Cancel')}}
+                            </button>
+                        
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <button 
+                                (click)="cancelAppointmentSubmit()"
+                                class="btn btn-primary ml-2" 
+                                type="button" >
+                                <i class="material-icons">save</i> {{getLang('earlycancel', 'Early Cancel')}}
+                            </button>
+                        </div>
+    
+                    </div>
+                    
+                </div>
+              </div>
+            <div class="modal-footer">
+                
+                
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<form [formGroup]="campaignForm" (ngSubmit)="onSubmit(campaignForm.value)" novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="card mt-0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-10 col-lg-10 col-xl-10 mr-auto ml-auto">
+
+                                    <label class="col-form-label">
+                                        HTML Editor
+                                    </label><br/>
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput rows="15" cols="90" formControlName="content"
+                                        ></textarea>
+                                    </mat-form-field>
+                                   
+                                    <div class="d-flex justify-content-end">                                        
+                                        <button [routerLink]="['/pages/dynamic-list/list/campaign']" class="btn btn-default" type="button">
+                                            <i class="material-icons">close</i>
+                                            {{getLang('cancel', 'Cancel')}}
+                                          </button>
+                                        <button class="btn btn-primary ml-2" type="submit">
+                                            Save <i class="material-icons">save</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <footer class="footer fixed-bottom bg-white shadow-top"  *ngIf="!isLoading">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+              <div class="row">
+                <div class="col-sm-12 text-right">
+                  <button [routerLink]="['/pages/dynamic-list/list/campaign']" class="btn btn-default" type="button">
+                    <i class="material-icons">close</i>
+                    {{getLang('cancel', 'Cancel')}}
+                  </button>
+                  <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+                    <i class="material-icons">save</i>
+                    {{getLang('save', 'Save')}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer> -->
+
+</form>

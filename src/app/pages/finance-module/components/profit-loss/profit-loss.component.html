@@ -1,0 +1,380 @@
+<div class="main-content">
+        <div class="container-fluid">
+                <div class="row">
+                        <div class="offset-xl-1 col-xl-10">
+                                <div class="card mrt0">
+                                        <div class="card-body">
+                                                <div class="row">
+                                                        <div class="col-md-5 col-lg-5 col-xl-3">
+                                                                <mat-form-field class="example-full-width">
+                                                                        <mat-date-range-input [rangePicker]="picker">
+                                                                                <input matStartDate
+                                                                                        [(ngModel)]="daterangepickermodel.beginJsDate"
+                                                                                        placeholder="{{getLang('startdate', 'Start Date')}} "
+                                                                                        #dateRangeStart>
+                                                                                <input #dateRangeEnd
+                                                                                        (dateChange)="dateRangeChange(dateRangeStart,dateRangeEnd)"
+                                                                                        matEndDate
+                                                                                        [(ngModel)]="daterangepickermodel.endJsDate"
+                                                                                        placeholder="{{getLang('enddate', 'End Date')}} ">
+                                                                        </mat-date-range-input>
+                                                                        <mat-datepicker-toggle matSuffix [for]="picker">
+                                                                        </mat-datepicker-toggle>
+                                                                        <mat-date-range-picker #picker>
+                                                                        </mat-date-range-picker>
+                                                                </mat-form-field>
+                                                        </div>
+                                                        <div class="col-md-7 col-lg-7 col-xl-9 text-right">
+                                                                <span class="dropdown inline-block text-right">
+                                                                        <button href="#pablo"
+                                                                                class="dropdown-toggle btn btn-primary mr0"
+                                                                                data-toggle="dropdown">
+                                                                                {{getLang('more', 'More')}}
+                                                                                <b class="caret"></b>
+                                                                        </button>
+                                                                        <ul class="dropdown-menu dropdown-menu-right">
+                                                                                <li >
+                                                                                        <a class="dropdown-item">
+                                                                                                {{getLang('print',
+                                                                                                'Print')}}
+                                                                                        </a>
+                                                                                </li>
+                                                                        </ul>
+                                                                </span>
+                                                        </div>
+                                                </div>
+
+
+
+                                        </div>
+                                </div>
+                                <div class="card">
+                                        <div class="card-body">
+                                                <div class="row">
+                                                        <div class="col-md-12 col-lg-12 col-xl-10 offset-xl-1">
+                                                                <div class="loader" *ngIf="isLoading">
+                                                                        <svg class="circular" viewBox="25 25 50 50">
+                                                                                <circle class="path" cx="50" cy="50"
+                                                                                        r="20" fill="none"
+                                                                                        stroke-width="2"
+                                                                                        stroke-miterlimit="10" />
+                                                                        </svg>
+                                                                </div>
+
+
+                                                                <div id="balancesheet" *ngIf="!isLoading">
+
+                                                                        <div>
+                                                                                <header>
+                                                                                        <div class="contacts">
+                                                                                                <div
+                                                                                                        class="invoice-to text-center">
+                                                                                                        <div
+                                                                                                                class="text-gray-light">
+                                                                                                                {{getLang('krtya',
+                                                                                                                'Krtya')}}
+                                                                                                        </div>
+                                                                                                        <h3
+                                                                                                                class="to mr0">
+                                                                                                                {{getLang('profitandloss',
+                                                                                                                'Profit
+                                                                                                                And
+                                                                                                                Loss')}}         
+                                                                                                        </h3>
+                                                                                                        <div
+                                                                                                                class="email">
+                                                                                                                {{getLang('from',
+                                                                                                                'From')}}
+                                                                                                                {{startdate |
+                                                                                                                date:'dd/MM/yyyy'}}
+                                                                                                                {{getLang('to',
+                                                                                                                'To')}}
+                                                                                                                {{enddate |
+                                                                                                                date:'dd/MM/yyyy'}}
+                                                                                                        </div>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                </header>
+                                                                                <main>
+                                                                                        <table border="0"
+                                                                                                class="table table-striped"
+                                                                                                cellspacing="0"
+                                                                                                cellpadding="0">
+                                                                                                <tbody>
+                                                                                                        <ng-container>
+                                                                                                                <h4
+                                                                                                                        class="bold">
+                                                                                                                        {{incomeList[0]?.accounttype}}
+                                                                                                                </h4>
+                                                                                                                <tr
+                                                                                                                        *ngFor="let item of incomeList">
+                                                                                                                        <td class="text-left"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.headname}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.headname}}</span>
+                                                                                                                        </td>
+                                                                                                                        <td class="text-right"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.amount}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.amount}}</span>
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                        <td
+                                                                                                                                colspan="2">
+                                                                                                                        </td>
+                                                                                                                        <td colspan="2"
+                                                                                                                                class="text-right bold"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                                
+                                                                                                                                {{getLang('total',
+                                                                                                                                'Total')}}
+
+
+
+                                                                                                                                {{incomeList[0]?.accounttype}}
+                                                                                                                                :
+                                                                                                                                {{totalIncome}}
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                        </ng-container>
+                                                                                                </tbody>
+                                                                                        </table>
+                                                                                </main>
+
+                                                                                <main>
+                                                                                        <table border="0"
+                                                                                                class="table table-striped"
+                                                                                                cellspacing="0"
+                                                                                                cellpadding="0">
+                                                                                                <tbody>
+                                                                                                        <ng-container>
+                                                                                                                <h4
+                                                                                                                        class="bold">
+                                                                                                                        {{cogsList[0]?.accounttype}}
+                                                                                                                </h4>
+                                                                                                                <tr
+                                                                                                                        *ngFor="let item of cogsList">
+                                                                                                                        <td class="text-left"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.headname}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.headname}}</span>
+                                                                                                                        </td>
+                                                                                                                        <td class="text-right"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.amount}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.amount}}</span>
+                                                                                                                        </td>
+                                                                                                                </tr>
+
+                                                                                                                <tr>
+                                                                                                                        <td colspan="2"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                        </td>
+                                                                                                                        <td colspan="2"
+                                                                                                                                class="text-right bold"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                                {{getLang('total',
+                                                                                                                                'Total')}}
+
+                                                                                                                                {{cogsList[0]?.accounttype}}
+                                                                                                                                :
+                                                                                                                                {{cogsExpense}}
+                                                                                                                        </td>
+                                                                                                                </tr>
+
+                                                                                                                <tr>
+                                                                                                                        <td colspan="2"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                        </td>
+                                                                                                                        <td colspan="2"
+                                                                                                                                class="text-right bold"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                                {{getLang('grossprofit',
+                                                                                                                                'Grosss Profit')}} :
+                                                                                                                                {{grossincome}}
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                        </ng-container>
+                                                                                                </tbody>
+                                                                                        </table>
+                                                                                </main>
+
+
+
+
+                                                                                <main>
+                                                                                        <table border="0"
+                                                                                                class="table table-striped"
+                                                                                                cellspacing="0"
+                                                                                                cellpadding="0">
+                                                                                                <tbody>
+                                                                                                        <ng-container>
+                                                                                                                <h4
+                                                                                                                        class="bold">
+                                                                                                                        {{expenseList[0]?.accounttype}}
+                                                                                                                </h4>
+                                                                                                                <tr
+                                                                                                                        *ngFor="let item of expenseList">
+                                                                                                                        <td class="text-left"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.headname}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.headname}}</span>
+                                                                                                                        </td>
+                                                                                                                        <td class="text-right"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.amount}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.amount}}</span>
+                                                                                                                        </td>
+                                                                                                                </tr>
+
+                                                                                                                <tr>
+                                                                                                                        <td colspan="2"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                        </td>
+                                                                                                                        <td colspan="2"
+                                                                                                                                class="text-right bold"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                                {{getLang('total',
+                                                                                                                                'Total')}}
+                                                                                                                                {{expenseList[0]?.accounttype}}
+                                                                                                                                :
+                                                                                                                                {{totalExpense}}
+                                                                                                                        </td>
+                                                                                                                </tr>
+
+
+                                                                                                                <tr>
+                                                                                                                        <td colspan="2"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                        </td>
+                                                                                                                        <td colspan="2"
+                                                                                                                                class="text-right bold"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                                {{getLang('operationalprofit',
+                                                                                                                                'Operational
+                                                                                                                                Profit')}}   
+                                                                                                                                :
+                                                                                                                                {{oprincome}}
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                        </ng-container>
+                                                                                                </tbody>
+                                                                                        </table>
+                                                                                </main>
+
+
+                                                                                <main>
+                                                                                        <table border="0"
+                                                                                                class="table table-striped"
+                                                                                                cellspacing="0"
+                                                                                                cellpadding="0">
+                                                                                                <tbody>
+                                                                                                        <ng-container>
+                                                                                                                <h4
+                                                                                                                        class="bold">
+                                                                                                                        {{otherexpenseList[0]?.accounttype}}
+                                                                                                                </h4>
+                                                                                                                <tr
+                                                                                                                        *ngFor="let item of otherexpenseList">
+                                                                                                                        <td class="text-left"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.headname}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.headname}}</span>
+                                                                                                                        </td>
+                                                                                                                        <td class="text-right"
+                                                                                                                                colspan="2">
+                                                                                                                                <a *ngIf="item.amount != 0"
+                                                                                                                                        (click)="onSelectitem(item)"
+                                                                                                                                        style="cursor:pointer;">
+                                                                                                                                        {{item.amount}}
+                                                                                                                                </a>
+                                                                                                                                <span
+                                                                                                                                        *ngIf="!item.amount">
+                                                                                                                                        {{item?.amount}}</span>
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                        <td colspan="2"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                        </td>
+                                                                                                                        <td colspan="2"
+                                                                                                                                class="text-right bold"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                                {{getLang('total',
+                                                                                                                                'Total')}}
+                                                                                                                                {{otherexpenseList[0]?.accounttype}}
+                                                                                                                                :
+                                                                                                                                {{totalotherExpense}}
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                        <td colspan="2"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                        </td>
+                                                                                                                        <td colspan="2"
+                                                                                                                                class="text-right bold"
+                                                                                                                                style="background-color: #ffffff">
+                                                                                                                                {{getLang('netprofitloss',
+                                                                                                                                ' Net
+                                                                                                                                Profit/Loss')}}
+                                                                                                                                :
+                                                                                                                                {{netprofit}}
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                        </ng-container>
+                                                                                                </tbody>
+                                                                                        </table>
+                                                                                </main>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+</div>

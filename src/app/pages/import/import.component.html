@@ -1,0 +1,97 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3 class="card-title"> {{dispalyformname}} Import </h3>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="wizard-container" *ngIf="_tabLists && _tabLists.length !== 0">
+                            <div class="wizard-card" data-color="rose" id="wizardProfile">
+                                <div class="wizard-navigation mb-5">
+                                    <ul id="ul_o" class="nav nav-pills px-0" style="flex-wrap: nowrap;">
+                                        <li 
+                                            id="tab_{{i+1}}" 
+                                            class="active nav-item"
+                                            [ngClass]="item.class == 'disable' ? 'disabled-cls' : ''"
+                                            *ngFor="let item of _tabLists;let i = index"
+                                            (click)="onTabClick(i+1, item.tabname)">
+                                            <a 
+                                                class="nav-link" 
+                                                data-toggle="tab" 
+                                                role="tab"
+                                                [ngClass]="currentTab == i+1 ? 'active' : ''"
+                                                href="#{{i+1}}">
+                                                {{item.tabname}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="tab-pane active">
+                                        <app-import-upload 
+                                            *ngIf="_defaultTabName == 'Upload Files'"
+                                            [sampleCsvPath]="sampleCsvPath"
+                                            [importUrl]="importUrl"
+                                            [importFields]="importFields"
+                                            [returnUrl]="returnUrl"
+                                            [formId]="_formId"
+                                            (childSubmitData)="getSubmittedData($event)"
+                                            (removeSubmitData)="removeSubmittedData($event)">
+                                        </app-import-upload>
+
+                                        <app-import-data-render
+                                            *ngIf="_defaultTabName == 'Preview'"
+                                            [importUrl]="importUrl"
+                                            [importFields]="importFields"
+                                            [original_filename]="original_filename"
+                                            [selectedFileExtension]="selectedFileExtension"
+                                            [returnUrl]="returnUrl"
+                                            [formId]="_formId"
+                                            (importSubmitData)="getImportSubmittedData($event)">
+                                        </app-import-data-render>
+
+                                        <app-import-mapping-fields 
+                                            *ngIf="_defaultTabName == 'Mapping'"
+                                            [importFields]="importFields"
+                                            [returnUrl]="returnUrl"
+                                            [fieldLists]="fieldLists"
+                                            [importdatas]="importdatas"
+                                            [formId]="_formId"
+                                            (mappingSubmitData)="getmappingSubmittedData($event)">
+                                        </app-import-mapping-fields>
+
+                                        <app-import-review-fields 
+                                            *ngIf="_defaultTabName == 'Review Fields'"
+                                            [reviwedData]="reviwedData"
+                                            [bindId]="_formId"
+                                            [returnUrl]="returnUrl"
+                                            [importFields]="importFields"
+                                            [param]="param"
+                                            [isFilterListing]="isFilterListing"
+                                            (reviewSubmitData)="getReviewSubmittedData($event)">
+                                        </app-import-review-fields>
+
+                                        <app-import-submit 
+                                            *ngIf="_defaultTabName == 'Submit Data'"
+                                            [importDataCount]= "finalImportedDataLists.length"
+                                            [formname]="formname"
+                                            [returnUrl]="returnUrl">
+                                        </app-import-submit>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wizard-footer">
+                                <div class="pull-right">
+                                </div>
+                                <div class="pull-left">
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

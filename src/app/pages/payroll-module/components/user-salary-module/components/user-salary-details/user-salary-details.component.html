@@ -1,0 +1,354 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <h3 class="card-title">Salary Detail</h3>
+                <div class="card white-box-full-order">
+                    <div class="card-body">
+
+                        <div class="border-outer-secondary p-3" *ngIf="onDisplay">
+                            <div class="mb-3">
+                                <!-- *ngIf="selectedPayHeadList.length > 0" -->
+                                <h4 class="card-title"> Earnings </h4>
+                                <div class="row" *ngFor="let item of userData.salarycomponents">
+                                    <ng-container *ngIf="item.salarycomponent.payHeadTypeID=='101'">
+                                        <div class="col-lg-2 d-flex">
+                                            <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                                                {{item.salarycomponent.payHeadName}}
+                                            </label>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="col-form-label">
+                                                Amount Monthly
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput name="amount" [(ngModel)]="item.amount" readonly>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="col-form-label">
+                                                Amount Annually
+                                            </label>
+                                            <div class="input-group">
+                                                <div class="d-flex w-100">
+                                                    <div class="flex-grow-1">
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput value="{{item.amountAnnually}}" readonly>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+
+                            <hr />
+                            <!-- *ngIf="revision && revision.salarycomponents.length > 0" -->
+                            <div class="mb-2">
+                                <!-- *ngIf="revision && revision.salarycomponents.length > 0"  -->
+                                <h4 class="card-title"> Deductions </h4>
+                                <div class="row" *ngFor="let item of userData.salarycomponents">
+                                    <ng-container *ngIf="item.salarycomponent.payHeadTypeID=='103'">
+                                        <ng-container *ngIf="item.salarycomponent.calculationTypeID==501">
+                                            <div class="col-lg-2 d-flex">
+                                                <label
+                                                    class="col-form-label d-flex align-items-center font-weight-bolder">
+                                                    {{item.salarycomponent.payHeadName}}
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <label class="col-form-label">
+                                                    Amount Monthly
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput value="{{item.amount}}" readonly>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <label class="col-form-label">
+                                                    Amount Annually
+                                                </label>
+                                                <div class="input-group">
+                                                    <div class="d-flex w-100">
+                                                        <div class="flex-grow-1">
+                                                            <mat-form-field class="example-full-width">
+                                                                <input matInput value="{{item.amountAnnually}}"
+                                                                    readonly>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="item.salarycomponent.calculationTypeID!=501">
+                                            <div class="col-lg-2 d-flex">
+                                                <label
+                                                    class="col-form-label d-flex align-items-center font-weight-bolder">
+                                                    {{item.salarycomponent.payHeadName}}
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <label class="col-form-label">
+                                                    Amount Monthly
+                                                </label>
+                                                <mat-form-field class="example-full-width">
+                                                    <input matInput name="amount" [(ngModel)]="item.amount" readonly>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <label class="col-form-label">
+                                                    Amount Annually
+                                                </label>
+                                                <div class="input-group">
+                                                    <div class="d-flex w-100">
+                                                        <div class="flex-grow-1">
+                                                            <mat-form-field class="example-full-width">
+                                                                <input matInput value="{{item.amountAnnually}}"
+                                                                    readonly>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </div>
+
+                            <hr />
+                            <!-- *ngIf="revision && revision.salarycomponents.length > 0" -->
+                            <div class="mb-3">
+                                <!-- *ngIf="revision && revision.salarycomponents.length > 0" -->
+                                <h4 class="card-title"> Employer's Contribution </h4>
+                                <div class="row" *ngFor="let item of userData.salarycomponents">
+                                    <ng-container
+                                        *ngIf="item.salarycomponent.statutoryPayTypeID==301 || item.salarycomponent.statutoryPayTypeID==302 || item.salarycomponent.statutoryPayTypeID==401 || item.salarycomponent.statutoryPayTypeID==402">
+                                        <div class="col-lg-2 d-flex">
+                                            <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                                                {{item.salarycomponent.payHeadName}}
+                                            </label>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="col-form-label">
+                                                Amount Monthly
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput name="amount" [(ngModel)]="item.amount" readonly>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="col-form-label">
+                                                Amount Annually
+                                            </label>
+                                            <div class="input-group">
+                                                <div class="d-flex w-100">
+                                                    <div class="flex-grow-1">
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput value="{{item.amountAnnually}}" readonly>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col-lg-2 d-flex">
+                                        <label class="col-form-label d-flex align-items-center font-weight-bolder">
+                                            Total
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label class="col-form-label">
+                                            <strong>{{totalAmountMonthly}}</strong>
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label class="col-form-label">
+                                            <strong>{{totalAmountAnnualy}}</strong>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br /><br />
+                        <div class="border-outer-secondary">
+                            <div class="table-responsive">
+
+
+                                <table class="table table-striped table-hover table-membroz-plain">
+                                    <thead>
+                                        <tr>
+                                            <th>Month</th>
+                                            <th>Earnings</th>
+                                            <th class="text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let p of payrollData">
+
+                                            <td>{{months[p.month - 1]}} - {{p.year}}</td>
+                                            <td>{{p.netonhand}}</td>
+                                            <td class="text-right">
+                                                <button class="btn btn-link btn-primary btn-just-icon"
+                                                matTooltip="View" [matTooltipPosition]="'above'"
+                                                type="button"
+                                                [routerLink]="['/pages/payroll-module/salary-module/payslip/'+p._id]"
+                                                >
+                                                    <!-- data-toggle="modal"
+                                                    data-target="#myModal" (click)="onModal(p)" -->
+                                                    <i class="material-icons">visibility</i>
+                                                </button>
+                                                <!-- <button class="btn btn-link btn-primary btn-just-icon"
+                                                    (click)="downloadPDF(p)" matTooltip="Download"
+                                                    [matTooltipPosition]="'above'">
+                                                    <i class="material-icons">download</i>
+                                                </button> -->
+                                            </td>
+                                            <div id="content" #content>
+                                                <div style="display: none;" *ngIf="isShow">
+                                                    <h1>Krtya Softwares</h1>
+                                                    <p>A1 - 01/02, Milestone Habitat,
+                                                        Kailash Nagar, Sagrampura
+                                                        Surat - 395002
+                                                        GUJARAT
+                                                        INDIA</p>
+                                                    <h5>Name : {{_authService.currentUser.user.fullname}}</h5>
+                                                    <h5>Designation:
+                                                        {{_authService.currentUser.user.designationid.title}}</h5>
+                                                    <h5>Month: {{months[selectedMonth.month-1]}} -
+                                                        {{selectedMonth.year}}</h5>
+                                                    <h5>Salary: {{selectedMonth.salary}} </h5>
+                                                    <br /><br />
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <h3>Earnings</h3>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <div class="row" *ngFor="let c of selectedMonth.salaryComponent">
+                                                        <div class="col-md-6" *ngIf="c.payHeadTypeID == 101">
+                                                            {{c.payHeadName}} : {{c.amount}}
+                                                        </div>
+                                                        <div class="col-md-6" *ngIf="selectedMonth.bonus!== 0">
+                                                            Bonus : {{selectedMonth.bonus}}
+                                                        </div>
+                                                    </div>
+                                                    <br /><br />
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <h3>Deduction</h3>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <div class="row" *ngFor="let c of selectedMonth.salaryComponent">
+                                                        <div class="col-md-6" *ngIf="c.payHeadTypeID == 103">
+                                                            {{c.payHeadName}} : {{c.amount}}
+                                                        </div>
+                                                    </div>
+                                                    <br /><br />
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <h2 style="border-style: double;">Net Amount :
+                                                                {{selectedMonth.netonhand}}</h2>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal" *ngIf="onModalShow">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="text-align: center;">Salary Slip</h4>
+                <hr>
+            </div>
+            <div class="modal-body">
+                <div class="border-outer-secondary">
+                    <p class="modal-title">&nbsp; &nbsp; &nbsp;Employee Name :
+                        {{_authService.currentUser.user.fullname}}</p>
+                    <p class="modal-title"> &nbsp; &nbsp; &nbsp;Designation :
+                        {{_authService.currentUser.user.designationid.title}}</p>
+                    <p class="modal-title"> &nbsp; &nbsp; &nbsp;Month : {{months[selectedMonth.month-1]}} -
+                        {{selectedMonth.year}}</p>
+                    <p class="modal-title"> &nbsp; &nbsp; &nbsp;Salary : {{selectedMonth.salary}} </p>
+
+                </div>
+                <div class="row"></div>
+                <br />
+                <br />
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap table-membroz table-attendance">
+                        <tbody>
+                            <tr>
+                                <td><b>Earnings </b></td>
+                                <td> </td>
+                            </tr>
+                            <tr *ngFor="let c of selectedMonth.salaryComponent">
+                                <ng-container *ngIf="c.payHeadTypeID == 101">
+                                    <td>{{c.payHeadName}} </td>
+                                    <td>{{c.amount}}</td>
+                                </ng-container>
+
+                            </tr>
+                            <tr>
+                                <ng-container *ngIf="selectedMonth.bonus!== 0">
+                                    <td>Bonus</td>
+                                    <td>{{selectedMonth.bonus}}</td>
+                                </ng-container>
+
+                            </tr>
+                            <tr>
+                                <td><b>Deduction </b></td>
+                                <td> </td>
+                            </tr>
+                            <tr *ngFor="let c of selectedMonth.salaryComponent">
+
+                                <ng-container *ngIf="c.payHeadTypeID == 103">
+                                    <td>{{c.payHeadName}} </td>
+                                    <td>{{c.amount}}</td>
+                                </ng-container>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5>Net Amount </h5>
+                                </td>
+                                <td>
+                                    <h5>{{selectedMonth.netonhand}}</h5>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">
+                    <i class="material-icons">close</i>Cancel
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>

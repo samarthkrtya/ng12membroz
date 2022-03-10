@@ -1,0 +1,217 @@
+<div class="row" *ngIf="dataContent && visibility">
+    <div class="col-lg-4" >
+        <label class="col-form-label">
+            {{getLang('membershipname', 'Membership Name')}}
+            <span class="text-danger">*</span>
+        </label>
+        <div class="input-group">
+            <div class="d-flex w-100">
+                <div class="flex-grow-1">
+                    <app-dynamic-autocomplete-ngmodel
+                        [setting]="membershipObj"
+                        [(inputModel)]="membershipObj.modelValue"
+                        [dbvalue]="membershipObj.dbvalue"
+                        (inputModelChange)="inputModelChangeValue($event)"
+                        [isDisabled]="disableFields">
+                    </app-dynamic-autocomplete-ngmodel>
+                </div>
+                <!-- <div class="input-group-append" *ngIf="dataContent && dataContent.membershipid">
+                    <button class="btn btn-link" type="button" >{{getLang('change', 'CHANGE')}}</button>
+                </div> -->
+            </div>
+        </div>
+        <span class="help-block"></span>
+    </div>
+    <div class="col-lg-4" >
+        <label class="col-form-label">
+            {{getLang('startdate', 'Start Date')}}
+            <span class="text-danger">*</span>
+        </label>
+        <mat-form-field class="example-full-width">
+            <input
+                matInput
+                [(ngModel)]="joiningdate"
+                [matDatepicker]="pickerjoiningdate"
+                (dateChange)="ChangeDate($event)"
+                 [disabled]="disableFields" >
+            <mat-datepicker-toggle matSuffix [for]="pickerjoiningdate"></mat-datepicker-toggle>
+            <mat-datepicker #pickerjoiningdate></mat-datepicker>
+        </mat-form-field>
+        <span class="help-block"></span>
+    </div>
+    <div class="col-lg-4" >
+        <label class="col-form-label">
+            {{getLang('enddate', 'End Date')}}
+            <span class="text-danger">*</span>
+        </label>
+        <div class="input-group">
+            <div class="d-flex w-100">
+                <div class="flex-grow-1">
+                    <mat-form-field class="example-full-width">
+                        <input
+                            matInput
+                            [(ngModel)]="expirydate"
+                            [matDatepicker]="pickerexpirydate"
+                            [disabled]="disableFields">
+                        <mat-datepicker-toggle matSuffix [for]="pickerexpirydate"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerexpirydate></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="input-group-append" *ngIf="dataContent && dataContent.membershipid">
+                    <button class="btn btn-link" type="button" >{{getLang('renew', 'RENEW')}}</button>
+                </div> -->
+            </div>
+        </div>
+        <span class="help-block"></span>
+   </div>
+</div>
+
+
+<div class="table-responsive border-outer-secondary" *ngIf="paymentTermsLists && paymentTermsLists.length !== 0">
+    <table class="table mat-elevation-z8 w-100 table-membroz-plain">
+        <thead>
+            <tr>
+                <th>{{getLang('mainmembership', 'Payment Terms')}}</th>
+                <th>{{getLang('period', 'Period')}}</th>
+                <th>{{getLang('period', 'Tenure')}}</th>
+                <th>{{getLang('amount', 'Amount')}}</th>
+                <th>{{getLang('discount', 'Discount')}}</th>
+                <th>{{getLang('tax', 'Tax')}}</th>
+                <th>{{getLang('totalamount', 'Total Amount')}}</th>
+                <th class="text-right td-actions">{{getLang('action', 'Action')}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of paymentTermsLists" [ngStyle]="{'background-color': item && item.memberid ? 'rgb(244,251,228)':'' }" >
+                <td>
+                  <mat-checkbox
+                        (change)="checkUncheckEvent($event, item)"
+                        class="example-margin"
+                        [checked]="item.selectitem ? item.selectitem : false">
+                    </mat-checkbox>
+                  {{item?.paymentitem?.paymentitemname}}</td>
+                <td>{{item?.period}}</td>
+                <td>
+                    <ng-container *ngIf="!item.isedit">{{item?.tenure}}</ng-container>
+                    <ng-container *ngIf="item.isedit && item.oldtenure == 1">{{item?.tenure}}</ng-container>
+                    <ng-container *ngIf="item.isedit && item.oldtenure > 1">
+                        <input
+                            id="tenure"
+                            type="number"
+                            min="1"
+                            name="tenure"
+                            (change)="onchangeamountofpaymentterm()"
+                            class="form-control"
+                            [(ngModel)]="item.tenure"
+                            [ngModelOptions]="{standalone: true}"
+                            placeholder="Tenure">
+                    </ng-container>
+                </td>
+                <td>
+                    <ng-container *ngIf="!item.isedit">{{item?.amount}}</ng-container>
+                    <ng-container *ngIf="item.isedit">
+                        <input
+                            id="amount"
+                            type="number"
+                            name="amount"
+                            (change)="onchangeamountofpaymentterm()"
+                            class="form-control"
+                            [(ngModel)]="item.amount"
+                            [ngModelOptions]="{standalone: true}"
+                            placeholder="Amount">
+                    </ng-container>
+
+                </td>
+                <td>
+                    <ng-container *ngIf="!item.isedit">{{item?.discount}}</ng-container>
+                    <ng-container *ngIf="item.isedit">
+                        <input
+                            id="discount"
+                            type="number"
+                            name="discount"
+                            (change)="onchangeamountofpaymentterm()"
+                            class="form-control"
+                            [(ngModel)]="item.discount"
+                            [ngModelOptions]="{standalone: true}"
+                            placeholder="Discount" >
+                    </ng-container>
+                </td>
+                <td>{{item?.taxAmount}}</td>
+                <td>
+                    <ng-container *ngIf="!item.isedit">{{item?.totalAmount}}</ng-container>
+                    <ng-container *ngIf="item.isedit">
+                        <input
+                            id="totalamount"
+                            type="number"
+                            min="1"
+                            (change)="onchangetotalamountofpaymentterm()"
+                            name="totalamount"
+                            class="form-control"
+                            [(ngModel)]="item.totalAmount"
+                            [ngModelOptions]="{standalone: true}"
+                            placeholder="Total Amount">
+                    </ng-container>
+                </td>
+                <td class="text-right td-actions">
+                    <button
+                        *ngIf="!item.isedit"
+                        (click)="editElement(item)"
+                        type="button"
+                        class="btn btn-link btn-primary btn-just-icon"
+                        matTooltip="Edit"
+                        [disabled]="btnDisable"
+                        [matTooltipPosition]="'above'">
+                            <i class="material-icons">edit</i>
+                    </button>
+
+                    <button
+                    *ngIf="!item.isedit && item.memberid"
+                        (click)="deleteElement(item)"
+                        type="button"
+                        class="btn btn-link btn-primary btn-just-icon"
+                        matTooltip="Delete"
+                        [disabled]="btnDisable"
+                        [matTooltipPosition]="'above'">
+                            <i class="material-icons">delete</i>
+                    </button>
+
+                    <button
+                        *ngIf="item.isedit"
+                        (click)="updatePayTerms(item)"
+                        type="button"
+                        class="btn btn-link btn-primary btn-just-icon"
+                        matTooltip="Save"
+                        [disabled]="btnDisable"
+                        [matTooltipPosition]="'above'">
+                            <i class="material-icons">save</i>
+                    </button>
+
+                    <button
+                        *ngIf="item.isedit"
+                        (click)="item.isedit = !item.isedit"
+                        type="button"
+                        class="btn btn-link btn-primary btn-just-icon"
+                        matTooltip="Cancel"
+                        [disabled]="btnDisable"
+                        [matTooltipPosition]="'above'">
+                            <i class="material-icons">cancel</i>
+                    </button>
+                </td>
+            </tr>
+            <tr *ngIf="changes && !disableFields" >
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-right">
+                     <button [disabled]="btnDisable" (click)="submit()" type="submit" class="btn btn-primary ml-2" >
+                         <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

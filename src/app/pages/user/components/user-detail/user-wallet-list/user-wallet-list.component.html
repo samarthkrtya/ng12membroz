@@ -1,0 +1,65 @@
+<div class="card mnh-230 mt-0">
+    <div class="card-header card-head-membroz d-flex">
+        <span class="flex-grow-1">{{getLang('user','User Wallet')}} </span>
+    </div>
+    <div class="card-body p-0">
+        <div class="row">
+            <div class="col-md-12" *ngIf="isLoading && transcationLists.length != 0">
+                <div class="card mrt0">
+                    <div class="card-body" *ngFor="let item of (filterTransactionLists | keys); let i = index">
+                        <div *ngFor="let itm of (item.value | keys); let j = index">
+                            <h4 class="card-title">
+                                <b> {{getMonthName(itm.key)}} </b>
+                                <small class="category"> 
+                                    <b> {{item.key}} </b>
+                                </small>
+                            </h4>
+                            <div>
+                                <div class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table class="datatables table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                  <th style="font-weight: bold;">Point Transaction</th>
+                                                  <th style="font-weight: bold;">Description</th>
+                                                  <th style="font-weight: bold;">Transaction Date & Time</th>
+                                                </tr>
+                                              </thead>
+                                            <tbody>
+                                                <tr *ngFor="let val of (itm.value | keys); let l = index">
+                                                    <td>
+                                                        <small 
+                                                            [ngClass]="val.value.txntype == 'Cr' ? 'text-success category' : 'text-danger category'">
+                                                            {{val.value.txntype == 'Cr' ? 'Added' : 'Deducted'}}</small>
+                                                        <br>  {{walletsymbol}} {{val.value.value  | number : '1.2-2'}}
+                                                    </td>
+                                                   
+                                                    <td> 
+                                                        <span *ngIf="val && val.value && val.value.txnref && val.value.txnref !==  ''; else actionBlock"> {{val.value.txnref}} </span>
+
+                                                        <ng-template #actionBlock>
+                                                            <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                        </ng-template>
+                                                    </td>
+                                                    <td>on {{val.value.createdAt |  toLocaleDate : 'time' }} </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-md-12" *ngIf="isLoading && transcationLists.length == 0"> 
+                <div class="card">
+                    <div class="card-body">
+                        {{getLang('notrnsctndata', 'No Transaction Data')}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

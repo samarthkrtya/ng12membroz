@@ -1,0 +1,109 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0">
+                <app-item-sub-list
+                    [htmlContent]="htmlContent"
+                    [bindId]="bindid"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-sub-list>               
+            </div>
+            <div class="col-xl-9">
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h3 class="card-title"> 
+                            {{reportData && reportData.title ? reportData.title : ''}}
+                        </h3>
+                    </div>
+
+                    <div class="col-sm-4 text-right mt-3 mb-3" *ngIf="!isLoading">
+                        <button mat-raised-button id="ref_btn" class="btn btn-primary btn-simple help-btn ml-2 my-0"
+                            matTooltip="Reset" [matTooltipPosition]="'above'" data-original-title="Reset"
+                            data-backdrop="static" data-keyboard="false" (click)="resetFilter()">
+                            <i class="material-icons help-font">refresh</i>
+                        </button>
+
+                        <button class="dropdown-toggle btn btn-primary my-0" data-toggle="dropdown">
+                            {{getLang('more','More')}}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <ng-container>
+                                <a class="dropdown-item" style="cursor: pointer;" (click)="onClickprint()">
+                                   Print  
+                                </a>
+                                <span class="divider"></span>
+                                <a class="dropdown-item" style="cursor: pointer;" (click)="exportAsCSV()">
+                                    Export as CSV
+                                </a>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <mat-accordion *ngIf="filterFieldList && filterFieldList.length > 0">
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Filter
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-search-report-filter-render #reportfilter [filterfieldListsi]="filterFieldList" *ngIf="!isLoading"
+                            [listFilterParamsi]="listFilterParams" (searchfilterSubmitData)="reloadsList()"
+                            (resetfilterData)="resetFilter()"  >
+                        </app-search-report-filter-render>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+                <div class="card" *ngIf="!chartContent">
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="loader" *ngIf="isLoading">
+                                    <svg class="circular" viewBox="25 25 50 50">
+                                        <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                            stroke-miterlimit="10" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="printid" class="content form-horizontal" *ngIf="!isLoading">
+                            <div class="row" *ngIf="isConvertloading">
+                                <div class="col-sm-12">
+                                    <div class="loader" >
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+                                </div> 
+                            </div>
+                            <ng-container *ngIf="tableContent && !isConvertloading">
+                                <mat-tab-group>
+                                    <ng-container *ngIf="chartView" >
+                                    <mat-tab label="Chart View" [ngClass]="chartView  ? 'd-block' : 'd-none'"> 
+                                        <ng-container *ngIf="chartView">
+                                            <ng-container *ngFor="let field of displayFields">
+                                                <div class="text-right">
+                                                    <span [innerHTML]="field.color | safeHtml"> {{field?.displayFields}} </span>
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+                                        <div id="barchart" class="ct-chart" [ngClass]="chartView  ? 'd-block' : 'd-none'" ></div>
+                                    </mat-tab>
+                                </ng-container>
+                                    <mat-tab label="Grid View"> 
+                                        <div [innerHtml]="tableContent | safeHtml">
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

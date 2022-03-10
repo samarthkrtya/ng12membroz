@@ -1,0 +1,52 @@
+<ul class="list-unstyled m-0" *ngIf="treeDataValue">
+    <li class="border-bottom p-2" *ngFor="let itm of treeDataValue"> 
+
+        
+        <button class="btn btn-link btn-primary btn-just-icon btn-sm ml-2 my-0 btn-20" >
+         <i class="material-icons material-icons-f22-l20" *ngIf="itm.action == 'callback'">phone_callback</i>
+         <i class="material-icons material-icons-f22-l20" *ngIf="itm.action == 'meeting'">group</i>
+         <i class="material-icons material-icons-f22-l20" *ngIf="itm.action == 'task'">task</i>
+         <i class="material-icons material-icons-f22-l20" *ngIf="itm.action == 'communication'">email</i>
+        </button>
+        
+        <span class="font-weight-bold"> {{itm.disposition}}  </span>
+
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+
+            <button 
+                mat-menu-item
+                (click)="addSub(itm)">
+                <mat-icon>add</mat-icon>
+                <span>Add Sub Disposition</span>
+            </button>
+
+            <button 
+                mat-menu-item
+                (click)="edit(itm)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+            </button>
+
+            <button 
+                mat-menu-item
+                (click)="delete(itm._id)" >
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+            </button>
+
+        </mat-menu>
+            
+        <app-form-disposition-tree-view
+            *ngIf="itm.children" 
+            [treeData]="itm.children"
+            [parent]="itm._id"
+            [formId]="formid"
+            (SubmitData)="getSubmittedData($event)">
+        </app-form-disposition-tree-view>
+
+    </li>
+</ul>

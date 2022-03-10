@@ -1,0 +1,51 @@
+<button data-toggle="modal" class="d-none" [attr.id]="id" [attr.data-target]="'#'+target">
+</button>
+<div [id]="target" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{displayTxt}}</h4>
+                <button mat-button type="button" id="qtyClose" class="close" data-dismiss="modal">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+                <div class="row" *ngIf="!isLoading">
+                    <div class="table-responsive">
+                        <table id="datatables" class="table table-no-bordered table-membroz table-variables">
+                            <thead data-background-color="info">
+                                <tr>
+                                    <th *ngFor="let hdr of headers; let i = index"  > {{hdr?.displayname}} </th> 
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of dataList let i = index">
+                                    <ng-container *ngFor="let hdr of headers; let i = index" >
+                                        <td>
+                                            {{item[hdr.fieldname]}}
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                                <tr class="text-center" *ngIf="dataList.length == 0">
+                                    <td colspan="3">
+                                        No data found
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" (click)="cancel()">
+                    <i class="material-icons">close</i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

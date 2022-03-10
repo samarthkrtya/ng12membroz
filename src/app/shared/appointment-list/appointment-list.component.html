@@ -1,0 +1,55 @@
+<div class="table-responsive mt-3">
+  <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+    <ng-container matColumnDef="appointmentnumber">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('appointmentnumber','Appointment Number')}}</th>
+      <td mat-cell *matCellDef="let element">
+        {{element.prefix}}-{{element.number}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="appointmentdate">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('appointmentdate','Appointment Date')}} </th>
+      <td mat-cell *matCellDef="let element">{{element.appointmentdate | toLocaleDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="charges">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('charges','Charges')}}</th>
+      <td mat-cell *matCellDef="let element">
+        {{element.charges | myCurrencyPipe}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="starttime">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('starttime','Start Time')}} </th>
+      <td mat-cell *matCellDef="let element">{{element.starttime}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="endtime">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('endtime','End Time')}} </th>
+      <td mat-cell *matCellDef="let element">{{element.endtime}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('status','Status')}} </th>
+      <td mat-cell *matCellDef="let element">{{element.status}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}}</th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        <button class="btn btn-link" data-toggle="dropdown">
+          <i class="material-icons">{{getLang('morevert','more_vert')}}</i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item"
+            [routerLink]="['/pages/dynamic-preview-list/appointment/' + element.appointmentid ]">{{getLang('viewappointment','View
+            Appointment')}}</a>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+  </table>
+</div>

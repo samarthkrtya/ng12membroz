@@ -1,0 +1,387 @@
+<div class="row">
+
+    <div class="col-md-12 text-right">
+        <button
+            id="myModalExceptionCalendarBtn"
+            data-toggle="modal"
+            data-target="#myModalExceptionCalendar"
+            data-backdrop="false"
+            data-keyboard="false"
+            class="btn btn-primary ml-2"
+            type="button">
+            <i class="material-icons">add</i> {{getLang('editavailability', 'Edit Availability')}}
+        </button>
+
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-12">
+        <div
+            fxLayout="row"
+            *ngIf="isLoadingData"
+            fxLayoutAlign="space-around center"
+            style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+            <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+        </div>
+        <div>
+            <full-calendar
+                *ngIf="!isLoadingData"
+                [options]="calendarOptions">
+            </full-calendar>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="myModalExceptionCalendar" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('editavailability', 'Edit Availability')}} ( {{selecteddate | date : 'MMMM, y' }})</h4>
+                <button type="button" class="close" data-dismiss="modal" id="close">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="row">
+ 
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-8">
+
+                                    <div class="btn-sm mb-1 ml-1 ml-lg-2" [ngClass]="selectedWeek == item.week ? 'attend-text-orange attend-holiday-box' : 'ts-blue-box ts-text-blue'" *ngFor="let item of weekLists" (click)="onSelectWeek(item)" style="cursor: pointer;">
+                                      <div class="d-flex align-items-center">
+                                        <i class="material-icons"> {{ item.islastdatedone  ? 'done' : 'close' }}</i>
+                                        Week {{item?.week}}
+                                      </div>
+                                    </div>
+
+                                    <!-- <mat-form-field>
+                                        <mat-label>Select Week</mat-label>
+
+                                        <mat-date-range-input
+                                            [formGroup]="range"
+                                            [rangePicker]="picker">
+
+                                            <input
+                                                matStartDate
+                                                formControlName="start"
+                                                (dateChange)="startDateSelection()">
+                                            <input
+                                                matEndDate
+                                                formControlName="end"
+                                                (dateChange)="endDateSelection()">
+
+                                        </mat-date-range-input>
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-date-range-picker #picker></mat-date-range-picker>
+                                    </mat-form-field> -->
+                                </div>
+                                <div class="col-sm-2"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+
+                            <div class="row mt-3 table-membroz-div">
+                                <div class="col-sm-3 col-3 text-left">
+                                    {{getLang('day', 'Day')}}  
+                                </div>
+                                <div class="col-sm-2 col-3 text-center">
+                                     {{getLang('availability', 'Availability')}}   
+                                </div>
+                                <div class="col-sm-5 col-4">
+                                    <div class="row" *ngIf="this.userid && this.userDetails && this.userDetails.bookingtype && this.userDetails.bookingtype == 'DAILY'; else actionBlock">
+                                        <div class="col-sm-4 col-4 text-center">
+                                            
+                                                {{getLang('bookedquantity', 'Booked Quantity')}}
+                                            
+                                        </div>
+                                        <div class="col-sm-4 col-4 text-center">
+                                            
+                                                {{getLang('exceptionquantity', 'Available')}}
+                                            
+                                        </div>
+                                        <div class="col-sm-4 col-4 text-right text-center">
+                                           
+                                                {{getLang('totalquantity', 'Total Quantity')}}
+                                           
+                                        </div>
+                                    </div>
+                                    <ng-template #actionBlock>
+                                        <div class="row">
+                                            <div class="col-sm-12 text-center">
+                                                    {{getLang('timing', 'Timing')}}
+                                            </div>
+                                        </div>
+                                    </ng-template>
+
+                                </div>
+                                <div class="col-sm-2 col-2 text-center">
+                                     {{getLang('action', 'Action')}} 
+                                </div>
+                            </div>
+
+                            <div class="row mt-3" *ngFor="let item of this.daysInRange">
+
+                                <!-- {{item.status | json}} -->
+
+                                <ng-container *ngIf="item.status == 'Available'">
+
+                                    <div class="col-sm-3 col-3 text-left"> {{ item.date | date:'fullDate' }} </div>
+
+                                    <div class="col-sm-2 col-3 text-center">
+                                        <mat-slide-toggle
+                                            (change)="toggle($event, item)"
+                                            class="example-margin"
+                                            [checked]="checkAvailability(item.status)">
+                                        </mat-slide-toggle>
+                                    </div>
+
+                                    <div class="col-sm-5 col-4">
+
+                                        <div class="row" *ngIf="this.userid && this.userDetails && this.userDetails.bookingtype && this.userDetails.bookingtype == 'DAILY'; else actionBlock">
+                                            <div class="col-sm-4 col-4">
+                                                <div class="text-center">
+                                                    {{item.bookedquantity}}
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-4">
+                                                <div class="text-center">
+                                                    {{item.exceptionQuantity}}
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-4 text-right">
+                                                <div class="text-center">
+                                                    {{this.userDetails.quantity ? this.userDetails.quantity : 0}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <ng-template #actionBlock>
+                                            <div class="row">
+                                                <div class="col-sm-12 text-center"> 
+                                                    {{tConvert(userDetails?.availability?.starttime)}} - {{tConvert(userDetails?.availability?.endtime)}}
+                                                </div> 
+                                            </div>
+                                        </ng-template>
+                                    </div>
+
+                                    <div class="col-sm-2 col-2 text-center" style="margin-top: -0.75em; margin-bottom: -0.75em;">
+                                        <button mat-raised-button                                               
+                                                type="button"
+                                                [matTooltip]="Edit" [matTooltipPosition]="'above'"
+                                                data-original-title="Edit"
+                                                class="btn btn-link btn-primary btn-just-icon edit"
+                                                (click)="editAva(item)" >
+                                                <i class="material-icons">edit</i>
+                                            </button>
+                                       
+                                    </div>
+                                </ng-container>
+
+                                <ng-container *ngIf="item.status == 'Custom'">
+
+                                    <div class="col-sm-3 text-left">
+                                        {{ item.date | date:'fullDate' }}
+                                    </div>
+
+                                    <div class="col-sm-2 text-center">
+                                        <mat-slide-toggle
+                                            (change)="toggle($event, item)"
+                                            class="example-margin"
+                                            [checked]="checkAvailability(item.status)">
+                                        </mat-slide-toggle>
+                                    </div>
+
+                                    <div class="col-sm-7">
+
+                                        <div
+                                            class="row"
+                                            *ngIf="this.userid && this.userDetails && this.userDetails.bookingtype && this.userDetails.bookingtype == 'DAILY'; else actionBlock">
+
+                                            <div class="col-sm-9">
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-center">
+                                                        {{item.bookedquantity}}
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="text-center">
+                                                            <mat-form-field class="example-full-width">
+                                                                <input
+                                                                    style="text-align: center;"
+                                                                    type="number"
+                                                                    matInput
+                                                                    [min]=0
+                                                                    [max]="item.quantity"
+                                                                    [(ngModel)]="item.quantity">
+                                                                </mat-form-field>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4 text-center">
+                                                        {{this.userDetails.quantity ? this.userDetails.quantity : 0}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3"></div>
+                                        </div>
+                                        <ng-template #actionBlock>
+                                            <ng-container *ngFor="let itmava of item.availability; let i = index">
+                                                    <div class="row">
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <ng-container *ngIf="item.edit;else display">
+                                                            <div class="col-sm-5">
+                                                                <label class="col-form-label" *ngIf="i == 0">
+                                                                    {{getLang('workinghours', 'Working Hours')}}
+                                                                </label>
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput type="time" [(ngModel)]="itmava.starttime">
+                                                                    <mat-hint>{{getLang('hhmm', 'HH / MM')}}</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-2"> to </div>
+                                                            <div class="col-sm-5">
+                                                                <label class="col-form-label" *ngIf="i == 0">
+                                                                    {{getLang('workinghours', 'Working Hours')}}
+                                                                </label>
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput type="time" [(ngModel)]="itmava.endtime">
+                                                                    <mat-hint>{{getLang('hhmm', 'HH / MM')}}</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </ng-container>
+                                                        <ng-template #display>
+                                                             <div class="col-sm-12 text-center"> 
+                                                                 {{itmava.starttime}} - {{itmava.endtime}}
+                                                             </div>
+                                                        </ng-template>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 text-center" style="margin-top: -0.75em; margin-bottom: -0.75em;">
+                                                        <button mat-raised-button                                               
+                                                            type="button"
+                                                            [matTooltip]="Edit" [matTooltipPosition]="'above'"
+                                                            data-original-title="Edit"
+                                                            class="btn btn-link btn-primary btn-just-icon"
+                                                            (click)="removeAva(item, i)" *ngIf="i !== 0 && item.edit" >
+                                                            <i class="material-icons">remove</i>
+                                                        </button>
+
+                                                        <button mat-raised-button                                               
+                                                            type="button"
+                                                            [matTooltip]="Edit" [matTooltipPosition]="'above'"
+                                                            data-original-title="Edit"
+                                                            class="btn btn-link btn-primary btn-just-icon"
+                                                            (click)="addAva(item)" *ngIf="item.edit" >
+                                                            <i class="material-icons">add</i>
+                                                        </button> 
+
+                                                        <button mat-raised-button                                               
+                                                            type="button"
+                                                            [matTooltip]="Edit" [matTooltipPosition]="'above'"
+                                                            data-original-title="Edit"
+                                                            class="btn btn-link btn-primary btn-just-icon"
+                                                            (click)="item.edit = !item.edit" *ngIf="!item.edit && i === 0">
+                                                            <i class="material-icons">edit</i>
+                                                        </button>
+
+                                                    </div>
+                                                 </div>
+                                                </ng-container>
+                                            <!-- <br>
+                                            <br>
+                                            <br> -->
+                                            <div class="row d-none"> 
+                                                <ng-container *ngFor="let itmava of item.breaktime; let i = index">
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-sm-5">
+                                                                <label class="col-form-label" *ngIf="i == 0">
+                                                                    {{getLang('breakhours', 'Break Hours')}}
+                                                                </label>
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput type="time" [(ngModel)]="itmava.starttime">
+                                                                    <mat-hint>{{getLang('hhmm', 'HH / MM')}}</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-sm-2"> to </div>
+                                                            <div class="col-sm-5">
+                                                                <label class="col-form-label" *ngIf="i == 0">
+                                                                    {{getLang('breakhours', 'Break Hours')}}
+                                                                </label>
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput type="time" [(ngModel)]="itmava.endtime">
+                                                                    <mat-hint>{{getLang('hhmm', 'HH / MM')}}</mat-hint>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 text-center">
+                                                        <i class="material-icons cursor-pointer" *ngIf="i !== 0"  (click)="removeBr(item, i)"> remove </i>
+                                                        <i class="material-icons cursor-pointer" (click)="addBr(item)"> add </i> 
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </ng-container>
+
+                                <ng-container *ngIf="item.status == 'Closed'">
+                                    <div class="col-sm-3 text-left" style="color: red; font-weight: bold;"> {{ item.date | date:'fullDate' }} </div>
+                                    <div class="col-sm-2 text-center" style="height: 38px; line-height: 38px;"></div>
+                                    <div class="col-sm-5 text-center" style="color: red; font-weight: bold;"> Closed </div>
+                                    <div class="col-sm-2 text-center"></div>
+                                </ng-container>
+
+                                <ng-container *ngIf="item.status == 'Not Available'">
+
+                                    <div class="col-sm-3 text-left" style="color: red; font-weight: bold;"> {{ item.date | date:'fullDate' }} </div>
+
+                                    <div class="col-sm-2 text-center">
+                                        <mat-slide-toggle
+                                            (change)="toggle($event, item)"
+                                            class="example-margin"
+                                            [checked]="checkAvailability(item.status)">
+                                        </mat-slide-toggle>
+                                        <!-- [disabled]="item.disabled" -->
+                                    </div>
+
+                                    <div class="col-sm-5 text-center" style="color: red; font-weight: bold;">  Not Available  </div>
+                                    <div class="col-sm-2 text-center"></div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    class="btn btn-default"
+                    type="button"
+                    [disabled]="disablesubmit"
+                    data-dismiss="modal">
+                    <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                </button>
+
+                <button
+                    class="btn btn-primary ml-2"
+                    type="button"
+                    [disabled]="disablesubmit"
+                    (click)="submit()">
+                    <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>

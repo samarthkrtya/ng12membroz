@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="table-responsive mt-3">
+            <table mat-table [dataSource]="servicecharges" class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+
+
+                <ng-container matColumnDef="checked">
+                    <th mat-header-cell *matHeaderCellDef> </th>
+                    <td mat-cell *matCellDef="let element">
+                        <section class="example-section">
+                            <mat-checkbox matInput class="example-margin" [(ngModel)]="element.checked">
+                            </mat-checkbox>
+                        </section>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef>{{getLang('title', 'Title')}}</th>
+                    <td mat-cell *matCellDef="let element"> {{element?.title}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="charges">
+                    <th mat-header-cell *matHeaderCellDef>{{getLang('charges', 'Charges')}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="number" [(ngModel)]="element.charges" [disabled]="!element.checked">
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="method">
+                    <th mat-header-cell *matHeaderCellDef>{{getLang('method', 'Method')}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field class="example-full-width">
+                            <mat-select matNativeControl [(ngModel)]="element.chargesmethod"
+                                [disabled]="!element.checked">
+                                <mat-option value="Percentage"> Percentage </mat-option>
+                                <mat-option value="Fixed"> Fixed </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="commission">
+                    <th mat-header-cell *matHeaderCellDef>{{getLang('commission', 'Commission')}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="number" [(ngModel)]="element.commission"
+                                [disabled]="!element.checked" (ngModelChange)="onCheckCommission(element)" >
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-sm-12 text-right">
+        <button class="btn btn-primary ml-2" type="button" (click)="onSaveCharges()" [disabled]="btnDisable">
+            <i class="material-icons">save</i> {{getLang('save','Save')}}
+        </button>
+    </div>
+</div>

@@ -1,0 +1,303 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <h3 class="card-title">Attendance</h3>
+                <div class="card white-box-full-order">
+                    <div class="card-body">
+                           <div class="row">
+                                <div class="col-xl-12">
+                                    <div>
+                                        <h4>Today : {{checkindate}}</h4>
+                                    </div>
+                                    <div [ngClass] = "{'d-block': !checkIn , 'd-none': checkIn}">
+                                        <div class="row" *ngIf="!onDisplay">
+                                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                                <!-- <img src="data:image/png;base64,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"  title="" > -->
+                                               <ng-container *ngIf="_loginUser && _loginUser.branchid && _loginUser.branchid.qrcode" >
+                                                    <img [src]="_loginUser.branchid.qrcode"  title="" >
+                                               </ng-container> 
+                                                <button class="btn btn-primary ml-2"  type="submit" (click)="onCheckIn()">
+                                                    Check in
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" *ngIf="onDisplay">
+                                            <div class="col-xl-2 col-lg-2 col-md-2">
+                                                <!-- <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAklEQVR4AewaftIAAAeOSURBVO3BQY4kNhLAQFLo/3+Z62OeBBSqZ9YWMsL+wVqPOKz1kMNaDzms9ZDDWg85rPWQw1oPOaz1kMNaDzms9ZDDWg85rPWQw1oPOaz1kMNaDzms9ZAfvqTyN1VMKlPFpDJVTCo3FZPKVDGp/JtVTCpTxaTyN1V847DWQw5rPeSw1kN++GUVv0nlN6ncVEwqNypTxY3KTcWNyjdUvlHxm1R+02GthxzWeshhrYf88IepfKLiGypTxaTyjYpJZVL5hspNxY3KJyq+ofKJij/psNZDDms95LDWQ374j6uYVG4qPlHxiYpPqEwVk8o3Km5Upor/ssNaDzms9ZDDWg/54T9OZaq4UZkqJpWbiqniRuWmYlK5UbmpmFSmipcd1nrIYa2HHNZ6yA9/WMWfVPH/pDJVTBWTyk3FpPInVXyj4t/ksNZDDms95LDWQ374ZSp/k8pUMalMFZPKVDGpfENlqphUpoqbiknlGypTxY3Kv9lhrYcc1nrIYa2H2D94mMonKm5UpopJ5RsVk8pNxY3KTcVLDms95LDWQw5rPeSHL6lMFTcqf1LFTcUnVD5R8QmVSeWmYlK5qZhUJpWbihuVqWJS+UTFNw5rPeSw1kMOaz3kh3+ZihuVb6hMFZPKTcWkMlVMKjcVk8o3KiaVqWJSmSpuVKaKSWWq+JsOaz3ksNZDDms9xP7BF1RuKiaVb1RMKp+o+ITKNyomlaliUpkqPqFyUzGp3FTcqEwVn1CZKr5xWOshh7UecljrIT/8soqbikllqrhRmSomlaliUpkqJpWbikllqphUpoqbiknlpmKq+EbFpDJVfENlqvhNh7UecljrIYe1HmL/4Asqf1PFpDJV3KjcVNyofKLiN6ncVEwqU8WkMlVMKjcVk8pUMancVHzjsNZDDms95LDWQ374yyomlaniExWTylRxU/GJikllqrhR+U0Vk8pUMal8ouJGZaq4qZhUftNhrYcc1nrIYa2H/PCXqUwVk8pNxaQyVUwqNyqfqJgqblSmiknlExWTyjcqPqEyVUwqU8VNxW86rPWQw1oPOaz1EPsHX1C5qbhRmSpuVKaKSWWquFGZKiaVqWJSmSq+oTJVfELlpuITKlPFjco3Kr5xWOshh7UecljrIfYPvqDyiYoblZuKG5WpYlL5RMUnVG4qJpX/p4pJZaq4UZkqJpWbit90WOshh7UecljrIT/8sooblanipmJSmSqmipuKSWWqmFSmipuKT1TcqEwVn1CZKiaVG5Wp4t/ssNZDDms95LDWQ374UsWNylTxCZVPqPymihuVT1RMKjcVf1LFjcqk8ptUpopvHNZ6yGGthxzWesgPX1L5hMpNxSdUPlExqXxC5Rsqv0nlGypTxU3FpPKNit90WOshh7UecljrIT/8ZRWfUJkqpopJZaq4qbhRmSomlaniRmWqmFS+UXGjMlV8QuUTFX/TYa2HHNZ6yGGth/zwh1V8QmWqmFS+oXJT8Q2VqWKqmFRuVG4qvqEyVUwVk8onVG4qftNhrYcc1nrIYa2H/PDLKr5RMancVEwqk8pNxaQyVXyi4kZlqphUpopJZVKZKj5RMalMFTcVk8r/02GthxzWeshhrYf88KWKG5VvVNyoTBU3KpPKjcpU8QmVqWJS+UbFpDJV3KhMFZPKVPGNikllqvjGYa2HHNZ6yGGth/zwL1MxqXxCZaq4qbhRuamYVKaKSeUTKt9QuamYVD6hclPxNx3WeshhrYcc1nrID19SmSqmihuVSWWquFH5RMUnKr6hMlVMKlPFv0nFpDJV3KjcVPymw1oPOaz1kMNaD/nhl6lMFZPKTcWk8g2VqeJGZaqYVKaKqWJS+YbKTcUnKm4qJpWp4jepTBXfOKz1kMNaDzms9ZAfflnFpPKNihuVqeITKp+omFS+UTGpTBU3KlPFpPKNiknlpmKquFH5TYe1HnJY6yGHtR7yw19W8QmVm4pJZaq4qZhUblSmiknlRuUTKlPFjcqNyp+kMlVMKlPFbzqs9ZDDWg85rPUQ+wf/YSpTxaQyVUwqNxU3Kp+o+JtUpopJZar4hMpUMal8ouIbh7UecljrIYe1HvLDl1T+popPVEwqNxWTylTxJ6lMFZPK36QyVfymit90WOshh7UecljrIT/8sorfpPKbKiaVm4qbik+ofEJlqrhRmSq+UfEJlaliUplUpopvHNZ6yGGthxzWesgPf5jKJyr+JJVvqNxUTCpTxSdUblSmihuVG5U/qeJPOqz1kMNaDzms9ZAfHqdyUzGpTBVTxY3KVHGjMlVMFTcVNypTxSdUpooblUnlExXfOKz1kMNaDzms9ZAf/uMqJpWpYlL5hMpU8QmVm4pJZar4hMqNyk3FVDGp3FTcqPxJh7UecljrIYe1HvLDH1bxN1V8QuWmYlKZKqaKSWWq+ITKTcVUcaPyCZWpYlL5Nzms9ZDDWg85rPWQH36Zyt+k8o2KT1T8SRWTylQxqUwVNxW/qeITFZPKbzqs9ZDDWg85rPUQ+wdrPeKw1kMOaz3ksNZDDms95LDWQw5rPeSw1kMOaz3ksNZDDms95LDWQw5rPeSw1kMOaz3ksNZD/gfXuPZ5GTv8XgAAAABJRU5ErkJggg=="  title="" > -->
+                                               <ng-container *ngIf="_loginUser && _loginUser.branchid && _loginUser.branchid.qrcode" >
+                                                    <img [src]="_loginUser.branchid.qrcode"  title="" >
+                                               </ng-container> 
+                                            </div>
+                                               <div class="col-xl-10 col-lg-10 col-md-10">
+                                                   <div class="row" >
+                                                       <div class="col-md-6" *ngIf="onDisplay">
+                                                           <br>
+                                                           Today's Check in - Check out
+                                                       </div>
+                                                   </div>
+                                                <div class="row">
+                                                    <div class="col-md-6" style="font-weight: bold;" *ngIf="onDisplay">
+                                                        {{checkInTime}} - {{checkOutTime}}
+                                                    </div>
+                                                </div>
+                                               <div class="row">
+                                                    <button class="btn btn-primary ml-2"  type="submit" (click)="onCheckIn()">
+                                                        Check in
+                                                    </button>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div *ngIf="!checkOut && checkIn">
+                                        <div class="row mb-3">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="d-sm-flex align-items-sm-center ml-auto mr-auto">
+                                                    <ng-container *ngIf="_loginUser && _loginUser.branchid && _loginUser.branchid.qrcode" >
+                                                        <img [src]="_loginUser.branchid.qrcode"  title="" >
+                                                    </ng-container> 
+                                                    <div class="">
+                                                        <label class="col-form-label">
+                                                            Check-In Time
+                                                        </label>
+                                                        <h4 style="text-align: center;">{{checkindate}} - {{checkInTime}}</h4>
+                                                    </div>
+                                                    <div class="ml-xl-4 ml-md-3 ml-sm-3 ml-2">
+                                                        <label class="col-form-label">
+                                                            Total Time
+                                                        </label>
+                                                        <tr *ngFor="let entry of entries">
+                                                            <td>{{entry.id}}</td>
+                                                            <td>
+                                                              <h4 *ngIf="getElapsedTime(entry) as elapsed">
+                                                                {{elapsed.hours}} h {{elapsed.minutes}} m
+                                                              </h4>
+                                                            </td>
+                                                        </tr>
+                                                    </div>
+                                                    <div class="ml-xl-4 ml-md-3 ml-sm-3 ml-2">
+                                                        <a class="btn btn-primary" data-toggle="modal" data-target="#attendance">
+                                                            Check-Out
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                       
+                                    <!-- <div *ngIf="checkIn && checkOut">
+                                        <div class="row">
+                                            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 ml-auto mr-auto">
+                                                <div class="d-sm-flex align-items-sm-center ml-auto mr-auto">
+                                                    <ng-container *ngIf="_loginUser && _loginUser.branchid && _loginUser.branchid.qrcode" >
+                                                        <img [src]="_loginUser.branchid.qrcode"  title="" >
+                                                    </ng-container> 
+                                                    <div class="">
+                                                        <label class="col-form-label">
+                                                           Date
+                                                        </label>
+                                                        <h4 style="text-align: center;">{{checkindate}}</h4>
+                                                    </div>
+                                                    <div class="ml-xl-4 ml-md-3 ml-sm-3 ml-2">
+                                                        <label class="col-form-label">
+                                                            Check-In Time
+                                                        </label>
+                                                        <h4 *ngIf="checkInTime" style="text-align: center;">{{checkInTime}}</h4>
+                                                        <h4 *ngIf="!checkInTime" style="text-align: center;">-</h4>
+                                                    </div>
+                                                    <div class="ml-xl-4 ml-md-3 ml-sm-3 ml-2">
+                                                        <label class="col-form-label">
+                                                            Check-Out Time
+                                                        </label>
+                                                        <h4 *ngIf="checkOutTime" style="text-align: center;">{{checkOutTime}}</h4>
+                                                        <h4 *ngIf="!checkOutTime" style="text-align: center;">-</h4>
+                                                    </div>
+                                                    <div class="ml-xl-4 ml-md-3 ml-sm-3 ml-2">
+                                                        <label class="col-form-label">
+                                                            Total
+                                                        </label>
+                                                            <h4>{{totalHours}}</h4>
+                                                    </div>
+                                                   
+                                                    <div class="ml-xl-4 ml-md-3 ml-sm-3 ml-2">
+                                                        <a class="btn btn-primary" data-toggle="modal" data-target="#attendance">
+                                                            Check-Out
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                </div>
+                           </div>
+                        
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        <div class="mb-md-0 mb-3">
+                                            <mat-button-toggle-group #group="matButtonToggleGroup" >
+                                                <mat-button-toggle (change)="onValChange($event.value)" value="Week" checked="true">Week</mat-button-toggle>
+                                                <mat-button-toggle (change)="onValChange($event.value)" value="Month" >Month</mat-button-toggle>
+                                            </mat-button-toggle-group>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" *ngIf="group.value == 'Month'">
+                                <div class="col-md-12">
+                                    <full-calendar #calendar class="fc-toolbar-title" [options]="calendarOptions"></full-calendar>
+                                </div>
+                            </div>
+
+                            <div class="row" *ngIf="group.value == 'Week'">
+                                <div class="col-md-12">
+                                    <div class="row mb-1">
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                                            <div class="d-flex justify-content-start">
+
+                                                <mat-form-field>
+                                                    <mat-label>Select Week</mat-label>
+                                                    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                                        <input matStartDate formControlName="start"  (dateChange)="startDateSelection()">
+                                                        <input matEndDate formControlName="end" (dateChange)="endDateSelection()" >
+                                                    </mat-date-range-input>
+                                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                    <mat-date-range-picker #picker></mat-date-range-picker>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered text-nowrap table-membroz table-attendance">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="2" style="text-align: center;">
+                                                        {{ weekStartDate | toLocaleDate }} - {{weekEndDate | toLocaleDate }}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor=" let c of daysInRange; let i=index">                                                   
+                                                    <td style="width: 20%;">{{c.date | toLocaleDate }}</td> 
+                                                    <td style="width: 80%;"
+                                                    [ngClass]="{'working-bg' : c.checkin != '', 'absent-bg' : c.checkin == ''}">
+                                                        <div>
+                                                            <h4 *ngIf="c.totalHours">{{c.totalHours}}</h4>
+                                                            <h4 *ngIf="!c.totalHours">0 H : 0 M</h4>
+                                                        </div>
+                                                        <div *ngIf="!c.checkin">
+                                                            <a data-toggle="modal" class="hide" data-target="#attendanceModal" (click)="onClick(c)">
+                                                                + Add time entry
+                                                            </a>
+                                                        </div>   
+                                                        <div *ngIf="c.checkin">
+                                                            <a data-toggle="modal" class="hide" data-target="#attendanceModal" (click)="onClick(c)">
+                                                                + Edit time entry
+                                                            </a>
+                                                        </div>      
+                                                    </td>                        
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="attendance" >
+    <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Are you sure you want to checkout?</h4>
+                </div>
+                <div class="modal-body">
+                    <tr *ngFor="let entry of entries" hidden>
+                        <td>{{entry.id}}</td>
+                        <td>
+                          <h4 *ngIf="getElapsedTime(entry) as elapsed">
+                            {{elapsed.hours}} h {{elapsed.minutes}} m {{elapsed.seconds}} s
+                          </h4>
+                        </td>
+                    </tr>
+                    <h5>Total Time : {{totalTime}}</h5>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" data-dismiss="modal" #closeBtn>
+                        <i class="material-icons">close</i>Cancel
+                    </button>
+                    <button class="btn btn-primary ml-2" type="submit"  (click)="onCheckOut()">
+                        <i class="material-icons">save</i> Checkout
+                    </button>
+                </div>
+            </div>
+    </div>
+</div>
+
+<!-- Modal 2 -->
+<div class="modal fade" id="attendanceModal" >
+    <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+                <div class="modal-header" *ngIf="openModal">
+                    <h4>{{date | toLocaleDate }}</h4>
+                </div>
+                <div class="modal-header" *ngIf="!openModal">
+                    <h4 style="text-align: center;">You can't add attendance of {{date | toLocaleDate }}</h4>
+
+                </div>
+                <div class="modal-body" *ngIf="openModal">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="col-form-label">
+                                Check-In Time
+                            </label>
+         
+                             <mat-form-field class="example-full-width">
+                                <input placeholder="HH:MM" matInput type="time" [(ngModel)]="checkinTime" (ngModelChange)="valueChanged($event, daysInRange)">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="col-form-label">
+                                Check-Out Time
+                            </label>
+                                <mat-form-field class="example-full-width">
+                                    <input  placeholder="HH:MM"  type="time" matInput [(ngModel)]="checkoutTime" (ngModelChange)="valueChanged1($event,daysInRange)">
+                                </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="col-form-label">
+                                BreakTimes (Mins)
+                            </label>
+                                <mat-form-field class="example-full-width">
+                                    <input  placeholder="Min"  type="number" matInput [(ngModel)]="breakmin">
+                                </mat-form-field>
+                        </div>
+                        </div>
+                    </div>
+                    <h4 style="text-align: center;" *ngIf="openModal"> Total Time : {{total}}</h4>
+
+                <div class="modal-footer" >
+                    <button class="btn btn-default" *ngIf="!openModal" type="button" data-dismiss="modal" #closeBtn1> 
+                        <i class="material-icons">close</i>Cancel
+                    </button>
+                    <button class="btn btn-default" *ngIf="openModal" type="button" data-dismiss="modal" #closeBtn1>
+                        <i class="material-icons">close</i>Cancel
+                    </button>
+                    <button class="btn btn-primary ml-2" type="button" *ngIf="openModal"  (click)="onUpdate(date,checkinTime,checkoutTime)">
+                        <i class="material-icons">save</i> Save
+                    </button>
+                </div>
+            </div>
+    </div>
+</div>
+

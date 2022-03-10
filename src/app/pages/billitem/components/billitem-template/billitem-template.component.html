@@ -1,0 +1,301 @@
+<form [formGroup]="billform" (ngSubmit)="onSubmit(billform.value)">
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        BILL FORMAT
+                    </h3>
+
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <label class="col-sm-3 label-on-left">
+                                    <b>Bill Type</b>
+                                </label>
+                                <div class="col-sm-10">
+                                    <mat-form-field>
+                                        <div class="loader" *ngIf="istemplate">
+                                            <svg class="circular" viewBox="25 25 50 50">
+                                                <circle class="path" cx="50" cy="50" r="15" fill="none" stroke-width="2"
+                                                    stroke-miterlimit="10" />
+                                            </svg>
+                                        </div>
+                                        <mat-select (selectionChange)="onItemSelect($event.value)" matNativeControl
+                                            [(ngModel)]="selectedbilltype" formControlName="templatetype">
+
+                                            <mat-option *ngFor="let c of billtypeDDList" [value]="c">
+                                                {{c.property.title}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <button class="btn btn-link btn-primary btn-just-icon edit"
+                                            (click)="enableEditMode()" *ngIf="!isEdit">
+                                            <i class="material-icons">edit</i>
+
+                                        </button>
+                                        <button class="btn btn-link btn-primary btn-just-icon cancel" *ngIf="isEdit"
+                                            (click)="disableEditMode()">
+                                            <i class="material-icons">close</i> &nbsp;
+
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="loader" *ngIf="isdisplay">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="15" fill="none" stroke-width="2"
+                                        stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="col-form-label">
+                                        <b>{{getLang('numbering', 'Numbering:')}}</b>
+                                    </label>
+                                    <!--only show the data-->
+                                    <p *ngIf="!isEdit">
+                                        {{(_genFormatingModel != undefined && _genFormatingModel.prefix != undefined) ?
+                                        _genFormatingModel.prefix : '---'}}
+                                    </p>
+                                    <mat-form-field class="example-full-width" *ngIf="isEdit">
+                                        <!--edit the data-->
+                                        <input type="text" matInput [(ngModel)]="_genFormatingModel.prefix"
+                                            formControlName="prefix">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="col-form-label">
+                                        <b>{{getLang('header', 'Header:')}}</b>
+                                    </label>
+
+                                    <p class="form-control-static" *ngIf="!isEdit"
+                                        [innerHtml]="_genFormatingModel.header"></p>
+
+                                    <angular-editor [(ngModel)]="_genFormatingModel.header" formControlName="header"
+                                        *ngIf="isEdit">
+                                        >
+                                    </angular-editor>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="col-form-label">
+                                        <b>{{getLang('footer', 'Footer:')}}</b>
+                                    </label>
+
+                                    <p class="form-control-static" *ngIf="!isEdit"
+                                        [innerHtml]="_genFormatingModel.footer"></p>
+
+                                    <angular-editor [(ngModel)]="_genFormatingModel.footer" formControlName="footer"
+                                        *ngIf="isEdit">
+                                        >
+                                    </angular-editor>
+                                </div>
+                            </div>
+                            <div class="loader" *ngIf="issubmitted">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="15" fill="none" stroke-width="2"
+                                        stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-9 text-right">
+                                    <button [disabled]="issubmitted" type="submit" class="btn btn-primary"
+                                        *ngIf="isEdit">
+                                        <i class="material-icons">save</i>&nbsp;
+                                        {{getLang('savchngs', 'Save Changes')}}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="col-form-label">
+                                        <b>{{getLang('preview', 'Preview:')}}</b>
+                                    </label>
+                                    <div id="prdiv" class="card"
+                                        style="display: inline-block;position: relative;width: 100%;margin-top: 0;background: #fff;border: 1px solid #cccccc;">
+                                        <div class="card-content">
+                                            <div class="row">
+                                                <div class="col-md-offset-1 col-md-10">
+                                                    <div [innerHtml]="previewHeader"></div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-offset-1 col-md-10"
+                                                    style="margin-bottom: 40px;margin-top: 40px;padding-top: 15px;padding-bottom: 15px;font-size: 27px;font-weight: bold;line-height: normal;">
+                                                    <!-- {{((selectedbilltype == 'Invoice') ? 'Invoice' : ((selectedbilltype == 'Receipt') ? 'Receipt' : 'Bill'))}} -->
+                                                    {{previewTitle}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-invoice"
+                                                            style="width: 100%;border-spacing: 0;background-color: transparent;clear: both;margin-top: 6px !important;margin-bottom: 6px !important;max-width: none !important;border-collapse: separate !important;"
+                                                            cellpadding="0" cellspacing="0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th colspan="2"
+                                                                        style="border-top: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: middle !important;border-bottom: none !important;box-sizing: content-box !important;line-height: 1.42857143 !important;text-align: left;font-size: 15px;">
+                                                                        Particulars
+                                                                    </th>
+
+                                                                    <th style="border-top: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;vertical-align: middle !important;border-bottom: none !important;box-sizing: content-box !important;line-height: 1.42857143 !important;text-align: right;font-size: 15px;"
+                                                                        class="text-right">
+                                                                        Amount
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="2"
+                                                                        style="border-top: 1px solid #999;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: top;box-sizing: content-box;line-height: 1.42857143;font-weight: normal;font-size: 15px;color: rgba(0,0,0, 0.87);">
+                                                                        <span>
+                                                                            Membership Fees
+                                                                        </span>
+                                                                    </td>
+                                                                    <td class="text-right"
+                                                                        style="border-top: 1px solid #999;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;vertical-align: top;box-sizing: content-box;line-height: 1.42857143;font-weight: normal;font-size: 15px;color: rgba(0,0,0, 0.87);text-align: right;">
+                                                                        <div style="margin-bottom: 20px;">
+                                                                            <!-- <span>  $97.52  </span> -->
+                                                                            <span>{{00 | currency:'USD'}}</span>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td
+                                                                        style="width: 70%;border-bottom: 1px solid #999;border-top: none;">
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;border-bottom: 1px solid #999;border-top: none;white-space:nowrap; padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: normal;font-size: 15px;color: rgba(0,0,0, 0.87);">
+                                                                        Subtotal:
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;border-bottom: 1px solid #999;border-top: none;white-space:nowrap;padding-top:8px !important;padding-bottom:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: normal;font-size: 15px;color: rgba(0,0,0, 0.87);text-align: right;">
+                                                                        <!-- $97.52  -->
+                                                                        {{00 | currency:'USD'}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="width: 70%;"></td>
+                                                                    <td
+                                                                        style="width: 15%;white-space:nowrap;padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);">
+                                                                        <span
+                                                                            style="font-weight: normal;">Discount:</span>
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;padding-top:8px !important;padding-bottom:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);text-align: right;">
+                                                                        <span style="font-weight: normal;">
+                                                                            <!-- $0.00  -->
+                                                                            {{00 | currency:'USD'}}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="width: 70%;border-bottom: none;"></td>
+                                                                    <td
+                                                                        style="width: 15%;border-bottom: none;white-space:nowrap; padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: normal;font-size: 15px;color: rgba(0,0,0, 0.87);">
+                                                                        Total Tax Amount:
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;border-bottom: none;border-bottom: none;white-space:nowrap;padding-top:8px !important;padding-bottom:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: normal;font-size: 15px;color: rgba(0,0,0, 0.87);text-align: right;">
+                                                                        <!-- $0.00  -->
+                                                                        {{00 | currency:'USD'}}
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td
+                                                                        style="width: 70%;border-bottom: 1px solid #999;">
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;white-space:nowrap;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);">
+                                                                        <span style="font-weight: normal;"> Grand
+                                                                            Total:</span>
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);text-align: right;">
+                                                                        <span style="font-weight: normal;">
+                                                                            <!-- $97.52  -->
+                                                                            {{00 | currency:'USD'}}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td
+                                                                        style="width: 70%;border-bottom: 1px solid #999;">
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;white-space:nowrap;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);">
+                                                                        <span style="font-weight: normal;">Paid:</span>
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);text-align: right;">
+                                                                        <span style="font-weight: normal;">
+                                                                            <!-- $97.52  -->
+                                                                            {{00 | currency:'USD'}}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td
+                                                                        style="width: 70%;border-bottom: 1px solid #999;">
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;white-space:nowrap;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;padding-right:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);">
+                                                                        <span style="font-weight: normal;"> Balance
+                                                                            Amount:</span>
+                                                                    </td>
+                                                                    <td
+                                                                        style="width: 15%;border-bottom: 1px solid #999;padding-top:8px !important;padding-bottom:8px !important;vertical-align: middle;box-sizing: content-box;line-height: 1.42857143;font-weight: bold;font-size: 15px;color: rgba(0,0,0, 0.87);text-align: right;">
+                                                                        <span style="font-weight: normal;">
+                                                                            <!-- $0.00   -->
+                                                                            {{00 | currency:'USD'}}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div style="font-weight: normal;">
+                                                        <div style="margin-bottom:10px;margin-top: 160px;">
+                                                            <div *ngIf="previewfooter != undefined"
+                                                                [innerHtml]="previewfooter"></div>
+                                                            <div *ngIf="previewfooter == undefined">This is a computer
+                                                                generated Bill and doesn’t require any signature. If you
+                                                                have queries regarding this then please contact us.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</form>

@@ -1,0 +1,186 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+    <div class="row">
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('eligiblenight', 'Eligible night')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="eligiblenight" type="number">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-select matNativeControl formControlName="eligiblepernight">
+                    <mat-option [value]="drn" *ngFor="let drn of duration">
+                        {{drn}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <div [hidden]="form.get('eligiblenight').valid || (form.get('eligiblenight').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('eligiblenight').hasError('required')" class="error-label">
+                    {{getLang('eligiblenightisrequired', 'Eligible Night is Required')}}
+                </small>
+                <small *ngIf="form.get('eligiblenight').hasError('insertonlypositivenumber')" class="error-label">
+                    {{getLang('valueshouldbepositive ', 'Value should be positive
+                    !')}}
+                </small>
+            </div>
+            <div [hidden]="form.get('eligiblepernight').valid || (form.get('eligiblepernight').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('eligiblepernight').hasError('required')" class="error-label">
+                    {{getLang('durationisrequired', 'Duration is Required')}}
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('minnight', 'Min night')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="minnight" type="number">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-select matNativeControl formControlName="minperbooking">
+                    <mat-option [value]="drn" *ngFor="let drn of duration">
+                        {{drn}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <div [hidden]="form.get('minnight').valid || (form.get('minnight').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('minnight').hasError('required')" class="error-label">
+                    {{getLang('minnight', 'minnight is Required')}}
+                </small>
+                <small *ngIf="form.get('minnight').hasError('insertonlypositivenumber')" class="error-label">
+                    {{getLang('valueshouldbepositive ', 'Value should be positive
+                    !')}}
+                </small>
+            </div>
+            <div [hidden]="form.get('minperbooking').valid || (form.get('minperbooking').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('minperbooking').hasError('required')" class="error-label">
+                    {{getLang('minisrequired', 'Duration is Required')}}
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('maxnight', 'Max night')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="maxnight" type="number">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-select matNativeControl formControlName="maxperbooking">
+                    <mat-option [value]="drn" *ngFor="let drn of duration">
+                        {{drn}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <div [hidden]="form.get('maxnight').valid || (form.get('maxnight').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('maxnight').hasError('required')" class="error-label">
+                    {{getLang('maxnight', 'maxnight is Required')}}
+                </small>
+            </div>
+            <div [hidden]="form.get('maxperbooking').valid || (form.get('maxperbooking').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('maxperbooking').hasError('required')" class="error-label">
+                    {{getLang('durationisrequired', 'Duration is Required')}}
+                </small>
+                <small *ngIf="form.get('maxperbooking').hasError('insertonlypositivenumber')" class="error-label">
+                    {{getLang('valueshouldbepositive ', 'Value should be positive
+                    !')}}
+                </small>
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('advancenight', 'Advance Night')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="advancenight" type="number">
+            </mat-form-field>
+
+            <div [hidden]="form.get('advancenight').valid || (form.get('advancenight').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('advancenight').hasError('required')" class="error-label">
+                    {{getLang('advancenight', 'advancenight is Required')}}
+                </small>
+                <small *ngIf="form.get('advancenight').hasError('insertonlypositivenumber')" class="error-label">
+                    {{getLang('valueshouldbepositive ', 'Value should be positive
+                    !')}}
+                </small>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('minadvancebookingnotice', 'Min Advance Booking Notice')}}
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="advancebookingnoticemin" type="number">
+            </mat-form-field>
+
+            <div [hidden]="form.get('advancebookingnoticemin').valid || (form.get('advancebookingnoticemin').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('advancebookingnoticemin').hasError('insertonlypositivenumber')"
+                    class="error-label">
+                    {{getLang('minshouldbepositive ', 'Min should be positive
+                    !')}}
+                </small>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('maxadvancebookingnotice', 'Max Advance Booking Notice')}}
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="advancebookingnoticemax" type="number">
+            </mat-form-field>
+
+            <div [hidden]="form.get('advancebookingnoticemax').valid || (form.get('advancebookingnoticemax').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('advancebookingnoticemax').hasError('insertonlypositivenumber')"
+                    class="error-label">
+                    {{getLang('maxshouldbepositive ', 'Max should be positive
+                    !')}}
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-right mt-3 mb-4">
+            <button class="btn btn-primary" type="submit" [disabled]="disableBtn">
+                <i class="material-icons">save</i> {{getLang('saveusageterms','Save Usage Terms')}}
+            </button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,51 @@
+<div class="input-wrap">
+
+    <mat-form-field class="example-full-width">
+
+        <input 
+            placeholder="Search Here"
+            type="text"
+            aria-label="Number"
+            matInput
+            [formControl]="control"
+            [matAutocomplete]="auto"
+            (keyup)="enter()"
+            (change)="handleEmptyInput($event)">
+
+        <mat-autocomplete 
+            #auto="matAutocomplete" 
+            [displayWith]="displayFn" 
+            (optionSelected)="optionSelected($event.option)">
+
+            <mat-option *ngIf="isLoadingBox" class="is-loading">
+                <mat-spinner diameter="50"></mat-spinner>
+            </mat-option>
+
+            <ng-container *ngIf="!isLoadingBox">
+
+                <mat-option 
+                    *ngFor="let option of filteredOptions" 
+                    [value]="option">
+                    {{option.autocomplete_displayname}}
+                </mat-option>
+                
+            </ng-container>
+
+
+        </mat-autocomplete>
+
+        <mat-error *ngIf="control.hasError('invalidAutocompleteObject')">
+            Invalid records, please correct it!
+        </mat-error>
+
+    </mat-form-field>
+
+    <ng-container *ngIf="displayhtmlContent">
+        <span 
+            (click)="onClick()" 
+            *ngIf="showDetail" 
+            [innerHTML]="displayhtmlContent | sanitizeHtml">
+        </span>
+    </ng-container>
+   
+</div>

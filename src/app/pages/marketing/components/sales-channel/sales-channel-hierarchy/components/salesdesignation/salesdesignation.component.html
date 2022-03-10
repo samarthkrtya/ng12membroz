@@ -1,0 +1,9 @@
+ <div class="oc-h-bar oc-border" *ngIf="hasManager"></div>
+<div class="oc-box oc-border oc-background">	 
+	<div class="oc-designation oc-bdr-btm">{{salesDesignation?.designation}}</div>	
+	<div class="oc-designation">{{salesDesignation.many == true ? '&#8734;' : 1}}</div>
+</div> 
+<button class="btn btn-primary oc-addbtn" (click)="addSDesignation(salesDesignation.designationid)">
+	<i class="material-icons">add</i>
+</button>
+<div class="oc-h-bar oc-border" *ngIf="salesDesignation?.subordinates.length"></div>

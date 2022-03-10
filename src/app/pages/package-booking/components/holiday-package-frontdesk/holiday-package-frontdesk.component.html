@@ -1,0 +1,209 @@
+<div class="main-content">
+  <div class="container-fluid">
+
+    <div class="card">
+      <div class="loader" *ngIf="isLoadingdata">
+        <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!isLoadingdata">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="d-flex align-items-center mt-3">
+            <h3 class="card-title flex-grow-1 align-self-center m-0">Tour Packages</h3>
+            <div class="">
+              <button type="button" [routerLink]="['/pages/package-booking/holiday-package-booking']"  class="btn btn-primary text-nowrap">
+                <i class="material-icons">add</i> New Booking
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-3 col-md-4 col-sm-6 pr-md-0 pr-sm-0">
+          <div class="card" *ngIf="packageGrpList && packageGrpList.length > 0;else nodataTemp">
+            <div class="p-2" *ngFor="let packageList of packageGrpList">
+              <h4>{{packageList[0].packagetype}}</h4>
+              <div class="border rounded mb-2" *ngFor="let package of packageList">
+                <img alt="" class="tour-package-img-top"
+                  [src]="package.image && package.image ? package.image.attachment : '../../assets/img/image_placeholder.jpg'">
+                <div class="p-2">
+                  <h5>{{package?.title}} </h5>
+                  <div class="mb-3">{{package?.cost | myCurrencyPipe}} ({{package?.sortduration}})</div>
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <a [routerLink]="['/pages/package-booking/schedule-package/'+package._id]" class="font-14" style="cursor: pointer;" >Schedule Now</a>
+                    </div>
+                    <a class="font-14"
+                      [routerLink]="['/pages/package-booking/holiday-package/'+package._id]" style="cursor: pointer;">View Package</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #nodataTemp>
+          <div class="card" >
+            <div class="p-2">
+              <h4>No Packages available !</h4>
+            </div>
+          </div>
+        </ng-template>
+        </div>
+        <div class="col-xl-9 col-md-8 col-sm-6">
+          <mat-tab-group class="frontdesk-tab-card">
+            <mat-tab label="Open for Booking">
+              <div class="card mt-0">
+                <div class="p-2" *ngFor="let opnpackageList of openpackageGrpList">
+                  <h4>{{opnpackageList[0]?.packagetype}}</h4>
+                  <div class="row membroz-row">
+                    <div class="col-xl-4 col-lg-6 col-md-6 membroz-col" *ngFor="let package of opnpackageList">
+                      <div class="border rounded mb-3">
+                        <img alt="" class="tour-package-img-top"
+                        [src]="package.image && package.image ? package.image.attachment : '../../assets/img/image_placeholder.jpg'">
+                        <div class="p-2">
+                          <h5>{{package.title}}</h5>
+                          <div class="d-flex align-items-center mb-3">
+                            <div class="flex-grow-1">{{package.cost | myCurrencyPipe}}</div>
+                            <span class="badge-square badge-success">{{package?.bookedcapacity}} /  {{package?.capacity}}</span>
+                          </div>
+                          <div class="d-flex align-items-center mb-3">
+                            <div>{{package?.sortduration}}</div>
+                          </div>
+
+                          <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                              <a class="attend-holiday-box attend-text-orange font-14"
+                              [routerLink]="['/pages/package-booking/holiday-package-booking/package/'+package.basetourpackage._id+'/'+package._id]">Booking </a>
+                            </div>
+                            <div class="font-weight-bold">{{package?.traveldate | toLocaleDate}}</div>
+                            <button class="btn btn-link btn-primary btn-just-icon btn-sm m-0 justify-content-end"
+                              data-toggle="dropdown">
+                              <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#" [routerLink]="['/pages/package-booking/package-itinerary/tourpackage/',package._id]">
+                                  View itinerary
+                                </a>
+                                <a class="dropdown-item" href="#" [routerLink]="['/pages/package-booking/holiday-package/'+package._id]">
+                                  Edit tour package
+                                </a>
+                                <a class="dropdown-item" (click)="viewBookings(package._id)">
+                                  Bookings
+                                </a>
+                                <a class="dropdown-item" (click)="cancelTP(package)">
+                                  Cancel tour package
+                                </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="In Progress">
+              <div class="card mt-0">
+                <div class="p-2" *ngFor="let runpackageList of runningpackageGrpList">
+                  <h4>{{runpackageList[0]?.packagetype}}</h4>
+                  <div class="row membroz-row">
+                    <div class="col-xl-4 col-lg-6 col-md-6 membroz-col" *ngFor="let package of runpackageList">
+                      <div class="border rounded mb-3">
+                        <img alt="" class="tour-package-img-top"
+                        [src]="package.image && package.image ? package.image.attachment : '../../assets/img/image_placeholder.jpg'">
+                        <div class="p-2">
+                          <h5>{{package.title}}</h5>
+                          <div class="d-flex align-items-center mb-3">
+                            <div class="flex-grow-1">{{package.cost | myCurrencyPipe}}</div>
+                            <span class="badge-square badge-success">{{package?.bookedcapacity}} /  {{package?.capacity}}</span>
+                          </div>
+                          <div class="d-flex align-items-center mb-3">
+                            <div>{{package?.sortduration}}</div>
+                          </div>
+
+                          <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                              <span class="attend-holiday-box attend-text-orange font-14">In Progress</span>
+                            </div>
+                            <div class="font-weight-bold">{{package?.traveldate | toLocaleDate}}</div>
+                            <button class="btn btn-link btn-primary btn-just-icon btn-sm m-0 justify-content-end"
+                              data-toggle="dropdown">
+                              <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                              <a class="dropdown-item" href="#" [routerLink]="['/pages/package-booking/package-itinerary/tourpackage/'+package._id]">
+                                View Itinerary
+                              </a>
+                              <a class="dropdown-item" (click)="viewBookings(package._id)">
+                                Bookings
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="Recent Completed">
+              <div class="card mt-0">
+                <div class="p-2" *ngFor="let clspackageList of closepackageGrpList">
+                  <h4>{{clspackageList[0]?.packagetype}}</h4>
+                  <div class="row membroz-row">
+                    <div class="col-xl-4 col-lg-6 col-md-6 membroz-col" *ngFor="let package of clspackageList">
+                      <div class="border rounded mb-3">
+                        <img alt="" class="tour-package-img-top"
+                        [src]="package.image && package.image ? package.image.attachment : '../../assets/img/image_placeholder.jpg'">
+                        <div class="p-2">
+                          <h5>{{package.title}}</h5>
+                          <div class="d-flex align-items-center mb-3">
+                            <div class="flex-grow-1">{{package.cost | myCurrencyPipe}}</div>
+                            <span class="badge-square badge-success">{{package?.bookedcapacity}} /  {{package?.capacity}}</span>
+                          </div>
+                          <div class="d-flex align-items-center mb-3">
+                            <!-- <div class="flex-grow-1">
+                              <i class="material-icons">person</i>
+                              {{package?.totaladults}}
+                              <i class="material-icons">child_care</i>
+                              {{package?.totalchildrens}}
+                            </div> -->
+                            <div>{{package?.sortduration}}</div>
+                          </div>
+
+                          <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                              <span class="attend-holiday-box attend-text-orange font-14">Recent Completed</span>
+                            </div>
+                            <div class="font-weight-bold">{{package?.traveldate | toLocaleDate}}</div>
+                            <button class="btn btn-link btn-primary btn-just-icon btn-sm m-0 justify-content-end"
+                              data-toggle="dropdown">
+                              <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                              <a class="dropdown-item" href="#" [routerLink]="['/pages/package-booking/package-itinerary/tourpackage/'+package._id]">
+                                View Itinerary
+                              </a>
+                              <a class="dropdown-item" (click)="viewBookings(package._id)">
+                                Bookings
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px">
+        <div class="member-img-main position-relative member-profile-img-border">
+            <img [src]="dataContent.profilepic ? dataContent.profilepic : '../assets/img/default-avatar.png'"
+                class="img-fluid w-100" alt="">
+            <div class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.rolename}}</h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+
+               <div class="d-flex align-items-center mb-3"
+                    *ngIf="dataContent.property && dataContent.property.address">
+                   
+                    <div> {{dataContent.property.address}} </div>
+                </div> 
+
+                <div class="d-flex align-items-center mb-3"
+                *ngIf="dataContent.property && dataContent.property.address">
+               
+                <div> {{dataContent.property.City}} </div>
+            </div> 
+<!-- 
+            <div class="d-flex align-items-center mb-3"
+                    *ngIf="dataContent.property && dataContent.property.whatsapp_number">
+                    <div class="mr-2"> <img src="../assets/img/whatsapp-gray-icon.svg" alt=""></div>
+                    <div>{{dataContent.property.whatsapp_number}}</div>
+                    <div class="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
+                            <g transform="translate(-5189 -555)">
+                                <g transform="translate(5189 555)" fill="none" class="svg-stroke-secondary-icon"
+                                    stroke-width="1">
+                                    <circle cx="17" cy="17" r="17" stroke="none" />
+                                    <circle cx="17" cy="17" r="16.5" fill="none" />
+                                </g>
+                                <path
+                                    d="M14.7,2.471A8.426,8.426,0,0,0,1.445,12.635L.25,17l4.466-1.171a8.415,8.415,0,0,0,4.026,1.025h0A8.428,8.428,0,0,0,14.7,2.471ZM8.745,15.431h0a6.993,6.993,0,0,1-3.564-.976L4.922,14.3l-2.65.7.707-2.584-.167-.265a7,7,0,1,1,5.931,3.281Zm3.841-5.244c-.21-.105-1.245-.614-1.438-.685s-.333-.105-.473.105-.544.685-.667.825-.245.158-.456.053A5.749,5.749,0,0,1,7.858,9.441,6.349,6.349,0,0,1,6.687,7.983c-.123-.211,0-.314.092-.43a5.954,5.954,0,0,0,.526-.72.387.387,0,0,0-.018-.369c-.053-.105-.473-1.141-.649-1.563s-.344-.355-.474-.361-.263-.007-.4-.007A.773.773,0,0,0,5.2,4.8a2.361,2.361,0,0,0-.737,1.756A4.1,4.1,0,0,0,5.324,8.73a9.382,9.382,0,0,0,3.6,3.178,12.048,12.048,0,0,0,1.2.443,2.886,2.886,0,0,0,1.326.083,2.168,2.168,0,0,0,1.421-1,1.759,1.759,0,0,0,.123-1c-.053-.088-.193-.14-.4-.246Zm0,0"
+                                    transform="translate(5197.75 564)" class="svg-fill-secondary-icon"
+                                    fill-rule="evenodd" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>  -->
+            </div>
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent.membershipid && dataContent.membershipid.membershipname">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-2"> <img src="../assets/img/member-card-gray-icon.svg" alt=""></div>
+                    <div> {{dataContent.membershipid.membershipname}}</div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.membershipstart">
+                    <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg" alt=""></div>
+                    <div> {{dataContent.membershipstart | date: 'medium'}} </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

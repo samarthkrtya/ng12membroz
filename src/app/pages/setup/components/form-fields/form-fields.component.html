@@ -1,0 +1,688 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row" cdkDropListGroup>
+      <div class="col-xl-3 pr-xl-0 formfields-sticky"  >
+        <h3 class="card-title">Form Builder</h3>
+        <div class="card form-builder-card">   
+          <mat-tab-group class="tab-50-50">
+            <mat-tab label="Normal Fields"> 
+              <div>
+                <ul 
+                  id="simplefield"
+                  class="list-group toolbox-list"
+                  cdkDropList
+                  #todoList="cdkDropList"
+                  [cdkDropListData]="fieldLists"
+                  (cdkDropListDropped)="drop($event)"
+                  cdkDropListSortingDisabled
+                  [cdkDropListEnterPredicate]="noReturnPredicate">
+                  <li 
+                    class="list-group-item" 
+                    *ngFor="let item of fieldLists"
+                    cdkDrag>
+                    <a class="list-group-item-action d-flex align-items-center">
+                      <img [src]="item.src" class="mr-3"> 
+                      {{item.name}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </mat-tab>
+            <mat-tab label="Special Fields"> 
+              <div>
+                <ul 
+                  id="specialfield"
+                  class="list-group toolbox-list"
+                  cdkDropList
+                  #todoList="cdkDropList"
+                  [cdkDropListData]="specialFieldLists"
+                  (cdkDropListDropped)="drop($event)"
+                  cdkDropListSortingDisabled
+                  [cdkDropListEnterPredicate]="noReturnPredicate">
+                  <li 
+                    [cdkDragDisabled]="item.disabled"
+                    class="list-group-item" 
+                    *ngFor="let item of specialFieldLists"
+                    cdkDrag>
+                    <a class="list-group-item-action d-flex align-items-center">
+                      <img [src]="item.src" class="mr-3"> {{item.name}}
+                    </a>
+                  </li>
+                </ul>
+              </div> 
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </div>
+      
+      <div class="col-xl-9">
+        <h3 class="card-title text-capitalize"> {{formObj?.formname}} </h3>
+
+        <div class="card form-builder-card">
+          <div class="card-body">
+
+            <ng-container *ngFor="let section of this.sectionLists">
+
+              <h4>{{section[0]?.sectiondisplayname ? section[0]?.sectiondisplayname : ""}}</h4>
+
+              <div
+                [id]="section[0]?.sectionname"
+                class="row no-gutters example-list d-flex mb-4"
+                cdkDropList
+                #doneList="cdkDropList"
+                [cdkDropListData]="section"
+                (cdkDropListDropped)="drop($event)">
+
+                <ng-container *ngIf="section[0]?.fieldtype !== 'group'">
+                  <div 
+                    [ngClass]="item.colspan && item.colspan == '1' ? 'col-sm-12' : 'col-sm-6'"
+                    *ngFor="let item of section" cdkDrag>
+                    <div class="fb-dash-border">
+
+                      <label class="col-form-label" *ngIf="item.fieldtype !== 'disclaimer'">
+                        {{item.displayname && item.displayname !== '' ? item.displayname : item.fieldname}}
+                        <span *ngIf="item.required" class="text-danger">*</span>
+                      </label>
+
+                      <div class="row">
+                        
+                        <div class="col-sm-12">
+                          <div class="d-flex">
+                          <app-display-fields
+                            [item]="item" class="flex-grow-1">
+                          </app-display-fields>
+                        
+                          
+                       
+                            <button 
+                              mat-button 
+                              *ngIf="!item.branchid"
+                              class="btn btn-link btn-primary btn-just-icon">
+                                <mat-icon>lock</mat-icon>
+                            </button>
+
+                            <button 
+                              *ngIf="item.branchid"
+                              mat-button 
+                              class="btn btn-link btn-primary btn-just-icon" (click)="edit(item)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+        
+                            <button 
+                              *ngIf="item.branchid"
+                              mat-button 
+                              class="btn btn-link btn-primary btn-just-icon" (click)="delete(item)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            
+                        </div>
+                      </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="section[0]?.fieldtype == 'group'">
+                  <div 
+                    [ngClass]="item.colspan && item.colspan == '1' ? 'col-sm-12' : 'col-sm-6'"
+                    *ngFor="let item of section[0]?.fields" cdkDrag>
+
+                    <div class="fb-dash-border">
+
+                      <label class="col-form-label" *ngIf="item.fieldtype !== 'disclaimer'">
+                        {{item.displayname && item.displayname !== '' ? item.displayname : item.fieldname}}
+                        <span *ngIf="item.required" class="text-danger">*</span>
+                      </label>
+
+                      <div class="row">
+                        
+                        <div class="col-sm-12">
+
+                          <div class="d-flex">
+                          <app-display-fields 
+                            [item]="item" class="flex-grow-1">
+                          </app-display-fields>
+
+                          <button mat-button class="btn btn-link btn-primary btn-just-icon" (click)="edit(item)">
+                            <mat-icon>edit</mat-icon>
+                          </button>
+        
+                          <button mat-button class="btn btn-link btn-primary btn-just-icon" (click)="delete(item)">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                          </div>
+
+                      </div>
+
+                        
+
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+              </div>
+            </ng-container>
+
+            <div class="mt-2">
+
+              
+
+              <ng-container>
+                <app-add-section 
+                  [formObj]="formObj" 
+                  (onAddSectionData)="getSubmittedAddSectionData($event)">
+                </app-add-section>
+              </ng-container>
+
+
+              <ng-container>
+                <app-add-group 
+                  [formObj]="formObj" 
+                  (onAddGroupData)="getSubmittedAddGroupData($event)">
+                </app-add-group>
+              </ng-container>
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="footer fixed-bottom bg-white shadow-top">
+  <div class="container-fluid">
+   
+        <div class="row">
+          <div class="col-sm-12 text-right">
+            <!-- <button class="btn btn-default" type="button">
+              <i class="material-icons">close</i> Cancel
+            </button> -->
+            <button class="btn btn-primary ml-2" type="submit" (click)="preview()" [disabled]="isdisablesavebutton">
+              <i class="material-icons">preview</i> Preview
+            </button>
+            <button class="btn btn-primary ml-2" type="submit" (click)="Save()" [disabled]="isdisablesavebutton">
+              <i class="material-icons">save</i> Save
+            </button>
+          </div>
+        </div>
+   
+  </div>
+</footer>
+
+<!-- Trigger the modal with a button -->
+<button 
+  type="button" 
+  id="addFieldBtn" 
+  class="btn btn-info btn-lg d-none" 
+  data-toggle="modal" 
+  data-target="#myModal"
+  data-backdrop="static" 
+  data-keyboard="false"></button>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <form 
+        [formGroup]="form" 
+        (ngSubmit)="onSubmit(form.value, form.valid)" 
+        novalidate 
+        class="mb-0">
+        <div class="modal-header">
+          <h4 class="modal-title"> {{getLang('addfield', 'Add Field')}} </h4>
+          <button type="button" class="close" data-dismiss="modal" (click)="cancelAction()">&times;</button>
+        </div>
+        <div class="modal-body">
+
+          <input hidden="true" matInput formControlName="_id">
+          <input hidden="true" matInput formControlName="sectionname">
+          <input hidden="true" matInput formControlName="sectiondisplayname">
+          <input hidden="true" matInput formControlName="id">
+          <input hidden="true" matInput formControlName="fieldname">
+
+          <div class="row">
+
+            <div class="col-sm-12">
+              <label class="col-form-label"> 
+                {{getLang('displayname', 'Display Name')}} 
+                <span class="text-danger">*</span>
+              </label>
+              
+              <mat-form-field>
+                <input matInput formControlName="displayname">
+              </mat-form-field>
+
+              <div 
+                  [hidden]="form.get('displayname').valid || (form.get('displayname').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('displayname').hasError('required')" class="error-label">
+                      {{getLang('displaynameisrequired', 'Display Name is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <label class="col-form-label"> {{getLang('required', 'Required')}} </label>
+
+              <div class="mt-2">
+                <mat-slide-toggle
+                    class="example-margin"
+                    formControlName="required">
+                </mat-slide-toggle>
+              </div>
+              <div 
+                  [hidden]="form.get('required').valid || (form.get('required').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('required').hasError('required')" class="error-label">
+                      {{getLang('requiredisrequired', 'required is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="checkMultiSelect(this._formfieldModel.fieldtype)">
+              <label class="col-form-label"> {{getLang('multiselect', 'Is Multi Select')}} </label>
+
+              <div class="mt-2">
+
+                <mat-slide-toggle
+                    class="example-margin"
+                    formControlName="multiselect">
+                </mat-slide-toggle>
+
+              </div>
+
+              <div 
+                  [hidden]="form.get('multiselect').valid || (form.get('multiselect').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('multiselect').hasError('required')" class="error-label">
+                      {{getLang('multiselectisrequired', 'multiselect is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'number') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('maxlength', 'Min')}} <span class="text-danger">*</span></label>
+
+              <div class="mt-2">
+
+                <mat-form-field>
+                  <input matInput type="number" formControlName="min" >
+                </mat-form-field>
+              </div>
+              <div 
+                  [hidden]="form.get('min').valid || (form.get('min').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('min').hasError('required')" class="error-label">
+                      {{getLang('minisrequired', 'min is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'number') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('Max', 'Max')}} <span class="text-danger">*</span> </label>
+
+              <div class="mt-2">
+
+                <mat-form-field>
+                  <input matInput type="number" formControlName="max" >
+                </mat-form-field>
+              </div>
+              <div 
+                  [hidden]="form.get('max').valid || (form.get('max').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('max').hasError('required')" class="error-label">
+                      {{getLang('maxisrequired', 'max is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'mobile' || this._formfieldModel.fieldtype == 'alternatenumber') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('maxlength', 'Max Length')}} <span class="text-danger">*</span> </label>
+
+              <div class="mt-2">
+
+                <mat-form-field>
+                  <input matInput type="number" min="0" max="100" formControlName="maxlength" >
+                </mat-form-field>
+              </div>
+              <div 
+                  [hidden]="form.get('maxlength').valid || (form.get('maxlength').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('maxlength').hasError('required')" class="error-label">
+                      {{getLang('maxlengthisrequired', 'maxlength is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="checkLookupData(this._formfieldModel.fieldtype)">
+              <label class="col-form-label"> {{getLang('lookup', 'Lookup Data')}} </label>
+              <div class="row">
+                <div class="col-sm-6"></div>
+                <div class="col-sm-6 text-right">
+                  <button type="button" class="btn btn-primary btn-sm" (click)="addLookup()">Add Item</button>  
+                </div>
+              </div>
+              <div
+                formArrayName="lookupdata"
+                *ngFor="let item of form.get('lookupdata')['controls']; let i = index;">
+                <div [formGroupName]="i" class="row">
+                  <div class="col-sm-4">
+                    <mat-form-field>
+                      <input matInput formControlName="key" placeholder="key">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                    <mat-form-field>
+                      <input matInput formControlName="value" placeholder="value">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                    <button type="button"  class="btn btn-danger btn-sm" (click)="removeLookup(i)">
+                      <i class="material-icons">delete</i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="this._formfieldModel.fieldtype == 'lookup' ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('lookup', 'Lookup Data')}} </label>
+              <mat-form-field class="example-full-width">
+                <input 
+                  type="text"
+                  aria-label="Number"
+                  matInput
+                  [formControl]="mylookupControl"
+                  [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="lookupdisplayFn">
+
+                  <mat-option *ngIf="isLookupLoadingBox" class="is-loading">
+                    <mat-spinner diameter="50"></mat-spinner>
+                  </mat-option>
+              
+                  <ng-container *ngIf="!isLookupLoadingBox && lookupOptions.length > 0">
+                    <mat-option 
+                      *ngFor="let option of lookupFilteredOptions | async" 
+                      [value]="option">
+                      {{option.lookup}}
+                    </mat-option>
+                  </ng-container>
+              
+                  <ng-container *ngIf="!isLookupLoadingBox && lookupOptions.length == 0">
+                    <mat-option>
+                      <span>No Record</span>
+                    </mat-option>
+                  </ng-container>
+
+                  
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="this._formfieldModel.fieldtype == 'ondemandform' || this._formfieldModel.fieldtype == 'form' || this._formfieldModel.fieldtype == 'category_list' ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('form', 'Form')}} </label>
+              <mat-form-field class="example-full-width">
+                <input 
+                  type="text"
+                  aria-label="Number"
+                  matInput
+                  [formControl]="myformControl"
+                  [matAutocomplete]="autoForm">
+
+                <mat-autocomplete 
+                  #autoForm="matAutocomplete" 
+                  [displayWith]="formsdisplayFn"
+                  (optionSelected)="optionSelected($event.option)">
+
+                  <mat-option *ngIf="isFormLoadingBox" class="is-loading">
+                    <mat-spinner diameter="50"></mat-spinner>
+                  </mat-option>
+              
+                  <ng-container *ngIf="!isFormLoadingBox && formsOptions.length > 0">
+                    <mat-option 
+                      *ngFor="let option of formsFilteredOptions | async" 
+                      [value]="option">
+                      {{option.formname}}
+                    </mat-option>
+                  </ng-container>
+              
+                  <ng-container *ngIf="!isFormLoadingBox && formsOptions.length == 0">
+                    <mat-option>
+                      <span>No Record</span>
+                    </mat-option>
+                  </ng-container>
+
+                  
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <div 
+              class="col-sm-6" 
+              [ngClass]="[this._formfieldModel.fieldtype == 'form' || this._formfieldModel.fieldtype == 'category_list'? 'd-block' : 'd-none', this._formfieldModel.fieldtype == 'form' ? 'col-sm-6' : 'col-sm-12']">
+              <label class="col-form-label"> {{getLang('formfield', 'Form Field')}} </label>
+
+              <mat-form-field class="example-full-width">
+                <input 
+                  type="text"
+                  aria-label="Number"
+                  matInput
+                  [formControl]="myFormFieldControl"
+                  [matAutocomplete]="autoFormField"
+                  (click)="preloaddata()">
+
+                <mat-autocomplete #autoFormField="matAutocomplete" [displayWith]="formfielddisplayFn">
+
+                  <mat-option *ngIf="isFormFieldLoadingBox" class="is-loading">
+                    <mat-spinner diameter="50"></mat-spinner>
+                  </mat-option>
+              
+                  <ng-container *ngIf="!isFormFieldLoadingBox && formfieldOptions.length > 0">
+                    <mat-option 
+                      *ngFor="let option of formfieldFilteredOptions | async" 
+                      [value]="option">
+                      {{option.key}}
+                    </mat-option>
+                  </ng-container>
+              
+                  <ng-container *ngIf="!isFormFieldLoadingBox && formfieldOptions.length == 0">
+                    <mat-option>
+                      <span>No Record</span>
+                    </mat-option>
+                  </ng-container>
+
+                </mat-autocomplete>
+              </mat-form-field>
+
+              
+            </div>
+
+            <div 
+              class="col-sm-6" 
+              [ngClass]="this._formfieldModel.fieldtype == 'form' ? 'col-sm-6' : 'col-sm-12'"
+              [ngClass]="this._formfieldModel.fieldtype == 'category_list' ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('parentfield', 'Parent Field')}} </label>
+
+              <mat-form-field class="example-full-width">
+                <input 
+                  type="text"
+                  aria-label="Number"
+                  matInput
+                  [formControl]="myparentFieldControl"
+                  [matAutocomplete]="autoParentField"
+                  (click)="preloaddata()">
+
+                <mat-autocomplete #autoParentField="matAutocomplete" [displayWith]="formfielddisplayFn">
+
+                  <mat-option *ngIf="isParentFieldLoadingBox" class="is-loading">
+                    <mat-spinner diameter="50"></mat-spinner>
+                  </mat-option>
+              
+                  <ng-container *ngIf="!isParentFieldLoadingBox && parentfieldOptions.length > 0">
+                    <mat-option 
+                      *ngFor="let option of parentFieldFilteredOptions | async" 
+                      [value]="option">
+                      {{option.key}}
+                    </mat-option>
+                  </ng-container>
+              
+                  <ng-container *ngIf="!isParentFieldLoadingBox && parentfieldOptions.length == 0">
+                    <mat-option>
+                      <span>No Record</span>
+                    </mat-option>
+                  </ng-container>
+
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6" [ngClass]="this._formfieldModel.fieldtype == 'ondemandform' || this._formfieldModel.fieldtype == 'form' || this._formfieldModel.fieldtype == 'category_list' ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{this._formfieldModel.fieldtype == 'form' ? getLang('displayfield', 'Display Field') : getLang('childfield', 'Child Field') }} </label>
+              
+
+              <mat-form-field class="example-full-width">
+                <input 
+                  type="text"
+                  aria-label="Number"
+                  matInput
+                  [formControl]="mydisplayFieldControl"
+                  [matAutocomplete]="autoDisplayField"
+                  (click)="preloaddata()">
+
+                <mat-autocomplete #autoDisplayField="matAutocomplete" [displayWith]="formfielddisplayFn">
+
+                  <mat-option *ngIf="isDisplayFieldLoadingBox" class="is-loading">
+                    <mat-spinner diameter="50"></mat-spinner>
+                  </mat-option>
+              
+                  <ng-container *ngIf="!isDisplayFieldLoadingBox && displayfieldOptions.length > 0">
+                    <mat-option 
+                      *ngFor="let option of displayFieldFilteredOptions | async" 
+                      [value]="option">
+                      {{option.key}}
+                    </mat-option>
+                  </ng-container>
+              
+                  <ng-container *ngIf="!isDisplayFieldLoadingBox && displayfieldOptions.length == 0">
+                    <mat-option>
+                      <span>No Record</span>
+                    </mat-option>
+                  </ng-container>
+
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6" [ngClass]="this._formfieldModel.fieldtype == 'ondemandform' || this._formfieldModel.fieldtype == 'form' || this._formfieldModel.fieldtype == 'category_list' ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('fieldfilter', 'Field Filter')}} </label>
+
+              <mat-form-field class="example-full-width">
+                <input 
+                  type="text"
+                  aria-label="Number"
+                  matInput
+                  [formControl]="myfieldFilterControl"
+                  [matAutocomplete]="autoFieldFilter"
+                  (click)="preloaddata()">
+
+                <mat-autocomplete #autoFieldFilter="matAutocomplete" [displayWith]="formfielddisplayFn">
+
+                  <mat-option *ngIf="isFieldFilterLoadingBox" class="is-loading">
+                    <mat-spinner diameter="50"></mat-spinner>
+                  </mat-option>
+              
+                  <ng-container *ngIf="!isFieldFilterLoadingBox && fieldfilterOptions.length > 0">
+                    <mat-option 
+                      *ngFor="let option of fieldFilterFilteredOptions | async" 
+                      [value]="option">
+                      {{option.key}}
+                    </mat-option>
+                  </ng-container>
+              
+                  <ng-container *ngIf="!isFieldFilterLoadingBox && fieldfilterOptions.length == 0">
+                    <mat-option>
+                      <span>No Record</span>
+                    </mat-option>
+                  </ng-container>
+
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6" [ngClass]="this._formfieldModel.fieldtype == 'ondemandform' || this._formfieldModel.fieldtype == 'form' || this._formfieldModel.fieldtype == 'category_list' ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('filtervalue', 'Filter Value')}} </label>
+              <mat-form-field>
+                <input matInput [formControl]="myFieldFilterValueControl">
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="this._formfieldModel.fieldtype == 'ondemandform' || this._formfieldModel.fieldtype == 'form' || this._formfieldModel.fieldtype == 'category_list' ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('template', 'Template')}} </label>
+              <angular-editor [formControl]="myTemplateControl"></angular-editor>
+            </div>
+
+            <div class="col-sm-12">
+              <label class="col-form-label"> {{getLang('colspan', 'Colspan')}} </label>
+              <div class="mt-2">
+                <mat-form-field>
+                  <mat-select formControlName="colspan">
+                    <mat-option value="1"> 1 </mat-option>
+                    <mat-option value="2"> 2 </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div 
+                  [hidden]="form.get('colspan').valid || (form.get('colspan').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('colspan').hasError('colspan')" class="error-label">
+                      {{getLang('colspanisrequired', 'colspan is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'readonly' || this._formfieldModel.fieldtype == 'hidden') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> 
+                {{getLang('defaultvalue', 'Value')}} 
+                <span class="text-danger">*</span>
+              </label>
+              
+              <mat-form-field>
+                <input matInput formControlName="defaultvalue">
+              </mat-form-field>
+
+              <div 
+                  [hidden]="form.get('defaultvalue').valid || (form.get('defaultvalue').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('defaultvalue').hasError('required')" class="error-label">
+                    {{getLang('valueisrequired', 'Value is Required')}}
+                  </small>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button 
+              (click)="cancelAction()"
+              [disabled]="isdisablesavebutton"
+              class="btn btn-default" 
+              type="button" 
+              data-dismiss="modal">
+              <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+          </button>
+          <button 
+              [disabled]="isdisablesavebutton"
+              class="btn btn-primary ml-2" 
+              type="submit">
+              <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+          </button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

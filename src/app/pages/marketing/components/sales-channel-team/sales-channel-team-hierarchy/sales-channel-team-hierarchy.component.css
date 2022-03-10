@@ -1,0 +1,39 @@
+.oc-border {
+	border: 2px solid #4caf50;
+	   
+  }
+ 
+  .oc-background {
+	background-color: #ffffff;
+	border-radius: 4px; 
+  }
+ 
+  .oc-name {
+	  font-family: inherit;
+	  white-space: nowrap;
+  }
+ 
+  .oc-designation {
+	  font-family: inherit;
+	  /* font-style: italic; */
+	  white-space: nowrap;
+  }
+
+  .btn-fab-microorg {
+   height: 20px !important;
+   min-width: 20px !important;
+   width: 20px !important;
+   border-radius: 3px !important;    
+  }
+  .oc-bdr-btm {
+	 border-bottom: 1px solid #d9d9d9;
+	 padding-bottom: 2px;
+	 margin-bottom: 2px;
+  }
+.oc-auto-sm-device {
+   width: auto;
+   overflow: auto;
+}
+ng-saleschannelteam-chart, ng-saleschannel-chart {
+ flex-wrap: wrap;
+}

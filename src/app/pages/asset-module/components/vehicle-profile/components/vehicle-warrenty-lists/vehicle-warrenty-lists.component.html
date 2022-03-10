@@ -1,0 +1,247 @@
+<div class="d-flex mt-3">
+    <h3 class="card-title flex-grow-1 align-self-center m-0">&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+    <div class="">
+        <button id="myModalVehicles" type="button" class="btn btn-primary" data-toggle="modal"
+            data-target="#myModalWorkshopWarrenty">
+            <i class="material-icons">add</i>{{getLang('addpartswarrenty','Add Parts-Warrenty')}}
+        </button>
+    </div>
+</div>
+
+<div class="table-responsive mt-3">
+    <table #table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+        <ng-container matColumnDef="partsmaterial">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('partsmaterial','Parts & Material')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.partsmaterial}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="vendor">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('vendor','Vendor')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.vendor}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="warrantyno">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('warrantyno','Warranty No.')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.warrantyno}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateofpurchase">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('dateofpurchase','Date of Purchase')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.dateofpurchase | date }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expirydate">
+            <th mat-header-cell *matHeaderCellDef>{{getLang('expirydate','Expiry Date')}} </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.expirydate | date }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}} </th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+
+                <button class="btn btn-link btn-primary btn-just-icon" data-toggle="dropdown" matTooltip="More"
+                    [matTooltipPosition]="'above'">
+                    <i class="material-icons">{{getLang('morevert','more_vert')}}</i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" (click)="warrentyEdit(element)">
+                        {{getLang('edit','Edit')}}
+                    </a>
+
+                    <a class="dropdown-item" (click)="warrentyDelete(element)">
+                        {{getLang('delete','Delete')}}
+                    </a>
+
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+    </table>
+
+    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
+    </mat-paginator>
+
+</div>
+
+
+<!-- Modal -->
+<div id="myModalWorkshopWarrenty" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)" novalidate class="mb-0">
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getLang('Add Warrenty', 'Add Warrenty')}}</h4>
+                    <button type="button" class="close" id="closeWarrentyAsset" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+
+                                        <label class="col-form-label">
+                                            {{getLang('partsmaterial', 'Parts & Material')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <mat-form-field class="example-full-width">
+                                            <input type="text" matInput formControlName='partsmaterialid'
+                                                [matAutocomplete]="autoPartsmaterial">
+                                            <mat-autocomplete #autoPartsmaterial="matAutocomplete"
+                                                [displayWith]="displayPartsMaterialFn">
+
+                                                <mat-option *ngIf="partsmaterialisLoadingBox" class="is-loading">
+                                                    <mat-spinner diameter="50"></mat-spinner>
+                                                </mat-option>
+
+                                                <ng-container
+                                                    *ngIf="!partsmaterialisLoadingBox && allpartsmaterialLists.length > 0">
+                                                    <mat-option
+                                                        *ngFor="let option of filteredPartsMaterialOptions | async"
+                                                        [value]="option">
+                                                        {{option.itemname}}
+                                                    </mat-option>
+                                                </ng-container>
+
+                                                <ng-container
+                                                    *ngIf="!partsmaterialisLoadingBox && allpartsmaterialLists.length == 0">
+                                                    <mat-option>
+                                                        <span>{{getLang('norecord', 'No Record')}}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-12">
+
+                                        <label class="col-form-label">
+                                            {{getLang('vendor', 'Vendor')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <mat-form-field class="example-full-width">
+                                            <input type="text" matInput formControlName='vendorid'
+                                                [matAutocomplete]="autoVendor">
+                                            <mat-autocomplete #autoVendor="matAutocomplete"
+                                                [displayWith]="displayVendorFn">
+
+                                                <mat-option *ngIf="vendorLoadingBox" class="is-loading">
+                                                    <mat-spinner diameter="50"></mat-spinner>
+                                                </mat-option>
+
+                                                <ng-container *ngIf="!vendorLoadingBox && allVendorLists.length > 0">
+                                                    <mat-option *ngFor="let option of filteredVendorOptions | async"
+                                                        [value]="option">
+                                                        {{option.fullname}}
+                                                    </mat-option>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="!vendorLoadingBox && allVendorLists.length == 0">
+                                                    <mat-option>
+                                                        <span>{{getLang('norecord', 'No Record')}}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-12">
+
+                                        <label class="col-form-label">
+                                            {{getLang('warrantyno', 'Warrenty No.')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <mat-form-field class="example-full-width">
+                                            <input type="text" matInput formControlName='warrantyno'>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('dateofpurchase', 'Date of Purchase')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <mat-form-field style="margin-bottom: -1.00em !important;">
+                                            <input matInput [matDatepicker]="purchasepicker"
+                                                formControlName="dateofpurchase">
+                                            <mat-datepicker-toggle matSuffix [for]="purchasepicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #purchasepicker></mat-datepicker>
+                                        </mat-form-field>
+
+                                        <!-- <div [hidden]="form.get('dateofpurchase').valid || (form.get('dadateofpurchasete').pristine && !submitted)"
+                                            class="text-danger">
+                                            <small *ngIf="form.get('dateofpurchase').hasError('required')"
+                                                class="error-label  font-size-75">
+                                                {{getLang('dateisrequired', 'Date is Required')}}
+                                            </small>
+                                        </div> -->
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('expirydate', 'Expiry Date')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <mat-form-field style="margin-bottom: -1.00em !important;">
+                                            <input matInput [matDatepicker]="expirypicker"
+                                                 formControlName="expirydate">
+                                            <mat-datepicker-toggle matSuffix [for]="expirypicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #expirypicker></mat-datepicker>
+                                        </mat-form-field>
+
+                                        <!-- <div [hidden]="form.get('expirydate').valid || (form.get('expirydate').pristine && !submitted)"
+                                            class="text-danger">
+                                            <small *ngIf="form.get('expirydate').hasError('required')"
+                                                class="error-label  font-size-75">
+                                                {{getLang('dateisrequired', 'Date is Required')}}
+                                            </small>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" [disabled]="disableBtn" data-dismiss="modal">
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+
+                    <button class="btn btn-primary ml-2" type="submit" [disabled]="disableBtn">
+                        <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>

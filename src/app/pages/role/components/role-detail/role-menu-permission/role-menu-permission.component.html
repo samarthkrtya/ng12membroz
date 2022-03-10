@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-sm-12 text-right">
+    <button class="btn btn-primary ml-2" (click)="treeControl.expandAll()">Expand All</button>
+    <button class="btn btn-primary ml-2" (click)="treeControl.collapseAll()">Collapse All </button>
+</div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12 mat-tree-node-auto">
+    
+      <mat-checkbox [checked]="isAllSelected" (change)="selectAll()">All</mat-checkbox>
+          <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+      style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+      <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+    </div>
+    <ng-container *ngIf="!isLoading">
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+          <button mat-icon-button disabled></button>
+          <mat-checkbox
+          class="checklist-leaf-node" 
+          [checked]="checklistSelection.isSelected(node)"
+          (change)="todoLeafItemSelectionToggle(node)"
+          >{{node.item}} 
+          
+        </mat-checkbox>
+        </mat-tree-node>
+    
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding expandable>
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.item">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <mat-checkbox class="fc-today-button"
+          [checked]="descendantsAllSelected(node)"
+          [indeterminate]="descendantsPartiallySelected(node)"
+          (change)="todoItemSelectionToggle(node)"
+          >{{node.item}}
+          </mat-checkbox>
+        </mat-tree-node>
+      </mat-tree>
+    </ng-container>
+
+    <div class="col-sm-12 text-right">
+      <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable" (click)="menuSave()">
+          <i class="material-icons">save</i> Save
+      </button>
+  </div>
+
+        </div>
+        </div>

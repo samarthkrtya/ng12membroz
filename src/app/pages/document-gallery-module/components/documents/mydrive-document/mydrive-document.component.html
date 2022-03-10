@@ -1,0 +1,511 @@
+<div
+    fxLayout="row"
+    *ngIf="!contentVisibility"
+    fxLayoutAlign="space-around center"
+    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+</div>
+
+<div class="row" *ngIf="contentVisibility">
+    <div class="col-lg-6">
+        <div class="d-flex mt-3 mb-lg-0 mb-3">
+            <nav aria-label="breadcrumb" class="flex-grow-1 align-self-center m-0">
+                <ol class="breadcrumb breadcrumb-documents">
+                    <li class="breadcrumb-item" (click)="back()"><a class="cursor-pointer">My Drive</a></li>
+                    <li class="breadcrumb-item" *ngFor="let item of breadcumLists">
+                        <span class="dropdown">
+                            <a
+                                class="dropdown-toggle-111"
+                                role="button"
+                                id="dropdownMenuLink"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                (click)="breadcumClick(item)">
+                                {{item.name}}
+                            </a>
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="input-group d-flex justify-content-end">
+            <mat-form-field
+                class="example-full-width common-search-size w-auto pt-0"
+                appearance="standard" >
+                <span
+                    class="input-group-prepend"
+                    matPrefix>
+                    <span class="input-group-text pl-0">
+                        <i class="material-icons">search</i>
+                    </span>
+                </span>
+                <input
+                    matInput
+                    (keyup)="applyFilter($event.target.value)"
+                    placeholder="Search">
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="recent && recent.length > 0">
+    <h4 class="card-title"> Recent Files </h4>
+    <div class="row card-item-gutters mb-4">
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 d-flex" *ngFor="let item of recent">
+            <div class="card pos-menu-card w-100" >
+
+                <img
+                    (dblclick)="folderClick(item)"
+                    style="height: 111px; width: 148px;"
+                    [src]="getImage(item)"
+                    class="card-img-top" alt="">
+
+                <div class="card-body px-0 py-2">
+                    <div class="d-flex">
+                        <div class="card-item-title flex-grow-1 align-self-center pl-10 text-break"> {{item.title}} </div>
+                        <button
+                            class="btn btn-link btn-primary btn-just-icon btn-sm m-0 justify-content-end"
+                            data-toggle="dropdown"
+                            matTooltip="More"
+                            [matTooltipPosition]="'above'" >
+                            <i class="material-icons">more_vert</i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a
+                                class="dropdown-item"
+                                *ngIf="checkImageViewPermission(item.type)"
+                                (click)="attachmentClick(item)">
+                                <i class="material-icons mr-3 font-18">remove_red_eye</i> Preview
+                            </a>
+                            <a
+                                class="dropdown-item"
+                                *ngIf="checkDocumentViewPermission(item.type) && item.path"
+                                (click)="attachmentClick(item)">
+                                <i class="material-icons mr-3 font-18">open_with</i> Open with
+                            </a>
+
+                            <a class="dropdown-item" [href]="item.path" download rel="noopener noreferrer" target="_blank">
+                                <i class="material-icons mr-3 font-18">download</i> Download
+                            </a>
+                            <!-- <a class="dropdown-item" (click)="createFolder()">
+                                <i class="material-icons mr-3 font-18">create_new_folder</i> Create folder
+                            </a> -->
+                            <a  *ngIf="isShareWithUsers" class="dropdown-item" (click)="shareDocument(item)">
+                                <i class="material-icons mr-3 font-18">person_add_alt_1</i> Share With Users
+                            </a>
+                            <a *ngIf="isShareWithMembers" class="dropdown-item" (click)="shareDocumentWithMember(item)">
+                                <i class="material-icons mr-3 font-18">person_add_alt_1</i> Share With Members
+                            </a>
+                            <a class="dropdown-item" (click)="moveDocument(item)">
+                                <i class="material-icons mr-3 font-18">open_in_new</i> Move to
+                            </a>
+                            <a class="dropdown-item" (click)="renameDocument(item)">
+                                <i class="material-icons mr-3 font-18">drive_file_rename_outline</i> Rename
+                            </a>
+                            <a class="dropdown-item" *ngIf="item.path" [cdkCopyToClipboard]="item.path" (click)="copied()">
+                                <i class="material-icons mr-3 font-18">link</i> Copy Link
+                            </a>
+                            <a class="dropdown-item" *ngIf="checkDocumentDeletePermission(item)" (click)="deleteConfirmation(item)">
+                                <i class="material-icons mr-3 font-18">delete</i> Delete
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<div class="row d-flex">
+    <div class="col-sm-6 align-self-center">
+        <h4 class="card-title mb-sm-2 mb-3"> All Folders &amp; Files </h4>
+    </div>
+    <div class="col-sm-6 text-right align-self-center">
+        <ng-container *ngIf="!isButtonEnable">
+            <!-- <button
+                mat-raised-button
+                class="btn btn-primary btn-simple ml-2"
+                matTooltip="Share"
+                [matTooltipPosition]="'above'"
+                data-original-title="Share">
+                <i class="material-icons">person_add_alt_1</i>
+            </button>
+
+            <button
+                mat-raised-button
+                class="btn btn-primary btn-simple ml-2"
+                matTooltip="Download"
+                [matTooltipPosition]="'above'"
+                data-original-title="Download">
+                <i class="material-icons">download</i>
+            </button>
+
+            <button
+                mat-raised-button
+                class="btn btn-primary btn-simple ml-2"
+                matTooltip="Delete"
+                [matTooltipPosition]="'above'"
+                data-original-title="Delete">
+                <i class="material-icons">delete</i>
+            </button> -->
+
+        </ng-container>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz">
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox
+                    (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+                <mat-checkbox
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let element" (dblclick)="folderClick(element)">
+                <img class="mr-2" [src]="getAttachmentPath(element.type)" style="width: 32px;">
+                {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="size">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+            <td mat-cell *matCellDef="let element"> {{element.sizeType}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'medium'}} </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="addedby">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created by </th>
+            <td mat-cell *matCellDef="let element"> Me </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="text-right" mat-sort-header> Action </th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+                <button
+                    class="btn btn-link btn-primary btn-just-icon"
+                    data-toggle="dropdown"
+                    matTooltip="More"
+                    [matTooltipPosition]="'above'">
+                    <i class="material-icons">more_vert</i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a
+                        class="dropdown-item"
+                        *ngIf="checkImageViewPermission(element.type)"
+                        (click)="attachmentClick(element)">
+                        <i class="material-icons mr-3 font-18">remove_red_eye</i> Preview
+                    </a>
+                    <a
+                        class="dropdown-item"
+                        *ngIf="checkDocumentViewPermission(element.type) && element.path"
+                        (click)="attachmentClick(element)">
+                        <i class="material-icons mr-3 font-18">open_with</i> Open with
+                    </a>
+                    <a class="dropdown-item" [href]="element.path" download rel="noopener noreferrer" target="_blank">
+                        <i class="material-icons mr-3 font-18">download</i> Download
+                    </a>
+                    <!-- <a class="dropdown-item" (click)="createFolder()">
+                        <i class="material-icons mr-3 font-18">create_new_folder</i> Create folder
+                    </a> -->
+                    <a  *ngIf="isShareWithUsers"  class="dropdown-item" (click)="shareDocument(element)">
+                        <i class="material-icons mr-3 font-18">person_add_alt_1</i> Share With User
+                    </a>
+                    <a *ngIf="isShareWithMembers"  class="dropdown-item" (click)="shareDocumentWithMember(element)">
+                        <i class="material-icons mr-3 font-18">person_add_alt_1</i> Share With Member
+                    </a>
+                    <a class="dropdown-item" (click)="moveDocument(element)">
+                        <i class="material-icons mr-3 font-18">open_in_new</i> Move to
+                    </a>
+                    <a class="dropdown-item" (click)="renameDocument(element)">
+                        <i class="material-icons mr-3 font-18">drive_file_rename_outline</i> Rename
+                    </a>
+                    <a class="dropdown-item" *ngIf="element.path" [cdkCopyToClipboard]="element.path" (click)="copied()">
+                        <i class="material-icons mr-3 font-18">link</i> Copy Link
+                    </a>
+                    <a class="dropdown-item" *ngIf="checkDocumentDeletePermission(element)" (click)="deleteConfirmation(element)">
+                        <i class="material-icons mr-3 font-18">delete</i> Delete
+                    </a>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+</div>
+
+<button
+    id="iframBtn"
+    class="d-none"
+    data-toggle="modal"
+    data-backdrop="static"
+    data-keyboard="false"
+    data-target="#myModaliframe">
+    Open Modal
+</button>
+
+<!-- iFrame Modal -->
+<div id="myModaliframe" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="closeIframe()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe
+                    width="100%" height="450"
+                    class="iframeCls"
+                    *ngIf="attachmentVisibility"
+                    id="iframe1"
+                    [src]="sanitizer.bypassSecurityTrustResourceUrl(attachmentLink)"
+                    onload="javascript:this.contentWindow.location.hash=':0.page.20';" webkitallowfullscreen mozallowfullscreen
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeIframe()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button
+    id="imageViwerBtn"
+    class="d-none"
+    data-toggle="modal"
+    data-backdrop="static"
+    data-keyboard="false"
+    data-target="#myModalImageViwer">
+    Open Modal
+</button>
+
+<!-- imageViwer Modal -->
+<div id="myModalImageViwer" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="closeImageViwer()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <img *ngIf="imageVisibility" [src]="imageLink" style="width: 100%; height: auto;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeImageViwer()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button
+    id="videoViwerBtn"
+    class="d-none"
+    data-toggle="modal"
+    data-backdrop="static"
+    data-keyboard="false"
+    data-target="#myModalVideoViwer">
+    Open Modal
+</button>
+
+<!-- videoViwer Modal -->
+<div id="myModalVideoViwer" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="closeVideoViwer()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <video width="400" controls *ngIf="videoVisibility" style="width: 100%; height: auto;">
+                    <source [src]="videoLink" type="video/mp4">
+                    <source [src]="videoLink" type="video/ogg">
+                    Your browser does not support HTML5 video.
+                </video>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeVideoViwer()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button
+    id="createFolderBtn"
+    class="btn btn-info btn-lg d-none"
+    data-toggle="modal"
+    data-backdrop="static"
+    data-keyboard="false"
+    data-target="#mycreateFolder">
+    Open Modal
+</button>
+
+<!-- Folder Modal -->
+<div id="mycreateFolder" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('create folder','Create Folder')}}</h4>
+                <button type="button" class="close" data-dismiss="modal" id="FolderCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-document-create-folder
+                    *ngIf="folderFormVisibility"
+                    (folderSubmitData)="getSubmittedDataFolder($event)">
+                </app-document-create-folder>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button
+    id="shareDocumentWithMemberBtn"
+    class="btn btn-info btn-lg d-none"
+    data-toggle="modal"
+    data-backdrop="static"
+    data-keyboard="false"
+    data-target="#myshareDocumentWithMember">
+    Open Modal
+</button> 
+
+<!-- Folder Modal -->
+<div id="myshareDocumentWithMember" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('share document', 'Share Document With Member')}}</h4>
+                <button type="button" class="close" (click)="onClose()" data-dismiss="modal" id="shareWithMemberCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-dynamic-sublist
+                    *ngIf="shareWithMemberVisibility"
+                    #sharedusers 
+                    [formname]="'docsharedmember'"
+                    [users]="selectedUsers"
+                    (submitData)="getSubmittedDataShare($event)">
+                </app-dynamic-sublist>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button
+    id="shareDocumentBtn"
+    class="btn btn-info btn-lg d-none"
+    data-toggle="modal"
+    data-backdrop="static"
+    data-keyboard="false"
+    data-target="#myshareDocument">
+    Open Modal
+</button> 
+
+<!-- Folder Modal -->
+<div id="myshareDocument" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('share document', 'Share Document With Users')}}</h4>
+                <button type="button" class="close" (click)="onClose()" data-dismiss="modal" id="shareCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                
+                <!-- <app-shared-users
+                    *ngIf="shareVisibility"
+                    [users]="selectedUsers"
+                    (submitData)="getSubmittedDataShare($event)">
+                </app-shared-users> -->
+
+                <app-dynamic-sublist
+                    *ngIf="shareVisibility"
+                    #sharedusers 
+                    [formname]="'docshareduser'"
+                    [users]="selectedUsers"
+                    (submitData)="getSubmittedDataShare($event)">
+                </app-dynamic-sublist>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button
+    id="moveDocumentBtn"
+    class="btn btn-info btn-lg d-none"
+    data-toggle="modal"
+    data-backdrop="false"
+    data-keyboard="false"
+    data-target="#mymoveDocument">
+    Open Modal
+</button>
+
+<!-- Folder Modal -->
+<div id="mymoveDocument" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('move document','Move Document')}}</h4>
+                <button type="button" class="close" data-dismiss="modal" id="moveCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-document-moveto
+                    *ngIf="moveVisibility"
+                    [selectedAttachment]="selectedAttachment"
+                    (movetoSubmitData)="getSubmittedDataMove($event)">
+                </app-document-moveto>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button
+    id="renameDocumentBtn"
+    class="btn btn-info btn-lg d-none"
+    data-toggle="modal"
+    data-backdrop="static"
+    data-keyboard="false"
+    data-target="#myrenameDocument">
+    Open Modal
+</button>
+
+<!-- Folder Modal -->
+<div id="myrenameDocument" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('rename document','Rename Document')}}</h4>
+                <button type="button" class="close" data-dismiss="modal" id="renameCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-document-rename
+                    *ngIf="renameVisibility"
+                    [selectedAttachment]="selectedAttachment"
+                    (renameSubmitData)="getSubmittedDataRename($event)">
+                </app-document-rename>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

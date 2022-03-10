@@ -1,0 +1,282 @@
+<div class="row">
+    <div class="col-sm-12 text-right mt-3 mb-4">
+        <button class="dropdown-toggle btn btn-primary" data-toggle="dropdown"><i class="material-icons">add</i> {{getLang('assignpackage', 'Assign Package')}} </button>
+        <div class="dropdown-menu dropdown-menu-right dropdown-limit">
+            <a class="dropdown-item" *ngFor="let item of membershipLists" (click)="addPackage(item)">
+                {{item.membershipname}}
+            </a>
+        </div>
+    </div>
+</div>
+<div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+</div>
+<ng-container *ngIf="!isLoading">
+
+    <span *ngIf="paymentTermsLists && paymentTermsLists.length > 0">
+        <h4>
+            Package Name : {{paymentTermsLists[0]?.membershipid?.membershipname}} <h5> Duration :
+                {{paymentTermsLists[0]?.membershipid?.property?.tenure }} Months </h5>
+        </h4>
+    </span>
+
+    <div class="table-responsive border-outer-secondary" *ngIf="paymentTermsLists && paymentTermsLists.length !== 0">
+        <table class="table mat-elevation-z8 w-100 table-membroz-plain">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{{getLang('itemname', 'Item Name')}}</th>
+                    <th>{{getLang('period', 'Period')}}</th>
+                    <th>{{getLang('tenure', 'Tenure')}}</th>
+                    <th>{{getLang('amount', 'Amount')}}</th>
+                    <th>{{getLang('discount', 'Discount')}}</th>
+                    <th>{{getLang('tax', 'Tax')}}</th>
+                    <th>{{getLang('totalamount', 'Total Amount')}}</th>
+                    <th class="text-right td-actions">{{getLang('action', 'Action')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of paymentTermsLists" [ngStyle]="{'background-color': item && item.memberid ? 'rgb(244,251,228)':'' }">
+                    <td>
+                        <mat-checkbox (change)="checkUncheckEvent($event, item)" class="example-margin"
+                            [checked]="item.selectitem ? item.selectitem : false">
+                        </mat-checkbox>
+                    </td>
+                    <td>{{item?.paymentitem?.paymentitemname}}</td>
+                    <td>{{item?.period}}</td>
+                    <td>
+                        <ng-container *ngIf="!item.isedit">{{item?.tenure}}</ng-container>
+                        <ng-container *ngIf="item.isedit && item.oldtenure == 1">{{item?.tenure}}</ng-container>
+                        <ng-container *ngIf="item.isedit && item.oldtenure > 1">
+                            <input id="tenure" type="number" min="1" name="tenure"
+                                (change)="onchangeamountofpaymentterm()" class="form-control" [(ngModel)]="item.tenure"
+                                [ngModelOptions]="{standalone: true}" placeholder="Tenure">
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="!item.isedit">{{item?.amount | myCurrencyPipe}}</ng-container>
+                        <ng-container *ngIf="item.isedit">
+                            <input id="amount" type="number" name="amount" (change)="onchangeamountofpaymentterm()"
+                                class="form-control" [(ngModel)]="item.amount" [ngModelOptions]="{standalone: true}"
+                                placeholder="Amount">
+                        </ng-container>
+
+                    </td>
+                    <td>
+                        <ng-container *ngIf="!item.isedit">{{item?.discount | myCurrencyPipe }}</ng-container>
+                        <ng-container *ngIf="item.isedit">
+                            <input id="discount" type="number" name="discount" (change)="onchangeamountofpaymentterm()"
+                                class="form-control" [(ngModel)]="item.discount" [ngModelOptions]="{standalone: true}"
+                                placeholder="Discount">
+                        </ng-container>
+                    </td>
+                    <td>{{item?.taxAmount > 0 ? (item?.taxAmount | myCurrencyPipe) : ''}}</td>
+                    <td>
+                        <ng-container *ngIf="!item.isedit">{{item?.totalAmount | myCurrencyPipe }}</ng-container>
+                        <ng-container *ngIf="item.isedit">
+                            <input id="totalamount" type="number" min="1" (change)="onchangetotalamountofpaymentterm()"
+                                name="totalamount" class="form-control" [(ngModel)]="item.totalAmount"
+                                [ngModelOptions]="{standalone: true}" placeholder="Total Amount">
+                        </ng-container>
+                    </td>
+                    <td class="text-right td-actions">
+                        <button *ngIf="!item.isedit" (click)="editElement(item)" [disabled]="btnDisable" type="button"
+                            class="btn btn-link btn-primary btn-just-icon" matTooltip="Edit"
+                            [matTooltipPosition]="'above'">
+                            <i class="material-icons">{{getLang('edit', 'edit')}}</i>
+                        </button>
+
+                        <button *ngIf="item.isedit" (click)="updatePayTerms(item)" [disabled]="btnDisable" type="button"
+                            class="btn btn-link btn-primary btn-just-icon" matTooltip="Save"
+                            [matTooltipPosition]="'above'">
+                            <i class="material-icons">{{getLang('save', 'save')}}</i>
+                        </button>
+
+                        <button
+                            *ngIf="item.isedit"
+                            (click)="item.isedit = !item.isedit"
+                            type="button"
+                            class="btn btn-link btn-primary btn-just-icon"
+                            matTooltip="Cancel"
+                            [disabled]="btnDisable"
+                            [matTooltipPosition]="'above'">
+                            <i class="material-icons">cancel</i>
+                    </button>
+                    </td>
+                </tr>
+                <tr *ngIf="changes">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right">
+                        <button (click)="submit()" [disabled]="btnDisable" type="submit" class="btn btn-primary ml-2">
+                            <i class="material-icons">save</i>  {{getLang('save', 'Save')}}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-container>
+
+
+<ng-container *ngIf="existpaymentTermsLists && existpaymentTermsLists.length !== 0">
+    <div class="mt-3">
+        <div class="table-responsive border-outer-secondary">
+            <table class="table mat-elevation-z8 w-100 table-membroz-plain">
+                <thead>
+                    <tr>
+                        <th>{{getLang('packagename', 'Package Name')}}</th>
+                        <th>{{getLang('startdate', 'Start Date')}}</th>
+                        <th>{{getLang('amount', 'Amount')}}</th>
+                        <th>{{getLang('discount', 'Discount')}}</th>
+                        <th>{{getLang('tax', 'Tax')}}</th>
+                        <th>{{getLang('totalamount', 'Total Amount')}}</th>
+                        <th>{{getLang('expirydate', 'Expiry Date')}}</th>
+                        <th>{{getLang('status', 'Status')}}</th>
+                        <th>{{getLang('action', 'Action')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of existpaymentTermsLists;let i = index">
+                        <td>{{item?.membershipname}}</td>
+                        <td>{{item?.membershipstart | toLocaleDate}}</td>
+                        <td>{{item?.amount | myCurrencyPipe}}</td>
+                        <td>{{item?.discount | myCurrencyPipe}}</td>
+                        <td>{{item?.taxamount | myCurrencyPipe }}</td>
+                        <td>{{item?.totalamount | myCurrencyPipe}}</td>
+                        <td>{{item?.membershipend | toLocaleDate}}</td>
+                        <td>{{item?.status}}</td>
+                        <td class="text-right td-actions">
+                            <button  type="button"
+                                class="btn btn-link btn-primary btn-just-icon" matTooltip="Change Date"
+                                [matTooltipPosition]="'above'" data-toggle="modal"
+                                (click)="onPackageSelect(item.addonsid, item.membershipid)"
+                                data-target="#myModalChangeMembershipDate" 
+                                data-backdrop="static"
+                                data-keyboard="false" [disabled]="btnDisable" >
+                                <i class="material-icons">date_range</i>
+                            </button>
+
+                            <button  type="button" [disabled]="btnDisable"  (click)="onPackageDelete(item.paymenttermsid ,item.membershipid  ,item.addonsid )"  class="btn btn-link btn-primary btn-just-icon" matTooltip="Remove package" [matTooltipPosition]="'above'">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-container>
+
+
+
+
+
+<!-- Modal -->
+<div id="myModalChangeMembershipDate" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <form 
+            [formGroup]="changeMembershipForm" 
+            (ngSubmit)="onChangeMembershipDateSubmit(changeMembershipForm.value, changeMembershipForm.valid)" 
+            novalidate
+            class="form-horizontal">
+  
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> {{getLang('changepackagedate', 'Change Package Date')}} </h4>
+                    <button type="button" id="closeChangeMembershipDate" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                    {{getLang('packagestartdate', 'Package Start Date')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <input 
+                                        #ref
+                                        matInput 
+                                        formControlName="changeMembershipStartDate" 
+                                        [matDatepicker]="pickerChangeMembershipStart1"
+                                        (dateInput)="membershipStartDateValueChange(ref.value)">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerChangeMembershipStart1"></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerChangeMembershipStart1></mat-datepicker>
+                                </mat-form-field>
+
+                                <div 
+                                    [hidden]="changeMembershipForm.get('changeMembershipStartDate').valid || (changeMembershipForm.get('changeMembershipStartDate').pristine && !changeMembershipSubmitted)"
+                                    class="text-danger">
+                                    <small *ngIf="changeMembershipForm.get('changeMembershipStartDate').hasError('required')" class="error-label">
+                                        {{getLang('enddateisrequired', 'Start Date is Required')}}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label class="col-form-label">
+                                    {{getLang('packageenddate', 'Package End Date')}}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <mat-form-field class="example-full-width">
+                                    <input 
+                                        matInput 
+                                        formControlName="changeMembershipEndDate" 
+                                        [matDatepicker]="pickerChangeMembershipEnd1"
+                                        >
+                                    <mat-datepicker-toggle matSuffix [for]="pickerChangeMembershipEnd1"></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerChangeMembershipEnd1></mat-datepicker>
+                                </mat-form-field>
+
+                                <div 
+                                    [hidden]="changeMembershipForm.get('changeMembershipEndDate').valid || (changeMembershipForm.get('changeMembershipEndDate').pristine && !changeMembershipSubmitted)"
+                                    class="text-danger">
+                                    <small *ngIf="changeMembershipForm.get('changeMembershipEndDate').hasError('required')" class="error-label">
+                                        {{getLang('enddateisrequired', 'End Date is Required')}}
+                                    </small>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
+
+                    <button 
+                        class="btn btn-default" 
+                        type="button" 
+                        [disabled]="btnDisable"
+                        data-dismiss="modal">
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+
+                    <button 
+                        class="btn btn-primary ml-2" 
+                        [disabled]="btnDisable"
+                        type="submit">
+                        <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+
+                </div>
+            </div>
+
+        </form>
+  
+    </div>
+</div>
+
+

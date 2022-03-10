@@ -1,0 +1,113 @@
+<div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+</div>
+
+<ng-container *ngIf="!isLoading">
+    <div class="row">
+        <div class="col-sm-12 text-right mt-3 mb-4">
+            <button class="dropdown-toggle btn btn-primary" data-toggle="dropdown">{{getLang('addoffer', 'Add MembershipOffer')}} </button>
+            <div class="dropdown-menu dropdown-menu-right dropdown-limit">
+                <a class="dropdown-item" *ngFor="let item of membershipOfferList" (click)="addOffer(item)">
+                    {{item?.property?.title}}
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-12 mt-3 mb-4">
+        <div class="table-responsive border-outer-secondary" *ngIf="memberOfferList && memberOfferList.length !== 0">
+            <table class="table mat-elevation-z8 w-100 table-membroz-plain">
+                <thead>
+                    <tr>
+                        <th>{{getLang('ofname', 'Offer Name')}}</th>
+                        <th>{{getLang('type', 'Type')}}</th>
+                        <th>{{getLang('qty', 'Qty')}}</th>
+                        <th>{{getLang('consumed', 'Consumed')}}</th>
+                        <th>{{getLang('date', 'Date')}}</th>
+                        <th>{{getLang('expirydate', 'Expiry Date')}}</th>
+                        <th>{{getLang('cost', 'Cost')}}</th>
+                        <th class="text-right td-actions">{{getLang('action', 'Action')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of memberOfferList">
+                        <td>{{item?.property?.title}}  </td>
+                        <td>{{item?.property?.type}}</td>
+                        <td>
+                            <ng-container *ngIf="!item.isedit">{{item?.property?.quantity}}</ng-container>
+                            <ng-container *ngIf="item.isedit">
+                                <input id="quantity" type="number" min="1" name="quantity"
+                                    class="form-control" [(ngModel)]="item.property.quantity"
+                                     placeholder="Tenure">
+                            </ng-container>
+                        </td>
+                        <td>
+                            <mat-slide-toggle [(ngModel)]="item.property.consumed" [disabled]="!item.isedit"> </mat-slide-toggle>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="!item.isedit">{{item?.property?.date ? (item?.property?.date | toLocaleDate) : '' }}</ng-container>
+                            <ng-container *ngIf="item.isedit">
+                                <mat-form-field class="example-full-width">
+                                        <input 
+                                            matInput 
+                                            [(ngModel)]="item.property.date"
+                                            [matDatepicker]="picker1">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1></mat-datepicker>
+                                </mat-form-field>
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="!item.isedit">{{item?.property?.expirydate ? (item?.property?.expirydate | toLocaleDate) : '' }}</ng-container>
+                            <ng-container *ngIf="item.isedit">
+                                <mat-form-field class="example-full-width">
+                                        <input 
+                                            matInput 
+                                            [(ngModel)]="item.property.expirydate"
+                                            [matDatepicker]="picker1">
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1></mat-datepicker>
+                                </mat-form-field>
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="!item.isedit">{{item?.property?.cost}}</ng-container>
+                            <ng-container *ngIf="item.isedit">
+                                <input id="cost" type="number" name="cost"
+                                    class="form-control" [(ngModel)]="item.property.cost" 
+                                    placeholder="Cost">
+                            </ng-container>
+                        </td>
+                        <td class="text-right td-actions">
+                            <button *ngIf="!item.isedit" (click)="item.isedit = !item.isedit" [disabled]="btnDisable" type="button"
+                                class="btn btn-link btn-primary btn-just-icon" matTooltip="Edit"
+                                [matTooltipPosition]="'above'">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <button *ngIf="item.isedit" (click)="item.isedit = !item.isedit" [disabled]="btnDisable" type="button"
+                                class="btn btn-link btn-primary btn-just-icon" matTooltip="Cancel"
+                                [matTooltipPosition]="'above'">
+                                <i class="material-icons">cancel</i>
+                            </button>
+    
+                            <button *ngIf="item.isedit" (click)="updatePayTerms(item)" [disabled]="btnDisable" type="button"
+                                class="btn btn-link btn-primary btn-just-icon" matTooltip="Save"
+                                [matTooltipPosition]="'above'">
+                                <i class="material-icons">save</i>
+                            </button>
+
+                            <button *ngIf="!item.isedit" (click)="delete(item)" [disabled]="btnDisable" type="button"
+                                class="btn btn-link btn-primary btn-just-icon" matTooltip="Edit"
+                                [matTooltipPosition]="'above'">
+                                <i class="material-icons">delete</i>
+                            </button>
+
+                        </td>
+                    </tr> 
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+
+</ng-container>

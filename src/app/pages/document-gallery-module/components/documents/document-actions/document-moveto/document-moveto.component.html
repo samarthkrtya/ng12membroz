@@ -1,0 +1,51 @@
+<form class="mb-0">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="dropdown inline-block text-right">
+                <button 
+                    class="dropdown-toggle btn btn-primary mr0" 
+                    data-toggle="dropdown">
+                    {{selectedParent !== 'My Drive' ? selectedParent.displayNameSelect : 'My Drive'}}
+                    <span *ngIf="folderListsDDTreeList.length == 0 || selectedParent == undefined">
+                        {{getLang('parent','Select Parent')}}
+                    </span>
+                    <b class="caret"></b>
+                </button>
+                
+                <ul class="dropdown-menu dropdown-menu-left" style="cursor:pointer;">
+                    <li>
+                        <a class="dropdown-item" (click)="changeParent('My Drive')">
+                            {{getLang('mydrive','My Drive')}}
+                        </a>
+                    </li>
+                    <li *ngFor="let opt of folderListsDDTreeList">
+                        <a class="dropdown-item" (click)="changeParent(opt)">{{opt.displayNameDD}}</a>
+                    </li>
+                    <li *ngIf="folderListsDDTreeList.length == 0">
+                        <a class="dropdown-item">
+                            {{getLang('noparent','No Parent')}}
+                        </a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-right">
+            <button 
+                data-dismiss="modal"
+                class="btn btn-default" 
+                type="button">
+                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+            </button>
+            <button 
+                (click)="onSubmitFolder()"
+                class="btn btn-primary ml-2" 
+                type="button" 
+                >
+                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+            </button>
+        </div>
+    </div>
+</form>

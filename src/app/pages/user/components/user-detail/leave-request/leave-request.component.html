@@ -1,0 +1,350 @@
+<div class="material-datatables1">
+  <div class="table-responsive" *ngIf="leavetypeList.length > 0">
+
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+        <td mat-cell *matCellDef="let element">
+          <section class="example-section">
+            <mat-checkbox type="checkbox" (change)="clickChecked(element ,$event)" [(ngModel)]="element.checked"
+              [disabled]="disableBtn"> </mat-checkbox>
+          </section>
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let element;"> {{element?.title}} </td>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="allowance">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Allowance </th>
+        <td mat-cell *matCellDef="let element"> {{element?.allowance}} </td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Effective Date </th>
+        <td mat-cell *matCellDef="let element"> {{element?.effectivedate  ? (element?.effectivedate | toLocaleDate) : ''}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="accrual">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Accrual/Month </th>
+        <td mat-cell *matCellDef="let element"> {{element?.accrual}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="balance">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
+        <td mat-cell *matCellDef="let element"> {{element?.balance}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="text-right"> Action</th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <button mat-raised-button type="button" matTooltip="Adjustment" [matTooltipPosition]="'above'"
+            data-original-title="Adjustment" data-toggle="modal" data-target="#adjustmentModal" (click)="clickedAcn(element)"
+            class="btn btn-link btn-primary btn-just-icon edit" [disabled]="!element.checked">
+            <i class="material-icons">description</i>
+          </button>
+
+          <button mat-raised-button type="button" matTooltip="History" [matTooltipPosition]="'above'"
+            data-original-title="History" class="btn btn-link btn-primary btn-just-icon edit" data-toggle="modal"
+            data-target="#myModal2" (click)="getHistory(element)" [disabled]="!element.checked">
+            <i class="material-icons">history</i>
+          </button>
+
+          <button mat-raised-button type="button" matTooltip="Leave Requests" [matTooltipPosition]="'above'"
+            data-original-title="Leave Requests" class="btn btn-link btn-primary btn-just-icon edit"
+            (click)="clickedAcn(element)" [disabled]="!element.checked" data-toggle="modal" data-target="#myModal3">
+            <i class="material-icons">calendar_today</i>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+
+</div>
+
+
+<div class="modal fade" id="adjustmentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"> Adjustment </h4>
+        <button mat-button type="button" id="myModalcls1" class="close" data-dismiss="modal" aria-hidden="true"(click)="actionlistRecord()">
+          <i class="material-icons">clear</i>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+
+
+          <div class="col-md-6">
+            <label class="col-form-label">
+              {{getLang('days','Days')}}(+)
+            </label>
+            <mat-form-field class="example-full-width">
+              <input type="number" [(ngModel)]="balanceObj['addays']" (change)="onChangeDay('plus' )" matInput min="0"
+                oninput="this.value = Math.abs(this.value)">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <label class="col-form-label">
+              {{getLang('days','Days')}}(-)
+            </label>
+            <mat-form-field class="example-full-width">
+              <input type="number" [(ngModel)]="balanceObj['subdays']" (change)="onChangeDay('minus')" matInput min="0"
+                oninput="this.value = Math.abs(this.value)">
+            </mat-form-field>
+          </div>
+
+          <!-- <div class="col-md-6 d-none" >
+            <label class="col-form-label">
+              {{getLang('effectivedate','Effective Date')}}
+            </label>
+            <mat-form-field class="example-full-width">
+              <input matInput [matDatepicker]="picker1" placeholder="date">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+          </div> -->
+
+          <div class="col-md-12">
+            <label class="col-form-label">
+              {{getLang('note','Note')}}
+              <span class="text-danger">*</span>
+            </label>
+            <mat-form-field class="example-full-width">
+              <mat-label></mat-label>
+              <textarea matInput [(ngModel)]="notes">
+              </textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-12">
+            <label class="col-form-label">
+              {{getLang('summary','Summary')}}
+            </label>
+            <div class="table-responsive border-outer-secondary">
+              <table class="table table-membroz table-pos">
+                <tbody>
+                  <tr>
+                    <td> Currnt Balance </td>
+                    <td> {{current}} days</td>
+                  </tr>
+                  <tr>
+                    <td> Added </td>
+                    <td>
+                      {{new > current ? '(+)' :'(-)'}}
+                      {{added}} days
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> New Balance      <span class="text-danger">*</span> </td>
+                    <td> {{new}} days</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" [disabled]="disableBtn" type="button" data-dismiss="modal" (click)="actionlistRecord()">
+          <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+        </button>
+
+        <button class="btn btn-primary ml-2" [disabled]="disableBtn" type="button" (click)="saveAdjst(chsLeave)">
+          <i class="material-icons">save</i> {{getLang('save','Save')}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"> History </h4>
+        <button mat-button type="button" id="Close2" class="close" data-dismiss="modal" aria-hidden="true" (click)="actionlistRecord()">
+          <i class="material-icons">clear</i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+          style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+          <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+        </div>
+
+        <div class="row" *ngIf="!isLoading">
+          <div class="col-md-6">
+            <label class="col-form-label">
+              {{getLang('type','Type')}}
+            </label>
+            <mat-form-field class="example-full-width">
+              <input matInput disabled [value]="chsLeave.title">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-membroz table-pos">
+                <thead>
+                  <tr>
+                    <th>{{getLang('note', 'Note')}}</th>
+                    <th class="text-center">{{getLang('date', 'Date')}}</th>
+                    <!-- <th class="text-right">{{getLang('added', 'Added')}}</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of subList">
+                    <td> {{item?.property?.comment}} </td>
+                    <td class="text-center" *ngIf="item?.property?.fromdate != item?.property?.todate"> {{item?.property?.fromdate | toLocaleDate}} - {{item?.property?.todate | toLocaleDate}}</td>
+                    <td class="text-center" *ngIf="item?.property?.fromdate == item?.property?.todate"> {{item?.property?.fromdate | toLocaleDate}}</td>
+
+                    <!-- <td class="text-right"> {{item?.property?.quantity}} </td> -->
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" type="button" data-dismiss="modal" (click)="actionlistRecord()">
+          <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"> Leave Requests </h4>
+        <button mat-button type="button" id="myModalCls3" class="close" data-dismiss="modal" aria-hidden="true" (click)="actionlistRecord()">
+          <i class="material-icons">clear</i>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+
+
+
+          <div class="col-md-6">
+            <label class="col-form-label">
+              {{getLang('fromdate','From Date')}}
+              <span class="text-danger">*</span>
+
+            </label>
+            <mat-form-field class="example-full-width">
+              <input matInput [matDatepicker]="pickerf" [min]="today" [(ngModel)]="fromDate" placeholder="date">
+              <mat-datepicker-toggle matSuffix [for]="pickerf"></mat-datepicker-toggle>
+              <mat-datepicker #pickerf></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <label class="col-form-label">
+              {{getLang('todate','To Date')}}
+              <span class="text-danger">*</span>
+            </label>
+            <mat-form-field class="example-full-width">
+              <input matInput [matDatepicker]="pickert" [min]="fromDate ? fromDate : today" [(ngModel)]="toDate"
+                placeholder="date">
+              <mat-datepicker-toggle matSuffix [for]="pickert"></mat-datepicker-toggle>
+              <mat-datepicker #pickert></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-12">
+            <label class="col-form-label">
+              {{getLang('note','Note')}}
+              <span class="text-danger">*</span>
+            </label>
+            <mat-form-field class="example-full-width">
+              <mat-label></mat-label>
+              <textarea matInput [(ngModel)]="notes">
+            </textarea>
+            </mat-form-field>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" type="button" [disabled]="disableBtn" data-dismiss="modal"
+          (click)="actionlistRecord()">
+          <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+        </button>
+
+        <button class="btn btn-primary ml-2" type="button" [disabled]="disableBtn" (click)="saveLeaveReq(chsLeave)">
+          <i class="material-icons">save</i> {{getLang('save','Save')}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- (click)="checked(element)" data-toggle="modal" data-target="#checked" -->
+<div data-toggle="modal" id="divchecked" data-target="#checked"> </div>
+
+<div class="modal fade" id="checked" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"> Leave Policy Date </h4>
+        <button mat-button type="button" id="myModalClschecked" (click)="unchecked(chsLeave)" class="close" data-dismiss="modal" aria-hidden="true">
+          <i class="material-icons">clear</i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="col-form-label">
+              {{getLang('effectiveDate','Effective Date')}}
+              <span class="text-danger">*</span>
+            </label>
+            <mat-form-field class="example-full-width">
+              <input matInput [matDatepicker]="pickerdate" [(ngModel)]="effectiveDate" placeholder="date">
+              <mat-datepicker-toggle matSuffix [for]="pickerdate"></mat-datepicker-toggle>
+              <mat-datepicker #pickerdate></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" type="button" [disabled]="disableBtn" data-dismiss="modal" (click)="unchecked(chsLeave)">
+          <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+        </button>
+
+        <button class="btn btn-primary ml-2" type="button" [disabled]="disableBtn" (click)="checked(chsLeave)">
+          <i class="material-icons">save</i> {{getLang('save','Save')}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

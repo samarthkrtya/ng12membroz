@@ -1,0 +1,121 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row table-item-gutters">
+            <div class="col-xl-4 col-lg-4 col-md-5 pr-md-0">
+                <div class="card pos-itembill-card mb-0">
+                    <div class="d-flex customer-name-p">
+                        <div class="flex-grow-1">
+                            <div>
+                                <div> {{_billModel?.customerid?.fullname}} </div>
+                                <div>{{_billModel?.customerid?.property?.primaryemail}}</div>
+                                <div>{{_billModel?.customerid?.property?.mobile}}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="loader" *ngIf="isLoading">
+                        <svg class="circular" viewBox="25 25 50 50">
+                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-membroz table-pos">
+                            <thead>
+                                <tr>
+                                    <th>{{getLang('item', 'item')}}</th>
+                                    <th class="text-center">{{getLang('qty', 'Qty')}}</th>
+                                    <th class="text-right">{{getLang('cost', 'Cost')}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of cartItem">
+                                    <td> {{item?.itemName}}</td>
+                                    <td class="text-center"> {{item?.quantity}} </td>
+                                    <td class="text-right"> {{item?.cost}} </td>
+                                </tr>
+
+
+
+                                <tr>
+                                    <td colspan="3">&nbsp;</td>
+                                </tr>
+
+
+                                <tr *ngIf="discount">
+                                    <td class="border-bottom" colspan="2">{{getLang('discount', 'Discount')}}</td>
+                                    <td class="text-right border-bottom">{{discount | myCurrencyPipe}} </td>
+                                </tr>
+                                <tr class="d-none">
+                                    <td class="font-weight-bold border-bottom" colspan="2">{{getLang('subtotal', 'Subtotal')}}</td>
+                                    <td class="text-right font-weight-bold border-bottom">{{subtotal | myCurrencyPipe}}</td>
+                                </tr>
+                                <tr *ngIf="packagediscount">
+                                    <td class="font-weight-bold border-bottom font-18" colspan="2">{{getLang('packagediscount', 'Package
+                                      discount')}}</td>
+                                    <td class="text-right font-weight-bold border-bottom font-18">{{packagediscount | myCurrencyPipe}}
+                                    </td>
+                                  </tr>
+                                  <tr *ngIf="taxamount">
+                                    <td class="border-bottom" colspan="2">{{getLang('tax', 'Tax')}}</td>
+                                    <td class="text-right border-bottom">{{taxamount | myCurrencyPipe}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-weight-bold border-bottom font-18" colspan="2">{{getLang('grandtotal', 'Grand Total')}}</td>
+                                    <td 
+                                    class="text-right font-weight-bold border-bottom font-18">{{grandtotal | myCurrencyPipe}}</td>
+                                  </tr>
+                                  <tr *ngIf="status && status != 'Unpaid'">
+                                    <td class="font-weight-bold border-bottom font-18" colspan="2">{{getLang('paidamount', 'Paid Amount')}}</td>
+                                    <td
+                                    class="text-right font-weight-bold border-bottom font-18">{{paidamount | myCurrencyPipe}}</td>
+                                  </tr>
+                                  <tr  *ngIf="status && status != 'Unpaid'">
+                                    <td class="font-weight-bold border-bottom font-18" colspan="2">{{getLang('balance', 'Balance')}}</td>
+                                    <td 
+                                    class="text-right font-weight-bold border-bottom font-18">{{balance | myCurrencyPipe}}</td>
+                                  </tr>
+                  
+                                  <tr *ngIf="outstandingamount > 0">
+                                    <td class="font-weight-bold border-bottom font-18" colspan="2">{{getLang('remainingiouamount',
+                                      'IOU Amount')}}</td>
+                                    <td class="text-right font-weight-bold border-bottom font-18" *ngIf="outstandingamount == 0">
+                                      {{outstandingamount | myCurrencyPipe}}</td>
+                                    <td class="text-right font-weight-bold border-bottom font-18" *ngIf="outstandingamount > 0">
+                                      <a href="javascript:void(0)" (click)="checkIOUMode()" style="color: red;"> {{outstandingamount |
+                                        myCurrencyPipe}}</a>
+                                    </td>
+                                  </tr>
+
+ 
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="customer-name-p" *ngIf="!isLoading">
+                        <div class="row">
+                          <div class="col-md-6" *ngIf="balance != 0 && balance != grandtotal"> 
+                              <!--display if done some payment  -->
+                                <button  type="button" (click)="billcheckout.setNewPayment()"
+                                        class="btn btn-success btn-block">{{getLang('newpymn', 'New Payment')}}
+                                </button>
+                          </div>
+                          <!-- <div [ngClass]="(balance != 0 && balance != grandtotal) ? 'col-md-6'  : 'col-md-12'">
+                              <button type="button" (click)="onDelete()"
+                                      class="btn btn-danger btn-block">{{getLang('delete', 'Delete')}}
+                              </button>
+                           </div> -->
+                        </div>
+                      </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8 col-lg-8 col-md-7">
+                
+                <app-bill-check-out #billcheckout [billid]="bindid" [billpayid]="billpid"  [formname]="formname" [payformname]="payformname">
+                </app-bill-check-out>
+
+            </div>
+        </div>
+    </div>
+</div>

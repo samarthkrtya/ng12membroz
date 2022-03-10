@@ -1,0 +1,280 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list *ngIf="dataContent" [dataContent]="dataContent" [formObj]="formObj"
+                    [schema]="formObj.schemaname" (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+                <div fxLayout="row" *ngIf="isLoadingData" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+                <div class="card">
+                    <div class="card-body" *ngIf="dataContent  && !isLoadingData">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h4 class="card-title">
+                                    {{formObj.dispalyformname}} {{getLang('details','Details')}}
+                                </h4>
+                            </div>
+                            <div class="col-sm-6 text-right mb-lg-0 mb-3">
+                                <span class="dropdown inline-block text-right ml-2">
+                                    <button class="dropdown-toggle btn btn-primary mrtb0" data-toggle="dropdown">
+                                        {{getLang('more','More')}}
+                                        <b class="caret"></b>
+                                    </button>
+                                    <ng-container
+                                        *ngIf="formObj.viewaction && formObj.viewaction.length > 0;else noaction">
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <ng-container *ngFor="let actnBtn of formObj.viewaction">
+                                                <a class="dropdown-item" [routerLink]="[actnBtn.actionurl]"
+                                                    [queryParams]="actnBtn.quertparams">
+                                                    {{actnBtn?.displaytext}}
+                                                </a>
+                                            </ng-container>
+                                            <a class="dropdown-item" data-toggle="modal" data-target="#myModalAdd">
+                                                Add Licence
+                                            </a>
+                                            <a class="dropdown-item"
+                                                [routerLink]="[('/pages/admins/admin-settings/'+ bindId)]">
+                                                {{getLang('generalsetting','General Setting')}}
+                                            </a>
+                                        </div>
+                                    </ng-container>
+
+                                    <ng-template #noaction>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" [class.disabled]="true">
+                                                {{getLang('noaction','No Action')}}
+                                            </a>
+                                        </div>
+                                    </ng-template>
+                                </span>
+                                <button type="submit" class="btn btn-primary ml-2"
+                                    [routerLink]="['/pages/dynamic-forms/form/' + formObj._id+ '/' + bindId ]">
+                                    <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <app-branch-basic-details [dataContent]="dataContent" [license]="license">
+                                </app-branch-basic-details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- <div class="mt-3" *ngIf="dataContent  && !isLoadingData">
+                    <app-dynamic-formdata-view [dataContent]="dataContent" [tabPermission]="tabPermission"
+                        (redirectUrl)="redirectUrl($event)">
+                    </app-dynamic-formdata-view>
+                </div> -->
+
+
+                <div class="mt-3" *ngIf="dataContent  && !isLoadingData">
+                    <ng-container *ngIf="tabPermission.includes('Staff List')">
+                        <mat-accordion>
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{getLang('listofstaff','Staff List')}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <app-branch-users [bindId]="bindId" [dataContent]="dataContent"
+                                            (updateRecord)="getUpdatedUsers($event)">
+                                        </app-branch-users>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </ng-container>
+                </div>
+
+                <div class="mt-3" *ngIf="dataContent && !isLoadingData">
+                    <ng-container *ngIf="tabPermission.includes('Leave Request')">
+                        <mat-accordion>
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{getLang('leaverequest','Leave Request')}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <app-leave-request [bindId]="bindId" [dataContent]="dataContent"
+                                            (updateRecord)="getUpdatedLeave($event)">
+                                        </app-leave-request>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </ng-container>
+                </div>
+
+                <div class="mt-3" *ngIf="dataContent && !isLoadingData">
+                    <ng-container *ngIf="tabPermission.includes('Timesheet')">
+                        <mat-accordion>
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{getLang('timesheet','Timesheet')}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <app-timesheet [bindId]="bindId" [dataContent]="dataContent"
+                                            (updateRecord)="getUpdatedLeave($event)">
+                                        </app-timesheet>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </ng-container>
+                </div>
+<!--
+                <div class="mt-3" *ngIf="dataContent && !isLoadingData">
+                    <ng-container *ngIf="tabPermission.includes('Shared Document')">
+
+
+
+                        <mat-accordion>
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{getLang('shareddocument','Shared Document')}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="button" class="btn btn-primary ml-2"
+                                            [routerLink]="['/pages/document-gallery/documents']">
+                                            <i class="material-icons">upload_file</i>{{getLang('shrfrmdgal','Share from
+                                            Doc Gallery')}}
+                                        </button>
+                                        <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#uploaddoc">
+                                            <i class="material-icons">file_upload</i>{{getLang('uplddoc','Upload
+                                            Document')}}
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <app-shared-document [bindId]="bindId" [dataContent]="dataContent"
+                                            (updateRecord)="getUpdatedLeave($event)">
+                                        </app-shared-document>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </ng-container>
+                </div> -->
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="myModalAdd" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Number of Licence</h4>
+                <button type="button" id="methodClose" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <label class="col-form-label"> Users :
+                        </label>
+                        <mat-form-field>
+                            <input matInput type="number" [(ngModel)]="license.users">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">
+                    <i class="material-icons">close</i> Cancel
+                </button>
+                <button class="btn btn-primary ml-2" (click)="saveLicence()" [disabled]="disableBtn" type="button">
+                    <i class="material-icons">save</i> Save
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<div id="uploaddoc" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Upload Document</h4>
+                <button type="button" id="methodClose" class="close" (click)="attachment = null" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+
+                          <img class="loading" src="assets/img/image-loader.GIF"
+                            style="height: 100px; width: 100px; display: none">
+
+
+                          <div class="btn btn-primary btn-file">
+                            <label class="upload_button mb-0" for="fileupload">
+                              <i class="material-icons">cloud_upload</i>
+                              {{   langResource['upload'] ? langResource['upload'] : 'Upload'}}
+                            </label>
+                            <input type="file" id="fileupload" #fileInput ng2FileSelect [style.display]="'none'"
+                              [uploader]="customeUploader" (change)="fileInput.value=''" />
+
+
+                            <input type="hidden" id="attachment" [(ngModel)]="attachment">
+                          </div>
+
+                          <div class="mt-2" *ngIf="attachment">
+                            <span class="upload-tag badge badge-pill d-flex mb-2">
+                              <span class="d-flex flex-grow-1 align-items-center">
+                                <i class="material-icons d-flex align-items-center mr-2">link</i>
+                                <span
+                                  (click)="downloadlink(attachment)">{{attachment?.originalfilename}}.{{attachment?.extension}}</span>
+                              </span>
+                              <i class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                                (click)="removeImg()">clear</i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">
+                    <i class="material-icons">close</i> Cancel
+                </button>
+                <button class="btn btn-primary ml-2" (click)="upLoadFile()" [disabled]="disableBtn" type="button">
+                    <i class="material-icons">save</i> Save
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

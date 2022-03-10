@@ -1,0 +1,290 @@
+<form [formGroup]="templateform" (ngSubmit)="onSubmit(templateform.value)">
+>
+<div class="main-content">
+        <div class="container-fluid">           
+
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        {{getLang('communicationtemplate', 'COMMUNICATION TEMPLATE')}}
+                    </h3>
+                 
+                    <div class="card" *ngIf="!isLoading">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="col-form-label">
+                                        {{getLang('title', 'Title')}}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput formControlName="title" >                                        
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label class="col-sm-3 label-on-left">
+                                    {{getLang('type', 'Template type')}}
+                                  </label>
+                                  <div class="col-sm-12">
+                                    <mat-form-field>
+                                      <mat-select (selectionChange)="ontypeSelect1($event.value)"
+                                      formControlName="messagetype" [(ngModel)]="_templatemodel.messagetype">
+                                        <mat-option value="EMAIL">Email</mat-option>
+                                        <mat-option value="SMS">Sms</mat-option>
+                                        <mat-option value="WHATSAPP">WhatsApp</mat-option>
+                                        <mat-option value="NOTIFICATION">Notification</mat-option>
+                                        <mat-option value="MAILMERGE">Mailmerge</mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                </div>
+
+                            <div class="row" *ngIf="_templatemodel.messagetype == 'EMAIL' || _templatemodel.messagetype == 'MAILMERGE'">   
+                                <label class="col-sm-3 label-on-left">
+                                    {{getLang('to', 'To')}}
+                                </label>                               
+                                    <div class="col-sm-12">
+                                        <mat-form-field>                                     
+                                            <mat-select [formControl]="to" placeholder="Select Users" (selectionChange)="onItemSelect($event.value)" multiple>
+                                                <mat-option *ngFor="let user of _bcclists" [value]="user._id">
+                                                    {{user.fullname}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div> 
+                                
+                                <div class="row" *ngIf="_templatemodel.messagetype == 'EMAIL' || _templatemodel.messagetype == 'MAILMERGE'">   
+                                  <label class="col-sm-3 label-on-left">
+                                      {{getLang('userrole', 'User Role')}}
+                                  </label>                               
+                                      <div class="col-sm-12">
+                                          <mat-form-field>                                     
+                                              <mat-select [formControl]="roleid" placeholder="Select Role" (selectionChange)="onRoleSelect($event.value)" multiple>
+                                                  <mat-option *ngFor="let role of _rolelists" [value]="role._id">
+                                                      {{role.rolename}}
+                                                  </mat-option>
+                                              </mat-select>
+                                          </mat-form-field>
+                                      </div>
+                                  </div>  
+
+                                <div class="row" *ngIf="_templatemodel.messagetype == 'EMAIL' || _templatemodel.messagetype == 'MAILMERGE'">
+                                    <div class="col-sm-12">
+                                        <label class="col-form-label">
+                                            {{getLang('subject', 'Subject')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="subject">                                            
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row" >
+                                    <div class="col-sm-6">
+                                        {{getLang('formname', 'Form Name')}}
+                                        <mat-form-field>                                     
+                                            <mat-select (selectionChange)="onformname($event.value)" 
+                                            formControlName="formid">
+                                                <mat-option *ngFor="let form of formList" [value]="form._id">
+                                                    {{form.formname}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <div [hidden]="templateform.get('formid').valid || (templateform.get('formid').pristine && !submitted)"
+                                        class="text-danger">
+                                        <small *ngIf="templateform.get('formid').hasError('required')"
+                                            class="error-label">
+                                            Form Name is Required
+                                        </small>
+                                    </div>
+                                    </div>                               
+                                               
+                                    <div class="col-sm-6">
+                                        {{getLang('mappingfield', 'Mapping Field')}}
+                                                <mat-form-field>                                     
+                                                    <mat-select (selectionChange)="onfieldname($event.value)" 
+                                                    formControlName="mappingfield" >
+                                                        <mat-option *ngFor="let field of _schemaList" [value]="field.fieldname">
+                                                            {{field.fieldname}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <div [hidden]="templateform.get('mappingfield').valid || (templateform.get('mappingfield').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="templateform.get('mappingfield').hasError('required')"
+                                                    class="error-label">
+                                            Mapping field is Required
+                                                </small>
+                                            </div>
+                                            </div>
+                                      
+                                </div> 
+
+                                <div class="row">                         
+                                    <div class="col-sm-12">
+                                      <div *ngIf="_templatemodel.messagetype == 'EMAIL' || _templatemodel.messagetype == 'MAILMERGE'">
+                                                <label class="col-form-label">
+                                                    {{getLang('messagetemplate', 'Message Template')}}
+                                                </label>
+                                                <div class="row">
+                                                  <label class="col-sm-3 label-on-left"> </label>                            
+                                              </div>
+                                              <div class="row">
+                                                <label class="col-sm-3 label-on-left"> </label>                            
+                                            </div>
+                                                    <angular-editor formControlName="content" >
+                                                    </angular-editor>
+                                                </div>                                            
+                                   
+                                            <div
+                                            *ngIf="_templatemodel.messagetype == 'SMS' || _templatemodel.messagetype == 'WHATSAPP' || _templatemodel.messagetype == 'NOTIFICATION' || _templatemodel.messagetype == ''">
+                                            <mat-form-field class="example-full-width">
+                                              <label class="col-form-label">
+                                                {{getLang('messagetemplate', 'Message Template')}}
+                                            </label>
+                                            <div class="row">
+                                              <label class="col-sm-3 label-on-left"> </label>                            
+                                          </div>
+                                          <div class="row">
+                                            <label class="col-sm-3 label-on-left"> </label>                            
+                                        </div>
+                                              <mat-label></mat-label>
+                                              <textarea matInput formControlName="content">
+                                               </textarea>
+                                            </mat-form-field>
+                                          </div>                              
+                                          </div>
+                                    </div>
+
+                                <div class="row">
+                                    <label class="col-sm-3 label-on-left"> </label>                            
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <label class="col-form-label"> Attachment</label>
+                                    <div>
+          
+                                      <img class="loading" src="assets/img/image-loader.GIF"
+                                        style="height: 100px; width: 100px; display: none">
+          
+                                      <div *ngFor="let item of formImageArray">
+                                        <div class="choose-photo-relative">
+          
+                                          <img *ngIf="item.extension == 'xlsx' || item.extension == 'xls'"
+                                            src="assets/img/xlsx.png" style="height: 100px; width: 100px;">
+          
+                                          <img *ngIf="item.extension == 'doc' || item.extension == 'docx'"
+                                            src="assets/img/doc.png" style="height: 100px; width: 100px;">
+          
+                                          <img *ngIf="item.extension == 'ppt' || item.extension == 'pptx'"
+                                            src="assets/img/ppt.png" style="height: 100px; width: 100px;">
+          
+                                          <img *ngIf="item.extension == 'csv'" src="assets/img/csv.png"
+                                            style="height: 100px; width: 100px;">
+          
+                                          <img *ngIf="item.extension == 'pdf'" src="assets/img/pdf.png"
+                                            style="height: 100px; width: 100px;">
+          
+                                          <img
+                                            *ngIf="item.extension !== 'xlsx' && item.extension !== 'xls' && item.extension !== 'doc' && item.extension !== 'docx' && item.extension !== 'pdf' && item.extension == 'ppt' && item.extension == 'pptx' && item.extension == 'csv'"
+                                            src="assets/img/others.png" style="height: 100px; width: 100px;">
+          
+                                          <img
+                                            *ngIf="item.extension == 'jpg' || item.extension == 'jpeg' || item.extension == 'gif' || item.extension == 'png' || item.extension == 'tif' || item.extension == 'tiff'"
+                                            [src]="item.attachments" style="height: 100px; width: 100px;">
+          
+                                          <i class="material-icons upload-img-close" (click)="removeImg(item)">cancel</i>
+          
+                                          <button type="button" class="btn btn-primary" (click)="downloadlink(item.attachments)">
+                                            Download </button>
+          
+                                        </div>
+                                      </div>
+          
+                                    </div>
+                                    <form [formGroup]="atachform">
+          
+                                      <div class="btn btn-primary btn-file">
+          
+                                        <label class="upload_button mb-0" for="fileupload"><i
+                                            class="material-icons">cloud_upload</i> Upload </label>
+                                        <input type="file" id="fileupload" #fileInput ng2FileSelect [style.display]="'none'"
+                                          [uploader]="customeUploader" (change)="fileInput.value=''" formControlName="attachments"
+                                          multiple />
+                                      </div>
+                                    </form>
+                                    <div class="mt-2">
+                                        <ng-container *ngFor="let c of selectedFile">
+                                      <span class="upload-tag badge badge-pill d-flex mb-2">
+                                        <span class="d-flex flex-grow-1 align-items-center">
+                                             <i
+                                            class="material-icons d-flex align-items-center mr-2">link</i>                                        
+                                          <span> {{c ? c : 'No file ...'}}</span></span>
+                                          <i class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                                          (click)="removeImg(c)" data-dismiss="fileinput">clear</i>
+                                      </span></ng-container>
+                                    </div>
+          
+          
+                                  </div>
+
+                       
+                            </div>
+                    </div>
+            </div>
+           
+        </div>
+        </div></div>
+    
+    <footer class="footer fixed-bottom bg-white shadow-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10"> 
+                     
+                       <div class="col-sm-6 text-left">
+                           <button class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">                            
+                            <i class="material-icons">description</i> {{getLang('send', 'Send')}}
+                        </button>
+ 
+                       </div>
+                            <div class="col-sm-12 text-right">
+                            <button class="btn btn-primary" type="submit" [disabled]="disableButton">
+                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                            </button>
+
+                    
+                        <button class="btn btn-default" type="button" [disabled]="disableButton"
+                        [routerLink]="['/pages/dynamic-list/list/communication']" >
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+                        </div>
+                    </div>
+                
+            </div>
+        </div>
+    </footer>
+</form>
+
+ 
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+  
+     
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Message Template</h4>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+  
+    </div>
+  </div> 

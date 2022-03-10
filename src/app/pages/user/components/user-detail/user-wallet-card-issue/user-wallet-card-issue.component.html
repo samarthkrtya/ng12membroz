@@ -1,0 +1,344 @@
+<div class="card mnh-230 mt-0">
+    <div class="card-header card-head-membroz d-flex">
+      <span class="flex-grow-1">{{getLang('cardissue','Card Issue')}} </span>
+    </div>
+  
+    <div class="card-body p-0">
+  
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="input-group d-flex justify-content-start">
+            <mat-form-field
+              class="example-full-width common-search-size w-auto pt-0"
+              appearance="standard" >
+              <span
+                class="input-group-prepend"
+                matPrefix>
+                <span class="input-group-text pl-0">
+                  <i class="material-icons">search</i>
+                </span>
+              </span>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
+              
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-6 text-right">
+          <!-- [disabled]="(!dataContent.membershipend) || (ELEMENT_DATA.length == 0)" -->
+          <button 
+            type="button" 
+            class="btn btn-primary ml-20"
+            data-toggle="modal" 
+            data-target="#myModalWalletRecharge"
+            data-backdrop="static" 
+            data-keyboard="false">
+              <i class="material-icons">account_balance_wallet</i>
+              {{getLang('rechargewallet','Recharge Wallet')}}
+          </button>
+  
+          <button 
+            [disabled]="!dataContent.membershipend"
+            type="button" 
+            class="btn btn-primary ml-20" 
+            data-toggle="modal" 
+            data-target="#myModalIssueNewCard" 
+            data-backdrop="static" 
+            data-keyboard="false"
+            (click)="addIssueNewCard()">
+              <i class="material-icons">add</i>
+              {{getLang('issuenewcard','Issue New Card')}}
+          </button>
+        </div>
+      </div>
+  
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" matSort class="table mat-elevation-z8 w-100 table-membroz-plain">
+      
+          <!-- cardnumber Column -->
+          <ng-container matColumnDef="cardnumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Card Number </th>
+            <td mat-cell *matCellDef="let element" class="hidetext"> {{element.cardnumber}} </td>
+          </ng-container>
+      
+          <!-- principal Column -->
+          <ng-container matColumnDef="principal">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Is Principal </th>
+            <td 
+              mat-cell 
+              *matCellDef="let element" > 
+  
+              <mat-slide-toggle
+                class="example-margin"
+                [checked]="element.principal"
+                [disabled]="true">
+              </mat-slide-toggle>
+  
+              
+            </td>
+          </ng-container>
+      
+          <!-- holder Column -->
+          <ng-container matColumnDef="holder">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Holder </th>
+            <td mat-cell *matCellDef="let element"> {{element.holder}} </td>
+          </ng-container>
+      
+          <!-- "expirydate Column -->
+          <ng-container matColumnDef="expirydate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Expiry Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.expirydate | date:'medium'}} </td>
+          </ng-container>
+  
+          <!-- status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <td mat-cell *matCellDef="let element"> {{element.status | titlecase }} </td>
+          </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  
+          <!-- Row shown when there is no matching data. -->
+          <!-- <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+          </tr> -->
+  
+        </table>
+      
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+  
+    </div>
+  </div>
+  
+  
+  <!-- Modal -->
+  <div id="myModalIssueNewCard" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <form 
+        [formGroup]="form" 
+        (ngSubmit)="onSubmit(form.value, form.valid)" 
+        novalidate 
+        class="mb-0">
+  
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">{{getLang('issuecard','Issue Card')}} </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            
+          </div>
+          <div class="modal-body">
+            <div class="row">
+  
+              <div class="col-sm-12">
+  
+                <label class="col-form-label">
+                  {{getLang('cardnumber', 'Card Number')}}
+                  <span class="text-danger">*</span>
+                </label>
+  
+                <mat-form-field class="example-full-width">
+                  <input matInput formControlName="cardnumber" type="text">
+                </mat-form-field>
+  
+                <div [hidden]="form.get('cardnumber').valid || (form.get('cardnumber').pristine && !submitted)"
+                  class="text-danger">
+  
+                  <small *ngIf="form.get('cardnumber').hasError('required')" class="error-label">
+                    {{getLang('cardnumberisrequired', 'Card Number is Required')}}
+                  </small>
+  
+                  <small *ngIf="form.get('cardnumber').hasError('minlength')" class="error-label">
+                    {{getLang('cardnumberisrequired', 'Minimum 10 or more Characters are Required')}}
+                  </small>
+  
+            
+                </div>
+  
+              </div>
+  
+              <div class="col-sm-12">
+  
+                <label class="col-form-label">
+                  {{getLang('expirydate', 'Expiry Date')}}
+                  <span class="text-danger">*</span>
+                </label>
+  
+                <mat-form-field class="example-full-width">
+                  <input matInput readonly [matDatepicker]="picker" formControlName="expirydate">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                
+  
+                <div [hidden]="form.get('expirydate').valid || (form.get('expirydate').pristine && !submitted)"
+                  class="text-danger">
+                  <small *ngIf="form.get('expirydate').hasError('required')" class="error-label">
+                    {{getLang('expirydateisrequired', 'Expiry Date is Required')}}
+                  </small>
+                </div>
+                
+              </div>
+  
+              <div class="col-sm-12">
+  
+                <label class="col-form-label">
+                  {{getLang('cardholdername', 'Cardholder Name')}}
+                  <span class="text-danger">*</span>
+                </label>
+  
+                <mat-form-field 
+                  class="example-full-width" >
+                  <input 
+                    type="text" 
+                    matInput 
+                    [formControl]="holder" 
+                    [matAutocomplete]="autoHolderLabel">
+                  <mat-autocomplete 
+                    #autoHolderLabel="matAutocomplete">
+                    <mat-option *ngFor="let label of filteredOptions | async" [value]="label">
+                      {{label}}
+                    </mat-option>
+                  </mat-autocomplete>
+                  
+                  
+                  <mat-error *ngFor="let validation of validation_msgs.holder" [hidden]="!submitted">
+                    <div *ngIf="holder.hasError(validation.type)">
+                      {{validation.message}}
+                    </div>
+                  </mat-error>
+                  
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            
+  
+            <button 
+              type="button" 
+              [disabled]="disableBtn" 
+              data-dismiss="modal" 
+              (click)="cancel()"
+              class="btn btn-default">
+              <i class="material-icons">close</i>
+              {{getLang('cancel', 'Cancel')}}
+            </button>
+  
+            <button 
+              type="submit" 
+              [disabled]="disableBtn" 
+              class="btn btn-primary ml-2">
+              <i class="material-icons">save</i>
+              {{getLang('save', 'Save')}}
+            </button>
+  
+  
+          </div>
+        </div>
+  
+      </form>
+  
+    </div>
+  </div>
+  
+  
+  <!-- Modal -->
+  <div id="myModalWalletRecharge" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+  
+      <form 
+        [formGroup]="walletform" 
+        (ngSubmit)="onwalletSubmit(walletform.value, walletform.valid)" 
+        novalidate 
+        class="mb-0">
+  
+        <div class="modal-content">
+  
+          <div class="modal-header">
+            <h4 class="modal-title">{{getLang('rechargewallet','Recharge Wallet')}}</h4>
+            <button type="button" class="walletclose" data-dismiss="modal">&times;</button>
+          </div>
+  
+          <div class="modal-body">
+            <div class="row">
+  
+              <div class="col-sm-6" >
+                <label class="col-form-label"> Members Name </label>
+                <mat-form-field class="example-full-width" [hidden]="true">
+                  <input 
+                    matInput
+                    type="text"
+                    class="example-margin"
+                    readonly
+                    [value]="this.dataContent.fullname">
+                </mat-form-field>
+              
+              </div>
+  
+              <div class="col-sm-6" >
+                <label class="col-form-label"> Members Number </label>
+                <mat-form-field class="example-full-width" [hidden]="true">
+                  <input 
+                    matInput
+                    type="text"
+                    class="example-margin"
+                    readonly
+                    [value]="this.dataContent.membernumber">
+                </mat-form-field>
+              
+              </div>
+              
+  
+              <div class="col-sm-12">
+  
+                <label class="col-form-label">
+                  {{getLang('creditpoint', 'Credit Point')}}
+                  <span class="text-danger">*</span>
+                </label>
+  
+                <mat-form-field class="example-full-width">
+                  <input matInput type="number" formControlName="creditpoint">
+                </mat-form-field>
+  
+                <div [hidden]="walletform.get('creditpoint').valid || (walletform.get('creditpoint').pristine && !walletsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="walletform.get('creditpoint').hasError('required')" class="error-label">
+                    {{getLang('creditpointisrequired', 'Credit Point is Required')}}
+                  </small>
+                </div>
+  
+              </div>
+            </div>
+          </div>
+  
+          <div class="modal-footer">
+            
+            <button 
+              type="button" 
+              [disabled]="disableBtn" 
+              data-dismiss="modal" 
+              (click)="walletcancel()"
+              class="btn btn-default">
+              <i class="material-icons">close</i>
+              {{getLang('cancel', 'Cancel')}}
+            </button>
+  
+            <button 
+              type="submit" 
+              [disabled]="walletdisableBtn" 
+              class="btn btn-primary ml-2">
+              <i class="material-icons">save</i>
+              {{getLang('save', 'Save')}}
+            </button>
+  
+  
+          </div>
+        </div>
+  
+      </form>
+  
+    </div>
+  </div>

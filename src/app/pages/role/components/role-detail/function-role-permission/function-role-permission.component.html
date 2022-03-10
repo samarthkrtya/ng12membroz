@@ -1,0 +1,33 @@
+<form (ngSubmit)="onFormSubmit(functionform.value)" [formGroup]="functionform">
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-xl-12">
+                <!-- <div class="card">
+                    <div class="card-body"> -->
+                            <table>
+                                <tr *ngFor="let c of functionArray">
+                                    <td>{{c.functionname}}</td>
+                                    <td><mat-radio-group formControlName="functionPermission" (change)="onValueChanged($event.value,c)">
+                                        <mat-radio-button 
+                                        [value]="true"
+                                        [checked]="c.checked">Yes</mat-radio-button>
+                                        <mat-radio-button   [value]="false"
+                                        [checked]="!c.checked">No</mat-radio-button>
+                                      </mat-radio-group>
+                                      </td>
+                                </tr>
+                            </table>
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-primary ml-2" type="submit">
+                                <i class="material-icons">save</i> Save
+                            </button>
+                        </div>
+                    <!-- </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+</form>

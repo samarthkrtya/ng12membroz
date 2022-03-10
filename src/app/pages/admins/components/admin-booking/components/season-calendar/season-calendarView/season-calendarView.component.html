@@ -1,0 +1,140 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-12">
+                <h3 class="card-title">
+                    {{langVisibility && langResource['sesnclndr'] ? langResource['sesnclndr'] :
+                    'Season Calendar'}}    
+                </h3>
+                <div class="card">
+
+                   
+                   
+                       <div class="card-body">
+                        
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-5 col-md-5 mb-3">
+                                <div class="btn-group m-0">
+                                    <button type="button" class="btn btn-danger m-0"
+                                        (click)="setSeasonBG('redbg', 'Red', '#d9534f')">
+                                        {{langVisibility && langResource['red'] ? langResource['red'] : 'Red'}}
+                                    </button>
+                                    <button type="button" style="background-color:#5bc0de;"
+                                        class="btn btn-primary m-0"
+                                        (click)="setSeasonBG('bluebg', 'Blue', '#5bc0de')">
+                                        {{langVisibility && langResource['blue'] ? langResource['blue'] :
+                                        'Blue'}}</button>
+                                    <button type="button" class="btn btn-white m-0"
+                                        (click)="setSeasonBG('whitebg', 'White', '#ffffff')">
+                                        {{langVisibility && langResource['white'] ? langResource['white'] : 'White'}}
+                                    </button>
+                                    <button type="button" class="btn btn-gray m-0"
+                                        (click)="setSeasonBG('graybg', 'Gray', '#dddddd')">
+                                        {{langVisibility && langResource['nosesn'] ? langResource['nosesn'] : 'No
+                                        Season'}}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="ml-auto mb-3">                               
+                                <div class="loader" *ngIf="!isLoadingdata">
+                                    <svg class="circular" viewBox="25 25 50 50">
+                                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                            stroke-miterlimit="10" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-5 col-md-5 mb-3 justify-content-end ml-auto">
+                                <mat-form-field class="mat-form-field-space-remove" >
+                                    <mat-select  
+                                    [(ngModel)]="selectedZone">
+                                    <mat-option *ngFor="let opt of zoneOptionsList;let i = index"
+                                        [value]="opt.name" (click)="onZoneChange()">{{opt.name}}</mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-between">
+                                <button class="btn btn-primary" (click)="onPrevYearClick()">
+                                    <span class="btn-label">
+                                        <i class="material-icons">keyboard_arrow_left</i>
+                                    </span>
+                                    {{prevSelectedYear}}
+                                </button>
+                                <button class="btn btn-primary">
+                                    {{currentSelectedYear}}
+                                </button>
+                                <button class="btn btn-primary" (click)="onNextYearClick()">
+                                    {{nextSelectedYear}}
+                                    <span class="btn-label btn-label-right">
+                                        <i class="material-icons">keyboard_arrow_right</i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                        <div>
+                            <div >
+                                <div *ngIf="!isLoading" class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table id="datatables"
+                                            class="table table-no-bordered table-membroz table-variables" >
+                                            <thead data-background-color="info">
+                                                <tr>
+                                                    <th>
+                                                        Week
+                                                    </th>
+                                                    <th *ngFor="let row of locationList let i = index">{{
+                                                        row.property.locationname }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let seascal of seasoncalendarList let i = index">
+                                                    <!-- <td class="info">{{ seascal.week | date:'dd MMM' }}</td> -->
+                                                    <th>Week-{{i+1}}</th>
+                                                    <td [class]="loc.seasoncolor" (mouseover)="changeStyle($event)"
+                                                        (mouseout)="resetStyle($event)"
+                                                        *ngFor="let loc of seascal.seasonLocations let i = index"
+                                                        style="cursor:pointer;" (click)="changeSeason(loc)">
+                                                        {{loc.startperiod | date:'dd MMM' }}</td>
+                                                </tr>
+                                                <tr class="text-center" *ngIf="locationList.length == 0">
+                                                    <td colspan="locationList.length">
+                                                        {{langVisibility && langResource['nodata'] ?
+                                                        langResource['nodata'] : 'No Data'}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="loader" *ngIf="isLoading">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                        stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                           
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-auto ml-auto">
+                                        <button class="btn btn-primary"
+                                            (click)="clearSeasonsByYear()">
+                                            {{langVisibility && langResource['clearsesns'] ? langResource['clearsesns'] :
+                                            'Clear Seasons'}}
+                                        </button>
+                                    </div>
+                                </div>
+                           </div>
+                        </div>
+
+                    
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

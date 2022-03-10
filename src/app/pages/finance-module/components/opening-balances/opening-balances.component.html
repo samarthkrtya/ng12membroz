@@ -1,0 +1,154 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="offset-xl-1 col-xl-10">
+                <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="rose">
+                        <i class="material-icons">payment</i>
+                    </div>
+                    <div class="card-body">
+
+                        <h4 class="card-title"> {{getLang('openingbalance', 'Opening Balance')}} </h4>
+                        <div class="content form-horizontal">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label class="col-form-label"> {{getLang('openingbalancedate', 'Opening Balance
+                                        Date')}}
+                                    </label>
+                                    <mat-form-field>
+                                        <input id="openingbal" matInput [matDatepicker]="resultPickerOpeningBal"
+                                            [(ngModel)]="openingBalanceDate">
+                                        <mat-datepicker-toggle matSuffix [for]="resultPickerOpeningBal">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #resultPickerOpeningBal></mat-datepicker>
+                                    </mat-form-field>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="loader" *ngIf="isLoading">
+                                    <svg class="circular" viewBox="25 25 50 50">
+                                        <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                                            stroke-miterlimit="10" />
+                                    </svg>
+                                </div>
+                                <mat-accordion *ngIf="_groupAccountList.length != 0">
+                                    <mat-expansion-panel *ngFor="let item of _groupAccountList;let i = index"
+                                        class="panel-bg">
+                                        <mat-expansion-panel-header [expandedHeight]="'auto'"
+                                            [collapsedHeight]="'auto'">
+                                            <mat-panel-title>
+                                                {{(item[0] != undefined && item[0].reporthead != undefined) ?
+                                                item[0].reporthead: '---'}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-panel-description class="panel-color" style="display: block;">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-center"> {{getLang('accounts',
+                                                                        'Accounts')}} </th>
+                                                                    <th class="text-center">
+                                                                        {{getLang('availablebalance', 'Available
+                                                                        Balance')}}</th>
+                                                                    <th class="text-center">{{getLang('debit',
+                                                                        'Debit')}}</th>
+                                                                    <th class="text-center">{{getLang('credit',
+                                                                        'Credit')}}</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let acc of item;let j = index">
+                                                                    <td class="text-center">{{acc.headname != undefined
+                                                                        ? acc.headname : '---'}}</td>
+                                                                    <td class="text-center">{{acc.availablebalance !=
+                                                                        undefined ? acc.availablebalance : '---'}}</td>
+                                                                    <td class="text-center">
+                                                                        <input type="number"
+                                                                            class="form-control text-center"
+                                                                            (keyup)="drChanged(acc)"
+                                                                            [(ngModel)]="item[j].dramount">
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <input type="number"
+                                                                            class="form-control text-center"
+                                                                            (keyup)="crChanged(acc)"
+                                                                            [(ngModel)]="item[j].cramount">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr *ngIf="item.length == 0">
+                                                                    <td colspan="4" class="text-center">
+                                                                        {{getLang('nodate',
+                                                                        'No Data')}} </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </mat-panel-description>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                                <div *ngIf="_groupAccountList.length == 0 && !isLoading">
+                                    {{getLang('nodate', 'No Data')}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:30%" class="info text-center"></td>
+                                            <td style="width:20%" class="info text-center">Total</td>
+                                            <td style="width:25%" class="info text-center">
+                                                {{getLang('totaldebit', 'Total Debit')}} : {{drTotalAmount}}
+                                            </td>
+                                            <td style="width:25%" class="info text-center">
+                                                {{getLang('totalcredit', 'Total Credit')}} : {{crTotalAmount}}
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading && _groupAccountList.length != 0">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <button class="btn btn-default" type="button" [disabled]="disableButton"
+                            (click)="removeOpeningBalance()">
+                            <i class="material-icons">delete</i> {{getLang('delete', 'Delete')}}
+                        </button>
+
+                        <button class="btn btn-primary ml-2" type="button" [disabled]="disableButton"
+                            (click)="submitOpeningBalance()">
+                            <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

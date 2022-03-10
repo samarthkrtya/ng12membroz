@@ -1,0 +1,114 @@
+
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px" >
+        <div class="member-img-main position-relative member-profile-img-border">
+
+            <label class="upload_button btn btn-link btn-primary btn-just-icon profile-img-edit m-0" for="fileupload">
+                <i class="material-icons">edit</i>
+            </label>
+             <label *ngIf="dataContent.profilepic" class="upload_button btn btn-link btn-primary btn-just-icon profile-img-delete m-0 flex-grow-1" (click)="deleteProfileImg()">
+                <i class="material-icons">delete</i>
+            </label>
+
+
+            <img
+                [src]="dataContent.profilepic ? dataContent.profilepic : '../assets/img/default-avatar.png'"
+                src="" class="img-fluid w-100" alt="">
+            <div
+                class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+
+            <input
+                class="d-none"
+                type="file"
+                id="fileupload"
+                #fileInput
+                ng2FileSelect
+                [style.display]="'none'"
+                [uploader]="uploader"
+                (change)="fileInput.value=''"
+                multiple />
+
+            <div class="file" *ngIf="response['file']" id="upload_status">
+                <div class="status">
+                    Uploading... {{response['progress']}}%
+                    <div *ngIf="!response['status']">In progress</div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress" role="progressbar" [style.width.%]="response['progress']"></div>
+                </div>
+
+            </div>
+
+            
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.fullname}} <span>{{dataContent.membernumber}}</span> </h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property && dataContent.property.primaryemail">
+                    <div class="mr-2">
+                        <img
+                            src="../assets/img/email-gray-icon.svg" alt="">
+                    </div>
+                    <div>{{dataContent.property && dataContent.property.primaryemail ? dataContent.property.primaryemail : '---' }}</div>
+                    
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property && dataContent.property.mobile">
+                    <div class="mr-2"> <img src="../assets/img/phone-gray-icon.svg"  alt=""></div>
+                    <div> {{dataContent.property.mobile}}  </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent && dataContent.paidamount">
+                    <div class="mr-2"> <img src="../assets/img/amount-gray-icon.svg"  alt=""></div>
+                    <div>{{getLang('amntrcv','Amount Received:')}} <span class="brand-secondary"> {{dataContent.paidamount | myCurrencyPipe}} </span> </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property && dataContent.property.whatsapp_number">
+                    <div class="mr-2"> <img src="../assets/img/whatsapp-gray-icon.svg"  alt=""></div>
+                    <div>{{dataContent.property.whatsapp_number}}</div>
+                    
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6" >
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.campaign && dataContent.campaign.campaignname">
+                    <div class="mr-2"> <img src="../assets/img/member-card-gray-icon.svg"  alt=""></div>
+                    <div> {{dataContent.campaign.campaignname}}</div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.membershipstart" >
+                    <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg"  alt=""></div>
+                    <div> {{dataContent.membershipstart | date: 'medium'}} </div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent && dataContent.stage">
+                    <div class="mr-2"> <img src="../assets/img/amount-gray-icon.svg"  alt=""></div>
+                    <div>{{getLang('stage','Stage:')}} <span class="brand-secondary">{{dataContent.stage}} </span> </div>
+                   
+                </div>
+                <div class="d-flex align-items-center mb-3"  *ngIf="dataContent && dataContent.walletbalance">
+                    <div class="mr-2"> <img src="../assets/img/wallet-gray-icon.svg" alt=""></div>
+                    <div>{{getLang('walletblnc','Wallet Balance:')}}  <span class="brand-secondary">{{dataContent.walletbalance | myCurrencyPipe}}</span> </div>
+                   
+                </div>
+
+                <div class="d-flex align-items-center mb-3"  *ngIf="dataContent && dataContent.followup">
+                    <div class="mr-2"> <img src="../assets/img/wallet-gray-icon.svg" alt=""></div>
+                    <div>{{getLang('followup','Follow up:')}}  <span class="brand-secondary">{{dataContent.followup | date: 'medium'}}</span> </div>
+                   
+                </div>
+
+                <div class="d-flex align-items-center mb-3"  *ngIf="dataContent && dataContent.assignto">
+                    <div class="mr-2"> <img src="../assets/img/wallet-gray-icon.svg" alt=""></div>
+                    <div>{{getLang('assignto','Assign To:')}}  <span class="brand-secondary">{{dataContent.assignto}}</span> </div>
+                   
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

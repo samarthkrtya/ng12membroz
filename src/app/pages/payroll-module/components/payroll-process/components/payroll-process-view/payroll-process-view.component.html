@@ -1,0 +1,134 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons"></i>
+                        </div>
+                        <h4 class="card-title">Payroll Process View</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="col-xs-12">
+                            <div class="text-center mrb30">
+                                <span>Payroll for {{getMonth(selectedMonth)}} {{selectedYear}}</span>
+                            </div>
+
+                        </div>
+
+                        <div class="material-datatables1">
+                            <div class="table-responsive">
+                                <table id="datatables"
+                                class="mat-elevation-z8 w-100 table-hover table-membroz table table-striped"
+                                cellspacing="0" width="100%" style="width:100%">
+                              <thead data-background-color="info">
+                                  <tr>
+                                      <th>Employee Name</th>
+                                      <th>Paid Leave</th>
+                                      <th>CF + Month</th>
+                                      <th>Paid Leave Amount</th>
+                                      <th>taxamount</th>
+                                      <th>Net Salary</th>
+                                      <th>Net On Hand</th>                                     
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <ng-container *ngFor="let item of pagedItems">
+                                  <tr>
+                                      <td> {{item?.employeeid?.fullname}} </td>
+                                      <td> {{item.paidleave}} </td>
+                                      <td> {{item.cf}} </td>
+                                      <td> ₹ {{item?.paidleaveamount}} </td>
+                                      <td> ₹ {{item?.taxamount}} </td>
+                                      <td> ₹ {{item?.netsalary}} </td>
+                                      <td> ₹ {{item?.netonhand}} </td>
+                                  </tr>
+                                  </ng-container>
+                              </tbody>
+                          </table>
+                          <nav class="ng2-smart-pagination-nav">
+                            <ul *ngIf="pager.pages"
+                                class="ng2-smart-pagination pagination">
+                                <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                    <a (click)="setPage(1)" class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                            First
+                                        </span>
+                                        <span class="sr-only">
+                                            First
+                                        </span>
+                                    </a>
+                                </li>
+                                <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                    <a (click)="setPage(pager.currentPage - 1)"
+                                        class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                            previous
+                                        </span>
+                                        <span class="sr-only">
+                                            previous
+                                        </span>
+                                    </a>
+                                </li>
+                                <li *ngFor="let page of pager.pages"
+                                    [ngClass]="{active:pager.currentPage === page}">
+                                    <a (click)="setPage(page)" class="ng2-smart-page-link page-link">
+                                        {{page}}
+                                    </a>
+                                </li>
+                                <li [ngClass]="{disabled:pager.currentPage === pager1.totalPages}">
+                                    <a (click)="setPage(pager.currentPage + 1)"
+                                        class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                            Next
+                                        </span>
+                                        <span class="sr-only">
+                                           Next
+                                        </span>
+                                    </a>
+                                </li>
+                                <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                    <a (click)="setPage(pager.totalPages)"
+                                        class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                           Last
+                                        </span>
+                                        <span class="sr-only">
+                                            Last
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="ng2-smart-pagination pagination pull-right">
+                                <li>
+                                    Showing
+                                    {{this.pager.startIndex + 1}}
+                                    to
+                                    {{this.pager.endIndex + 1}}
+                                    of
+                                    {{this.employeesalary.length}}
+                                    records
+                                </li>
+                            </ul>
+                        </nav>
+                            </div>
+                        </div>
+
+                            <div class="text-right">        
+                                <button
+                                type="button"
+                                class="btn btn-default ml-1"
+                                [routerLink]="['/pages/payroll-module/payroll-process/lists/']">
+                                <i class="material-icons">keyboard_arrow_left</i> 
+                                BACK
+                            </button>
+                            </div>
+    
+                        </div>                 
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>

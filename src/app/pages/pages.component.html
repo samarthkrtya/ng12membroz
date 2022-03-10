@@ -1,0 +1,16 @@
+
+<div class="wrapper">
+    <div id="ofBar" *ngIf="expiringin && expiringin > 0 "><b>Your free trial is expiring in {{this.expiringin}} Days</b> <a [routerLink]="['/pages/myaccount']" id="btn-bar">Upgrade Now</a><a (click)="closeBtn()" id="close-bar">×</a></div>
+    <div class="sidebar" data-color="white" data-background-color="blue" >
+        <app-sidebar-cmp></app-sidebar-cmp>
+        <div class="sidebar-background" ></div>
+    </div>
+    <div class="main-panel">
+        <app-navbar-cmp></app-navbar-cmp>
+        <router-outlet></router-outlet>
+        <div *ngIf="!isMap()">
+            <app-footer-cmp></app-footer-cmp>
+        </div>
+    </div>
+    <!-- <app-fixedplugin></app-fixedplugin> -->
+</div>

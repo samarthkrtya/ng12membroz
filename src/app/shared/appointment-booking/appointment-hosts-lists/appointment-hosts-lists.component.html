@@ -1,0 +1,22 @@
+<mat-form-field 
+    class="example-full-width mat-form-field-space-remove">
+	<input 
+        type="text" 
+        aria-label="Number" 
+        matInput 
+        [formControl]="myControl" 
+        [matAutocomplete]="auto"
+        (keyup.enter)="enter()"
+        (change)="handleEmptyInput($event)">
+    <mat-autocomplete 
+        #auto="matAutocomplete"
+        [displayWith]="displayFn"
+        (optionSelected)="optionSelected($event.option)">
+        <mat-option 
+            *ngFor="let option of filteredOptions | async" 
+            [value]="option">
+            {{option.fullname}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+

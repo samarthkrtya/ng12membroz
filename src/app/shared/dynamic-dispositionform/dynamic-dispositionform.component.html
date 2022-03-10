@@ -1,0 +1,363 @@
+<form 
+    #formtext 
+    *ngIf="dynamicForm" 
+    (ngSubmit)="onDynamicFormSubmit(dynamicForm.value, dynamicForm.valid)" 
+    [formGroup]="dynamicForm"
+    novalidate 
+    class="form-horizontal mb-0">
+        
+    <div *ngFor="let fields of fieldLists">
+        <ng-container [ngSwitch]="fields.fieldtype">
+            <div >
+                <label class="col-form-label">
+                    {{getLang(fields.fieldname, fields.displayname)}} 
+                    <span *ngIf="fields.isAsterisk" class="text-danger">*</span>
+                </label>
+
+                <ng-container *ngSwitchCase="'text'">
+                    <mat-form-field
+                        class="example-full-width">
+                        <input
+                            type="text"
+                            matInput
+                            [formControlName]="fields.fieldname">
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'email'">
+                    <mat-form-field class="example-full-width">
+                        <input
+                            type="text"
+                            matInput
+                            [formControlName]="fields.fieldname">
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'mobile'">
+                    <mat-form-field class="example-full-width">
+                        <input
+                            type="text"
+                            matInput
+                            [formControlName]="fields.fieldname">
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'long_text'">
+                    <mat-form-field class="example-full-width">
+                        <input
+                            type="text"
+                            matInput
+                            value
+                            [formControlName]="fields.fieldname">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width">
+                        <textarea matInput> </textarea>
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'attachment'">
+                    <div class="form-group">
+                        <img class="loading_{{fields.fieldname}}" src="assets/img/image-loader.GIF"
+                            style="height: 100px; width: 100px; display: none">
+
+                        <div class="btn btn-primary btn-file">
+
+                            <label class="upload_button mb-0" for="fileupload_{{fields.fieldname}}"><i class="material-icons">cloud_upload</i> Upload </label>
+
+                            <input
+                                type="file"
+                                id="fileupload_{{fields.fieldname}}"
+                                #fileInput
+                                ng2FileSelect
+                                [style.display]="'none'"
+                                [uploader]="customeUploader[fields.fieldname]"
+                                (change)="fileInput.value=''"
+                                multiple />
+
+                            <input
+                                type="hidden"
+                                [id]="fields.fieldname"
+                                [formControlName]="fields.fieldname" >
+                        </div>
+
+                        <div class="mt-2" >
+                            <span class="upload-tag badge badge-pill d-flex mb-2" *ngFor="let item of formImageArray[fields.fieldname]">
+                                <span class="d-flex flex-grow-1 align-items-center" >
+                                    <i class="material-icons d-flex align-items-center mr-2">link</i>
+                                    <span (click)="downloadlink(item.attachment)"> {{item.originalfilename}}.{{item.extension}}</span>
+                                </span>
+                                <i
+                                    class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer"
+                                    (click)="removeImg(item, fields.fieldname)">clear</i>
+                            </span>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'list'">
+                    <mat-form-field class="example-full-width">
+                        <input
+                            matInput
+                            placeholder="Select"
+                            aria-label="Select"
+                            [matAutocomplete]="auto"
+                            [formControlName]="fields.fieldname">
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let opt of fields.lookupdata" [value]="opt.value">
+                                <span>{{ opt.value }}</span>
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'multi_selected_list'">
+                    <mat-form-field class="example-full-width">
+                        <mat-select
+                            [formControlName]="fields.fieldname"
+                            multiple>
+                            <mat-option value="">Select {{fields.fielddisplaytext}}</mat-option>
+                            <mat-option
+                                *ngFor="let opt of fields.lookupdata"
+                                [value]="opt.value">
+                                {{opt.value}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'checkbox'">
+                    <mat-selection-list [formControlName]="fields.fieldname" >
+                        <mat-list-option  class="mat-primary" checkboxPosition="before" *ngFor="let look of fields.lookupdata" [value]="look.key">
+                            {{look.value}}
+                        </mat-list-option>
+                    </mat-selection-list>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'radio'">
+                    <mat-radio-group
+                        aria-labelledby="example-radio-group-label"
+                        class="example-radio-group"
+                        [formControlName]="fields.fieldname">
+                        <mat-radio-button
+                            class="example-radio-button"
+                            *ngFor="let look of fields.lookupdata; let i = index"
+                            [value]="look.value"
+                            >
+                            {{look.value}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'datepicker'">
+                    <mat-form-field>
+                        <input
+                            matInput
+                            [matDatepicker]="resultPicker"
+                            [formControlName]="fields.fieldname"
+                            placeholder="">
+                        <span class="help-block"
+                            style="margin-top: 11px;display: block;">{{gDateFormat}}</span>
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="resultPicker">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #resultPicker [startAt]="startDate"></mat-datepicker>
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'form'">
+                    <dynamic-autocomplete
+                        [formControlName]="fields.fieldname"
+                        [setting]="fields"
+                        [dbvalue]="fields.value">
+                    </dynamic-autocomplete>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'lookup'">
+                    <dynamic-autocomplete
+                        [formControlName]="fields.fieldname"
+                        [setting]="fields"
+                        [dbvalue]="fields.value"
+                        (added)="onItemAdded($event)">
+                    </dynamic-autocomplete>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'audio'">
+                    <mat-form-field class="example-full-width">
+                        <input
+                            type="hidden"
+                            matInput
+                            [formControlName]="fields.fieldname">
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'duration'">
+                    <mat-form-field class="example-full-width">
+                        <input
+                            type="hidden"
+                            matInput
+                            [formControlName]="fields.fieldname">
+                    </mat-form-field>
+                </ng-container>
+
+                <span class="help-block">{{fields.description}}</span>
+
+                <div
+                    style="margin-left:18%;"
+                    [hidden]="dynamicForm.get([fields.fieldname]).valid || (dynamicForm.get([fields.fieldname]).pristine && !dynamicSubmitted)"
+                    class="text-danger">
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('required')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Required
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('adultDateVal')" class="error-label">
+                        * {{fields.fielddisplaytext}} should be 18+
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('email')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Invalid Email
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('insertonlyvalidurl')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Invalid Url
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('insertonlynumber')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Invalid number
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('onlyvalidmobilenumber')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Invalid.
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('insertonlynumberordecimal')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Invalid Number Or Decimal
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('insertonlynumberordecimal')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Invalid Number Or Decimal
+                    </small>
+
+                    <small *ngIf="dynamicForm.get([fields.fieldname]).hasError('validatePhoneNumber')" class="error-label">
+                        * {{fields.fielddisplaytext}} is Invalid
+                    </small>
+
+                </div>
+    
+            </div>
+        </ng-container>
+    </div>
+
+    <ng-container *ngIf="isfollowup">
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <label class="col-form-label">
+                    {{getLang("followup", "Follow up")}}
+                    
+                </label>
+                <div class="mt-2">
+                    <mat-slide-toggle formControlName="followup"></mat-slide-toggle>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row" *ngIf="this.dynamicForm.get('followup').value == true">
+            <div class="col-sm-12">
+                <label class="col-form-label">
+                    {{getLang('followupdate', 'Followup Date')}}
+                    <span  class="text-danger">*</span>
+                </label>
+                <div>
+                    <mat-form-field>
+                        <input 
+                            matInput 
+                            [ngxMatDatetimePicker]="picker" 
+                            formControlName="followupdate">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker 
+                            #picker 
+                            [showSpinners]="true"
+                            >
+                        </ngx-mat-datetime-picker>
+                      </mat-form-field>
+
+                </div>
+            </div>
+        </div>
+    
+        <div class="row"  *ngIf="this.dynamicForm.get('followup').value == true">
+            <div class="col-sm-12">
+                <label class="col-form-label">
+                    {{getLang('assignto', 'Assign To')}}
+                    <span class="text-danger">*</span>
+                </label>
+                <div>
+                    <mat-form-field class="example-full-width">
+                        <select matNativeControl formControlName="assignto">
+                            <option value="">
+                                {{getLang('none','None')}}
+                            </option>
+                            <optgroup *ngFor="let item of (desginationWiseUser | keys); let i = index" label="{{item.value.desginationid.title}}">
+                                <option [value]="itm.value._id" *ngFor="let itm of (item.value.userid | keys); let j = index">{{itm.value.fullname}}</option>
+                            </optgroup>
+                        </select>
+                    </mat-form-field>
+
+                    <div 
+                        [hidden]="dynamicForm.get('assignto').valid || (dynamicForm.get('assignto').pristine && !dynamicSubmitted)"
+                        class="text-danger">
+                        <small *ngIf="dynamicForm.get('assignto').hasError('required')" class="error-label font-size-75">
+                            {{getLang('assigntoisrequired', 'Assign To is Required')}}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <div class="row" *ngIf="fieldLists && fieldLists.length == 0">
+        <div class="col-sm-12">
+            {{getLang("nodata", "No Data")}}
+        </div>
+    </div>
+
+
+    <div class="row" *ngIf="fieldLists && fieldLists.length > 0">            
+        <div class="col-sm-12 text-right">
+            <button 
+                [disabled]="isdisablesavebutton"
+                *ngIf="type == 'closeactivity'"
+                type="button"
+                (click)="submit('reschedule')"
+                class="btn btn-primary">
+                <i class="material-icons">save</i> 
+                Submit & Reschedule
+            </button>
+
+            <button 
+                [disabled]="isdisablesavebutton"
+                *ngIf="type == 'closeactivity'"
+                type="button"
+                (click)="submit('submit')"
+                class="btn btn-primary ml-2">
+                <i class="material-icons">save</i> 
+                Close & Submit
+            </button> 
+
+            <button 
+                [disabled]="isdisablesavebutton"
+                [ngClass]="type == 'closeactivity' ? 'd-none' : 'd-block'"
+                id="submit"
+                type="submit"
+                name="submit"
+                class="btn btn-primary ml-2 float-right">
+                <i class="material-icons">save</i> 
+                Save
+            </button> 
+
+        </div>        
+    </div>
+</form> 
+

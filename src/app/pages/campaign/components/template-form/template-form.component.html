@@ -1,0 +1,87 @@
+<form class="form-horizontal" [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                  <h4 class="card-title">
+                    New Template
+                  </h4>
+                  <div class="loader" *ngIf="isLoading">
+                    <svg class="circular" viewBox="25 25 50 50">
+                      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                    </svg>
+                  </div>
+
+                  <div class="row" *ngIf="!isLoading">
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        Subject
+                        <span class="text-danger">*</span>
+                      </label>
+                      <mat-form-field class="example-full-width">
+                        <input type="text" matInput formControlName="subject">
+                      </mat-form-field>
+                      <div [hidden]="form.get('subject').valid || (form.get('subject').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('subject').hasError('required')" class="error-label">
+                          Subject is required !
+                        </small>
+                      </div>
+                      <span class="help-block"></span>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <label class="col-form-label">
+                        Body
+                        <span class="text-danger">*</span>
+                      </label>
+                      <angular-editor formControlName="content" placeholder="'Enter HTML here...'"></angular-editor>
+                      <!-- <div [hidden]="form.get('content').valid || (form.get('content').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('content').hasError('required')" class="error-label">
+                          Body required !
+                        </small>
+                      </div> -->
+                      <span class="help-block"></span>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-1 col-xl-10">
+          <div class="row">
+            <div class="col-sm-12 text-right">
+              <button class="btn btn-default" type="button" [routerLink]="['/pages/dynamic-preview-list/campaign']">
+                <i class="material-icons">close</i>
+                Cancel
+              </button>
+              <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+                <i class="material-icons">save</i>
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+</form>

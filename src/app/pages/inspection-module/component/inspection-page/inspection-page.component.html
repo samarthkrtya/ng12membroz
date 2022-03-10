@@ -1,0 +1,338 @@
+<div class="loading" *ngIf="disableBtn">Loading&#8230;</div>
+
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3 class="card-title">Inspection</h3>
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="offset-xl-1 col-xl-10">
+
+                                <div class="row">
+
+                                    <div class="col-sm-12">
+                                        <label class="col-form-label">
+                                            Customer
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <form>
+                                            <div class="form-group ">
+                                                <input type="text" placeholder="Search" class="form-control"
+                                                    [formControl]="assetControl" [matAutocomplete]="autoAsset"
+                                                    (keyup.enter)="enterAsset()" (click)="preloadAsset()"
+                                                    [disabled]="this.bindid" (change)="handleEmptyAssetInput($event)">
+
+                                                <mat-autocomplete #autoAsset="matAutocomplete"
+                                                    [displayWith]="assetDisplayFn"
+                                                    (optionSelected)="assetSelected($event.option)">
+
+
+                                                    <ng-container *ngIf="assetLists.length > 0">
+
+                                                        <div class="mat-optgroup-media">
+                                                            <mat-option
+                                                                *ngFor="let option of assetFilteredOptions | async"
+                                                                [value]="option">
+
+
+                                                                <div
+                                                                    class="media py-2 member-profile-item cursor-pointer">
+                                                                    <img class="example-option-img rounded" aria-hidden
+                                                                        [src]="option && option.customerid && option.customerid.profilepic ? option.customerid.profilepic : '../../assets/img/default-avatar.png'"
+                                                                        width="50" height="50">
+
+                                                                    <div class="media-body">
+                                                                        <div class="d-flex">
+                                                                            <div class="flex-grow-1">
+                                                                                <div class="font-500 mb-1">
+                                                                                    <span>{{option?.title}}</span>
+                                                                                    <span
+                                                                                        *ngIf="option?.property?.license_plate">
+                                                                                        |
+                                                                                        {{option?.property?.license_plate}}</span>
+                                                                                    <span *ngIf="option.property?.regnumberyear"> |
+                                                                                        {{option?.property?.regnumberyear}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="fc-today-button font-500">
+                                                                                <i class="material-icons"> face
+                                                                                </i>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="d-flex">
+                                                                            <div class="flex-grow-1">
+                                                                                <span>{{option?.customerid?.property?.fullname}}</span>
+                                                                                <span *ngIf="option?.customerid?.property?.mobile"> |
+                                                                                    {{option?.customerid?.property?.mobile}}</span>
+                                                                            </div>
+                                                                            <div class="fc-today-button font-14"
+                                                                                *ngIf="option?.customerid?.property?.primaryemail">
+                                                                                {{option?.customerid?.property?.primaryemail}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                            </mat-option>
+                                                        </div>
+
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="assetLists.length == 0">
+                                                        <mat-option>
+                                                            <span>No {{getLang('asset', 'Asset')}}</span>
+                                                        </mat-option>
+                                                    </ng-container>
+
+
+                                                </mat-autocomplete>
+
+
+                                                <div [hidden]="!submitted">
+
+                                                    <mat-error *ngFor="let validation of validation_msgs.assetControl">
+                                                        <div *ngIf="assetControl.hasError(validation.type)">
+                                                            {{validation.message}}
+                                                        </div>
+                                                    </mat-error>
+                                                </div>
+
+                                                <span class="material-input"></span>
+                                            </div>
+
+
+                                        </form>
+
+                                        <div class="row" *ngIf="assetControl && assetControl.value">
+                                            <div class="col-md-12">
+                                                <div class="border pt-3 px-3 rounded alternative-light-blue">
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="media py-2 member-profile-item">
+                                                                <img [src]="assetControl?.value?.customerid?.profilepic ? assetControl?.value?.customerid?.profilepic : '../assets/img/default-avatar.png' "
+                                                                    class="profile-avatar-img mr-2 rounded-circle"
+                                                                    alt="">
+                                                                <div class="media-body">
+                                                                    <div class="font-500 mb-1">
+                                                                        {{assetControl.value?.title}} </div>
+                                                                    <div class="d-flex">
+                                                                        <div class="flex-grow-1">
+                                                                            {{assetControl?.value?.customerid?.fullname}}
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="d-flex align-items-center mb-3"
+                                                                *ngIf="assetControl?.value?.customerid?.property?.primaryemail">
+                                                                <div class="mr-2"><img
+                                                                        src="../assets/img/email-gray-icon.svg" alt="">
+                                                                </div>
+                                                                <div>
+                                                                    {{assetControl?.value?.customerid?.property?.primaryemail}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex align-items-center mb-3"
+                                                                *ngIf="assetControl?.value?.customerid?.property?.mobile">
+                                                                <div class="mr-2"><img
+                                                                        src="../assets/img/phone-gray-icon.svg" alt="">
+                                                                </div>
+                                                                <div>
+                                                                    {{assetControl?.value?.customerid?.property?.mobile}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4"
+                                                            *ngIf="assetControl?.value?.customerid?.property?.address">
+                                                            <div class="d-flex">
+                                                                <div class="mr-2"><img
+                                                                        src="../assets/img/location-gray-icon.svg"
+                                                                        alt=""></div>
+                                                                <div>
+                                                                    {{assetControl?.value?.customerid?.property?.address}}
+                                                                    <br>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <ng-container *ngIf="isEmptyTemplate == false;else emtyTmp">
+
+                                        <div class="col-sm-12">
+                                            <label class="col-form-label">
+                                                Inspection Template
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <form>
+                                                <div class="form-group ">
+                                                    <input type="text" placeholder="Search" class="form-control"
+                                                        [formControl]="templateControl" [matAutocomplete]="autoTemplate"
+                                                        (keyup.enter)="enterTemplate()" (click)="preloadTemplate()"
+                                                        [disabled]="this.bindid"
+                                                        (change)="handleEmptyTemplateInput($event)">
+
+                                                    <mat-autocomplete #autoTemplate="matAutocomplete"
+                                                        [displayWith]="templateDisplayFn"
+                                                        (optionSelected)="templateSelected($event.option)">
+
+
+                                                        <ng-container *ngIf="templateLists.length > 0">
+                                                            <mat-option
+                                                                *ngFor="let option of templateFilteredOptions | async"
+                                                                [value]="option">
+                                                                {{option.dispalyformname}}
+                                                            </mat-option>
+                                                        </ng-container>
+
+
+                                                        <ng-container *ngIf="templateLists.length == 0">
+                                                            <mat-option>
+                                                                <span>No {{getLang('template', 'Template')}}</span>
+                                                            </mat-option>
+                                                        </ng-container>
+
+
+                                                    </mat-autocomplete>
+
+                                                    <div [hidden]="!submitted">
+
+                                                        <mat-error
+                                                            *ngFor="let validation of validation_msgs.templateControl">
+                                                            <div *ngIf="templateControl.hasError(validation.type)">
+                                                                {{validation.message}}
+                                                            </div>
+                                                        </mat-error>
+                                                    </div>
+
+                                                    <span class="material-input"></span>
+                                                </div>
+
+
+                                            </form>
+
+                                        </div>
+                                    </ng-container>
+
+                                    <ng-template #emtyTmp>
+                                        <div class="col-sm-12">
+                                            <h3 class="text-center"> No Template available ! </h3>
+                                            <div class="d-flex justify-content-center">
+                                                <button class="btn btn btn-outline-primary m-0 mr-2"
+                                                    [routerLink]="['/pages/dynamic-list/list/inspectiontemplate']">
+                                                    <i class="material-icons">add</i> Add Inspection Template to
+                                                    Complete the Setup
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </div>
+
+
+                                <div class="d-flex mt-4 mb-1">
+                                    <h4 class="card-title flex-grow-1 align-self-center m-0">Inspection - Visual Check
+                                    </h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            Inspection By
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <app-dynamic-autocomplete-ngmodel *ngIf="inspectionBy.visible"
+                                            [setting]="inspectionBy" [(inputModel)]="inspectionBy.modelValue"
+                                            [dbvalue]="inspectionBy.dbvalue">
+                                        </app-dynamic-autocomplete-ngmodel>
+
+
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label"> Date</label>
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="picker" (click)="picker.open()"
+                                                [(ngModel)]="date">
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            Remarks
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput [(ngModel)]="remark">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+
+
+                                <app-inspection-formbuilder *ngIf="formBuilderVisible"
+                                    [selectedTemplate]="selectedTemplate" [bindIdDataValue]="inspectionDetails"
+                                    (onInspectionFormSubmitData)="getSubmittedData($event)">
+
+                                </app-inspection-formbuilder>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <div class="row">
+                    <div class="col-sm-6 text-left">
+                        <button inspectionDetails *ngIf="this.inspectionDetails && this.inspectionDetails._id"
+                            class="btn btn-danger ml-2" type="button" (click)="onDelete()" [disabled]="disableButton">
+                            <i class="material-icons">delete</i> {{getLang('delete', 'Delete')}}
+                        </button>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <button class="btn btn-default" type="button"
+                            [routerLink]="['/pages/dynamic-list/list/inspection']" [disabled]="this.disableButton">
+                            <i class="material-icons">close</i>
+                            {{getLang('cancel', 'Cancel')}}
+                        </button>
+
+                        <button (click)="submit()" class="btn btn-primary ml-2" type="button"
+                            [disabled]="this.disableButton">
+                            <i class="material-icons">save</i>
+                            {{getLang('save', 'Save')}}
+                        </button>
+                        <button *ngIf="this.inspectionDetails?._id" class="btn btn-primary ml-2" mat-button
+                            [matMenuTriggerFor]="menu" [disabled]="this.disableButton">
+                            Save & Convert
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button [disabled]="this.quotationDisableButton" (click)="convert('estimate')"
+                                mat-menu-item>Save & Convert into Estimate</button>
+                            <button [disabled]="this.joborderDisableButton" (click)="convert('joborder')"
+                                mat-menu-item>Save & Convert into Job Order</button>
+                        </mat-menu>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

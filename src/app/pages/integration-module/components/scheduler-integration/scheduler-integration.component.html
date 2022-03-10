@@ -1,0 +1,104 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="offset-xl-1 col-xl-10">
+        <div class="text-center" *ngIf="isLoading">
+          <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+          </div>
+        </div>
+        <ng-container *ngIf="!isLoading">
+
+          <h3 class="card-title mb-0" *ngIf="Integrated.length > 0">Active notifications reminders</h3>
+
+          <div class="row">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex" *ngFor="let existInt of Integrated">
+              <div class="card w-100 text-center">
+                <div class="card-body">
+                  <div class="justify-content-center mb-3 integrate-name-logo">
+                    <img [src]=" existInt.property && existInt.property.logo ?  existInt.property.logo : '../../assets/img/image_placeholder.jpg'" width="50" height="50" alt="">
+                    <span class="img-add-product-delete">
+                      <button mat-raised-button type="button" [disabled]="isDisable" class="btn btn-just-icon btn-link"
+                        (click)="onDelete(existInt.formdata._id)">
+                        <i class="material-icons">cancel</i>
+                      </button>
+                    </span>
+                  </div>
+                  <h4 class="card-title">
+                    {{existInt.title ? existInt?.title : '---'}}
+                  </h4>
+                  <!-- <p>
+                    {{existInt.detail ? existInt.detail : '---'}}
+                  </p> -->
+                  <!-- <a class="btn btn-primary ml-3" data-toggle="modal" data-target="#myModal" data-backdrop="static"
+                    data-keyboard="false" (click)="openModel(existInt)">Share</a> -->
+                  <!-- <a class="btn btn-outline-primary ml-3" [class.disabled]="disableBtn" [routerLink]="[existInt.configurl]">Config</a> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <h3 class="card-title mb-0" *ngIf="NotIntegrated.length > 0">Inactive notifications reminders</h3>
+          <div class="row">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 d-flex" *ngFor="let existInt of NotIntegrated">
+              <div class="card w-100 text-center">
+                <div class="card-body">
+                  <div class="justify-content-center mb-3 integrate-name-logo">
+                    <img [src]=" existInt.property && existInt.property.logo ?  existInt.property.logo : '../../assets/img/image_placeholder.jpg'" width="50" height="50" alt="">
+                  </div>
+                  <h4 class="card-title">
+                    {{existInt.formname ? existInt?.formname : '---'}}
+                  </h4>
+                  <!-- <p>
+                    {{existInt.detail ? existInt.detail : '---'}}
+                  </p> -->
+
+                  <button type="button"  [disabled]="disableBtn" class="btn btn-primary ml-3" (click)="onActivate(existInt)">
+                    Activate
+                  </button>
+                  <!-- <button type="button" class="btn btn-outline-primary ml-3" [disabled]="disableBtn" [routerLink]="[existInt.configurl]">Config</button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Shared Data</h4>
+        <button type="button" class="close" (click)="onClose()" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body">
+            <app-dynamic-sublist #sharedusers [formname]="'docshareduser'"
+             *ngIf="sharedVisibility"
+             [users]="selectedUsers"
+             (submitData)="getSubmittedData($event)">
+            </app-dynamic-sublist>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer"></div>
+
+    </div>
+  </div>
+</div>

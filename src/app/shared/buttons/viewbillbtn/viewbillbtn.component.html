@@ -1,0 +1,13 @@
+<span class="dropdown inline-block text-right ml-2" *ngIf="btnLists && btnLists.length > 0">
+    <button class="dropdown-toggle btn btn-success mrtb0" data-toggle="dropdown">
+        {{displayTxt}}
+        <b class="caret"></b>
+    </button>
+    <div class="dropdown-menu dropdown-menu-right">
+        <ng-container *ngFor="let btn of btnLists">
+            <a class="dropdown-item" href="javascript:void(0)" [routerLink]="[btn.editurl]">
+                {{btn?.displayName}}
+            </a>
+        </ng-container>
+    </div>
+</span>

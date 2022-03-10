@@ -1,0 +1,61 @@
+<form (ngSubmit)="onFormSubmit(functionform.value)" [formGroup]="functionform">
+    <div class="material-datatables1">
+
+ <div class="table-responsive">
+
+   <mat-form-field>
+       <mat-label>Filter</mat-label>
+       <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input>
+   </mat-form-field>
+   <div class="loader" *ngIf="isLoading">
+    <svg class="circular" viewBox="25 25 50 50">
+      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+    </svg>
+  </div>
+   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz" *ngIf="!isLoading">
+  
+       <!-- Position Column -->
+       <ng-container matColumnDef="formname">
+         <th mat-header-cell *matHeaderCellDef mat-sort-header> Formname </th>
+         <td mat-cell *matCellDef="let element"> {{element.formname}} </td>
+       </ng-container>
+         <ng-container matColumnDef="exception_function">
+           <th mat-header-cell *matHeaderCellDef mat-sort-header>Exception Function</th>
+           <td mat-cell *matCellDef="let element">
+               <mat-chip-list class="example-chip" [multiple]="true" selectable >
+                    <mat-chip #ref="matChip"
+                   *ngFor="let tab of element.functions"
+                     class="example-box"
+                     (click)="toggle(ref,element,tab)"
+                     [selected]="tab.selected"  
+                     color="warn"                 
+                    [ngStyle]="{'text-decoration': (tab.selected == true) ? 'line-through' : ''}"
+
+                     >
+                     {{tab.functionname}}
+                   </mat-chip> 
+                 </mat-chip-list>
+             </td>
+         </ng-container>
+
+       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+       <!-- Row shown when there is no matching data. -->
+       <tr class="mat-row" *matNoDataRow>
+         <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+       </tr>
+   </table>
+   <div class="col-sm-12 text-right">
+     <button class="btn btn-primary ml-2" type="submit" [disabled]="btnDisable">
+         <i class="material-icons">save</i> Save
+     </button>
+ </div>
+
+   <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+   </div>
+</div>
+
+</form>
+
+

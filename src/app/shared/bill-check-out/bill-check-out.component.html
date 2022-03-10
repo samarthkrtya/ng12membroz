@@ -1,0 +1,505 @@
+<div class="d-block">
+  <div class="card white-box-full-order">
+    <div class="card-body">
+      <div class="loader" *ngIf="isLoadingPage">
+        <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+      </div>
+      <div class="row" >        
+        <div class="col-md-6 text-left" *ngIf="billdetails && billdetails._id">
+          <span> Bill: #{{billdetails?.prefix}}- {{billdetails?.billnumber}} Created On  {{billdetails?.createdAt | toLocaleDate}}  </span>
+        </div>
+        <div class="col-md-6 text-right" *ngIf="billstatus != 'deleted'">
+             <button *ngIf="globalfunctionpermissions.includes('Allow Order Void') && displayVoid" (click)="voidOrder()" type="button" [disabled]="disableBtn" matTooltip="Void Order" class="btn btn-link btn-primary edit" style="margin-top: -0.75em;" >
+                <i class="material-icons">block</i> Void Order
+            </button>
+            <button *ngIf="globalfunctionpermissions.includes('Allow Order Refund')" (click)="returnOrder()" type="button" [disabled]="disableBtn"  matTooltip="Return Order" class="btn btn-link btn-primary edit" style="margin-top: -0.75em;">
+                <i class="material-icons">keyboard_return</i> Return  Order
+            </button> 
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7">
+          <h4 class="card-title"> {{getLang('summary', 'Summary')}} </h4>
+        </div>
+        <div class="col-md-5">
+          <ng-container *ngIf="displayList">
+            <div class="d-flex align-items-center">
+            <mat-form-field>
+              <mat-label>Payment Receipts</mat-label>
+              <mat-select matNativeControl (selectionChange)="onBillPaymentChange($event.value)" [(ngModel)]="selectedbillpayment">
+                <mat-option [value]="payment" *ngFor="let payment of billpaymentList" >{{payment?.docnumber}}</mat-option>
+              </mat-select>              
+            </mat-form-field>
+            <!-- <span class="ml-2">
+              <button class="mat-focus-indicator mat-tooltip-trigger btn btn-link btn-primary btn-just-icon edit mat-raised-button mat-button-base" type="button"  (click)="clearData()" id="button-addon2">
+                <i class="material-icons">add</i>
+              </button>
+            </span> -->
+          </div>
+            
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <table class="table">
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <section class="example-section">
+                    <mat-checkbox [disabled]="!(outstandingamount > 0)" #oau (change)="checkIOU($event)" class="mb-0">
+                      <div class="font-16">{{getLang('includeiouamount', 'Include IOU Amount')}} </div>
+                    </mat-checkbox>
+                  </section>
+                </div>
+                <div>
+                  {{outstandingamount | myCurrencyPipe}}
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold font-18 px-0">{{getLang('billamount', 'Bill Amount')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0">{{grandtotal | myCurrencyPipe}}</td>
+          </tr>
+        
+          <ng-container *ngIf="!iouChecked">
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="row">
+                <div class="col-xl-5 col-lg-7">
+                  <div class="input-group">
+                    <div class="form-group flex-grow-1">
+                      <input type="text" class="form-control" disabled
+                        [placeholder]="getLang('promotionalcode', 'Promotional code') " aria-label="Promotional code"
+                        [(ngModel)]="couponBox.couponcode" aria-describedby="button-addon2">
+                    </div>
+                    <div class="input-group-append d-block">
+                      <button class="btn btn-primary" data-toggle="modal" data-target="#couponModal"  type="button" id="button-addon2">
+                        <i class="material-icons">redeem</i>
+                        {{getLang('apply', 'Apply')}}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-7 col-lg-5" *ngIf="couponBox.value">
+                  <div class="mt-2 d-flex">
+                    <a href="javascript:void(0)" (click)="onRemoveCoupon()" [class.disabled]="couponBox.disableDelete">
+                      <img src="../../../../../assets/img/pos-delete-icon.svg" alt=""> </a>
+                    <span class="flex-grow-1 ml-2"> {{getLang('appliedcoupon', 'Applied Coupon')}} </span>
+                    <span class="text-right"> - {{couponBox.value | myCurrencyPipe}} </span>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="px-0" colspan="2">
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <section class="example-section">
+                    <mat-checkbox [disabled]="walletDetail.disabled" (change)="checkWallet($event)" class="mb-0">
+                      <div class="font-16">{{getLang('usewalletbalance', 'Use Wallet balance')}} 
+                        {{walletDetail.value}}
+                       </div>
+                    </mat-checkbox>
+                  </section>
+                </div>
+                <div *ngIf="walletDetail.used"> - {{walletDetail.used | myCurrencyPipe}}</div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+
+          <tr class="border-bottom">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('paymentdate', 'Payment Date')}}<span class="text-danger">*</span> </td>
+            <td class="font-weight-bold font-18 text-right px-0"> 
+              <div class="row">                
+                <div class="ml-auto col-md-5">
+                  <mat-form-field class="example-full-width mat-form-field-space-remove" >
+                    <input matInput [(ngModel)]="paymentDate" [matDatepicker]="pickertd">
+                    <mat-datepicker-toggle matSuffix [for]="pickertd"></mat-datepicker-toggle>
+                    <mat-datepicker #pickertd></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="border-bottom" *ngIf="deposit">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('deposit', 'Deposit')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0"> {{deposit | myCurrencyPipe}}</td>
+          </tr>
+          <tr class="border-bottom">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('balance', 'Balance')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0"> {{payamount | myCurrencyPipe}}</td>
+          </tr>
+
+          <tr class="border-bottom d-none">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('paidamnt', 'Paid Amount')}} </td>
+            <td class="font-weight-bold font-18 text-right px-0"> {{paidamount | myCurrencyPipe}}</td>
+          </tr>
+
+          <tr class="border-bottom" >
+            <td class="font-weight-bold font-18 px-0"> {{getLang('received by', 'Received by')}} <span class="text-danger">*</span> </td>
+            <td class="font-weight-bold font-18 text-right px-0"> 
+              <div class="row">                
+                <div class="ml-auto col-md-8">
+                  <app-dynamic-autocomplete-ngmodel *ngIf="paymentreceivedby_fields.visible" [(inputModel)]="paymentreceivedby_fields.modelValue" [setting]="paymentreceivedby_fields" [classes]="'mat-form-field-space-remove'"
+                    [dbvalue]="paymentreceivedby_fields.dbvalue">
+                  </app-dynamic-autocomplete-ngmodel>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <!-- <tr class="border-bottom">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('sellby', 'Sell by')}} <span class="text-danger">*</span> </td>
+            <td class="font-weight-bold font-18 text-right px-0"> 
+              <div class="row">                
+                <div class="ml-auto col-md-8">
+                  <app-dynamic-autocomplete-ngmodel *ngIf="sellby_fields.visible" [(inputModel)]="sellby_fields.modelValue" [setting]="sellby_fields" [classes]="'mat-form-field-space-remove'"
+                    [dbvalue]="sellby_fields.dbvalue">
+                  </app-dynamic-autocomplete-ngmodel>
+                </div>
+              </div>
+            </td>
+          </tr> -->
+          
+
+          <tr class="border-bottom">
+            <td class="font-weight-bold font-18 px-0"> {{getLang('tips','Tips')}}  </td>
+            <td class="font-weight-bold font-18 text-right px-0"> 
+              <div class="row">                
+                <div class="ml-auto col-md-5">
+                  <mat-form-field class="example-full-width mat-form-field-space-remove">
+                    <input matInput type="number" style="text-align: right;" placeholder="Tip Amount" [(ngModel)]="tips">
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+
+      <ng-container>
+        <h4 class="card-title"> {{getLang('paymentmethod', 'Payment Method')}} </h4>
+
+        <table class="table">
+          <tr class="border-bottom" *ngIf="visibility?.cash">
+            <td class="px-0" colspan="2" >
+              <div class="row">
+                 <div class="col-xl-3 col-sm-4 mr-xl-auto mb-3 mb-sm-0">
+                  <section class="example-section pr-3">
+                    <mat-checkbox #cash class="mb-0" [(ngModel)]="cashPayment.checked" (change)="methodChecked($event , 'cash')">
+                      <div class="font-16">{{cashPayment.mode}} </div>
+                    </mat-checkbox>
+                  </section>
+                 </div>
+                 <div class="col-xl-7 col-sm-8">
+                <ng-container *ngIf="cashPayment.checked">   
+                      <div class="row">
+                        <div class="col-md-6">
+                          <!-- <mat-form-field class="example-full-width">
+                            <input matInput type="text" style="text-align: right;" placeholder="Receipt number" [(ngModel)]="cashPayment.receiptnumber"  oninput="this.value = Math.abs(this.value)">
+                          </mat-form-field> -->
+                        </div>
+                        <div class="col-md-6">
+                          <mat-form-field class="example-full-width">
+                            <input matInput type="number" style="text-align: right;" placeholder="Cash Amount" [(ngModel)]="cashPayment.cashamount"
+                              (ngModelChange)="onChangePA()" oninput="this.value = Math.abs(this.value)">
+                          </mat-form-field>
+                        </div>
+                        </div>  
+                  </ng-container>
+                </div> 
+                </div>
+            </td>
+          </tr>
+
+          <tr class="border-bottom" *ngIf="visibility?.cheques">
+            <td class="px-0" colspan="2">
+              <div class="row">
+                <div class="col-xl-3 col-sm-4 mr-xl-auto mb-3 mb-sm-0">
+                  <section class="example-section pr-3">
+                    <mat-checkbox class="mb-0" [(ngModel)]="chequePayment.checked" (change)="methodChecked($event , 'cheque')">
+                      <div class="font-16">{{chequePayment.mode}} </div>
+                    </mat-checkbox>
+                  </section>
+                </div> 
+                <div class="col-xl-7 col-sm-8">
+                <ng-container *ngIf="chequePayment.checked">                  
+                      <div class="row">
+                      
+                        <div class="col-md-6">
+                          <mat-form-field class="example-full-width">
+                            <input matInput type="text" style="text-align: right;" placeholder="cheque Number" [(ngModel)]="chequePayment.chequenumber"
+                              oninput="this.value = Math.abs(this.value)">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                          <mat-form-field class="example-full-width">
+                            <input matInput [(ngModel)]="chequePayment.chequedate" placeholder="cheque Date" [matDatepicker]="pickertchq">
+                            <mat-datepicker-toggle matSuffix [for]="pickertchq"></mat-datepicker-toggle>
+                            <mat-datepicker #pickertchq></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6">
+                          <app-dynamic-autocomplete-ngmodel [(inputModel)]="chequebankname_fields.modelValue" [setting]="chequebankname_fields"
+                            [dbvalue]="chequebankname_fields.dbvalue" (inputModelChange)="chequePayment.chequebankname = $event">
+                          </app-dynamic-autocomplete-ngmodel>
+                        </div>
+
+                        <div class="col-md-6">
+                          <app-dynamic-autocomplete-ngmodel [(inputModel)]="chequestatus_fields.modelValue" [setting]="chequestatus_fields" 
+                            [dbvalue]="chequestatus_fields.dbvalue" (inputModelChange)="chequePayment.chequestatus = $event">
+                          </app-dynamic-autocomplete-ngmodel>
+                        </div>
+
+                        <div class="col-md-12">
+                          <mat-form-field class="example-full-width">
+                            <input matInput type="number" placeholder="cheque Amount" style="text-align: right;" [(ngModel)]="chequePayment.chequeamount"
+                              oninput="this.value = Math.abs(this.value)" (ngModelChange)="onChangePA()">
+                          </mat-form-field>
+                        </div> 
+                      </div>                 
+                </ng-container> 
+              </div>
+               </div>              
+            </td>
+          </tr>
+          <tr *ngIf="visibility?.creditcards">
+            <td class="px-0" colspan="2">
+            <div class="row">
+              <div class="col-xl-3 col-sm-4 mr-xl-auto mb-3 mb-sm-0">
+                <section class="example-section pr-3">
+                  <mat-checkbox class="mb-0" [(ngModel)]="cardPayment.checked" (change)="methodChecked($event , 'card')">
+                    <div class="font-16">{{cardPayment.mode}} </div>
+                  </mat-checkbox>
+                </section>
+              </div>
+              
+                  <div class="col-xl-7 col-sm-8">                      
+                    <ng-container *ngIf="cardPayment.checked">
+                    <div class="row">
+                  
+                      <div class="col-md-6">
+                        <mat-form-field class="example-full-width">
+                          <input matInput type="text" style="text-align: right;" placeholder="Card Number" [(ngModel)]="cardPayment.cardnumber"
+                            oninput="this.value = Math.abs(this.value)">
+                        </mat-form-field>
+                      </div>
+                      
+
+                      <div class="col-md-6">
+                        <app-dynamic-autocomplete-ngmodel [(inputModel)]="cardname_fields.modelValue" [setting]="cardname_fields" 
+                          [dbvalue]="cardname_fields.dbvalue" (inputModelChange)="cardPayment.cardname = $event">
+                        </app-dynamic-autocomplete-ngmodel>
+                      </div>
+
+                      <div class="col-md-6">
+                        <mat-form-field class="example-full-width">
+                          <input matInput type="text" style="text-align: right;" placeholder="TID Number" [(ngModel)]="cardPayment.tidnumber"
+                            oninput="this.value = Math.abs(this.value)">
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-md-12">
+                        <mat-form-field class="example-full-width">
+                          <input matInput type="number" placeholder="Card Amount" style="text-align: right;" [(ngModel)]="cardPayment.cardamount"
+                            oninput="this.value = Math.abs(this.value)" (ngModelChange)="onChangePA()">
+                        </mat-form-field>
+                      </div> 
+
+                    </div>
+              </ng-container> 
+                </div>
+              
+            </div> 
+            </td>
+          </tr> 
+
+          <tr class="border-bottom" *ngIf="visibility?.giftcards">
+            <td class="px-0" colspan="2">
+              <div class="row">
+                 <div class="col-xl-4 col-sm-3 mr-xl-auto mb-3 mb-sm-0">
+                  <section class="example-section pr-3">
+                    <mat-checkbox #giftcard class="mb-0" [(ngModel)]="gcChecked" (click)=cleargiftcard() >
+                      <div class="font-16"> Giftcard / Giftcertificate </div>
+                    </mat-checkbox>
+                  </section>
+                 </div>                  
+                 <div class="col-xl-8 col-sm-9">
+                <ng-container *ngIf="gcChecked">
+                      <div class="row" *ngFor="let item of gifts;let last = last;let i = index;">
+                          <div class="col-md-6">
+                            <mat-form-field class="example-full-width">
+                              <input matInput type="text" style="text-align: right;" placeholder="SWIPE, SCAN OR ENTER CODE"
+                              (ngModelChange)='giftcardChanged.next($event)'  [(ngModel)]="item.itemnumber">
+                            </mat-form-field> 
+                          </div>
+                          <ng-container *ngIf="!item.billid;else deletegc" >
+                            <button class="btn btn-primary btn-link btn-just-icon"  [matTooltip]="'Validate'" [matTooltipPosition]="'above'"
+                            data-original-title="Validate" type="button" (click)="checkgiftcard(item.itemnumber ,i)"> 
+                            <i class="material-icons">check_circle</i>
+                          </button>
+                          </ng-container>
+                          <ng-template #deletegc>
+                            <button class="btn btn-danger btn-link btn-just-icon"  [matTooltip]="'Remove'" [matTooltipPosition]="'above'"
+                              data-original-title="Remove"  type="button" (click)="deletegift(i,item)"> 
+                              <i class="material-icons">delete</i>
+                            </button> 
+                          </ng-template>
+                          <div class="col-md-3">
+                            <mat-form-field class="example-full-width">
+                              <input matInput type="number" style="text-align: right;" placeholder="Redemption" [(ngModel)]="item.giftamount"
+                                (ngModelChange)="onChangePA()" disabled>
+                            </mat-form-field>
+                          </div>
+                          <button *ngIf="item.billid && last" class="btn btn-danger btn-link btn-just-icon"  [matTooltip]="'Add More'" [matTooltipPosition]="'above'"
+                              data-original-title="Add More"  type="button" (click)="addgiftcard()"> 
+                              <i class="material-icons">add</i>
+                            </button>
+                        </div>  
+                  </ng-container>
+                </div> 
+                </div>
+            </td>
+          </tr>
+
+          <tr class="border-bottom" *ngIf="visibility?.creditnotes">
+            <td class="px-0" colspan="2" >
+              <div class="row">
+                 <div class="col-xl-4 col-sm-5 mr-xl-auto mb-3 mb-sm-0">
+                  <section class="example-section pr-3">
+                    <mat-checkbox class="mb-0" [(ngModel)]="creditnotes.checked">
+                      <div class="font-16">{{creditnotes.mode}} </div>
+                    </mat-checkbox>
+                  </section>
+                 </div>                  
+                 <div class="col-xl-8 col-sm-7">
+                <ng-container *ngIf="creditnotes.checked">
+                      <div class="row">
+                        <div class="col-md-6">
+                           <mat-form-field class="example-full-width">
+                            <input matInput type="text" style="text-align: right;" placeholder="Enter Credit Notes"
+                            (ngModelChange)='giftcardChanged.next($event)' [(ngModel)]="creditnotes.creditnotes">
+                          </mat-form-field>
+                        </div>
+                        <ng-container *ngIf="!creditnotes.creditnotesid;else deletegc">
+                            <button class="btn btn-primary btn-link btn-just-icon"  [matTooltip]="'Validate'" [matTooltipPosition]="'above'"
+                              data-original-title="Validate" type="button" (click)="checkcreditnote(creditnotes.creditnotes)"> 
+                              <i class="material-icons">check_circle</i>
+                            </button>
+                        </ng-container>
+                        <ng-template #deletegc>
+                          <button class="btn btn-danger btn-link btn-just-icon"  [matTooltip]="'Remove'" [matTooltipPosition]="'above'"
+                             data-original-title="Remove"  type="button" (click)="deletecreditnotes()"> 
+                            <i class="material-icons">delete</i>
+                          </button>
+                        </ng-template>
+                        <div class="col-md-4">
+                          <mat-form-field class="example-full-width">
+                            <input matInput type="number" style="text-align: right;" placeholder="Credit" [(ngModel)]="creditnotes.creditnotesamount"
+                              (ngModelChange)="onChangePA()" disabled>
+                          </mat-form-field>
+                        </div>
+                      </div>  
+                  </ng-container>
+                </div> 
+                </div>
+            </td>
+          </tr>
+
+        </table>
+      </ng-container>
+
+      <div class="d-flex">
+        <div class="flex-grow-1 text-right">
+          <ng-container *ngIf="isMemberLogin;else userTemp" >
+              <button type="button" *ngIf="billid"
+              [disabled]="disableBtn" class="btn btn-primary"
+              (click)="onlinePay(billid)">
+              <i class="material-icons">payment</i>
+              {{getLang('paynow', 'Pay Now')}}
+            </button>
+        </ng-container>
+
+        <ng-template #userTemp> 
+          <button type="button" *ngIf="billpaymentList.length > 0 && !displayList" (click)="clearData()" class="btn btn-primary ml-2">
+            <i class="material-icons">highlight_off</i>
+            {{getLang('clr', 'Clear')}}
+          </button>
+          <button type="button" [disabled]="disableBtn" (click)="onPay()" class="btn btn-success ml-2">
+            <i class="material-icons">payment</i>
+            <ng-container *ngIf="selectedbillpayment && selectedbillpayment._id;else updateTemp">
+              {{getLang('updatepayment', 'Update Payment')}}
+            </ng-container>
+            <ng-template #updateTemp>
+              {{getLang('paynow', 'Pay Now')}}
+            </ng-template>
+          </button>
+        </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="couponModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ConfirmModalLabel"> {{getLang('srchcopn', 'Search Coupons')}} </h5>
+          <button type="button" id="close"   class="close" data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <label class="col-form-label">
+                {{getLang('cc', 'Search with coupon code')}}
+                <span class="text-danger">*</span>
+              </label>
+              <mat-form-field class="example-full-width" appearance="standard">
+                <input type="text" matInput [matAutocomplete]="auto" [(ngModel)]="couponBox.couponobject"
+                  placeholder="Enter Coupon"
+                  (keyup)="enterCoupon($event)">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" >
+                  <ng-container *ngIf="couponList.length > 0">
+                    <mat-option *ngFor="let option of couponfilteredOptions | async" [value]="option">
+                      {{option.couponcode}}
+                    </mat-option>
+                  </ng-container>
+                  <ng-container *ngIf="couponList.length == 0">
+                    <mat-option>
+                      <span>{{getLang('norecord', 'No Record')}}</span>
+                    </mat-option>
+                  </ng-container>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" [disabled]="couponBox && couponBox.disabled" data-dismiss="modal" 
+            class="btn btn-default">
+            <i class="material-icons">close</i>
+            {{getLang('cancel', 'Cancel')}}
+          </button>
+          <button type="button" (click)="applyCpn()" [disabled]="couponBox && couponBox.disabled" class="btn btn-primary ml-2">
+            <i class="material-icons">redeem</i>
+            {{getLang('aplyvpn', 'Apply Coupon')}}
+          </button>
+        </div>
+      </div> 
+  </div>
+</div>

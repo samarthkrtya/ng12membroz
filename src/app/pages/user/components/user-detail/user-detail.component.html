@@ -1,0 +1,830 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list 
+                    *ngIf="dataContent" 
+                    [dataContent]="dataContent" 
+                    [schema]="formObj.schemaname"
+                    [formObj]="formObj" 
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+
+                <div fxLayout="row" *ngIf="isLoadingData" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+
+                <ng-container *ngIf="contentVisibility && dataContent">
+
+                    <div class="card">
+                        <div class="card-body" *ngIf="dataContent  && !isLoadingData">
+                            <div class="row">
+
+                                <div class="col-sm-9">
+                                    <mat-button-toggle-group 
+                                        name="fontStyle" 
+                                        aria-label="Font Style"
+                                        [(ngModel)]="actionselected" class="mb-4">
+                                        <mat-button-toggle 
+                                            value="user" 
+                                            (click)="buttonToggle('user')" *ngIf="!functionPermission.includes('User Profile')">
+                                            {{getLang('user','User Profile')}}
+                                        </mat-button-toggle>
+                                        <mat-button-toggle 
+                                            value="timeline" 
+                                            (click)="buttonToggle('timeline')" *ngIf="!functionPermission.includes('Timeline')">
+                                            {{getLang('timeline','Timeline')}}
+                                        </mat-button-toggle>
+                                        <mat-button-toggle 
+                                            value="communication"
+                                            (click)="buttonToggle('communication')" *ngIf="!functionPermission.includes('Communication')">
+                                            {{getLang('communication','Communication')}}
+                                        </mat-button-toggle>
+                                        <mat-button-toggle 
+                                            id="memberactivitylog"
+                                            value="activitylog" 
+                                            (click)="buttonToggle('activitylog')" *ngIf="!functionPermission.includes('Activity Log')">
+                                            {{getLang('activitylog','Activity Log')}}
+                                        </mat-button-toggle>
+                                    </mat-button-toggle-group>
+                                </div>
+
+                                <div class="col-sm-3 text-right mb-lg-0 mb-3">
+
+                                    <span class="dropdown inline-block text-right ml-2">
+                                        <button class="dropdown-toggle btn btn-primary mrtb0" data-toggle="dropdown">
+                                            {{getLang('more','More')}}
+                                            <b class="caret"></b>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+
+                                            <ng-container *ngIf="!functionPermission.includes('Send Messages')">
+                                                <a class="dropdown-item cursor-pointer" (click)="sendMessage()" data-toggle="modal"
+                                                    data-target="#sendPopup">
+                                                    {{getLang('sendmessages', 'Send Messages')}}
+                                                </a>
+                                            </ng-container>
+                                            
+
+                                            <ng-container *ngIf="formObj.viewaction && formObj.viewaction.length > 0">
+                                                <ng-container *ngFor="let actnBtn of formObj.viewaction">
+                                                    <a *ngIf="actnBtn.actionurl" class="dropdown-item"
+                                                        [routerLink]="[actnBtn.actionurl + '/' + this.bindId]"
+                                                        [queryParams]="actnBtn.quertparams">
+                                                        {{actnBtn?.displaytext}}
+                                                    </a>
+    
+                                                    <ng-container *ngIf="!functionPermission.includes('Settlement')">
+                                                    <a *ngIf="actnBtn.actionfn && actnBtn.actionfn == 'newsettlement'"
+                                                        class="dropdown-item" href="#"
+                                                        data-toggle="modal" data-target="#settlementModal">
+                                                        {{actnBtn?.displaytext}}
+                                                    </a>
+                                                    </ng-container>
+    
+                                                    <ng-container *ngIf="!functionPermission.includes('Wallet')">
+                                                        <a *ngIf="actnBtn.actionfn && actnBtn.actionfn == 'wallet'"
+                                                            class="dropdown-item"
+                                                            (click)="walletClick()"
+                                                           >
+                                                            {{actnBtn?.displaytext}}
+                                                        </a>
+                                                        </ng-container>
+    
+                                                    <ng-container *ngIf="!functionPermission.includes('Suspend Membership')">
+                                                        <a *ngIf="actnBtn.actionfn && actnBtn.actionfn == 'suspend' && dataContent.status == 'active'"
+                                                        class="dropdown-item"
+                                                        (click)="freezeUnfreezeClick('suspend')"
+                                                        >
+                                                        {{getLang('suspended','Suspend Profile')}}
+                                                    </a>
+                                                    </ng-container>
+    
+                                                    <ng-container *ngIf="!functionPermission.includes('Active Membership')">
+                                                    <a *ngIf="actnBtn.actionfn && actnBtn.actionfn == 'suspend' && dataContent.status == 'suspend'"
+                                                        class="dropdown-item"
+                                                        (click)="freezeUnfreezeClick('active')"
+                                                        >
+                                                         {{getLang('activemembership', 'Activate Profile')}}
+                                                    </a>
+                                                    </ng-container>
+    
+                                                </ng-container>
+                                            </ng-container>
+    
+                                            
+                                            <ng-container *ngIf="!functionPermission.includes('Share Document')">
+                                             <a
+                                                class="dropdown-item" href="#"
+                                                data-toggle="modal" data-target="#myModalbtn" (click)="getMydrive()">
+                                                Share Document
+                                             </a>
+                                             </ng-container>
+
+
+
+                                             <ng-container *ngIf="!functionPermission.includes('Reset Password')">
+                                                <a data-toggle="modal" class="dropdown-item" (click)="resetpassword.clickPP()">
+                                                    {{getLang('resetpaswrd', 'Reset password')}}
+                                                </a>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!functionPermission.includes('Employment Status')">
+                                                <a class="dropdown-item cursor-pointer" (click)="emplymentStatus()" data-toggle="modal"
+                                                    data-target="#employmentstatusPopup">
+                                                    {{getLang('employmentstatus', 'Employment Status')}}
+                                                </a>
+                                            </ng-container>
+                                        </div>
+    
+                                    </span>
+                                    <button type="submit" class="btn btn-primary ml-2"
+                                        [routerLink]="['/pages/dynamic-forms/form/' + formObj._id+ '/' + bindId ]">
+                                        <i class="material-icons">edit</i>{{getLang('edit','Edit')}}
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12">
+                                    <app-user-basic-details
+                                        [dataContent]="dataContent"
+                                        [functionPermission]="functionPermission"
+                                        [displayWlt]="displayWlt">
+                                    </app-user-basic-details>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ng-container *ngIf="dataContent  && !isLoadingData && profileVisibility" >
+                    
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Prices and comissions')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('prcandcomsin','Prices and comissions')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-prices [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-prices>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Leave Detail')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('leaverequest','Leave Request')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-leave [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-leave>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+         
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Leave Policy')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('leavepolicy','Leave Policy')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-leave-request [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-leave-request>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Attendance')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('attendance','Timesheet/Attendance')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-attendance [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-attendance>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Attendance Calendar')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('attendancecalendar','Attendance Calendar')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-attendance-calendar [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-attendance-calendar>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Timesheet')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('timesheet','Timesheet')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-timesheet [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-timesheet>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Document')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('shareddoc','Assigned Document')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-shared-document-list [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-shared-document-list>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div> 
+    
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Salary Details')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('salary','Salary Components')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-salary [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-salary>
+                                            </div>
+                                        </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </ng-container>
+                    </div>
+
+                    <div class="mt-3">
+                        <ng-container *ngIf="tabPermission.includes('Salary/Earning')">
+                            <mat-accordion>
+                                <mat-expansion-panel [expanded]="false">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            {{getLang('salary','Salary/Earning')}}
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <app-user-earnings [bindId]="bindId" [dataContent]="dataContent"
+                                                (updateRecord)="getUpdated($event)">
+                                            </app-user-earnings>
+                                        </div>
+                                    </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Company List')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('companylist','Company List')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-user-company-list [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-user-company-list>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Signed Document')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('signeddocument','Signed & Acknowledged Document')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-signed-document [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-signed-document>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Other Document')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('otherdocument','Shared Document')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-acknowledge-document [bindId]="bindId" [dataContent]="dataContent"
+                                                    (updateRecord)="getUpdated($event)">
+                                                </app-acknowledge-document>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div> 
+
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Contract Documents')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('contractdocuments','Contract Documents')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <!-- <app-user-contract-document [bindId]="bindId"
+                                                    [dataContent]="dataContent" (updateRecord)="getUpdated($event)">
+                                                </app-user-contract-document> -->
+                                                <app-contract-document-list [bindId]="bindId"
+                                                    [dataContent]="dataContent" (updateRecord)="getUpdated($event)">
+                                                </app-contract-document-list>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Earning')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('earning','Earning')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-earning [bindId]="bindId" [dataContent]="dataContent">
+                                                </app-earning>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Settlement')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('settlement','Settlement')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-settlement [bindId]="bindId" [dataContent]="dataContent">
+                                                </app-settlement>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Availability Configuration')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('availabilityconfiguration','Availability Configuration')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <app-calendar-configuration
+                                                    [userid]="bindId"
+                                                    (onavailabilityConfigurationData)="getAvailabilityConfigurationData($event)">
+                                                </app-calendar-configuration>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                        </div>
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="tabPermission.includes('Availability Calendar')">
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{getLang('availabilitycalendar','Availability Calendar')}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+
+                                                <app-useravailability
+                                                    [userid]="bindId">
+                                                </app-useravailability>
+
+                                                <!-- <app-exception-calendar
+                                                    [userid]="bindId" >
+                                                </app-exception-calendar> -->
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+    
+                            </ng-container>
+    
+                        </div>
+    
+                    </ng-container>
+
+
+                    <ng-container *ngIf="timelineVisibility">
+                        <app-contacts-timeline 
+                            context="user" 
+                            schema="users" 
+                            [dataContent]="dataContent">
+                        </app-contacts-timeline>
+                    </ng-container>
+
+                    <ng-container *ngIf="communicationVisibility">
+                        <app-contacts-communication 
+                            context="user" 
+                            schema="users" 
+                            [dataContent]="dataContent"
+                            (onResendCommunication)="onCloseResendData($event)">
+                        </app-contacts-communication>
+                    </ng-container>
+
+                    <ng-container *ngIf="activitylogVisibility">
+                        <app-contacts-activity-log 
+                            context="user" 
+                            schema="users" 
+                            [formid]="this._formId" 
+                            [dataContent]="dataContent">
+                        </app-contacts-activity-log>
+                    </ng-container>
+    
+                    <ng-container *ngIf="walletVisibility" >
+    
+                        <div class="mt-3">
+                            <ng-container *ngIf="walletVisibility">
+                                <app-user-wallet-card-issue [dataContent]="dataContent" (onIssueCard)="getSubmittedIssueCardData($event)"></app-user-wallet-card-issue>
+                                <app-user-wallet-list [dataContent]="dataContent"></app-user-wallet-list>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+
+                </ng-container>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="settlementModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{getLang('Settlement','New Settlement')}}
+                </h4>
+                <button mat-button type="button" id="stlClose" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            <div class="modal-body">
+                 <ng-container *ngIf="stallementtxt">
+                    <span class="attend-text-red">
+                        {{stallementtxt}}
+                    </span>
+                </ng-container>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('bank','Bank Name')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput disabled [value]="dataContent ? dataContent?.property?.bankname : ''">
+                        </mat-form-field>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('ac','A/C no')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput disabled [value]="dataContent ? dataContent?.property?.accountnumber : ''">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('ifsc','IFSC Code')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput disabled [value]="dataContent ? dataContent?.property?.ifsccode : ''">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('balance','Balance')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput disabled [value]="dataContent ? dataContent?.balance : ''">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('date','Date')}}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input matInput [matDatepicker]="picker1" [(ngModel)]="stmlDate">
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('note','Note')}}
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="text" [(ngModel)]="note" matInput>
+                        </mat-form-field>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('settlementamt','Settlement Amount')}}
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="number" [(ngModel)]="stallmentAmount" matInput min="0"
+                                oninput="this.value = Math.abs(this.value)">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('tax','Tax')}}
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="number" matInput min="0"
+                            [(ngModel)]="taxAmount"
+                            (ngModelChange)="valueChanged($event)" >
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">
+                            {{getLang('netamount','Net Settlement Amount')}}
+                        </label>
+                        <mat-form-field class="example-full-width">
+                            <input type="number" matInput min="0"
+                            [(ngModel)]="netAmount"
+                                disabled>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="disableBtn">
+                    <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                </button>
+
+                <button class="btn btn-primary ml-2" type="button" (click)="onsaveStlm()" [disabled]="disableBtn">
+                    <i class="material-icons">save</i> {{getLang('save','Save')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="myModalbtn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> {{getLang('document','Document')}}
+                </h4>
+                <button mat-button type="button" id="docClose" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <ng-container *ngIf="dataSource && dataSource.data && dataSource.data.length > 0;else emtyTmp">
+
+                    <div 
+                        fxLayout="row" 
+                        *ngIf="isLoadingPU" 
+                        fxLayoutAlign="space-around center"
+                        style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                        <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                    </div>
+                    <div class="row" *ngIf="!isLoadingPU">
+                        <div class="col-md-12" >
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef></th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <section class="example-section">
+                                        <mat-checkbox type="checkbox" [(ngModel)]="element.checked" [disabled]="disableBtn"> </mat-checkbox>
+                                        </section>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <img class="mr-2" [src]="getAttachmentPath(element.type)" style="width: 45px;">
+                                        {{element.name}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="size">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.sizeType}} </td>
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="createdAt">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'medium'}} </td>
+                                </ng-container>
+
+                                <!-- Symbol Column -->
+                                <ng-container matColumnDef="addedby">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Created by </th>
+                                    <td mat-cell *matCellDef="let element"> Me </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                </table>
+                                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                            </div>
+                            </div>
+                    </div>
+
+                </ng-container>
+
+                <ng-template #emtyTmp>
+                    <h3 class="text-center"> You do not have any documents in My Drive. ! </h3>
+                    <div class="d-flex justify-content-center">
+                        <button 
+                            type="button"
+                            class="btn btn btn-outline-primary m-0 mr-2" 
+                            [routerLink]="['/pages/document-gallery/documents']">
+                            <i class="material-icons" >add</i> please upload new document here
+                        </button>
+                    </div>
+                </ng-template>
+
+                
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" [disabled]="disableBtn">
+                    <i class="material-icons">close</i> {{getLang('cancel','Cancel')}}
+                </button>
+                <button class="btn btn-primary ml-2" type="button" (click)="saveShared()" [disabled]="disableBtn">
+                    <i class="material-icons">close</i> {{getLang('save','Save')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-reset-password #resetpassword [dataContent]="dataContent" [formObj]="formObj" [bindId]="bindId"></app-reset-password>
+
+
+<div id="sendPopup" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <app-contacts-send-message *ngIf="sendMessageVisibility" [dataContent]="dataContent" [formid]="this._formId"
+                [formname]="formObj.formname" (onCloseMessageData)="getSubmittedCloseMessageData($event)">
+            </app-contacts-send-message>
+        </div>
+    </div>
+</div>
+
+<div id="employmentstatusPopup" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <app-contacts-employment-status *ngIf="emplymentStatusVisibility" [dataContent]="dataContent" [formid]="this._formId"
+            [formname]="formObj.formname" (onCloseEmplymentStatusData)="getSubmittedCloseEmplymentStatusData($event)">
+            </app-contacts-employment-status>
+        </div>
+    </div>
+</div>

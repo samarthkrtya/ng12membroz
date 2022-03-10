@@ -1,0 +1,40 @@
+<div class="form-horizontal">
+  <h4 class="card-title text-center mb-4">Preview File</h4>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="text-center mb-3">You have just uploaded the file <span class="font-weight-bold"> {{original_filename}}.{{selectedFileExtension}} </span> with {{importData.length}} lines and {{importFields.length}} columns.</div>
+
+          <div class="loader" *ngIf="isLoading">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+          </div>
+
+          <div class="table-responsive" *ngIf="!isLoading">
+            <table class="table table-striped table-membroz table-hover" >
+              <thead data-background-color="info">
+                <tr>
+                  <th  *ngFor="let head of importFields">{{head}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let import of displayRecord; let i = index">
+                  <td *ngFor="let head of importFields">{{getColumnData(head, i)}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+       
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <!-- <button class="btn btn-default">
+          <i class="material-icons">close</i> Cancel
+        </button> -->
+        <button [disabled]="submitBtnDisable" class="btn btn-primary"  (click)="dataReview()">
+          <i class="material-icons">navigate_next</i> Confirm Your File
+        </button>
+      </div>
+  </div>
+</div>

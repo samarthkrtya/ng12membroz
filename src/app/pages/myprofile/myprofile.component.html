@@ -1,0 +1,30 @@
+<div class="main-content">
+    <div class="loader" *ngIf="isLoadingdata">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2"
+                stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <div class="container-fluid" *ngIf="!isLoadingdata">
+        <mat-tab-group class="frontdesk-tab-card" (selectedTabChange)="onTabChanged($event.tab)">
+            <mat-tab label="Profile">
+                <ng-container *ngTemplateOutlet="profile"></ng-container>
+            </mat-tab>
+            <mat-tab label="Availability" *ngIf="!isAvailabilityPermission">
+                <ng-container *ngTemplateOutlet="availability"></ng-container>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+
+<ng-template #profile>
+    <app-member-details *ngIf="action != 'availability'" [formObj]="this.formObj" [bindId]="bindId">
+    </app-member-details>
+</ng-template>
+
+<ng-template #availability>
+    <div class="card">
+        <app-useravailability *ngIf="action == 'availability'" [userid]="this._loginUserId">
+        </app-useravailability>
+    </div>
+</ng-template>

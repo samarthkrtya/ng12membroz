@@ -1,0 +1,65 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-10 ml-auto mr-auto">
+        <div class="card card-calendar">
+          <div class="card-body ">
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="p-tlr-20">
+                  <div class="d-flex justify-content-end">
+                    <div class="row mb-1">
+                      <div class="col-xl-5 col-lg-4 col-md-4 col-sm-6" style="text-align: right;">
+                        <div class="d-flex justify-content-start">
+                          <mat-form-field class="example-full-width w-auto pt-0 nav-search-size" appearance="standard">
+                            <span class="input-group-prepend" matPrefix>
+                              <i class="material-icons">search</i>&nbsp;&nbsp;&nbsp;
+                            </span>
+
+                            <input placeholder="Search Staff" type="text" aria-label="Number" matInput
+                              [formControl]="myControl1" [matAutocomplete]="auto" (click)="preloaddata()"
+                              (change)="handleEmptyInput($event)">
+                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                              <mat-option *ngIf="isLoading" class="is-loading">
+                                <mat-spinner diameter="50"></mat-spinner>
+                              </mat-option>
+                              <ng-container *ngIf="!isLoading && userData.length > 0">
+                                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.fullname">
+                                  <div (click)="optionSelected(option)">
+                                    {{option.fullname}}
+                                  </div>
+                                </mat-option>
+                              </ng-container>
+                            </mat-autocomplete>
+
+                          </mat-form-field>
+                        </div>
+                      </div>
+
+
+                      <!--  -->
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+                  style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                  <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div> -->
+
+                <full-calendar [options]="calendarOptions">
+                </full-calendar>
+
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

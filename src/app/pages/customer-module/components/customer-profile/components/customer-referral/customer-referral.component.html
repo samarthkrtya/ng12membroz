@@ -1,0 +1,88 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)" novalidate class="form-horizontal mb-0">
+
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <span>{{getLang('referredinformation', 'Referred Information')}}</span>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="reset()" id="closeform">&times;</button>
+    </div>
+
+    <div class="col-sm-12">
+        <mat-checkbox class="example-margin" formControlName="attendeechk" (change)="showOptions($event)">
+        </mat-checkbox>
+
+        <label class="col-form-label">
+            {{getLang('referred', 'Referred By')}}
+        </label>
+
+
+        <div class="col-sm-12" *ngIf="form.get('attendeechk').value">
+            <label class="col-form-label">
+                {{getLang('referredby', 'Referred By')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input type="text" matInput required placeholder="Type here to search referral" [formControl]="attendee"
+                    [matAutocomplete]="autoAttendee" (change)="handleEmptyAttendeeInput($event)">
+
+                <mat-autocomplete #autoAttendee="matAutocomplete" [displayWith]="displayAttendeeFn"
+                    (optionSelected)="optionAttendeeSelected($event.option)">
+
+                    <mat-option *ngIf="attendeeisLoadingBox" class="is-loading">
+                        <mat-spinner diameter="50"></mat-spinner>
+                    </mat-option>
+
+                    <mat-option *ngFor="let option of filteredAttendeeOptions" [value]="option">
+                        {{option?.nickname}}
+                    </mat-option>
+
+                </mat-autocomplete>
+
+            </mat-form-field>
+
+            <!-- <div [hidden]="form.get('referredby').valid || (form.get('referredby').pristine && !onSubmit)" class="text-danger">
+                    <small *ngIf="form.get('referredby').hasError('required')" class="error-label">
+                        {{getLang('referredbyisrequired', 'Referred By is Required')}}
+                    </small>
+                </div> -->
+
+        </div>
+
+
+        <div class="col-sm-12" *ngIf="!form.get('attendeechk').value">
+            <label class="col-form-label">
+                {{getLang('customerorigin', 'Customer Origin')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <app-dynamic-autocomplete-ngmodel [(inputModel)]="customerorigin_fields.modelValue"
+                [setting]="customerorigin_fields" [dbvalue]="customerorigin_fields.dbvalue">
+            </app-dynamic-autocomplete-ngmodel>
+
+            <!-- <div [hidden]="form.get('customerorigin').valid || (form.get('customerorigin').pristine && !submitted)"
+                    class="text-danger">
+                        <small *ngIf="form.get('customerorigin').hasError('required')" class="error-label">
+                            {{getLang('customeroriginisrequired', 'Customer Origin is Required')}}
+                        </small>
+                    </div> -->
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <div class="row">
+            <div class="col-sm-12 text-right">
+                <button class="btn btn-default" type="button" mat-raised-button color="danger" (click)="reset()"
+                    data-dismiss="modal">
+                    <i class="material-icons">cancel</i> Cancel
+                </button>
+                <button class="btn btn-primary ml-2" type="submit">
+                    <i class="material-icons">save</i>
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+</form>

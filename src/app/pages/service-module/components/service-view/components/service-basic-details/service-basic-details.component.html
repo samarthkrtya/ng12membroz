@@ -1,0 +1,76 @@
+
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px" >
+        <div class="member-img-main position-relative member-profile-img-border">
+            <img
+                [src]="dataContent.gallery && dataContent.gallery.length > 0 ? dataContent.gallery[0].attachment : '../assets/img/image_placeholder.jpg'"
+                class="img-fluid w-100" alt="">
+
+            <div
+                class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+
+
+        </div>
+    </div> 
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.title}}</h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-2"> <img src="../assets/img/phone-gray-icon.svg"  alt=""></div>
+                    <div> {{dataContent.category?.property?.name}}  </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent && dataContent.charges">
+                <div class="d-flex align-items-center mb-3" >
+                    <div class="mr-2"> <img src="../assets/img/amount-gray-icon.svg"  alt=""></div>
+                    <div>{{getLang('charges','Charges:')}} <span class="brand-secondary"> {{dataContent.charges | myCurrencyPipe}} </span> </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent && dataContent.commission">
+                <div class="d-flex align-items-center mb-3" >
+                <div class="mr-2"> <img src="../assets/img/amount-gray-icon.svg"  alt=""></div>
+                    <div>{{getLang('commission','Commission:')}} <span class="brand-secondary"> {{dataContent?.commission | myCurrencyPipe}} </span> 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6" *ngIf="dataContent.duration">
+                <div class="d-flex align-items-center mb-3" >
+                    <div class="mr-2"> <img src="../assets/img/whatsapp-gray-icon.svg"  alt=""></div>
+                    <div>{{dataContent.duration}} Min </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 d-none" *ngIf="dataContent.availability">
+                <div class="d-flex align-items-center mb-3" >
+                    <div class="mr-2"> <img src="../assets/img/whatsapp-gray-icon.svg"  alt=""></div>
+                    <div>{{dataContent.availability.starttime}} - {{dataContent.availability.starttime}}</div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-6 d-none" *ngIf="dataContent.staff.length > 0">
+                <div class="d-flex align-items-center mb-3 text-break" >
+                    <div class="mr-2"> <img src="../assets/img/whatsapp-gray-icon.svg"  alt=""></div>
+                    <div>
+                         {{setStaffName(dataContent.staff)}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-lg-6 d-none" *ngIf="dataContent.availability && dataContent.availability.days.length > 0">
+                <div class="d-flex align-items-center mb-3 text-break" >
+                    <div class="mr-2"> <img src="../assets/img/whatsapp-gray-icon.svg"  alt=""></div>
+                    <div>{{dataContent.availability.days}}</div>
+                </div>
+            </div>
+
+
+          
+        </div>
+    </div>
+</div>

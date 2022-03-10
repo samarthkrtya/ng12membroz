@@ -1,0 +1,403 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="loader" *ngIf="isLoading">
+                <svg class="circular" viewBox="25 25 50 50">
+                    <circle class="path" cx="50" cy="50" r="10" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                </svg>
+            </div>
+            <div class="offset-xl-1 col-xl-10" *ngIf="!isLoading">
+                <h3 class="card-title">
+                    {{getLang('organization settings', 'Organization Settings')}}
+                </h3>
+
+                <div class="alert alert-danger" *ngIf="!isstupdn">
+                    <span><b>{{getLang('yoursetupisnotcomplete', 'Your Setup is not complete')}} </b></span>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="offset-xl-1 col-xl-10">
+                                <h4 class="card-title">
+                                    {{getLang('organization details', 'Organization Details')}}
+                                </h4>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('brnchname', 'Company Name')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput name="organizationname"
+                                                [(ngModel)]="_organizaionModel.organizationname">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('webtitle', 'Web Title')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput name="webtitle" [(ngModel)]="_organizaionModel.webtitle">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('weburl', 'Web Url')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput name="weburl" [(ngModel)]="_organizaionModel.weburl">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <!--logo-->
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('logo', 'Logo')}}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="fileinput fileinput-new text-center" rel="tooltip"
+                                                    data-placement="bottom" data-toggle="tooltip"
+                                                    title="Click To Upload or Change">
+                                                    <label class="fileinput-new thumbnail" for="fileupload"
+                                                        style="cursor: pointer;">
+                                                        <ng-container *ngIf="!isbdetailload">
+                                                            <img *ngIf="_organizaionModel.logo == undefined" class="img"
+                                                                id="branch_picture"
+                                                                src="../../assets/img/image_placeholder.jpg" />
+                                                            <img *ngIf="_organizaionModel.logo != undefined" class="img"
+                                                                id="branch_picture" [src]="_organizaionModel.logo" />
+                                                        </ng-container>
+                                                    </label>
+                                                    <div class="add-photo-main">
+                                                        <i class="material-icons cursor-pointer">cloud_upload</i>
+                                                        <input type="file" id="fileupload" #fileInput ng2FileSelect
+                                                            [style.display]="'none'" [uploader]="uploader"
+                                                            accept=".jpg,.jpeg,.png,.bmp" />
+                                                    </div>
+                                                </div>
+                                                <div class="file" *ngIf="response['file']" id="upload_status">
+                                                    <div class="status">
+                                                        {{langVisibility && langResource['uploading'] ?
+                                                        langResource['uploading'] : 'Uploading'}}...
+                                                        {{response.progress}}%
+                                                    </div>
+                                                    <div class="progress progress-line-primary">
+                                                        <div class="progress-bar" role="progressbar"
+                                                            attr.aria-valuenow="{{response.progress}}"
+                                                            attr.aria-valuemin="0" attr.aria-valuemax="100"
+                                                            style="width: 30%;">
+                                                            <span class="sr-only">{{response.progress}}%
+                                                                {{langVisibility && langResource['complete'] ?
+                                                                langResource['complete'] : 'Complete'}}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!--logo over -->
+
+                                    <!--admin login image-->
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('adminlogo', 'Admin Login')}}
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="fileinput fileinput-new text-center" rel="tooltip"
+                                                    data-placement="bottom" data-toggle="tooltip"
+                                                    title="Click To Upload or Change">
+                                                    <label class="fileinput-new thumbnail" for="fileupload1"
+                                                        style="cursor: pointer;">
+                                                        <ng-container *ngIf="!isbdetailload1">
+                                                            <img *ngIf="_organizaionModel.adminloginimage == undefined"
+                                                                class="img" id="branch_picture1"
+                                                                src="../../assets/img/image_placeholder.jpg" />
+                                                            <img *ngIf="_organizaionModel.adminloginimage != undefined"
+                                                                class="img" id="branch_picture1"
+                                                                [src]="_organizaionModel.adminloginimage" />
+                                                        </ng-container>
+                                                    </label>
+                                                    <div class="add-photo-main">
+                                                        <i class="material-icons cursor-pointer">cloud_upload</i>
+                                                        <input type="file" id="fileupload1" #fileInput1 ng2FileSelect
+                                                            [style.display]="'none'" [uploader]="uploader1"
+                                                            accept=".jpg,.jpeg,.png,.bmp" />
+                                                    </div>
+                                                </div>
+                                                <div class="file" *ngIf="response1['file']" id="upload_status2">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!--admin login image over-->
+
+                                    <!--member login image-->
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('memberlogo', 'Member Login')}}
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="fileinput fileinput-new text-center" rel="tooltip"
+                                                    data-placement="bottom" data-toggle="tooltip"
+                                                    title="Click To Upload or Change">
+                                                    <label class="fileinput-new thumbnail" for="fileupload3"
+                                                        style="cursor: pointer;">
+                                                        <ng-container *ngIf="!isbdetailload2">
+                                                            <img *ngIf="_organizaionModel.memberloginimage == undefined"
+                                                                class="img" id="branch_picture2"
+                                                                src="../../assets/img/image_placeholder.jpg" />
+                                                            <img *ngIf="_organizaionModel.memberloginimage != undefined"
+                                                                class="img" id="branch_picture2"
+                                                                [src]="_organizaionModel.memberloginimage" />
+                                                        </ng-container>
+                                                    </label>
+                                                    <div class="add-photo-main">
+                                                        <i class="material-icons cursor-pointer">cloud_upload</i>
+                                                        <input type="file" id="fileupload3" #fileInput2 ng2FileSelect
+                                                            [style.display]="'none'" [uploader]="uploader2"
+                                                            accept=".jpg,.jpeg,.png,.bmp" />
+                                                    </div>
+                                                </div>
+                                                <div class="file" *ngIf="response2['file']" id="upload_status3"> </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!--member login image over-->
+
+
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('loginheader', 'Login Header')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput name="loginheader"
+                                                [(ngModel)]="_organizaionModel.loginheader">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label class="col-form-label">
+                                            {{getLang('loginsubheader', 'Login SubHeader')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput name="loginsubheader"
+                                                [(ngModel)]="_organizaionModel.loginsubheader"></textarea>
+                                        </mat-form-field>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="offset-xl-1 col-xl-10">
+                                <h4 class="card-title">
+                                    {{getLang('email and support settings', 'Email & Support Settings')}}
+                                </h4>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('supportemail', 'Support Email')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="email"
+                                                [(ngModel)]="_organizaionModel.support.email">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('supportnumber', 'Support Phone')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="contactnumber"
+                                                [(ngModel)]="_organizaionModel.support.contactnumber">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('supportofficetime', 'Officetime')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="officetime"
+                                                [(ngModel)]="_organizaionModel.support.officetime">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('supportdayopen', 'Dayopen')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="dayopen"
+                                                [(ngModel)]="_organizaionModel.support.dayopen">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('fromemail', 'From Email')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="fromemail"
+                                                [(ngModel)]="_organizaionModel.fromemail">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('replyemail', 'Reply Email')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="replyemail"
+                                                [(ngModel)]="_organizaionModel.replyemail">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('smsgateway', 'Sms Gateway')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="smsgateway"
+                                                [(ngModel)]="_organizaionModel.smsgateway">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('sendgridkey', 'Send Grid Key')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="sendgridkey"
+                                                [(ngModel)]="_organizaionModel.sendgridkey">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="offset-xl-1 col-xl-10">
+                                <h4 class="card-title">
+                                    {{getLang('system settings', 'System Settings')}}
+                                </h4>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('walletenable', 'Member Login')}}
+                                        </label>
+                                        <div class="mt-2">
+                                            <section class="example-section">
+                                                <mat-checkbox class="example-margin" id="allowmemberlogin"
+                                                    type="checkbox" [checked]="checked" name="allowmemberlogin"
+                                                    [(ngModel)]="_organizaionModel.allowmemberlogin">
+                                                    {{getLang('allowmemberlogin',
+                                                    'Is MemberLogin Enable')}}
+                                                </mat-checkbox>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label">
+                                            {{getLang('autologout', 'Auto Logout')}}
+                                        </label>
+                                        <div class="mt-2">
+                                            <section class="example-section">
+                                                <mat-checkbox class="example-margin" id="autologout" type="checkbox"
+                                                    name="autologout" [(ngModel)]="_organizaionModel.autologout"
+                                                    [checked]="checked1">{{getLang('autologout',
+                                                    'Is Auto Logout Enable')}}
+                                                </mat-checkbox>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3" *ngIf="_organizaionModel.autologout">
+                                        <label class="col-form-label">
+                                            {{getLang('autologouttimeout', 'Timeout')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="autologouttimeout"
+                                                [(ngModel)]="_organizaionModel.autologouttimeout">
+                                        </mat-form-field>
+
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('database type', 'Database Type')}}
+                                        </label>
+                                        <div class="mt-2">
+                                            <section class="example-section">
+                                                <mat-radio-group aria-labelledby="example-radio-group-label"
+                                                    class="example-radio-group"
+                                                    [(ngModel)]="_organizaionModel.databasetype">
+                                                    <mat-radio-button class="example-radio-button"
+                                                        *ngFor="let value of databsetype" [value]="value">
+                                                        {{value}}
+                                                    </mat-radio-button>
+                                                </mat-radio-group>
+                                            </section>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-form-label">
+                                            {{getLang('member date format', 'Date Format')}}
+                                        </label>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput type="text" name="dateformat"
+                                                [(ngModel)]="_organizaionModel.dateformat">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <button class="btn btn-primary ml-2" type="button" (click)="onSubmitorganization()"
+                            [disabled]="btnDisable">
+                            <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

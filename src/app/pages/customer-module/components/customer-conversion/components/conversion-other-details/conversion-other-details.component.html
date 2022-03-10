@@ -1,0 +1,149 @@
+<div [formGroup]="formGroup">
+    
+    <mat-accordion class="example-headers-align" multi>
+        <mat-expansion-panel expanded>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Other Details
+                </mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
+    
+            
+            <div class="row">
+    
+                <div class="col-sm-6">
+                    <label class="col-form-label"> 
+                        Campaign
+                    </label>
+                    <mat-form-field 
+                        class="example-full-width" 
+                        [hidden]="true">
+                        <input 
+                            matInput
+                            formControlName="campaign"
+                            type="text"
+                            class="example-margin"
+                            readonly>
+                    </mat-form-field>
+    
+                    <div
+                        [hidden]="formGroup.controls['campaign'].valid || (formGroup.controls['campaign'].pristine && !submitted)"
+                        class="text-danger">
+    
+                        <small *ngIf="formGroup.controls['campaign'].hasError('required')" class="error-label">
+                            {{getLang('campaignisrequired', 'Campaign is Required')}}
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="col-form-label"> 
+                        Sales Manager / Reporting Person 
+                    </label>
+                    <mat-form-field 
+                        class="example-full-width" 
+                        [hidden]="true">
+                        <input 
+                            matInput
+                            formControlName="salesmanager"
+                            type="text"
+                            class="example-margin"
+                            readonly>
+                    </mat-form-field>
+    
+                    <div
+                        [hidden]="formGroup.controls['salesmanager'].valid || (formGroup.controls['salesmanager'].pristine && !submitted)"
+                        class="text-danger">
+    
+                        <small *ngIf="formGroup.controls['salesmanager'].hasError('required')" class="error-label">
+                            {{getLang('salesmanagerisrequired', 'Sales Manager is Required')}}
+                        </small>
+                    </div>
+                </div>
+    
+                <div class="col-sm-6">
+                    <label class="col-form-label"> 
+                        Sales Person Name
+                    </label>
+                    <mat-form-field 
+                        class="example-full-width" 
+                        [hidden]="true">
+                        <input 
+                            matInput
+                            formControlName="salesperson"
+                            type="text"
+                            class="example-margin"
+                            readonly>
+                    </mat-form-field>
+    
+                    
+    
+                    <div
+                        [hidden]="formGroup.controls['salesperson'].valid || (formGroup.controls['salesperson'].pristine && !submitted)"
+                        class="text-danger">
+    
+                        <small *ngIf="formGroup.controls['salesperson'].hasError('required')" class="error-label">
+                            {{getLang('salespersonisrequired', 'Sales Person is Required')}}
+                        </small>
+                    </div>
+                
+                </div>
+
+                <!-- <div class="col-sm-6">
+                    <label class="col-form-label"> 
+                        Sales Branch
+                    </label>
+                    <mat-form-field >
+                        <mat-select 
+                            matNativeControl 
+                            formControlName="salesbranch">
+                            <mat-option value="Branch 1"> Branch 1 </mat-option>
+                            <mat-option value="Branch 2"> Branch 2 </mat-option>
+                            <mat-option value="Branch 3"> Branch 3 </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['salesbranch'].valid || (formGroup.controls['salesbranch'].pristine && !submitted)"
+                        class="text-danger">
+
+                        <small *ngIf="formGroup.controls['salesbranch'].hasError('required')" class="error-label">
+                            {{getLang('salesbranchisrequired', 'Sales Branch is Required')}}
+                        </small>
+                    </div>
+
+                </div> -->
+            
+                <div class="col-sm-6">
+                    <label class="col-form-label"> 
+                        Channel
+                    </label>
+                    <mat-form-field 
+                        class="example-full-width" 
+                        [hidden]="true">
+                        <input 
+                            matInput
+                            formControlName="channel"
+                            type="text"
+                            class="example-margin"
+                            readonly>
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['channel'].valid || (formGroup.controls['channel'].pristine && !submitted)"
+                        class="text-danger">
+
+                        <small *ngIf="formGroup.controls['channel'].hasError('required')" class="error-label">
+                            {{getLang('Channelisrequired', 'Channel is Required')}}
+                        </small>
+                    </div>
+
+                    
+                </div>
+                
+            </div>
+    
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

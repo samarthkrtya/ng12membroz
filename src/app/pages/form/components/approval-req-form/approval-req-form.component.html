@@ -1,0 +1,135 @@
+<div class="main-content" *ngIf="isLoadingdata">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="offset-xl-1 col-xl-10">
+                        <div class="loader">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                    stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-container *ngIf="!isLoadingdata">
+    <form [formGroup]="form" *ngIf="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="offset-xl-1 col-xl-10">
+                        <h3 class="card-title">
+                            {{getLang(formObj?.fieldname, formObj?.dispalyformname)}} {{getLang('profile change
+                            request',
+                            'profile change request')}}
+
+                            <button class="btn btn-success btn-just-icon btn-link m-0 p-0" type="button" (click)="viewDetail()" > <i class="material-icons">post_add</i></button>
+                        </h3>
+
+
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="offset-xl-1 col-xl-10">
+                                        <div class="row">
+                                            <ng-container *ngFor="let fields of formFields; let lst = last">
+                                                <ng-container [ngSwitch]="fields.fieldtype">
+                                                    <div [ngClass]="fields.colspan == '1'  ? 'col-sm-12' : 'col-sm-6'">
+                                                        <label class="col-form-label">
+                                                            {{getLang(fields.fieldname, fields.displayname)}}
+                                                            <span *ngIf="fields.required" class="text-danger">*</span>
+                                                        </label>
+
+                                                        <ng-container *ngSwitchCase="'gallery'">
+                                                            <ng-container *ngIf="fields.isArray;else strTemp">
+                                                                <div  class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 membroz-col d-flex flex-grow-1 mb-3" *ngFor="let item of fields.value">
+                                                                    <div class="position-relative d-flex">
+                                                                        <img [src]="item.attachment"
+                                                                            (click)="downloadlink(item.attachment)"
+                                                                            class="img-fluid img-add-product">
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+                                                            <ng-template #strTemp>
+                                                                <div
+                                                                    class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 membroz-col d-flex flex-grow-1 mb-3">
+                                                                    <div class="position-relative d-flex">
+                                                                        <img [src]="fields.value"
+                                                                            (click)="downloadlink(fields.value)"
+                                                                            class="img-fluid img-add-product">
+                                                                    </div>
+                                                                </div>
+                                                            </ng-template>
+                                                        </ng-container>
+
+
+                                                        <ng-container *ngSwitchDefault>
+                                                            <mat-form-field class="example-full-width">
+                                                                <input type="text" matInput
+                                                                    [formControlName]="fields.fieldname">
+                                                            </mat-form-field>
+                                                        </ng-container>
+
+
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer fixed-bottom bg-white shadow-top">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="offset-xl-1 col-xl-10">
+                        <div class="row">
+                            <div class="col-sm-6 text-left">
+                                <button class="btn btn-default ml-2" type="button"
+                                    [routerLink]="['/pages/dynamic-list/list/'+this._formName]">
+                                    <i class="material-icons">cancel</i> {{getLang('cancel', 'Cancel')}}
+                                </button>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <button class="btn btn-success ml-2" type="submit" (click)="status  = 'Approved'"
+                                    [disabled]="disableBtn">
+                                    <i class="material-icons">done</i> {{getLang('approve', 'Approved')}}
+                                </button>
+                                <button class="btn btn-danger ml-2" type="button" (click)="cancelled.clickPP()"
+                                    [disabled]="disableBtn">
+                                    <i class="material-icons">delete</i>{{getLang('decline', 'Declined')}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </form>
+
+
+
+    <app-global-confirmation #cancelled [myForm]="form" [displayTxt]="'Reason'" [fieldTxt]="'declinereason'"
+        [id]="'Modal1'">
+        <button conBtn class="btn btn-danger ml-2" (click)="status = 'Declined';onDecline(form.value, form.valid);"
+            type="button" [disabled]="disableBtn">
+            <i class="material-icons">delete</i> {{getLang('decline', 'Declined')}}
+        </button>
+    </app-global-confirmation>
+
+
+</ng-container>

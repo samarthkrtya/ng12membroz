@@ -1,0 +1,367 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <mat-tab-group class="frontdesk-tab-card" id="campaign-view">
+            <mat-tab label="Email Campaign View">
+                <ng-template matTabContent>
+                    <h3 class="card-title mt-0" *ngIf="campaignData">{{campaignData.campaignname}}</h3>
+                    <div class="card mt-0">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h5>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24">
+                                            <g transform="translate(-233 -465)">
+                                                <g *ngIf="contactList.length>0" transform="translate(237.979 471.732)">
+                                                    <g transform="translate(0)">
+                                                        <path
+                                                            class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                                            d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                                            transform="translate(0 -67.997)" stroke-width="0.7" />
+                                                    </g>
+                                                </g>
+                                                <g [ngClass]="contactList.length>0 ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'"
+                                                    transform="translate(233 465)" fill="none" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="12" stroke="none" />
+                                                    <circle cx="12" cy="12" r="11.25" fill="none" />
+                                                </g>
+                                            </g>
+                                        </svg>
+                                        <span class="ml-3">To</span>
+                                    </h5>
+                                    <div>Who are you sending this campaign to? </div>
+                                    <hr />
+                                    <div *ngFor="let item of contactList">
+                                        <h6>{{item.classname}}</h6>
+                                        <div *ngFor="let c of item.members">
+                                            &nbsp;&nbsp;&nbsp;{{c.memberid.fullname}} -
+                                            {{c.memberid.property.primaryemail}}
+                                        </div>
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div class="justify-content-end">
+                                    <button class="btn btn-primary m-0"
+                                        [routerLink]="['/pages/campaign/recipients/'+bindId]">
+                                        Add Recipients
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h5>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24">
+                                            <g transform="translate(-233 -465)">
+                                                <g transform="translate(237.979 471.732)">
+                                                    <g transform="translate(0)">
+                                                        <path
+                                                            class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                                            d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                                            transform="translate(0 -67.997)" stroke-width="0.7" />
+                                                    </g>
+                                                </g>
+                                                <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                                                <g class="svg-stroke-green-custom-icon" transform="translate(233 465)"
+                                                    fill="none" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="12" stroke="none" />
+                                                    <circle cx="12" cy="12" r="11.25" fill="none" />
+                                                </g>
+                                            </g>
+                                        </svg>
+                                        <span class="ml-3">From</span>
+                                    </h5>
+                                    <div>Who is sending this campaign? </div>
+                                    <div>{{_authService.currentUser.user.fullname}} -
+                                        {{_authService.currentUser.user.property?.primaryemail}}</div>
+                                </div>
+                                <div class="justify-content-end">
+                                    <button class="btn btn-primary m-0">
+                                        Add From
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h5>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24">
+                                            <g transform="translate(-233 -465)">
+                                                <g *ngIf="campaignData?.property?.subjectline"
+                                                    transform="translate(237.979 471.732)">
+                                                    <g transform="translate(0)">
+                                                        <path
+                                                            class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                                            d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                                            transform="translate(0 -67.997)" stroke-width="0.7" />
+                                                    </g>
+                                                </g>
+                                                <g [ngClass]="campaignData?.property?.subjectline ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'"
+                                                    transform="translate(233 465)" fill="none" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="12" stroke="none" />
+                                                    <circle cx="12" cy="12" r="11.25" fill="none" />
+                                                </g>
+                                            </g>
+                                        </svg>
+                                        <span class="ml-3">Subject</span>
+                                    </h5>
+                                    <div>What's the subject line for this campaign? </div>
+                                    <div>{{campaignData?.property?.subjectline}}</div>
+
+                                </div>
+                                <div class="justify-content-end">
+                                    <button class="btn btn-primary m-0" [routerLink]="['/pages/campaign/form/'+bindId]">
+                                        Add Subject
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-5 col-lg-5 col-xl-7 mb-md-0 mb-3">
+                                    <h5>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24">
+                                            <g transform="translate(-233 -465)">
+                                                <g *ngIf="campaignData?.property?.thumbnail"
+                                                    transform="translate(237.979 471.732)">
+                                                    <g transform="translate(0)">
+                                                        <path
+                                                            class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                                            d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                                            transform="translate(0 -67.997)" stroke-width="0.7" />
+                                                    </g>
+                                                </g>
+                                                <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                                                <g [ngClass]="campaignData?.property?.thumbnail ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'"
+                                                    transform="translate(233 465)" fill="none" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="12" stroke="none" />
+                                                    <circle cx="12" cy="12" r="11.25" fill="none" />
+                                                </g>
+                                            </g>
+                                        </svg>
+                                        <span class="ml-3">Email Content</span>
+                                    </h5>
+                                    <div>You can edit email content or whatever to make it perfect email. </div>
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-xl-3 mb-md-0 mb-3">
+                                    <div class="row">
+                                        <div class="col-auto w-auto">
+                                            <div class="card w-100 card-overlay-main mt-0 mb-0"
+                                                *ngIf="campaignData?.property?.thumbnail">
+                                                <a
+                                                    [routerLink]="['/pages/campaign/template-design/'+campaignData?.property?.templateid +'/' +bindId]">
+                                                    <img [src]="campaignData?.property?.thumbnail"
+                                                        class="card-img-top card-img-size-1by4" alt="">
+                                                    <div class="card-overlay">
+                                                        <div class="card-overlay-inner">
+                                                            <button class="btn btn-primary" type="submit">
+                                                                <i class="material-icons">visibility</i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="card w-100 card-overlay-main mt-0 mb-0"
+                                            *ngIf="!campaignData?.property?.thumbnail">
+                                            <a style="color: black;"
+                                                [routerLink]="['/pages/campaign/htmleditor/'+bindId]">
+                                               
+                                                <div [innerHTML]="campaignData?.content | safeHtml">
+                                                    <div class="card-overlay-inner">
+                                                        <button class="btn btn-primary" type="submit">
+                                                            <i class="material-icons">visibility</i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-2 text-right" *ngIf="campaignData?.property?.thumbnail">
+                                    <button class="btn btn-outline-primary m-0"
+                                        [routerLink]="['/pages/campaign/template-design/'+campaignData?.property?.templateid +'/' +bindId]">
+                                        Edit Email Design
+                                    </button>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-2 text-right" *ngIf="!campaignData?.property?.thumbnail">
+                                    <button class="btn btn-outline-primary m-0"
+                                        [routerLink]="['/pages/campaign/htmleditor/'+bindId]">
+                                        Edit Email Design
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="container text-right">
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#myModal" type="button">
+                                    Schedule
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="SMS Campaign View">
+                <ng-template matTabContent>
+                    <h3 class="card-title mt-0">Your Compaign Name</h3>
+                    <div class="card mt-0">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h5>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24">
+                                            <g transform="translate(-233 -465)">
+                                                <g transform="translate(237.979 471.732)">
+                                                    <g transform="translate(0)">
+                                                        <path
+                                                            class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                                            d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                                            transform="translate(0 -67.997)" stroke-width="0.7" />
+                                                    </g>
+                                                </g>
+                                                <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                                                <g class="svg-stroke-green-custom-icon" transform="translate(233 465)"
+                                                    fill="none" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="12" stroke="none" />
+                                                    <circle cx="12" cy="12" r="11.25" fill="none" />
+                                                </g>
+                                            </g>
+                                        </svg>
+                                        <span class="ml-3">To</span>
+                                    </h5>
+                                    <div>Who are you sending this campaign to? </div>
+                                </div>
+                                <div class="justify-content-end">
+                                    <button class="btn btn-primary m-0">
+                                        Add Recipients
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h5>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24">
+                                            <g transform="translate(-233 -465)">
+                                                <g transform="translate(237.979 471.732)">
+                                                    <g transform="translate(0)">
+                                                        <path
+                                                            class="svg-stroke-green-custom-icon svg-fill-green-custom-icon"
+                                                            d="M13.838,68.2a.7.7,0,0,0-.993,0L4.432,76.616,1.2,73.382a.7.7,0,0,0-.993.993l3.73,3.73a.7.7,0,0,0,.993,0L13.838,69.2A.7.7,0,0,0,13.838,68.2Z"
+                                                            transform="translate(0 -67.997)" stroke-width="0.7" />
+                                                    </g>
+                                                </g>
+                                                <!-- [ngClass]="dataContent.import ?  'svg-stroke-green-custom-icon' : 'svg-stroke-dark-gray-icon'" -->
+                                                <g class="svg-stroke-green-custom-icon" transform="translate(233 465)"
+                                                    fill="none" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="12" stroke="none" />
+                                                    <circle cx="12" cy="12" r="11.25" fill="none" />
+                                                </g>
+                                            </g>
+                                        </svg>
+                                        <span class="ml-3">SMS Content</span>
+                                    </h5>
+                                    <div>You can edit email content or whatever to make it perfect email. </div>
+                                </div>
+
+                                <div class="justify-content-end">
+                                    <button class="btn btn-outline-primary m-0">
+                                        Resend
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </ng-template>
+
+
+
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Schedule</h4>
+            </div>
+            <div class="modal-body">
+                <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                    (change)="onEmailScheduleChange($event.value)">
+                    <!-- [(ngModel)]="scheduleEmail" -->
+                    <mat-radio-button class="example-radio-button" value="now">
+                        Send it now
+                    </mat-radio-button>
+                    <mat-radio-button class="example-radio-button" value="later">
+                        Schedule for a specific time
+                    </mat-radio-button>
+                </mat-radio-group>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4">
+                        <mat-form-field >
+                            <mat-label>Choose a date</mat-label>
+                            <input matInput [matDatepicker]="picker"
+                            [(ngModel)]="date" (ngModelChange)="dateChanged($event)">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <mat-form-field class="example-full-width">
+                            <input matInput type="time" placeholder="HH:MM" [(ngModel)]="scheduletime" (ngModelChange)="valueChanged($event)" >
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal" #closeBtn>
+                    <i class="material-icons">close</i>Cancel
+                </button>
+                <button class="btn btn-primary ml-2" type="submit" 
+                    (click)="onSubmit()">
+                    <i class="material-icons">save</i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

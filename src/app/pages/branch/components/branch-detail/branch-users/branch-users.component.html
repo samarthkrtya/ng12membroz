@@ -1,0 +1,133 @@
+<!-- <div class="text-right">
+  <button type="button" class="btn btn-primary"  (click)="AddStaff()">
+    <i class="material-icons">add</i>Add Staff
+  </button>
+</div> -->
+<div class="material-datatables1">
+  <div class="table-responsive">
+
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input>
+    </mat-form-field>
+
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+      <ng-container matColumnDef="fullname">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Full name </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullname}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="designation">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Designation </th>
+        <td mat-cell *matCellDef="let element"> {{element.designation}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="joiningdate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Joining Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.joiningdate}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone</th>
+        <td mat-cell *matCellDef="let element"> {{element.mobile}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+        <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Action">
+        <th mat-header-cell *matHeaderCellDef class="text-right"> Action</th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <button  
+          class="btn btn-link btn-primary btn-just-icon edit" 
+          data-original-title="Edit" 
+          name="view" 
+          (click)="getview(element._id)">
+          <i class="material-icons">edit</i></button>
+          <button  
+          class="btn btn-link btn-primary btn-just-icon edit" 
+          data-original-title="Edit" 
+          name="view" 
+          (click)="setPwd(element._id)"
+          data-toggle="modal"
+          data-target="#resetpasswd">
+          <i class="material-icons">vpn_key</i></button>
+        </td>
+       
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="6">No data matching the filter "{{input.value}}"</td>
+      </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+
+</div>
+
+
+<div id="resetpasswd" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+      <div class="modal-content modal-md">
+          <div class="modal-header">
+              <h4 class="modal-title"> Reset Password</h4>
+                  <button type="button" class="close" data-dismiss="modal" id="resetpwdclose">&times;</button>
+          </div>
+          <div class="modal-body">
+              <div class="form-horizontal">
+                  <div class="row">
+                      <div class="col-sm-12 mb-3 mt-3">
+                          <mat-slide-toggle (change)="getPassword($event.checked)">  {{ langResource['autogenpass'] ? langResource['autogenpass'] : 'Automatically generate a password'}}</mat-slide-toggle>
+                      </div>
+                      <div class="col-sm-12" >
+                          <label class="col-form-label">
+                              {{   langResource['newpass'] ? langResource['newpass'] : 'New Password'}}
+                          </label>
+                          <form class="example-form">
+                              <mat-form-field class="example-full-width">
+                                <input type="password" id="newpasswd" matInput [(ngModel)]="currentpassword" (ngModelChange)="validatePasswd()"  [ngModelOptions]="{standalone: true}" >
+                                <mat-icon matSuffix class="cursor-pointer" *ngIf="!hidepasswd" (click)="showPassword()">visibility</mat-icon>
+                                <mat-icon matSuffix class="cursor-pointer" *ngIf="hidepasswd" (click)="showPassword()">visibility_off</mat-icon>
+                              </mat-form-field>
+                                <div  *ngIf="!validpasswd" class="text-danger">
+                                      <small  class="error-label">
+                                          {{getLang('invalidpass', 'Invalid password')}}
+                                      </small>
+                              </div>
+                            </form>
+                            <div class="mb-4 text-warning" >
+                              {{   langResource['mustchars'] ? langResource['mustchars'] : 'Must have 8 characters/numerics'}}
+                            </div>
+                        </div>
+                  </div>
+              </div>
+
+          </div>
+          <div class="modal-footer">
+
+                      <button type="button" class="btn btn-default d-none d-sm-block" [disabled]="disableBtn" data-dismiss="modal">
+                          <i class="material-icons">close</i>
+                          {{   langResource['cancel'] ? langResource['cancel'] : 'Cancel'}}
+                      </button>
+                      <button type="button" class="btn btn-success ml-2" [disabled]="disableBtn" (click)="updatePassword()">
+                          <i class="material-icons"></i>
+                          {{   langResource['chngpass'] ? langResource['chngpass'] : 'Change Password'}}
+                      </button>
+          </div>
+
+      </div>
+  </div>
+</div>

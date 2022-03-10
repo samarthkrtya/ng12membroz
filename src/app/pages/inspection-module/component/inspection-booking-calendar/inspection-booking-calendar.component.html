@@ -1,0 +1,680 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="d-flex mt-3">
+                    <h3 class="card-title flex-grow-1 align-self-center m-0">{{getLang('calendar','Calendar')}}</h3>
+                    <div class="">
+                        <button 
+                            id="myModalAppointmentBtn" 
+                            type="button" 
+                            class="btn btn-primary" 
+                            data-backdrop="static" 
+                            data-keyboard="false" 
+                            data-toggle="modal" 
+                            data-target="#myModalWorkshopAppointmentBooking">
+                            <i class="material-icons">add</i>{{getLang('addappointment','Add Appointment')}} 
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+
+                                        <div class="mb-md-0 mb-3">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 text-md-right">
+
+                                    
+                                    <div class="ts-blue-box ts-text-blue mb-1">
+                                        {{getLang('requested','Requested')}}
+                                    </div> 
+
+                                    <div class="ts-pink-box ts-text-pink btn-sm mb-1 ml-1 ml-lg-2">
+                                        {{getLang('confirmed','Confirmed')}}
+                                    </div>
+
+                                    <div class="attend-text-red attend-absent-box mb-1 ml-1 ml-lg-2">
+                                        {{getLang('cancel','Cancel')}}
+                                    </div>
+
+                                    <div class="attend-text-orange attend-holiday-box mb-1 ml-1 ml-lg-2">
+                                        {{getLang('noshow','No Show')}}
+                                    </div>
+
+                                    </div>
+                                </div>
+
+                                <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center" style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                                <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                                </div>
+                                <div>
+                                <full-calendar 
+                                    *ngIf="!isLoading" 
+                                    [options]="calendarOptions">
+                                </full-calendar>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="myModalWorkshopAppointmentBooking" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+    
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('Add Booking', 'Add Booking')}}</h4>
+                <button type="button" class="close" id="closeScheduleAsset" (click)="resetForm()" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+
+                <form 
+                    [formGroup]="form" 
+                    (ngSubmit)="onSubmit(form.value, form.valid)" 
+                    novalidate 
+                    class="mb-0">
+
+                    <div class="row">
+
+                        <input 
+                            type="hidden"
+                            formControlname="_id">
+
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="col-form-label">
+                                        {{getLang('customer', 'Customer')}}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                
+                                    <mat-form-field class="example-full-width">
+                                        <input 
+                                            type="text"
+                                            matInput
+                                            required
+                                            [formControl]="attendee"
+                                            [matAutocomplete]="autoAttendee"
+                                            (keyup.enter)="enterAttendee()"
+                                            (click)="preloadAttendeedata()"
+                                            (change)="handleEmptyAttendeeInput($event)">
+                                        <mat-autocomplete 
+                                            #autoAttendee="matAutocomplete"
+                                            [displayWith]="displayAttendeeFn"
+                                            (optionSelected)="optionAttendeeSelected($event.option)">
+                        
+                                            <mat-option *ngIf="attendeeisLoadingBox" class="is-loading">
+                                                <mat-spinner diameter="50"></mat-spinner>
+                                            </mat-option>
+                        
+                                            <ng-container *ngIf="!attendeeisLoadingBox && allAttendeeLists.length > 0">
+        
+                                                <div class="mat-optgroup-media">
+                                                    <mat-option 
+                                                        *ngFor="let option of filteredAttendeeOptions | async" 
+                                                        [value]="option">
+        
+                                                    
+                                                        <div class="media py-2 member-profile-item cursor-pointer" >
+                                                            <img 
+                                                                class="example-option-img rounded" 
+                                                                aria-hidden 
+                                                                [src]="option.src" 
+                                                                width="50" 
+                                                                height="50">
+                            
+                                                            <div class="media-body">
+                                                                
+                                                                <div class="d-flex">
+                                                                    <div class="flex-grow-1"> 
+                                                                        <div class="font-500 mb-1">
+                                                                            <span>{{option?.title}}</span> 
+                                                                            <span *ngIf="option.customerid?.fullname" > |  {{option?.customerid?.fullname}}</span> 
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="fc-today-button font-500">
+                                                                        <i class="material-icons"> face </i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex">
+                                                                    <div class="flex-grow-1"> {{option?.customerid?.property?.mobile}}</div>
+                                                                    <div class="fc-today-button font-14" *ngIf="option?.customerid?.property?.primaryemail">{{option?.customerid?.property?.primaryemail}}</div>
+                                                                </div>
+                                                            </div>
+                            
+                                                            
+                                                        </div>
+                                                        
+                                                        
+                                                        
+                                                        
+                                                    </mat-option>
+                                                </div>
+                                            </ng-container>
+                        
+                                            <ng-container *ngIf="!attendeeisLoadingBox && allAttendeeLists.length == 0">
+                                                <mat-option>
+                                                <span>{{getLang('norecord', 'No Record')}}</span>
+                                                </mat-option>
+                                            </ng-container>
+                        
+                                        </mat-autocomplete>
+                        
+                                        <mat-error *ngFor="let validation of validation_msgs.attendee">
+                                            <div *ngIf="attendee.hasError(validation.type)">
+                                                {{validation.message}}
+                                            </div>
+                                        </mat-error>
+                        
+                        
+                                    </mat-form-field>
+                
+                                    <div 
+                                        [hidden]="form.get('attendee').valid || (form.get('attendee').pristine && !submitted)"
+                                        class="text-danger">
+                                        <small *ngIf="form.get('attendee').hasError('required')" class="error-label">
+                                            {{getLang('attendeeisrequired', 'Attendee is Required')}}
+                                        </small>
+                                    </div>
+                                </div>
+                
+                            </div>
+                        </div>
+                
+                    </div>
+
+                    <ng-container *ngIf="this.attendee && this.attendee.value && this.attendee.value._id">
+
+                        <div class="mt-3">
+                            <mat-accordion class="example-headers-align mat-accordion-header-auto">
+
+                                <mat-expansion-panel [expanded]="true">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            {{this.attendee?.value?.title}} 
+                                        </mat-panel-title>
+                                        <mat-panel-description>
+                                            
+            
+                                            <ng-container>
+                                                
+                                                <span class="font-16 d-inline-block mr-2">
+                                                    {{form.get("date").value | date}}
+                                                </span>
+            
+                                                <span class="font-16 d-inline-block mr-2">
+                                                    {{timeslotid?.value?.displaytext}} 
+                                                </span>
+
+                                            </ng-container>
+                                            
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                
+                                    <div class="row">
+                                        
+                                        <div class="col-sm-6">
+                
+                                            <label class="col-form-label">
+                                                {{getLang('date', 'Date')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                
+                                            <mat-form-field class="example-full-width">
+                                                <input 
+                                                    matInput 
+                                                    (click)="picker.open()" 
+                                                    [matDatepicker]="picker"
+                                                    [matDatepickerFilter]="myFilter"
+                                                    formControlName="date"
+                                                    [min]="mindate">
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <div 
+                                                [hidden]="form.get('date').valid || (form.get('date').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('date').hasError('required')" class="error-label  font-size-75">
+                                                    {{getLang('dateisrequired', 'Date is Required')}}
+                                                </small>
+                                            </div>
+                
+                                        </div>
+                
+                                        <div class="col-sm-6">
+                
+                                            <label class="col-form-label">
+                                                {{getLang('time', 'Time')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                
+                                            <mat-form-field>
+                                                <input 
+                                                    type="text"
+                                                    matInput
+                                                    required
+                                                    [formControl]="timeslotid"
+                                                    [matAutocomplete]="autoTime">
+                                                <mat-autocomplete 
+                                                    #autoTime="matAutocomplete"
+                                                    [displayWith]="timeDisplayFn"
+                                                    (optionSelected)="optionTimeslotSelected($event.option)">
+                                                    
+                        
+                                                    <mat-option *ngIf="timeisLoadingBox" class="is-loading">
+                                                        <mat-spinner diameter="50"></mat-spinner>
+                                                    </mat-option>
+                        
+                                                    <ng-container *ngIf="!timeisLoadingBox && alltimeslotLists.length > 0">
+                                                        <mat-option *ngFor="let option of timeslotfilteredOptions | async" [value]="option">
+                                                            {{option?.displaytext}}  
+                                                        </mat-option>
+                                                    </ng-container>
+                        
+                                                    <ng-container *ngIf="!timeisLoadingBox && alltimeslotLists.length == 0">
+                                                        <mat-option>
+                                                        <span>{{getLang('norecord', 'No Record')}}</span>
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-autocomplete>
+                        
+                                                <mat-error *ngFor="let validation of validation_msgs.timeslotid">
+                                                    <div *ngIf="timeslotid.hasError(validation.type)">
+                                                    {{validation.message}}
+                                                    </div>
+                                                </mat-error>
+                        
+                        
+                                            </mat-form-field>
+                
+                                            <div 
+                                                [hidden]="form.get('timeslotid').valid || (form.get('timeslotid').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('timeslotid').hasError('required')" class="error-label  font-size-75">
+                                                    {{getLang('timeslotidisrequired', 'Timeslotid is Required')}}
+                                                </small>
+                                            </div>
+            
+                                        </div>
+                
+                                        <div class="col-sm-12">
+                
+                                            <label class="col-form-label">
+                                                {{getLang('advisor', 'Advisor')}}
+                                                <span class="text-danger">*</span>
+                                            </label> 
+            
+                                            <mat-form-field class="example-full-width">
+                                                <input 
+                                                    type="text"
+                                                    matInput
+                                                    [formControl]="hostid"
+                                                    required
+                                                    [matAutocomplete]="autoHost"
+                                                    (keyup.enter)="enterHost()"
+                                                    (click)="preloadHostdata()"
+                                                    (change)="handleEmptyHostInput($event)">
+                                                <mat-autocomplete 
+                                                    #autoHost="matAutocomplete"
+                                                    [displayWith]="displayHostFn"
+                                                    (optionSelected)="optionHostSelected($event.option)">
+                                
+                                                    <mat-option *ngIf="hostisLoadingBox" class="is-loading">
+                                                        <mat-spinner diameter="50"></mat-spinner>
+                                                    </mat-option>
+                                
+                                                    <ng-container *ngIf="!hostisLoadingBox && allHostLists.length > 0">
+                                                        <mat-option 
+                                                            *ngFor="let option of filteredHostOptions | async" 
+                                                            [value]="option">
+                                                            {{option.fullname}}
+                                                        </mat-option>
+                                                    </ng-container>
+                                
+                                                    <ng-container *ngIf="!hostisLoadingBox && allHostLists.length == 0">
+                                                        <mat-option>
+                                                        <span>{{getLang('norecord', 'No Record')}}</span>
+                                                        </mat-option>
+                                                    </ng-container>
+                                
+                                                </mat-autocomplete>
+                                
+                                            </mat-form-field>
+                
+                                            <div 
+                                                [hidden]="form.get('hostid').valid || (form.get('hostid').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('hostid').hasError('required')" class="error-label  font-size-75">
+                                                    {{getLang('hostidisrequired', 'Advisor is Required')}}
+                                                </small>
+                                            </div>
+                
+                                        </div>
+            
+                                        <div class="col-sm-12" [ngClass]="this.form.get('_id').value ? 'd-none' : 'd-block'">
+                                            
+                                
+                                            <mat-checkbox 
+                                                class="example-margin" 
+                                                formControlName="schedule"
+                                                (change)="onScheduleChanged($event)"> 
+                                            </mat-checkbox>
+            
+                                            <label class="col-form-label">
+                                                {{getLang('recurring', 'Recurring')}}
+                                            </label>
+                                
+                                            <div 
+                                                [hidden]="form.get('schedule').valid || (form.get('schedule').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('schedule').hasError('required')" class="error-label">
+                                                    {{getLang('scheduleisrequired', 'schedule is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+            
+                                        <div class="col-sm-6" *ngIf="form.get('schedule').value == true">
+                                            <label class="col-form-label">
+                                                <!-- {{getLang('recurring', 'Recurring')}} -->
+                                            </label>
+                                
+                                            <mat-form-field>
+                                                <mat-select
+                                                    name="recurringtype"
+                                                    formControlName="recurringtype"
+                                                    (ngModelChange)="onRecurringChanged($event)">
+                                                    <mat-option *ngFor="let item of recurringtypeLists" [value]="item.id"> {{item.name}} </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+            
+                                            <div 
+                                                [hidden]="form.get('recurringtype').valid || (form.get('recurringtype').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('recurringtype').hasError('required')" class="error-label">
+                                                    {{getLang('recurringtypeisrequired', 'recurringtype is Required')}}
+                                                </small>
+                                            </div>
+                                        
+                                        </div>
+            
+                                        <div class="col-sm-12" *ngIf="form.get('schedule').value == true && this.appointmentscheduleList && this.appointmentscheduleList.length == 0">
+                                            <div class="d-flex align-items-center">
+                                                <div class="pr-3">
+
+                                                    <span *ngIf="form.get('recurringtype').value == 'daily'">
+                                                        {{getLang('repeatdailyat', 'Repeat daily at')}} 
+                                                        &nbsp; {{timeslotid?.value?.displaytext}} 
+                                                        &nbsp; {{getLang('starting', 'starting')}} 
+                                                        &nbsp; {{date | date: 'mediumDate'}} 
+                                                        &nbsp; {{getLang('for', 'for')}}  
+                                                    </span>
+
+                                                    <span *ngIf="form.get('recurringtype').value == 'weekly'">
+                                                        {{getLang('repeatevery', 'Repeat every')}} 
+                                                        &nbsp; {{getDayName(date)}} 
+                                                        &nbsp; {{getLang('at', 'at')}} 
+                                                        &nbsp; {{timeslotid?.value?.displaytext}} 
+                                                        &nbsp; {{date | date: 'mediumDate'}}
+                                                        &nbsp; {{getLang('for', 'for')}} 
+                                                    </span>
+
+                                                    <span *ngIf="form.get('recurringtype').value == 'monthly'">
+                                                        {{getLang('repeatthe', 'Repeat the')}} 
+                                                        &nbsp; {{getDay(date)}} 
+                                                        &nbsp; {{getLang('ofeverymonthat', 'of every month at')}} 
+                                                        &nbsp; {{timeslotid?.value?.displaytext}} 
+                                                        &nbsp; {{getLang('starting', 'starting')}} 
+                                                        &nbsp; {{date | date: 'mediumDate'}} 
+                                                        &nbsp; {{getLang('for', 'for')}}   
+                                                    </span>
+
+                                                </div>
+                                                <div class="col-lg-2 col-md-3 col-4 pr-3">
+                                                    <mat-form-field >
+                                                        <mat-select
+                                                            name="recurringoccurance"
+                                                            formControlName="recurringoccurance">
+                                                            <mat-option *ngFor="let item of recurringoccuranceLists" [value]="item"> {{item}} </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                
+                                                    <div 
+                                                        [hidden]="form.get('recurringoccurance').valid || (form.get('recurringoccurance').pristine && !submitted)"
+                                                        class="text-danger">
+                                                        <small *ngIf="form.get('recurringoccurance').hasError('required')" class="error-label">
+                                                            {{getLang('recurringoccuranceisrequired', 'recurringoccurance is Required')}}
+                                                        </small>
+                                                    </div>
+                
+                                                </div>
+                                                <div>
+                                                    {{getLang('times', 'Times')}}.
+                                                </div>
+                                            </div>
+                                        </div>
+            
+                                        <div class="col-sm-12" *ngIf="form.get('schedule').value == true && this.appointmentscheduleList && this.appointmentscheduleList.length == 0">
+                    
+                                            <div class="d-flex mb-3 justify-content-end">
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn-primary" 
+                                                    (click)="addtime()">
+                                                    {{getLang('addschedule', 'Add Schedule')}} 
+                                                </button>
+                                            </div>
+                                        </div>
+            
+                                        <div class="col-sm-12" *ngIf="form.get('schedule').value == true && this.appointmentscheduleList && this.appointmentscheduleList.length > 0">
+                                            <div class="col-sm-3">
+                                
+                                            </div>
+                                            <div class="col-sm-9" *ngIf="appointmentscheduleList && appointmentscheduleList.length !== 0">
+                                                <ul class="list-group">
+                                                    <li 
+                                                        class="list-group-item d-flex justify-content-between align-items-center"
+                                                        *ngFor="let item of appointmentscheduleList"
+                                                        [ngClass]="isHoliday(item) ? '' : 'list-group-item-danger'">
+                                                        
+                                                        
+                                                        {{timeslotid?.value?.displaytext}} 
+                                                        on 
+                                                        {{item | date: 'mediumDate'}}
+                                                        
+            
+                                                        <span class="cursor-pointer">
+                                                            <a class="delete" (click)="removeDate(item)">{{getLang('remove', 'Remove')}}</a>
+                                                        </span>
+                                                        
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                        </div>
+
+                                    </div>
+                                    
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+
+                    </ng-container>
+
+                    <div class="row mt-3">
+        
+                        <div class="col-sm-12 text-right">
+
+                            <button 
+                                (click)="resetForm()"
+                                class="btn btn-default" 
+                                type="button" 
+                                [disabled]="disableBtn" 
+                                data-dismiss="modal">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+
+                            <button 
+                                class="btn btn-primary ml-2" 
+                                type="submit"
+                                [disabled]="disableBtn">
+                                <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                            </button>
+
+                            
+                        </div>
+                            
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- <div class="modal-footer"></div> -->
+        </div>
+
+    
+
+  </div>
+</div>
+
+<button 
+    class="btn btn-primary btn-lg d-none" 
+    data-backdrop="static" 
+    data-keyboard="false" 
+    data-target="#myModal" 
+    data-toggle="modal">
+</button>
+
+
+<div class="modal" id="myModal" [style.display]="showModal ? 'block' : 'none'">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> 
+                    {{selectedAppointment?.attendee?.title}}
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" (click) = "hide()">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="media mb-4" >
+                    <img 
+                        [src]="selectedAppointment?.memberprofilepic"
+                        class="profile-avatar-img mr-3 rounded-circle" 
+                        alt="">
+                    <div class="media-body">
+                        <div class="font-bold mb-1">{{selectedAppointment?.attendee?.customerid?.fullname}} </div>
+                        <div class="mb-1" *ngIf="selectedAppointment?.attendee?.property?.license_plate"> <span class="font-bold"> Registration Number: </span>{{selectedAppointment?.attendee?.property?.license_plate}} </div>
+                        <div class="mb-1" *ngIf="selectedAppointment?.attendee?.property?.model"> <span class="font-bold"> Model: </span> {{selectedAppointment?.attendee?.property?.model}} </div>
+                        <div class="d-flex">
+                            <div class="flex-grow-1"> {{selectedAppointment?.attendee?.property?.mobile}}</div>
+                            <div class="text-gray"><small>Booked on {{selectedAppointment?.createdAt | date: 'MMM d, y'}}</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="list-unstyled"  *ngIf="this.selectedAppointment">
+
+                    <li class="media mb-3"><mat-icon class="mat-icon material-icons mr-2">schedule</mat-icon>
+                        <div class="media-body">
+                            <div> {{selectedAppointment?.timeslot?.starttime}} - {{selectedAppointment?.timeslot?.endtime}} </div>
+                            <div class="text-gray"><small>{{selectedAppointment?.createdAt | date: 'EEEE, MMMM d'}}</small></div>
+                        </div>
+                    </li>
+                    
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel' && this.selectedAppointment.status !== 'noshow'">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="appointmentStatus('edit')">
+                            <mat-icon class="mat-icon material-icons">edit</mat-icon>
+                                {{getLang('edit','Edit')}} 
+                        </button>
+                    </li>
+
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel' && this.selectedAppointment.status !== 'noshow' ">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="appointmentStatus('inspection')">
+                            <mat-icon class="mat-icon material-icons">build</mat-icon>
+                                {{getLang('inspection','Inspection')}} 
+                        </button>
+                    </li>
+
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel' && this.selectedAppointment.status !== 'noshow' && this.selectedAppointment.property && this.selectedAppointment.property.quotationid">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="appointmentStatus('estimate')">
+                            <mat-icon class="mat-icon material-icons">build</mat-icon>
+                            {{getLang('estimate','Estimate')}} 
+                        </button>
+                    </li>
+
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel' && this.selectedAppointment.status !== 'confirmed' && this.selectedAppointment.property && this.selectedAppointment.property.joborderid">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="appointmentStatus('joborder')">
+                            <mat-icon class="mat-icon material-icons">voicemail</mat-icon>
+                                {{getLang('joborder','Job Order')}} 
+                        </button>
+                    </li>
+
+                    <li 
+                        class="mb-3" 
+                        *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'cancel'">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="appointmentStatus('cancel')">
+                            <mat-icon class="mat-icon material-icons">voicemail</mat-icon>
+                                {{getLang('cancel','Cancel')}} 
+                        </button>
+                    </li>
+
+                    <li 
+                        class="mb-3"
+                        *ngIf="this.selectedAppointment && this.selectedAppointment.status && this.selectedAppointment.status !== 'noshow'">
+                        <button 
+                            class="btn btn-link-gray m-0 p-0" 
+                            (click)="appointmentStatus('noshow')">
+                            <mat-icon class="mat-icon material-icons">notifications_off</mat-icon>
+                                {{getLang('noshow','No Show')}}
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Modal footer -->
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" (click) = "hide()">{{getLang('close','Close')}}</button>
+            </div> -->
+
+        </div>
+    </div>
+</div>

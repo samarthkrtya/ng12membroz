@@ -1,0 +1,413 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value,form.valid)" novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        {{getLang('makebillpayment', 'Make Bill Payment')}}
+                    </h3>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="loader" *ngIf="isLoading">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- *ngIf="!directMode" -->
+                                    <ng-container *ngIf="!isLoading">
+                                        <div class="row">
+                                            <div class="col-sm-12" >
+                                                <label class="col-form-label">
+                                                    {{getLang('customer', 'Customer')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <!-- <dynamic-autocomplete [formControlName]="member_fields.fieldname"
+                                                    [setting]="member_fields"
+                                                    (inputModelChange)="inputModelChangeMember($event)"
+                                                    [showDetail]="true"
+                                                    [htmlContent]="htmlContent"
+                                                    [isDisabled]="directMode"
+                                                    [dbvalue]="member_fields.dbvalue">
+                                                </dynamic-autocomplete> -->
+
+                                                <mat-form-field class="example-full-width" appearance="standard">
+                                                    <input type="text" matInput #trigger="matAutocompleteTrigger"  [matAutocomplete]="auto" formControlName="customerid" 
+                                                      [placeholder]="getLang('searchcustomerormember', 'Search Customer or Member')" (dblclick)="trigger.openPanel()">
+                                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                                      (optionSelected)="inputModelChangeMember()">
+                                                      <mat-option *ngIf="customerisLoadingBox" class="is-loading">
+                                                        <mat-spinner diameter="50"></mat-spinner>
+                                                      </mat-option>
+                                                      <ng-container *ngIf="!customerisLoadingBox && customerList.length > 0">
+                                                        <mat-option *ngFor="let option of customerfilteredOptions | async" [value]="option">
+                                                          {{option?.nickname}}
+                                                        </mat-option>
+                                                      </ng-container>
+                                                      <!-- <ng-container *ngIf="!customerisLoadingBox && customerList.length == 0">
+                                                        <mat-option>
+                                                          <span>{{getLang('norecord', 'No Record')}}</span>
+                                                        </mat-option>
+                                                      </ng-container> -->
+                                                    </mat-autocomplete>
+                                                  </mat-form-field>
+
+                                                  <div class="row" *ngIf="memberid">
+                                                    <div class="col-md-12">
+                                                     <div class="border p-3 rounded alternative-light-blue">
+                                                     <div class="row">
+                                                         <div class="col-sm-4">
+                                                             <div class="media member-profile-item"><img  [src]="form.get('customerid').value.profilepic ? form.get('customerid').value.profilepic : '../assets/img/default-avatar.png'" class="profile-avatar-img mr-2 rounded-circle" alt="">
+                                                             <div class="media-body"><div class="font-500 mb-1"> {{form.get('customerid').value?.fullname}} </div> <div > <div class="d-flex"><div class="flex-grow-1"> {{form.get('customerid').value?.membershipid?.membershipname}} </div> </div> </div></div> </div>
+                                                         </div>
+                                                         <div class="col-sm-4" *ngIf="form.get('customerid').value.property && form.get('customerid').value.property.address">
+                                                             <div class="d-flex"><div class="mr-2"><img src="../assets/img/location-gray-icon.svg" alt=""></div>
+                                                             <div> {{form.get('customerid').value?.property?.address}}   <br> {{form.get('customerid').value?.property?.city}} </div></div>
+                                                         </div>
+                                                         <div class="col-sm-4">
+                                                             <div *ngIf="form.get('customerid').value.primaryemail"> <div class="d-flex align-items-center mb-3"><div class="mr-2"><img src="../assets/img/email-gray-icon.svg" alt=""></div><div>{{form.get('customerid').value?.primaryemail}}</div></div> </div>
+                                                             <div *ngIf="form.get('customerid').value.mobile"> <div class="d-flex align-items-center mb-3"><div class="mr-2"><img src="../assets/img/phone-gray-icon.svg" alt=""></div><div> {{form.get('customerid').value?.mobile}} </div></div> </div>
+                                                         </div>
+                                                     </div>
+                                                   </div>
+                                                 </div> 
+                                             </div>
+
+                                                <div [hidden]="form.get('customerid').valid || (form.get('customerid').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('customerid').hasError('required')"
+                                                        class="error-label">
+                                                        {{getLang('customerisrequired', 'Customer is Required')}}
+                                                    </small> 
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-sm-12">
+                                                <div class="table-responsive border-outer-secondary">
+                                                    <table class="table mat-elevation-z8 w-100 table-membroz-plain">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>{{getLang('docnumber', 'Doc
+                                                                    Number')}}</th>
+                                                                <th>{{getLang('duedate', 'Due Date')}}</th>
+                                                                <th>{{getLang('amount', 'Amount')}}</th>
+                                                                <th>{{getLang('discount', 'Discount')}}</th>
+                                                                <th>{{getLang('taxamount', 'Tax Amount')}}</th>
+                                                                <th>{{getLang('paidamount', 'Paid Amount')}}</th>
+                                                                <th>{{getLang('balance', 'Balance')}}</th>
+                                                                <th>{{getLang('action', 'Action')}}</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <ng-container *ngIf="isLoadingItems" >
+                                                                <div class="loader">
+                                                                    <svg class="circular" viewBox="25 25 50 50">
+                                                                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                                            stroke-miterlimit="10" />
+                                                                    </svg>
+                                                                </div>
+                                                            </ng-container>
+                                                            <tr *ngFor="let item of paymentscheduleList">
+                                                                <td>
+                                                                    <mat-checkbox class="example-margin"
+                                                                        (change)="changeEvent($event, item)"
+                                                                        [(ngModel)]="item.checked"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                    </mat-checkbox>
+                                                                </td>
+                                                                <td>{{item?.docnumber}}</td>
+                                                                <td>{{item?.duedate ? (item?.duedate | toLocaleDate) : ''}}</td>
+                                                                <td>{{item?.amount | myCurrencyPipe}}</td>
+                                                                <td>{{item?.discount | myCurrencyPipe}}</td>
+                                                                <td>{{item?.taxamount | myCurrencyPipe}}</td>
+                                                                <td>{{item?.paidamount | myCurrencyPipe}}</td>
+                                                                <td>{{item?.balance | myCurrencyPipe}}</td>
+                                                                <td>
+                                                                    <button mat-raised-button type="button"
+                                                                        [matTooltip]="'Online Payment'"
+                                                                        [matTooltipPosition]="'above'"
+                                                                        data-original-title="Payment"
+                                                                        class="btn btn-link btn-primary btn-just-icon edit"
+                                                                        (click)="actionlistRecord(item._id)">
+                                                                        <i class="material-icons">payment</i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="6"> </td>
+                                                                <td> {{getLang('payableamount', 'Payable amount')}}
+                                                                </td>
+                                                                <td>{{payableamount | myCurrencyPipe }}</td>
+                                                                <td> </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="loader" *ngIf="isLoading">
+                                        <svg class="circular" viewBox="25 25 50 50">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                                stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+
+                                    <div class="row" *ngIf="!isLoading">
+
+                                        <div class="col-sm-12">
+
+                                            <label class="col-form-label">
+                                                {{getLang('modeofpayment', 'Mode of Payment')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <dynamic-autocomplete [formControlName]="mode_fields.fieldname"
+                                                [setting]="mode_fields"
+                                                (inputModelChange)="inputModelChangeValue($event)">
+                                            </dynamic-autocomplete>
+
+                                            <div [hidden]="form.get('mode').valid || (form.get('mode').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('mode').hasError('required')" class="error-label">
+                                                    {{getLang('modeisrequired', 'Mode is Required')}}
+                                                </small>
+                                             
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('paymentdate', 'Payment Date')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <mat-form-field>
+                                                <input matInput [matDatepicker]="picker2" formControlName="paymentdate">
+                                                <mat-datepicker-toggle matSuffix [for]="picker2">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <div [hidden]="form.get('paymentdate').valid || (form.get('paymentdate').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('paymentdate').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('paymentdateisrequired', 'paymentdate is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="_receiptnumberVisibility">
+                                            <label class="col-form-label">
+                                                {{getLang('receiptnumber', 'Receipt Number')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput formControlName="receiptnumber" name="receiptnumber">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('receiptnumber').valid || (form.get('receiptnumber').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('receiptnumber').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('receiptnumberisrequired', 'receiptnumber is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="_bankDetailsVisbility">
+                                            <label class="col-form-label">
+                                                {{getLang('chqnumber', 'Cheque Number')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput formControlName="chqnumber" name="chqnumber">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('chqnumber').valid || (form.get('chqnumber').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('chqnumber').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('chqnumberisrequired', 'chqnumber is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="_bankDetailsVisbility || _cardDetailsVisbility">
+                                            <label class="col-form-label">
+                                                {{getLang('bankname', 'Bank Name')}}
+                                            </label>
+                                            <dynamic-autocomplete [formControlName]="bankname_fields.fieldname"
+                                                [setting]="bankname_fields">
+                                            </dynamic-autocomplete>
+                                            <div [hidden]="form.get('bankname').valid || (form.get('bankname').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('bankname').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('banknameisrequired', 'bankname is Required')}}
+                                                </small>
+                                               
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="_bankDetailsVisbility">
+                                            <label class="col-form-label">
+                                                {{getLang('chqdate', 'Cheque Date')}}
+                                            </label>
+
+                                            <mat-form-field>
+                                                <input matInput [matDatepicker]="picker3" formControlName="chqdate">
+                                                <mat-datepicker-toggle matSuffix [for]="picker3">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker3 color="primary"></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <div [hidden]="form.get('chqdate').valid || (form.get('chqdate').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('chqdate').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('chqdateisrequired', 'chqdate is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="_bankDetailsVisbility">
+                                            <label class="col-form-label">
+                                                {{getLang('chqstatus', 'Cheque Status')}}
+                                            </label>
+                                            <dynamic-autocomplete [formControlName]="chequestatus_fields.fieldname"
+                                                [setting]="chequestatus_fields">
+                                            </dynamic-autocomplete>
+                                            <div [hidden]="form.get('chqstatus').valid || (form.get('chqstatus').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('chqstatus').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('chqstatusisrequired', 'chqstatus is Required')}}
+                                                </small>  
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="_cardDetailsVisbility">
+                                            <label class="col-form-label">
+                                                {{getLang('cardnumber', 'Card Number(Last 4 digits)')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput formControlName="cardnumber" name="cardnumber">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('cardnumber').valid || (form.get('cardnumber').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('cardnumber').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('cardnumberisrequired', 'cardnumber is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6" *ngIf="_cardDetailsVisbility">
+                                            <label class="col-form-label">
+                                                {{getLang('tidnumber', 'TID Number')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput formControlName="tidnumber" name="tidnumber">
+                                            </mat-form-field>
+                                            <div [hidden]="form.get('tidnumber').valid || (form.get('tidnumber').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('tidnumber').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('tidnumberisrequired', 'tidnumber is Required')}}
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('paymentreceivedby', 'Payment Received By')}}
+                                            </label>
+
+                                            <dynamic-autocomplete [formControlName]="paymentreceivedby_fields.fieldname"
+                                                [setting]="paymentreceivedby_fields" [dbvalue]="paymentreceivedby_fields.modelValue">
+                                            </dynamic-autocomplete>
+
+                                            <div [hidden]="form.get('paymentreceivedby').valid || (form.get('paymentreceivedby').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('paymentreceivedby').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('paymentreceivedbyisrequired', 'Receivedby is Required')}}
+                                                </small> 
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('paidamount', 'Paid Amount')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="number" formControlName="paidamount">
+                                            </mat-form-field>
+
+                                            <div [hidden]="form.get('paidamount').valid || (form.get('paidamount').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('paidamount').hasError('required')"
+                                                    class="error-label">
+                                                    {{getLang('paidamountreqrd', 'Paid Amount is Required')}}
+                                                </small>
+                                                <small *ngIf="form.get('paidamount').hasError('min')"
+                                                    class="error-label">
+                                                    {{getLang('paidamountreqrd', 'Paid Amount is invalid')}}
+                                                </small>                                                
+                                            </div>
+                                            
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading && payableamount > 0">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <button *ngIf="viewOnlineBtn" (click)="onPayOnline()" class="btn btn-success ml-2" type="button"
+                                [disabled]="submitVisibility">
+                                <i class="material-icons">payment</i> {{getLang('payonline', 'Pay Online')}}
+                            </button>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <button [routerLink]="['/pages/dynamic-list/list/billpayment']" class="btn btn-default ml-2"
+                                type="button" [disabled]="submitVisibility">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+                            <button [disabled]="submitVisibility" class="btn btn-primary ml-2" type="submit">
+                                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>

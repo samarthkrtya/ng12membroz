@@ -1,0 +1,105 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-10 ml-auto mr-auto">
+        <div class="row mt-lg-3 mt-0">
+          <h3 class="col-sm-6 card-title align-self-center mb-sm-0 mt-0 mb-3">Activity</h3>
+        </div>
+        <div class="loader" *ngIf="isLoading">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+          </svg>
+        </div>
+
+        <div class="row" *ngIf="!isLoading && dataContent">
+          <div class="col-lg-8 col-md-7 pr-md-0">
+            <div class="card">
+              <div class="border-bottom p-3">
+                <div class="media mb-3">
+                  <div class="media-body">
+                    <div class="row">
+                      <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px">
+                          <div class="member-img-main position-relative member-profile-img-border">
+                              <img [src]="dataContent.refid && dataContent.refid.profilepic ? dataContent.refid.profilepic : '../assets/img/default-avatar.png'"
+                                  class="img-fluid w-100" alt="">
+                          </div>
+                      </div>
+                      <div class="col-xl-9 col-lg-8 col-md-7">
+                        <span [innerHTML]="dataContent.displaycontent">
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body"> 
+                <div class="row">
+                  <div class="col-sm-12">
+                    <app-dynamic-dispositionform *ngIf="dataContent.dispositionid"
+                      type="form"
+                      [isfollowup]=true
+                      [fields]="dataContent.dispositionid.fields"
+                      (onAddUpdateHistoryData)="getSubmittedData($event)">
+                     </app-dynamic-dispositionform> 
+                  </div> 
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-5">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title mb-4"> Activity Details </h4>
+                 <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Task</div>
+                  <div class="col-7">{{dataContent?.dispositionid?.disposition}} </div>
+                </div>
+                <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Assigned users</div>
+                  <div class="col-7"> 
+                    {{dataContent?.asgnUsers}}
+                   </div>
+                </div> 
+              <div class="row mb-3 pb-3 border-bottom">
+                  <div class="col-5 font-weight-bold">Assigned roles</div>
+                  <div class="col-7"> 
+                    {{dataContent?.asgnRoles}}
+                   </div>
+                </div>  
+                <div class="row mb-3 pb-3 border-bottom" >
+                  <div class="col-5 font-weight-bold">Due date</div>
+                  <div class="col-7">
+                    {{dataContent?.duedate | date}}
+                  </div>
+                </div>
+                <div class="row mb-3 pb-3 border-bottom" >
+                  <div class="col-5 font-weight-bold">Priority</div>
+                  <div class="col-7">
+                    {{dataContent?.priority}}
+                  </div>
+                </div>
+
+                <div class="row" >
+                  <div class="col-5 font-weight-bold">Status</div>
+                  <div class="col-7">
+                    <span class="font-weight-bold mb-lg-0"
+                    [ngClass]="{'attend-text-green attend-working-box': dataContent.status == 'close'  , 'attend-text-red attend-absent-box': dataContent.status == 'active' }">
+                    {{dataContent?.status}}
+                  </span>
+                  </div>
+                </div>
+
+
+               
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

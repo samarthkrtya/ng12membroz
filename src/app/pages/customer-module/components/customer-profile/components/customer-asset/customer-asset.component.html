@@ -1,0 +1,51 @@
+<div class="table-responsive mt-3">
+  <table *ngIf="dataSource3 && dataSource3.length !== 0" mat-table [dataSource]="dataSource3"
+    class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+    <ng-container matColumnDef="vehicle">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('vehicle','Vehicle')}}</th>
+      <td mat-cell *matCellDef="let element">
+        {{element.vehicle}}
+      </td>
+    </ng-container>
+
+    <!-- <ng-container matColumnDef="customername">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('customername','Customer Name')}} </th>
+      <td mat-cell *matCellDef="let element">{{element.customername}}</td>
+    </ng-container> -->
+
+    <ng-container matColumnDef="model">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('model','Model')}}</th>
+      <td mat-cell *matCellDef="let element">
+        {{element.model}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="licenseplate">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('licenseplate','License Plate')}} </th>
+      <td mat-cell *matCellDef="let element">{{element.licenseplate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="fueltype">
+      <th mat-header-cell *matHeaderCellDef>{{getLang('fueltype','Fuel Type')}} </th>
+      <td mat-cell *matCellDef="let element">{{element.fueltype}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}}</th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        <button class="btn btn-link" data-toggle="dropdown">
+          <i class="material-icons">{{getLang('morevert','more_vert')}}</i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item"
+            [routerLink]="['/pages/asset-module/vehicle-profile/' + element._id ]">{{getLang('viewvehicle','View
+            Vehicle')}}</a>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+  </table>
+</div>

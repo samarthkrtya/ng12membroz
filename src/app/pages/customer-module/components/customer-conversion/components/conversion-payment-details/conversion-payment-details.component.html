@@ -1,0 +1,272 @@
+<div [formGroup]="formGroup">
+    <mat-accordion class="example-headers-align" multi>
+
+        <mat-expansion-panel expanded>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Payment Details
+                </mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
+            
+
+            <div class="row">
+
+                <div class="col-sm-12" >
+
+                    <label class="col-form-label">
+                        {{getLang('modeofpayment', 'Mode of Payment')}}
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <dynamic-autocomplete 
+                        [formControlName]="mode_fields.fieldname"
+                        [setting]="mode_fields" 
+                        [dbvalue]="mode_fields.dbvalue"
+                        (inputModelChange)="inputModelChangeValue($event)">
+                    </dynamic-autocomplete>
+
+                    <div
+                        [hidden]="formGroup.controls['mode'].valid || (formGroup.controls['mode'].pristine && !submitted)"
+                        class="text-danger">
+
+                        <small *ngIf="formGroup.controls['mode'].hasError('required')" class="error-label">
+                            {{getLang('modeisrequired', 'Mode of Payment is Required')}}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="col-form-label">
+                        {{getLang('paymentdate', 'Payment Date')}}
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <mat-form-field>
+                        <input 
+                            matInput 
+                            [matDatepicker]="picker5" 
+                            formControlName="paymentdate"
+                            (click)="picker5.open()">
+                        <mat-datepicker-toggle matSuffix [for]="picker5">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker5 color="primary"></mat-datepicker>
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['paymentdate'].valid || (formGroup.controls['paymentdate'].pristine && !submitted)"
+                        class="text-danger">
+
+                        <small *ngIf="formGroup.controls['paymentdate'].hasError('required')" class="error-label">
+                            {{getLang('paymentdateisrequired', 'Payment Date is Required')}}
+                        </small>
+                    </div>
+                    
+                </div>
+
+                <div class="col-sm-6" *ngIf="_receiptnumberVisibility">
+                    <label class="col-form-label">
+                        {{getLang('receiptnumber', 'Receipt Number')}}
+                    </label>
+
+                    <mat-form-field class="example-full-width">
+                        <input matInput formControlName="receiptnumber" name="receiptnumber">
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['receiptnumber'].valid || (formGroup.controls['receiptnumber'].pristine && !submitted)"
+                        class="text-danger">
+
+                        <small *ngIf="formGroup.controls['receiptnumber'].hasError('required')" class="error-label">
+                            {{getLang('receiptnumberisrequired', 'Receipt Number is Required')}}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6" *ngIf="_bankDetailsVisbility">
+                    
+                    <label class="col-form-label">
+                        {{getLang('chqnumber', 'Cheque Number')}}
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <mat-form-field class="example-full-width">
+                        <input matInput formControlName="chqnumber" name="chqnumber">
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['chqnumber'].valid || (formGroup.controls['chqnumber'].pristine && !submitted)"
+                        class="text-danger">
+
+                        <small *ngIf="formGroup.controls['chqnumber'].hasError('required')" class="error-label">
+                            {{getLang('chqnumberisrequired', 'Cheque Number is Required')}}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6"  *ngIf="_bankDetailsVisbility || _cardDetailsVisbility">
+                    <label class="col-form-label">
+                        {{getLang('bankname', 'Bank Name')}}
+                        
+                    </label>
+                    
+                    <dynamic-autocomplete 
+                        [formControlName]="bankname_fields.fieldname"
+                        [setting]="bankname_fields" 
+                        [dbvalue]="bankname_fields.dbvalue">
+                    </dynamic-autocomplete>
+
+                    <div
+                        [hidden]="formGroup.controls['bankname'].valid || (formGroup.controls['bankname'].pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="formGroup.controls['bankname'].hasError('required')" class="error-label">
+                            {{getLang('banknameisrequired', 'Bank Name is Required')}}
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-sm-6"  *ngIf="_bankDetailsVisbility">
+                    <label class="col-form-label">
+                        {{getLang('chqdate', 'Cheque Date')}}
+                    </label>
+
+                    <mat-form-field>
+                        <input 
+                            matInput 
+                            [matDatepicker]="picker6" 
+                            formControlName="chqdate"
+                            (click)="picker6.open()">
+                        <mat-datepicker-toggle matSuffix [for]="picker6">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker6 color="primary"></mat-datepicker>
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['chqdate'].valid || (formGroup.controls['chqdate'].pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="formGroup.controls['chqdate'].hasError('required')" class="error-label">
+                            {{getLang('chqdateisrequired', 'Cheque Date is Required')}}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6" *ngIf="_bankDetailsVisbility">
+                    <label class="col-form-label">
+                        {{getLang('chqstatus', 'Cheque Status')}}
+                    </label>
+
+                    <dynamic-autocomplete 
+                        [formControlName]="chequestatus_fields.fieldname"
+                        [setting]="chequestatus_fields" 
+                        [dbvalue]="chequestatus_fields.dbvalue">
+                    </dynamic-autocomplete>
+
+                    <div
+                        [hidden]="formGroup.controls['chqstatus'].valid || (formGroup.controls['chqstatus'].pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="formGroup.controls['chqstatus'].hasError('required')" class="error-label">
+                            {{getLang('chqstatusisrequired', 'Cheque Status is Required')}}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6" *ngIf="_cardDetailsVisbility">
+                    <label class="col-form-label">
+                        {{getLang('cardnumber', 'Card Number(Last 4 digits)')}}
+                    </label>
+
+                    <mat-form-field class="example-full-width">
+                        <input matInput formControlName="cardnumber" name="cardnumber">
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['cardnumber'].valid || (formGroup.controls['cardnumber'].pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="formGroup.controls['cardnumber'].hasError('required')" class="error-label">
+                            {{getLang('cardnumberisrequired', 'Card Number is Required')}}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6" *ngIf="_cardDetailsVisbility">
+                    <label class="col-form-label">
+                        {{getLang('tidnumber', 'TID Number')}}
+                    </label>
+
+                    <mat-form-field class="example-full-width">
+                        <input matInput formControlName="tidnumber" name="tidnumber">
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['tidnumber'].valid || (formGroup.controls['tidnumber'].pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="formGroup.controls['tidnumber'].hasError('required')" class="error-label">
+                            {{getLang('tidnumberisrequired', 'TID Number is Required')}}
+                        </small>
+                    </div>
+                    
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="col-form-label">
+                        {{getLang('paymentreceivedby', 'Payment Received By')}}
+                    </label>
+
+                    <dynamic-autocomplete 
+                        *ngIf="paymentreceivedby_fields.visible"
+                        [formControlName]="paymentreceivedby_fields.fieldname"
+                        [setting]="paymentreceivedby_fields"
+                        [dbvalue]="paymentreceivedby_fields.dbvalue">
+                    </dynamic-autocomplete>
+
+                    <div
+                        [hidden]="formGroup.controls['paymentreceivedby'].valid || (formGroup.controls['paymentreceivedby'].pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="formGroup.controls['paymentreceivedby'].hasError('required')" class="error-label">
+                            {{getLang('paymentreceivedbyisrequired', 'Payment Received By is Required')}}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="col-form-label">
+                        {{getLang('paidamount', 'Paid Amount')}}
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <mat-form-field class="example-full-width">
+                        <input type="number" matInput formControlName="paidamount">
+                    </mat-form-field>
+
+                    <div
+                        [hidden]="formGroup.controls['paidamount'].valid || (formGroup.controls['paidamount'].pristine && !submitted)"
+                        class="text-danger">
+
+                        <small 
+                            *ngIf="formGroup.controls['paidamount'].hasError('required')" 
+                            class="error-label">
+                            {{getLang('paidamountisrequired', 'Paid Amount is Required')}}
+                        </small>
+
+                        <small *ngIf="formGroup.controls['paidamount'].hasError('min')"
+                            class="error-label">
+                            {{getLang('paidamountreqrd', 'Paid Amount is invalid')}}
+                        </small>       
+                    </div>
+
+                </div>
+
+            </div>
+            
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
+</div>

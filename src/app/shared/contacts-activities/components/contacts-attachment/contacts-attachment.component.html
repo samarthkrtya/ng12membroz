@@ -1,0 +1,177 @@
+<div class="card mnh-230 mt-0">
+    <div class="card-header card-head-membroz d-flex">
+        <span class="flex-grow-1">{{getLang('attachment', 'Attachment')}}  </span>  
+        <span>
+            <a class="cursor-pointer" (click)="addAttachment()">
+                <img src="../assets/img/plus-white-icon.svg" class="ml-2" alt="">
+            </a>
+        </span>
+    </div>
+    <div class="card-body p-0">
+        <ul class="list-unstyled activity-item-list">
+
+            <ng-container *ngIf="categories && categories.length > 0; else displayTemplate">
+
+                <ng-container *ngIf="checkImages(categories); else displayTemp">
+                    <ng-container *ngFor="let item of categories.slice(0,3)">
+                        <li *ngIf="item.attachment && item.attachment !== ''">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="font-500"> {{item.name}} </div>
+                                </div>
+                                <div class="ml-2 cursor-pointer" (click)="downloadlink(item.attachment)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25"><g transform="translate(-1696 -680)"><g transform="translate(1696 680)" fill="none" class="svg-stroke-secondary-icon" stroke-width="1"><circle cx="12.5" cy="12.5" r="12.5" stroke="none"/><circle cx="12.5" cy="12.5" r="12" fill="none"/></g><path d="M3.376,10.622A2.247,2.247,0,0,1,5.622,8.376h2.9V7h-2.9a3.622,3.622,0,0,0,0,7.243h2.9V12.867h-2.9A2.247,2.247,0,0,1,3.376,10.622Zm2.97.724h5.795V9.9H6.346ZM12.865,7h-2.9V8.376h2.9a2.245,2.245,0,1,1,0,4.491h-2.9v1.376h2.9a3.622,3.622,0,1,0,0-7.243Z" transform="translate(1699 682)" class="svg-fill-secondary-icon" /></g></svg>
+                                </div>
+                            </div>
+                        </li>
+                    </ng-container>
+                    <li class="text-center" *ngIf="viewMoreVisible" (click)="addAttachment()"> <a class="cursor-pointer">{{getLang('viewmore', 'View More')}}</a></li>
+                </ng-container>
+
+                <ng-template #displayTemp>
+                    <li>
+                        <div class="d-flex align-items-center justify-content-center mt-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="98.211" height="68.285" viewBox="0 0 98.211 68.285">
+                            <g id="empty-state" transform="translate(-20767.001 -10703.957)">
+                                <g id="box7" transform="translate(20791.715 11203.957)">
+                                <path id="Path_887" data-name="Path 887" d="M8.952-495.168c-4.841,2.65-8.877,4.9-8.971,4.991a1.157,1.157,0,0,0-.225.562l-.056.393,2.678,2.688,2.687,2.687-2.631,2.631c-2.407,2.407-2.631,2.659-2.678,3a.659.659,0,0,0,.169.637,31.219,31.219,0,0,0,2.847,1.695l2.622,1.433.047,5.019.047,5.019.234.215c.131.131,4.167,2.378,8.961,5.019,6.087,3.334,8.821,4.785,9.018,4.785s2.931-1.451,9.018-4.785c4.794-2.641,8.83-4.888,8.961-5.019l.234-.215.047-5.019.047-5.019,2.622-1.433a31.394,31.394,0,0,0,2.837-1.686.81.81,0,0,0,.075-.964c-.075-.14-1.274-1.386-2.669-2.781l-2.538-2.528,2.678-2.687,2.687-2.687-.056-.393a1.157,1.157,0,0,0-.225-.562c-.318-.309-6.339-3.568-6.686-3.615a.645.645,0,0,0-.637.215.838.838,0,0,0-.169,1.217,22.263,22.263,0,0,0,2.725,1.629c1.367.749,2.491,1.377,2.491,1.4s-.964,1.011-2.144,2.191l-2.144,2.144-7.707-4.233c-4.242-2.332-7.744-4.27-7.782-4.307a26.112,26.112,0,0,1,2.079-2.21l2.163-2.154.581.318c4.392,2.425,4.336,2.4,4.851,1.892a.889.889,0,0,0,.047-1.255A55.061,55.061,0,0,0,29.4-500a.983.983,0,0,0-.459.15c-.131.084-1.358,1.274-2.734,2.65l-2.51,2.491L21.2-497.2c-1.386-1.376-2.613-2.566-2.744-2.65a.984.984,0,0,0-.468-.15C17.847-500,14.121-498.005,8.952-495.168Zm11.04-.534,2.135,2.135-.412.234c-.215.131-3.727,2.06-7.791,4.289L6.545-484.99l-2.172-2.182a26.236,26.236,0,0,1-2.069-2.21c.056-.028,3.53-1.938,7.725-4.251s7.679-4.2,7.725-4.2S18.812-496.882,19.992-495.7Zm11.415,7.65c4.176,2.3,7.613,4.186,7.632,4.2.047.037-15.217,8.381-15.338,8.381-.066,0-3.558-1.882-7.753-4.186l-7.622-4.186L8.643-484c.169-.094,3.6-1.985,7.613-4.2s7.36-4.027,7.426-4.027S27.221-490.346,31.407-488.052ZM14.336-478.4l7.791,4.27-2.144,2.144c-1.171,1.171-2.172,2.135-2.219,2.135-.075,0-14.982-8.147-15.413-8.428-.112-.075.3-.524,2.013-2.247,1.18-1.18,2.163-2.154,2.172-2.154S10.057-480.757,14.336-478.4Zm28.7-2.126c1.18,1.18,2.126,2.163,2.1,2.191-.094.094-15.282,8.418-15.432,8.456a15.459,15.459,0,0,1-2.285-2.107l-2.144-2.144,7.763-4.27c4.261-2.341,7.772-4.27,7.8-4.27S41.847-481.712,43.037-480.523ZM12.81-470.372c2.875,1.573,4.991,2.678,5.131,2.678a1.171,1.171,0,0,0,.449-.1c.112-.056,1.358-1.245,2.762-2.641l2.547-2.547,2.556,2.547c1.4,1.4,2.641,2.584,2.753,2.641a1.171,1.171,0,0,0,.449.1c.187,0,8.774-4.607,10.329-5.544l.3-.187v8.053l-7.65,4.2c-4.2,2.313-7.678,4.214-7.725,4.233s-.084-2.2-.094-4.935l-.028-4.972-.262-.253a.749.749,0,0,0-.627-.262.749.749,0,0,0-.627.262l-.262.253-.028,4.972c-.009,2.734-.056,4.954-.094,4.935s-3.521-1.92-7.725-4.233l-7.65-4.2v-8.053l.309.187C7.781-473.135,10.122-471.852,12.81-470.372Z" fill="#f57c00"/>
+                                <path id="Path_888" data-name="Path 888" d="M246.975-184.806a1.055,1.055,0,0,0-.189,1.678,1.023,1.023,0,0,0,1.678-.6A1.04,1.04,0,0,0,246.975-184.806Z" transform="translate(-223.758 -285.731)" fill="#f57c00"/>
+                                <path id="Path_889" data-name="Path 889" d="M395.566-451.687a1.023,1.023,0,0,0-.566.986,1.115,1.115,0,0,0,1,.944,1.213,1.213,0,0,0,1.038-.787,1.084,1.084,0,0,0-.608-1.154C395.976-451.886,395.965-451.886,395.566-451.687Z" transform="translate(-358.461 -43.11)" fill="#f57c00"/>
+                                </g>
+                                <g id="Polygon_1" data-name="Polygon 1" transform="translate(20767 10725)" fill="none">
+                                <path d="M5,0l5,8.75H0Z" stroke="none"/>
+                                <path d="M 5 2.015560150146484 L 1.723176956176758 7.75 L 8.276823043823242 7.75 L 5 2.015560150146484 M 5 0 L 10 8.75 L 0 8.75 L 5 0 Z" stroke="none" fill="#ff4e20"/>
+                                </g>
+                                <g id="Polygon_2" data-name="Polygon 2" transform="translate(20838 10749)" fill="#fff">
+                                <path d="M 9.097874641418457 7.5 L 0.9021250009536743 7.5 L 5 0.9434000253677368 L 9.097874641418457 7.5 Z" stroke="none"/>
+                                <path d="M 5 1.886799812316895 L 1.80424976348877 7 L 8.19575023651123 7 L 5 1.886799812316895 M 5 0 L 10 8 L 0 8 L 5 0 Z" stroke="none" fill="#6b70ff"/>
+                                </g>
+                                <g id="Ellipse_87" data-name="Ellipse 87" transform="translate(20783 10750)" fill="#fff" stroke="#2ac5d1" stroke-width="1">
+                                <circle cx="4" cy="4" r="4" stroke="none"/>
+                                <circle cx="4" cy="4" r="3.5" fill="none"/>
+                                </g>
+                                <g id="Rectangle_834" data-name="Rectangle 834" transform="translate(20814 10762.343) rotate(45)" fill="#fff" stroke="#de43de" stroke-width="1">
+                                <rect width="7" height="7" stroke="none"/>
+                                <rect x="0.5" y="0.5" width="6" height="6" fill="none"/>
+                                </g>
+                                <path id="star" d="M7.818,9.554a.44.44,0,0,1-.24-.071L5,7.81,2.422,9.483a.441.441,0,0,1-.664-.489l.807-2.865L.156,4.089a.441.441,0,0,1,.253-.776L3.3,3.106,4.6.258a.44.44,0,0,1,.8,0L6.7,3.106l2.89.208a.441.441,0,0,1,.253.776L7.434,6.128l.807,2.865a.441.441,0,0,1-.424.56ZM5,6.845a.44.44,0,0,1,.24.071L7.076,8.107,6.509,6.095a.44.44,0,0,1,.139-.456l1.8-1.524L6.377,3.966a.441.441,0,0,1-.369-.256L5,1.5,3.992,3.709a.44.44,0,0,1-.369.256L1.55,4.115l1.8,1.524a.441.441,0,0,1,.139.456L2.923,8.107,4.76,6.916A.44.44,0,0,1,5,6.845Z" transform="translate(20855.213 10729)" fill="#00cb5f"/>
+                            </g>
+                            </svg>
+                        </div>
+                    </li>
+                </ng-template>
+                
+            </ng-container>
+            
+            <ng-template #displayTemplate>
+                <li>
+                    <div class="d-flex align-items-center justify-content-center mt-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="98.211" height="68.285" viewBox="0 0 98.211 68.285">
+                        <g id="empty-state" transform="translate(-20767.001 -10703.957)">
+                            <g id="box7" transform="translate(20791.715 11203.957)">
+                            <path id="Path_887" data-name="Path 887" d="M8.952-495.168c-4.841,2.65-8.877,4.9-8.971,4.991a1.157,1.157,0,0,0-.225.562l-.056.393,2.678,2.688,2.687,2.687-2.631,2.631c-2.407,2.407-2.631,2.659-2.678,3a.659.659,0,0,0,.169.637,31.219,31.219,0,0,0,2.847,1.695l2.622,1.433.047,5.019.047,5.019.234.215c.131.131,4.167,2.378,8.961,5.019,6.087,3.334,8.821,4.785,9.018,4.785s2.931-1.451,9.018-4.785c4.794-2.641,8.83-4.888,8.961-5.019l.234-.215.047-5.019.047-5.019,2.622-1.433a31.394,31.394,0,0,0,2.837-1.686.81.81,0,0,0,.075-.964c-.075-.14-1.274-1.386-2.669-2.781l-2.538-2.528,2.678-2.687,2.687-2.687-.056-.393a1.157,1.157,0,0,0-.225-.562c-.318-.309-6.339-3.568-6.686-3.615a.645.645,0,0,0-.637.215.838.838,0,0,0-.169,1.217,22.263,22.263,0,0,0,2.725,1.629c1.367.749,2.491,1.377,2.491,1.4s-.964,1.011-2.144,2.191l-2.144,2.144-7.707-4.233c-4.242-2.332-7.744-4.27-7.782-4.307a26.112,26.112,0,0,1,2.079-2.21l2.163-2.154.581.318c4.392,2.425,4.336,2.4,4.851,1.892a.889.889,0,0,0,.047-1.255A55.061,55.061,0,0,0,29.4-500a.983.983,0,0,0-.459.15c-.131.084-1.358,1.274-2.734,2.65l-2.51,2.491L21.2-497.2c-1.386-1.376-2.613-2.566-2.744-2.65a.984.984,0,0,0-.468-.15C17.847-500,14.121-498.005,8.952-495.168Zm11.04-.534,2.135,2.135-.412.234c-.215.131-3.727,2.06-7.791,4.289L6.545-484.99l-2.172-2.182a26.236,26.236,0,0,1-2.069-2.21c.056-.028,3.53-1.938,7.725-4.251s7.679-4.2,7.725-4.2S18.812-496.882,19.992-495.7Zm11.415,7.65c4.176,2.3,7.613,4.186,7.632,4.2.047.037-15.217,8.381-15.338,8.381-.066,0-3.558-1.882-7.753-4.186l-7.622-4.186L8.643-484c.169-.094,3.6-1.985,7.613-4.2s7.36-4.027,7.426-4.027S27.221-490.346,31.407-488.052ZM14.336-478.4l7.791,4.27-2.144,2.144c-1.171,1.171-2.172,2.135-2.219,2.135-.075,0-14.982-8.147-15.413-8.428-.112-.075.3-.524,2.013-2.247,1.18-1.18,2.163-2.154,2.172-2.154S10.057-480.757,14.336-478.4Zm28.7-2.126c1.18,1.18,2.126,2.163,2.1,2.191-.094.094-15.282,8.418-15.432,8.456a15.459,15.459,0,0,1-2.285-2.107l-2.144-2.144,7.763-4.27c4.261-2.341,7.772-4.27,7.8-4.27S41.847-481.712,43.037-480.523ZM12.81-470.372c2.875,1.573,4.991,2.678,5.131,2.678a1.171,1.171,0,0,0,.449-.1c.112-.056,1.358-1.245,2.762-2.641l2.547-2.547,2.556,2.547c1.4,1.4,2.641,2.584,2.753,2.641a1.171,1.171,0,0,0,.449.1c.187,0,8.774-4.607,10.329-5.544l.3-.187v8.053l-7.65,4.2c-4.2,2.313-7.678,4.214-7.725,4.233s-.084-2.2-.094-4.935l-.028-4.972-.262-.253a.749.749,0,0,0-.627-.262.749.749,0,0,0-.627.262l-.262.253-.028,4.972c-.009,2.734-.056,4.954-.094,4.935s-3.521-1.92-7.725-4.233l-7.65-4.2v-8.053l.309.187C7.781-473.135,10.122-471.852,12.81-470.372Z" fill="#f57c00"/>
+                            <path id="Path_888" data-name="Path 888" d="M246.975-184.806a1.055,1.055,0,0,0-.189,1.678,1.023,1.023,0,0,0,1.678-.6A1.04,1.04,0,0,0,246.975-184.806Z" transform="translate(-223.758 -285.731)" fill="#f57c00"/>
+                            <path id="Path_889" data-name="Path 889" d="M395.566-451.687a1.023,1.023,0,0,0-.566.986,1.115,1.115,0,0,0,1,.944,1.213,1.213,0,0,0,1.038-.787,1.084,1.084,0,0,0-.608-1.154C395.976-451.886,395.965-451.886,395.566-451.687Z" transform="translate(-358.461 -43.11)" fill="#f57c00"/>
+                            </g>
+                            <g id="Polygon_1" data-name="Polygon 1" transform="translate(20767 10725)" fill="none">
+                            <path d="M5,0l5,8.75H0Z" stroke="none"/>
+                            <path d="M 5 2.015560150146484 L 1.723176956176758 7.75 L 8.276823043823242 7.75 L 5 2.015560150146484 M 5 0 L 10 8.75 L 0 8.75 L 5 0 Z" stroke="none" fill="#ff4e20"/>
+                            </g>
+                            <g id="Polygon_2" data-name="Polygon 2" transform="translate(20838 10749)" fill="#fff">
+                            <path d="M 9.097874641418457 7.5 L 0.9021250009536743 7.5 L 5 0.9434000253677368 L 9.097874641418457 7.5 Z" stroke="none"/>
+                            <path d="M 5 1.886799812316895 L 1.80424976348877 7 L 8.19575023651123 7 L 5 1.886799812316895 M 5 0 L 10 8 L 0 8 L 5 0 Z" stroke="none" fill="#6b70ff"/>
+                            </g>
+                            <g id="Ellipse_87" data-name="Ellipse 87" transform="translate(20783 10750)" fill="#fff" stroke="#2ac5d1" stroke-width="1">
+                            <circle cx="4" cy="4" r="4" stroke="none"/>
+                            <circle cx="4" cy="4" r="3.5" fill="none"/>
+                            </g>
+                            <g id="Rectangle_834" data-name="Rectangle 834" transform="translate(20814 10762.343) rotate(45)" fill="#fff" stroke="#de43de" stroke-width="1">
+                            <rect width="7" height="7" stroke="none"/>
+                            <rect x="0.5" y="0.5" width="6" height="6" fill="none"/>
+                            </g>
+                            <path id="star" d="M7.818,9.554a.44.44,0,0,1-.24-.071L5,7.81,2.422,9.483a.441.441,0,0,1-.664-.489l.807-2.865L.156,4.089a.441.441,0,0,1,.253-.776L3.3,3.106,4.6.258a.44.44,0,0,1,.8,0L6.7,3.106l2.89.208a.441.441,0,0,1,.253.776L7.434,6.128l.807,2.865a.441.441,0,0,1-.424.56ZM5,6.845a.44.44,0,0,1,.24.071L7.076,8.107,6.509,6.095a.44.44,0,0,1,.139-.456l1.8-1.524L6.377,3.966a.441.441,0,0,1-.369-.256L5,1.5,3.992,3.709a.44.44,0,0,1-.369.256L1.55,4.115l1.8,1.524a.441.441,0,0,1,.139.456L2.923,8.107,4.76,6.916A.44.44,0,0,1,5,6.845Z" transform="translate(20855.213 10729)" fill="#00cb5f"/>
+                        </g>
+                        </svg>
+                    </div>
+                </li>
+            </ng-template>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+<button id="addAttachment" type="button" class="btn btn-info btn-lg d-none" data-toggle="modal" data-target="#myModalAttachment" >Open Modal</button>
+<div id="myModalAttachment" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">               
+                <h4 class="modal-title">{{getLang('attachfiles', 'Attach Files')}}</h4>
+                <button type="button" class="close" id="attachmentclose" data-dismiss="modal" (click)="advcQtyClose()"><span
+                    aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="" *ngFor="let item of categories">
+                    <h5 class="mb-2">{{item.name | titlecase}}</h5>
+                    <div class="wizard-upload-main mb-3 text-center" >
+                        <div class="">
+
+                            <div class="btn btn-primary btn-file" >
+
+                                <label class="upload_button mb-0" for="fileupload_{{returnTitle(item.name)}}"><i class="material-icons">cloud_upload</i> Upload </label>
+
+                                <input
+                                    type="file"
+                                    id="fileupload_{{returnTitle(item.name)}}"
+                                    #fileInput
+                                    ng2FileSelect
+                                    [style.display]="'none'"
+                                    [uploader]="customeUploader[returnTitle(item.name)]"
+                                    (change)="fileInput.value=''"
+                                    multiple />
+                
+                            </div>
+
+                            <img 
+                                [ngClass]="'loading_' + returnTitle(item.name)"
+                                src="assets/img/image-loader.GIF"
+                                style="height: 100px; width: 100px; display: none">
+                            
+                            <div class="mt-2" >
+                                <span 
+                                    class="upload-tag badge badge-pill d-flex mb-2" 
+                                    *ngFor="let attachment of formImageArray[returnTitle(item.name)]">
+                                    <span 
+                                        (click)="downloadlink(attachment.attachment)" 
+                                        class="d-flex flex-grow-1 align-items-center" >
+                                        <i class="material-icons d-flex align-items-center mr-2">{{getLang('link', 'link')}}</i>
+                                        <span>{{attachment.originalfilename}}.{{attachment.extension}}</span>
+                                    </span> 
+                                    <i 
+                                        (click)="removeImg(returnTitle(item.name), attachment.attachment)"
+                                        class="material-icons d-flex align-items-center justify-content-end ml-2 cursor-pointer">{{getLang('clear', 'clear')}}</i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button 
+                class="btn btn-default" 
+                data-dismiss="modal"
+                type="button">
+                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+            </button>
+            <button 
+                class="btn btn-primary ml-2" 
+                type="button" 
+                (click)="submit()">
+                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+            </button>
+
+            </div>
+        </div>
+    </div>
+</div>

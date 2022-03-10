@@ -1,0 +1,68 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="card-title mt-3">Wallet Debits</h3>
+                <div class="card">                   
+                    <div class="card-body">
+                        <div class="row payment-container">
+                            <div class="col-xs-12 col-md-6">
+                                <div class="tab-content">
+                                    <div class="panel panel-default credit-card-box">
+                                        <div class="panel-body">
+                                            <div class="card-body">
+                                                <ul class="nav nav-pills nav-pills-warning">
+                                                    <li 
+                                                        class="nav-item"
+                                                        id="cardClick" 
+                                                        (click)="randomValueClick('card')" 
+                                                        [ngClass]="cardEnabled ? 'd-block': 'd-none'">
+                                                        <a href="#pill1" data-toggle="tab" class="nav-link">
+                                                        {{getLang('membrcard', 'MEMBER CARD')}}
+                                                        </a>
+                                                    </li>
+                                                    <li 
+                                                        class="nav-item"
+                                                         (click)="randomValueClick('mobile')" 
+                                                        id="mobileClick" 
+                                                        [ngClass]="mobileEnabled ? 'd-block': 'd-none'">
+                                                        <a href="#pill2" data-toggle="tab" class="nav-link">
+                                                            {{getLang('mobilotp', 'MOBILE OTP')}}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content tab-space">
+                                                    <div 
+                                                        class="tab-pane" 
+                                                        id="pill1" 
+                                                        [ngClass]="cardEnabled ? 'd-block': 'd-none'">
+                                                        <app-wallet-transaction-debit
+                                                            *ngIf="cardVisibility">
+                                                        </app-wallet-transaction-debit>
+                                                    </div>
+                                                    <div 
+                                                        class="tab-pane" 
+                                                        id="pill2" 
+                                                        [ngClass]="mobileEnabled ? 'd-block': 'd-none'">
+                                                        <app-wallet-transaction-debit-mobile
+                                                            *ngIf="mobileVisibility">
+                                                        </app-wallet-transaction-debit-mobile>
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <div *ngIf="!cardVisibility && !mobileVisibility" class="text-danger">
+                                                    <mat-error> <span class="error-label">No wallet permission found!!! </span> </mat-error>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>

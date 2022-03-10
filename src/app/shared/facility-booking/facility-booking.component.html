@@ -1,0 +1,338 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)" novalidate class="mb-0">
+
+    <div class="row">
+
+        <div class="col-sm-6">
+            <label class="col-form-label"> {{getLang('type', 'Type')}}
+                <span class="text-danger">*</span>
+            </label>
+            <dynamic-autocomplete 
+                *ngIf="type_fields.visible" 
+                [formControlName]="type_fields.fieldname" 
+                [setting]="type_fields"
+                [dbvalue]="type_fields.value"
+                (inputModelChange)="inputModelChangeValue($event)">
+            </dynamic-autocomplete>
+
+            <div 
+                [hidden]="form.get('markingid').valid || (form.get('markingid').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('markingid').hasError('required')" class="error-label">
+                    {{getLang('typeisrequired', 'Type is Required')}}
+                </small>
+            </div>
+
+        </div>
+
+        <div class="col-sm-6">
+            <label class="col-form-label"> {{getLang('facility', 'Facility')}}
+                <span class="text-danger">*</span>
+            </label>
+            <mat-form-field class="example-full-width">
+                <input required type="text" matInput [formControl]="facilityid" [matAutocomplete]="auto" (keyup.enter)="enter()"
+                    (click)="preloaddata()" (change)="handleEmptyInput($event)">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn"
+                    (optionSelected)="optionSelected($event.option)">
+
+                    <mat-option *ngIf="isLoadingBox" class="is-loading">
+                        <mat-spinner diameter="50"></mat-spinner>
+                    </mat-option>
+
+                    <ng-container *ngIf="!isLoadingBox && serviceLists.length > 0">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option.title}}
+                        </mat-option>
+                    </ng-container>
+
+                    <ng-container *ngIf="!isLoadingBox && serviceLists.length == 0">
+                        <mat-option>
+                            <span>{{getLang('norecord', 'No Record')}}</span>
+                        </mat-option>
+                    </ng-container>
+
+                </mat-autocomplete>
+
+
+                <mat-error *ngFor="let validation of validation_msgs.facilityid">
+                    <div *ngIf="facilityid.hasError(validation.type)">
+                      {{validation.message}}
+                    </div>
+                </mat-error>
+
+            </mat-form-field>
+
+        </div>
+
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('date', 'Date')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field>
+                <input matInput (click)="picker.open()" [matDatepicker]="picker" formControlName="date" [min]="mindate"
+                    (ngModelChange)="onBookingDateChanged($event)">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <div [hidden]="form.get('date').valid || (form.get('date').pristine && !submitted)" class="text-danger">
+                <small *ngIf="form.get('date').hasError('required')" class="error-label">
+                    {{getLang('dateisrequired', 'date is Required')}}
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <label class="col-form-label">
+                {{getLang('timeslot', 'Timeslot')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field>
+                <input type="text" required matInput [formControl]="timeslotid" [matAutocomplete]="autoTime">
+                <mat-autocomplete #autoTime="matAutocomplete" [displayWith]="timeDisplayFn">
+
+                    <mat-option *ngIf="timeisLoadingBox" class="is-loading">
+                        <mat-spinner diameter="50"></mat-spinner>
+                    </mat-option>
+
+                    <ng-container *ngIf="!timeisLoadingBox && alltimeslotLists.length > 0">
+                        <mat-option *ngFor="let option of timeslotfilteredOptions | async" [value]="option">
+                            {{option?.displaytext}}
+                        </mat-option>
+                    </ng-container>
+
+                    <ng-container *ngIf="!timeisLoadingBox && alltimeslotLists.length == 0">
+                        <mat-option>
+                            <span>{{getLang('norecord', 'No Record')}}</span>
+                        </mat-option>
+                    </ng-container>
+                </mat-autocomplete>
+
+                <mat-error *ngFor="let validation of validation_msgs.timeslotid">
+                    <div *ngIf="timeslotid.hasError(validation.type)">
+                      {{validation.message}}
+                    </div>
+                </mat-error>
+
+            </mat-form-field>
+
+            
+        </div>
+
+        <div class="col-sm-12">
+            <label class="col-form-label">
+                {{getLang('schedule', 'Schedule')}}
+                <span class="text-danger">*</span>
+            </label>
+            <div class="mt-2">
+                <mat-radio-group formControlName="schedule" (change)="onScheduleChanged($event.value)">
+                    <mat-radio-button *ngFor="let schedule of scheduleLists" [value]="schedule.id"
+                        [checked]="schedule.checked">
+                        {{schedule.name}} &nbsp;&nbsp;&nbsp;
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div [hidden]="form.get('schedule').valid || (form.get('schedule').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('schedule').hasError('required')" class="error-label">
+                    {{getLang('scheduleisrequired', 'schedule is Required')}}
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-12" *ngIf="schedule == 'recurring'">
+            <label class="col-form-label">
+                {{getLang('recurring', 'Recurring')}}
+            </label>
+
+            <mat-form-field>
+                <mat-select name="recurringtype" formControlName="recurringtype"
+                    (ngModelChange)="onRecurringChanged($event)">
+                    <mat-option *ngFor="let item of recurringtypeLists" [value]="item.id"> {{item.name}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div [hidden]="form.get('recurringtype').valid || (form.get('recurringtype').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('recurringtype').hasError('required')" class="error-label">
+                    {{getLang('recurringtypeisrequired', 'recurringtype is Required')}}
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-12"
+            *ngIf="schedule == 'recurring' && timeslotid.value !== '' && appointmentscheduleList.length == 0">
+            <div class="d-flex align-items-center">
+                <div class="pr-3">
+                    <span *ngIf="recurringtype == 'daily'">
+                        {{getLang('repeatdailyat', 'Repeat daily at')}} &nbsp; {{timeslotid?.value?.displaytext}} &nbsp; {{getLang('starting', 'starting')}} &nbsp; {{date | date: 'mediumDate'}} &nbsp; {{getLang('for', 'for')}} 
+                    </span>
+                    <span *ngIf="recurringtype == 'weekly'">
+                        {{getLang('repeatevery', 'Repeat every')}} &nbsp; {{getDayName(date)}} &nbsp; {{getLang('at', 'at')}} &nbsp; {{timeslotid?.value?.displaytext}} &nbsp; {{date | date: 'mediumDate'}} &nbsp; {{getLang('for', 'for')}} 
+                    </span>
+                    <span *ngIf="recurringtype == 'monthly'">
+                        {{getLang('repeatthe', 'Repeat the')}} &nbsp; {{getDay(date)}} &nbsp; {{getLang('ofeverymonthat', 'of every month at')}} &nbsp; {{timeslotid?.value?.displaytext}} &nbsp; {{getLang('starting', 'starting')}} &nbsp; {{date | date: 'mediumDate'}} &nbsp; {{getLang('for', 'for')}} 
+                    </span>
+                </div>
+
+
+                <div class="col-lg-2 col-md-3 col-4 pr-3">
+                    <mat-form-field>
+                        <mat-select name="recurringoccurance" formControlName="recurringoccurance" (ngModelChange)="onRecurringOccuranceChanged($event)">
+                            <mat-option *ngFor="let item of recurringoccuranceLists" [value]="item"> {{item}} </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div [hidden]="form.get('recurringoccurance').valid || (form.get('recurringoccurance').pristine && !submitted)"
+                        class="text-danger">
+                        <small *ngIf="form.get('recurringoccurance').hasError('required')" class="error-label">
+                            {{getLang('recurringoccuranceisrequired', 'recurringoccurance is Required')}}
+                        </small>
+                    </div>
+    
+                </div>
+    
+                <div >
+                    {{getLang('times', 'Times')}}.
+                </div>
+                
+            </div>
+            
+
+            
+
+        </div>
+
+        <div class="col-sm-12" *ngIf="schedule == 'custom' && timeslotid.value !== ''">
+
+            <label class="col-form-label">
+                {{getLang('days', 'Days')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-selection-list formControlName="days" (selectionChange)="updateChecked($event)">
+                <mat-list-option class="mat-primary" checkboxPosition="before" *ngFor="let option of options"
+                    [value]="option.value">
+                    {{option.value}}
+                </mat-list-option>
+            </mat-selection-list>
+
+            <div [hidden]="form.get('days').valid || (form.get('days').pristine && !submitted)" class="text-danger">
+                <small *ngIf="form.get('days').hasError('required')" class="error-label">
+                    {{getLang('daysisrequired', 'days is Required')}}
+                </small>
+            </div>
+
+        </div>
+
+        <div class="col-sm-12" *ngIf="schedule == 'custom' && timeslotid.value !== ''">
+
+            <label class="col-form-label">
+                {{getLang('enddate', 'End date')}}
+            </label>
+
+            <mat-form-field>
+                <input matInput name="enddate" formControlName="enddate" [matDatepicker]="picker2"
+                    (ngModelChange)="onEndDateChanged($event)">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+
+            <div [hidden]="form.get('enddate').valid || (form.get('enddate').pristine && !submitted)"
+                class="text-danger">
+                <small *ngIf="form.get('enddate').hasError('required')" class="error-label">
+                    {{getLang('enddateisrequired', 'enddate is Required')}}
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-12"
+            *ngIf="schedule !== 'onetime' && timeslotid.value !== '' && appointmentscheduleList.length == 0">
+
+
+            <div class="d-flex mb-3 justify-content-end">
+                <!-- <button type="button" class="btn btn-default mr-2">{{getLang('cancel', 'Cancel')}}</button> -->
+                <button type="button" class="btn btn-primary" (click)="addtime()">{{getLang('addschedule', 'Add Schedule')}} </button>
+         
+                
+           
+            </div>
+        </div>
+
+        <div class="col-sm-12"
+            *ngIf="schedule !== 'onetime' && timeslotid.value !== '' && appointmentscheduleList.length !== 0">
+            <div class="col-sm-3">
+
+            </div>
+            <div class="col-sm-9">
+                <ul *ngIf="appointmentscheduleList && appointmentscheduleList.length !== 0">
+                    <li *ngFor="let item of appointmentscheduleList">
+                        {{timeslotid?.value?.displaytext}} on {{item | date: 'mediumDate'}}
+                        <a class="delete" (click)="removeDate(item)">{{getLang('remove', 'remove')}}</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+ 
+
+        <div class="col-sm-12" *ngIf="type == 'multi'">
+
+            <label class="col-form-label">
+                {{getLang('attendee', 'Attendee')}}
+                <span class="text-danger">*</span>
+            </label>
+
+            <mat-form-field class="example-full-width">
+                <input type="text" required matInput [formControl]="attendee" [matAutocomplete]="autoAttendee"
+                    (keyup.enter)="enterAttendee()" (click)="preloadAttendeedata()"
+                    (change)="handleEmptyAttendeeInput($event)">
+                <mat-autocomplete #autoAttendee="matAutocomplete" [displayWith]="displayAttendeeFn"
+                    (optionSelected)="optionAttendeeSelected($event.option)">
+
+                    <mat-option *ngIf="attendeeisLoadingBox" class="is-loading">
+                        <mat-spinner diameter="50"></mat-spinner>
+                    </mat-option>
+
+                    <ng-container *ngIf="!attendeeisLoadingBox && allAttendeeLists.length > 0">
+                        <mat-option *ngFor="let option of filteredAttendeeOptions | async" [value]="option">
+                            {{option.fullname}}
+                        </mat-option>
+                    </ng-container>
+
+                    <ng-container *ngIf="!attendeeisLoadingBox && allAttendeeLists.length == 0">
+                        <mat-option>
+                            <span>{{getLang('norecord', 'No Record')}}</span>
+                        </mat-option>
+                    </ng-container>
+
+                </mat-autocomplete>
+
+                <mat-error *ngFor="let validation of validation_msgs.hostid">
+                    <div *ngIf="hostid.hasError(validation.type)">
+                      {{validation.message}}
+                    </div>
+                </mat-error>
+
+            </mat-form-field>
+
+            
+
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-right">
+            <button (click)="cancel()" class="btn btn-default" type="button" [disabled]="disableBtn">
+                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+            </button>
+            <button class="btn btn-primary ml-2" type="submit" [disabled]="disableBtn">
+                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+            </button>
+        </div>
+    </div>
+
+</form>

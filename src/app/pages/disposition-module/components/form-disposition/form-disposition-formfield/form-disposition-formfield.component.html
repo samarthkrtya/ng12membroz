@@ -1,0 +1,331 @@
+<form 
+  [formGroup]="form" 
+  (ngSubmit)="onSubmit(form.value,form.valid)" 
+  novalidate 
+  class="form-horizontal">
+
+  <input hidden="true" matInput formControlName="_id">
+
+  <div class="row">
+
+    <div class="col-md-12">
+      <label class="col-form-label">
+          {{getLang('type', 'Type')}}
+          <span class="text-danger">*</span>
+      </label>
+      <mat-form-field class="example-full-width">
+          <input 
+              type="text"
+              aria-label="Number"
+              matInput
+              required
+              [formControl]="fieldtype"
+              [matAutocomplete]="fieldtypeauto"
+              (keyup.enter)="fieldtypeEnter()"
+              (click)="fieldtypePreloaddata()"
+              (change)="fieldtypeHandleEmptyInput($event)">
+
+          <mat-autocomplete 
+              #fieldtypeauto="matAutocomplete"
+              [displayWith]="fieldtypeDisplayFn"
+              (optionSelected)="fieldtypeOptionSelected($event.option)">
+
+              <mat-option *ngIf="fieldtypeIsLoadingBox" class="is-loading">
+              <mat-spinner diameter="50"></mat-spinner>
+              </mat-option>
+
+              <ng-container *ngIf="!fieldtypeIsLoadingBox && fieldtypeLists.length > 0">
+              <mat-option 
+                  *ngFor="let option of fieldtypeFilteredOptions | async" 
+                  [value]="option">
+                  {{option.name}}
+              </mat-option>
+              </ng-container>
+
+              <ng-container *ngIf="!fieldtypeIsLoadingBox && fieldtypeLists.length == 0">
+              <mat-option>
+                  <span>No Record</span>
+              </mat-option>
+              </ng-container>
+
+          </mat-autocomplete>
+      </mat-form-field>
+
+      <div 
+        [hidden]="form.get('fieldtype').valid || (form.get('fieldtype').pristine && !submitted)"
+        class="text-danger">
+        <small *ngIf="form.get('fieldtype').hasError('required')" class="error-label">
+            {{getLang('fieldtypeisrequired', 'Type is Required')}}
+        </small>
+    </div>
+
+    </div>
+
+    <div class="col-sm-12" >
+        <label class="col-form-label">
+            {{getLang('displayname', 'Display Name')}} 
+            <span class="text-danger">*</span>
+        </label>
+        <mat-form-field class="example-full-width">
+            <input matInput formControlName="displayname">
+        </mat-form-field>
+
+        <div 
+            [hidden]="form.get('displayname').valid || (form.get('displayname').pristine && !submitted)"
+            class="text-danger">
+            <small *ngIf="form.get('displayname').hasError('required')" class="error-label">
+                {{getLang('displaynameisrequired', 'Display Name is Required')}}
+            </small>
+        </div>
+        
+    </div>
+
+    <div class="col-sm-12" >
+        <label class="col-form-label">
+            {{getLang('required', 'Required')}}                              
+        </label>
+        <div class="mt-2">
+            <mat-slide-toggle
+                class="example-margin"
+                formControlName="required">
+            </mat-slide-toggle>
+        </div>
+        <div 
+            [hidden]="form.get('required').valid || (form.get('required').pristine && !submitted)"
+            class="text-danger">
+            <small *ngIf="form.get('required').hasError('required')" class="error-label">
+                {{getLang('requiredisrequired', 'required is Required')}}
+            </small>
+        </div>                       
+    </div>
+
+  </div>
+
+  <div class="col-sm-12" [ngClass]="checkLookupData(this.fieldtype)">
+    <label class="col-form-label"> {{getLang('lookup', 'Lookup Data')}} </label>
+    <div class="row">
+        <div class="col-sm-6"></div>
+        <div class="col-sm-6 text-right">
+        <button type="button" class="btn btn-primary btn-sm" (click)="addLookup()">Add Item</button>  
+        </div>
+    </div>
+    <div
+        formArrayName="lookupdata"
+        *ngFor="let item of form.get('lookupdata')['controls']; let i = index;">
+        <div [formGroupName]="i" class="row">
+        <div class="col-sm-4">
+            <mat-form-field>
+            <input matInput formControlName="key" placeholder="key">
+            </mat-form-field>
+        </div>
+        <div class="col-sm-4">
+            <mat-form-field>
+            <input matInput formControlName="value" placeholder="value">
+            </mat-form-field>
+        </div>
+        <div class="col-sm-4">
+            <button type="button"  class="btn btn-danger btn-sm" (click)="removeLookup(i)">
+            <i class="material-icons">delete</i>
+            </button>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12" [ngClass]="this.fieldtype && this.fieldtype.value && this.fieldtype.value.fieldtype && this.fieldtype.value.fieldtype == 'lookup' ? 'd-block' : 'd-none'">
+    <label class="col-form-label"> {{getLang('lookup', 'Lookup Data')}} </label>
+    <mat-form-field class="example-full-width">
+        <input 
+        type="text"
+        aria-label="Number"
+        matInput
+        [formControl]="mylookupControl"
+        [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="lookupdisplayFn">
+
+        <mat-option *ngIf="isLookupLoadingBox" class="is-loading">
+            <mat-spinner diameter="50"></mat-spinner>
+        </mat-option>
+    
+        <ng-container *ngIf="!isLookupLoadingBox && lookupOptions.length > 0">
+            <mat-option 
+            *ngFor="let option of lookupFilteredOptions | async" 
+            [value]="option">
+            {{option.lookup}}
+            </mat-option>
+        </ng-container>
+    
+        <ng-container *ngIf="!isLookupLoadingBox && lookupOptions.length == 0">
+            <mat-option>
+            <span>No Record</span>
+            </mat-option>
+        </ng-container>
+
+        
+        </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-12" [ngClass]="this.fieldtype && this.fieldtype.value && this.fieldtype.value.fieldtype && this.fieldtype.value.fieldtype == 'form' ? 'd-block' : 'd-none'">
+    <label class="col-form-label"> {{getLang('form', 'Form')}} </label>
+    <mat-form-field class="example-full-width">
+      <input 
+      type="text"
+      aria-label="Number"
+      matInput
+      [formControl]="myformControl"
+      [matAutocomplete]="autoForm">
+
+      <mat-autocomplete 
+      #autoForm="matAutocomplete" 
+      [displayWith]="formsdisplayFn"
+      (optionSelected)="optionSelected($event.option)">
+
+      <mat-option *ngIf="isFormLoadingBox" class="is-loading">
+          <mat-spinner diameter="50"></mat-spinner>
+      </mat-option>
+  
+      <ng-container *ngIf="!isFormLoadingBox && formsOptions.length > 0">
+          <mat-option 
+          *ngFor="let option of formsFilteredOptions | async" 
+          [value]="option">
+          {{option.formname}}
+          </mat-option>
+      </ng-container>
+  
+      <ng-container *ngIf="!isFormLoadingBox && formsOptions.length == 0">
+          <mat-option>
+          <span>No Record</span>
+          </mat-option>
+      </ng-container>
+
+      
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-6" [ngClass]="this.fieldtype && this.fieldtype.value && this.fieldtype.value.fieldtype && this.fieldtype.value.fieldtype == 'form' ? 'd-block' : 'd-none'">
+    <label class="col-form-label"> {{getLang('formfield', 'Form Field')}} </label>
+    <mat-form-field class="example-full-width">
+        <input 
+        type="text"
+        aria-label="Number"
+        matInput
+        [formControl]="myFormFieldControl"
+        [matAutocomplete]="autoFormField"
+        (click)="preloaddata()">
+
+        <mat-autocomplete #autoFormField="matAutocomplete" [displayWith]="formfielddisplayFn">
+
+        <mat-option *ngIf="isFormFieldLoadingBox" class="is-loading">
+            <mat-spinner diameter="50"></mat-spinner>
+        </mat-option>
+    
+        <ng-container *ngIf="!isFormFieldLoadingBox && formfieldOptions.length > 0">
+            <mat-option 
+            *ngFor="let option of formfieldFilteredOptions | async" 
+            [value]="option">
+            {{option.key}}
+            </mat-option>
+        </ng-container>
+    
+        <ng-container *ngIf="!isFormFieldLoadingBox && formfieldOptions.length == 0">
+            <mat-option>
+            <span>No Record</span>
+            </mat-option>
+        </ng-container>
+
+        </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-6" [ngClass]="this.fieldtype && this.fieldtype.value && this.fieldtype.value.fieldtype && this.fieldtype.value.fieldtype == 'form' ? 'd-block' : 'd-none'">
+    <label class="col-form-label"> {{getLang('displayfield', 'Display Field')}} </label>
+    <mat-form-field class="example-full-width">
+      <input 
+      type="text"
+      aria-label="Number"
+      matInput
+      [formControl]="mydisplayFieldControl"
+      [matAutocomplete]="autoDisplayField"
+      (click)="preloaddata()">
+
+      <mat-autocomplete #autoDisplayField="matAutocomplete" [displayWith]="formfielddisplayFn">
+
+      <mat-option *ngIf="isDisplayFieldLoadingBox" class="is-loading">
+          <mat-spinner diameter="50"></mat-spinner>
+      </mat-option>
+  
+      <ng-container *ngIf="!isDisplayFieldLoadingBox && displayfieldOptions.length > 0">
+          <mat-option 
+          *ngFor="let option of displayFieldFilteredOptions | async" 
+          [value]="option">
+          {{option.key}}
+          </mat-option>
+      </ng-container>
+  
+      <ng-container *ngIf="!isDisplayFieldLoadingBox && displayfieldOptions.length == 0">
+          <mat-option>
+          <span>No Record</span>
+          </mat-option>
+      </ng-container>
+
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-6" [ngClass]="this.fieldtype && this.fieldtype.value && this.fieldtype.value.fieldtype && this.fieldtype.value.fieldtype == 'form' ? 'd-block' : 'd-none'">
+    <label class="col-form-label"> {{getLang('fieldfilter', 'Field Filter')}} </label>
+    <mat-form-field class="example-full-width">
+        <input 
+        type="text"
+        aria-label="Number"
+        matInput
+        [formControl]="myfieldFilterControl"
+        [matAutocomplete]="autoFieldFilter"
+        (click)="preloaddata()">
+
+        <mat-autocomplete #autoFieldFilter="matAutocomplete" [displayWith]="formfielddisplayFn">
+
+        <mat-option *ngIf="isFieldFilterLoadingBox" class="is-loading">
+            <mat-spinner diameter="50"></mat-spinner>
+        </mat-option>
+    
+        <ng-container *ngIf="!isFieldFilterLoadingBox && fieldfilterOptions.length > 0">
+            <mat-option 
+            *ngFor="let option of fieldFilterFilteredOptions | async" 
+            [value]="option">
+            {{option.key}}
+            </mat-option>
+        </ng-container>
+    
+        <ng-container *ngIf="!isFieldFilterLoadingBox && fieldfilterOptions.length == 0">
+            <mat-option>
+            <span>No Record</span>
+            </mat-option>
+        </ng-container>
+
+        </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-6" [ngClass]="this.fieldtype && this.fieldtype.value && this.fieldtype.value.fieldtype && this.fieldtype.value.fieldtype == 'form' ? 'd-block' : 'd-none'">
+    <label class="col-form-label"> {{getLang('filtervalue', 'Filter Value')}} </label>
+    <mat-form-field>
+      <input matInput [formControl]="myFieldFilterValueControl">
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6"></div>
+    <div class="col-sm-6 text-right">
+      <button [disabled]="isdisablesavebutton" class="btn btn-default" type="button" data-dismiss="modal">
+          <i class="material-icons">close</i> Cancel
+      </button>
+      <button [disabled]="isdisablesavebutton" class="btn btn-primary ml-2" type="submit">
+          <i class="material-icons">save</i> Save
+      </button>
+    </div>
+  </div>
+
+</form>

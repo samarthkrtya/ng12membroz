@@ -1,0 +1,49 @@
+<div class="card-content">
+     
+    <div class="tab-content">
+        <div class="tab-pane active" id="pill1">
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-sm-12">
+                    <ul class="wrapper fields-list" dragula="third-bag" [dragulaModel]="filterfieldLists">
+                        <li *ngFor="let item of filterfieldLists" class="row">
+                            <div class="col-sm-12" *ngIf="item.schematype == undefined">
+                                <input (change)="checkUncheckFilterEvent($event, item.parentname)" [checked]="item.display" type="checkbox" [value]="item.fieldname">
+                                <span style="font-weight: bold" *ngFor="let item2 of item.pfields"> {{item2}} >> </span>
+                                {{item.displayname}}
+                            </div>
+                            <div class="col-sm-12" *ngIf="item.schematype != undefined && item.schematype == 'disposition'">
+                                <input
+                                    (change)="checkUncheckFilterEvent($event)" 
+                                    [checked]="item.display"
+                                    type="checkbox" 
+                                    [value]="item.fieldname">
+                                 
+                                <span style="font-weight: bold"> {{item.formname}} >> </span>
+                                {{item.displayname}} 
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <button 
+            class="swal2-confirm btn btn-success" 
+            type="button" 
+            (click)="saveSearchFilterValue()">
+            {{   langResourceValue['save'] ? langResourceValue['save'] : 'Save'}}
+        </button>
+        <button 
+            class="swal2-cancel btn btn-danger" 
+            type="button" 
+            data-dismiss="modal">
+            {{   langResourceValue['cancel'] ? langResourceValue['cancel'] : 'Cancel'}}
+        </button>
+    </div>
+</div>

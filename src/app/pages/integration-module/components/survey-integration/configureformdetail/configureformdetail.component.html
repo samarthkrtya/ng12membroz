@@ -1,0 +1,323 @@
+<form [formGroup]="configureform" (ngSubmit)="onSubmit(configureform.value)">
+
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="offset-xl-2 col-xl-9">
+          <h3 class="card-title">
+            Configuration <b> [ {{dispalyformname}} ]</b>
+          </h3>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-11 offset-xl-1 col-xl-10">
+                  <div class="row" *ngIf="editWorkflowTrigger">
+                    <div class="row col-sm-12">
+                      <label class="col-form-label">
+                        Field Name
+                      </label>
+                      <mat-form-field>
+                        <mat-select (selectionChange)="onFieldName($event.value)" formControlName="fieldname">
+                          <mat-option *ngFor="let field of datelist" [value]="field.fieldname">{{field.displayname}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="row col-sm-12">
+                      <label class="col-sm-3 label-on-left"> </label>
+                    </div>
+
+                    <div class="row col-sm-12">
+                      <label class="col-sm-3 label-on-left"> </label>
+                    </div>
+
+                    <div class="row col-sm-12">
+                      <label class="col-sm-3 col-form-label">
+                        Date Of Execution
+                      </label>
+                      <div class="col-sm-3">
+                        <mat-form-field>
+                          <mat-select name="time" (selectionChange)="onDateofExecution($event.value)"
+                            formControlName="time">
+                            <mat-option value=-1>Before</mat-option>
+                            <mat-option value=1>After</mat-option>
+                            <mat-option value=0>On</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-sm-3">
+                        <input type="number" min="0" class="form-control" name="days" formControlName="days">
+                        Days
+                      </div>
+
+                      <div class="col-sm-3">
+                        <input type="number" min="0" class="form-control" name="months" formControlName="months">
+                        Months
+                      </div>
+                    </div>
+
+                    <div class="row col-sm-12">
+                      <label class="col-form-label">
+                        Occurrence
+                      </label>
+                      <mat-form-field>
+                        <mat-label></mat-label>
+                        <mat-select (selectionChange)="onItemSelect($event.value)" formControlName="occurrence">
+                          <mat-option value="Yearly">Yearly</mat-option>
+                          <mat-option value="monthly">monthly</mat-option>
+                          <mat-option value="once">Once</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+                <label class="col-sm-3 label-on-left"> </label>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 offset-xl-1 col-xl-10">
+
+                  <div class="row">
+                 <!--    <div class="row col-sm-12">
+                      <label class="col-form-label"><b>
+                          Would you like to apply the rule on
+                        </b></label>&nbsp;
+
+                      <div style="margin-top: 0px! important;">
+                        <mat-radio-group class="example-radio-group">
+                          <mat-radio-button value="allRecords" id="allRecordsRadio" name="criteriaRules"
+                            (click)="criteria_rules_click('allRecords')">
+                            All Records
+                          </mat-radio-button>
+
+                          <mat-radio-button value="filterRecords" id="filterRecordsRadio" name="criteriaRules"
+                            (click)="criteria_rules_click('filterRecords')">
+                            Records Matching the Conditions
+                          </mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+                    </div>
+ -->
+
+                  <!--   <div class="row col-sm-12">
+                      <div *ngFor="let item of conditions">
+                        <div class="row">
+                          <div class="col-sm-2">
+                            <div [ngClass]=" (item.index == 1)? 'margin-top-30' : 'margin-top-15'">
+                              <span (click)="changeText(item.index)" *ngIf="item.index !== 1">
+                                {{item.rule}}
+                              </span> &nbsp; {{item.index}}
+                            </div>
+                          </div> -->
+
+                          <!--first dp-->
+                         <!--  <div class="col-sm-3">
+                            <mat-form-field>
+                              <mat-select [(ngModel)]="item.fieldname"
+                                (ngModelChange)="onFieldChange($event, item)" formControlName="fieldname1">
+                                <mat-option value="">None</mat-option>
+                                <mat-option *ngFor="let item of datalist" [value]="item.fieldname">
+                                  {{item.fieldname}} -- {{item.fieldtype}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div> -->
+                          <!--first dp-->
+
+                          <!--second dp-->
+                         <!--  <div class="col-md-3">
+                            <div *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker'">
+                              <mat-form-field>
+                                <mat-select (ngModelChange)="onFieldTypeChange($event, item)" title="{{item.fieldtype}}"
+                                  [ngModelOptions]="{standalone: true}" [(ngModel)]="item.operator">
+                                  <mat-option value="">None</mat-option>
+                                  <mat-option value="is">is</mat-option>
+                                  <mat-option value="isnt">isnt</mat-option>
+                                  <mat-option value="contains">contains</mat-option>
+                                  <mat-option value="doesnt_contain">doesnt contain</mat-option>
+                                  <mat-option value="starts_with">starts with</mat-option>
+                                  <mat-option value="ends_with">ends with</mat-option>
+                                  <mat-option value="is_empty">is empty</mat-option>
+                                  <mat-option value="is_not_empty">is not empty</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+
+                             <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                              <select (ngModelChange)="onFieldTypeChange($event, item)" title="{{item.fieldtype}}"
+                                [ngModelOptions]="{standalone: true}" class="form-control" [(ngModel)]="item.operator">
+                                <option value="">Select</option>
+                                <option value="is">is</option>
+                                <option value="isnt">isnt</option>
+                                <option value="is_before">is before</option>
+                                <option value="is_after">is after</option>
+                                <option value="between">Between</option>
+                                <option value="not_between">not between</option>
+                                <option value="age_in_days">Age in Days</option>
+                                <option value="due_in_days">Due in Days</option>
+                              </select>
+                            </div>
+                          </div> -->
+                          <!--second dp-->
+
+                          <!--third conditional text-->
+                       <!--    <div class="col-md-3">
+                            <div class="col-md-12"
+                              *ngIf="item.operator !== 'between' && item.operator !== 'not_between'">
+                              <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+                                <div *ngIf="item.operator == 'age_in_days' || item.operator == 'due_in_days'">
+                                  <input type="text" class="form-control" [(ngModel)]="item.fieldvalue"
+                                    [ngModelOptions]="{standalone: true}">
+                                </div>
+                                <div *ngIf="item.operator !== 'age_in_days' && item.operator !== 'due_in_days'">
+
+                                  <mat-form-field>
+                                    <input matInput [ngModelOptions]="{standalone: true}" [matDatepicker]="resultPicker"
+                                      [(ngModel)]="item.fieldvalue" placeholder="">
+                                    <span class="help-block"
+                                      style="margin-top: 11px;display: block;">{{gDateFormat}}</span>
+                                    <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate">
+                                    </mat-datepicker>
+                                  </mat-form-field>
+                                </div>
+
+                              </div>
+                              <div
+                                *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form'  && item.fieldtype !== 'ObjectID'">
+                                <input type="text" class="form-control" [(ngModel)]="item.fieldvalue"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div
+                                *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                                <input [ngModelOptions]="{standalone: true}" type="text" class="form-control"
+                                  ngui-auto-complete [list-formatter]="autocompleListFormatter"
+                                  [source]="dynamicValueLists[item.fieldname]" value-property-name=null
+                                  display-property-name="name" [(ngModel)]="item.fieldvalue"
+                                  placeholder="Select {{item.fieldname}}">
+                              </div>
+                            </div>
+
+                            <div class="col-md-12" *ngIf="item.operator == 'between' || item.operator == 'not_between'">
+                              <div class="col-md-12">
+                                <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+
+                                  <mat-form-field>
+                                    <input matInput [ngModelOptions]="{standalone: true}" [matDatepicker]="resultPicker"
+                                      [(ngModel)]="item.fieldvalue" placeholder="">
+                                    <span class="help-block"
+                                      style="margin-top: 11px;display: block;">{{gDateFormat}}</span>
+                                    <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate">
+                                    </mat-datepicker>
+                                  </mat-form-field>
+
+                                </div>
+                                <div
+                                  *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form' && item.fieldtype !== 'ObjectID'">
+                                  <input type="text" class="form-control" [(ngModel)]="item.fieldvalue"
+                                    [ngModelOptions]="{standalone: true}">
+                                </div>
+                                <div
+                                  *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                                  <input [ngModelOptions]="{standalone: true}" *ngIf="item.valueLists" type="text"
+                                    class="form-control" ngui-auto-complete [list-formatter]="autocompleListFormatter"
+                                    [source]="dynamicValueLists[item.fieldname]" value-property-name=null
+                                    display-property-name="name" [(ngModel)]="item.fieldvalue"
+                                    placeholder="Select {{item.fieldname}}">
+                                </div>
+                              </div>
+                              <div class="col-md-12">
+                                <div *ngIf="item.fieldtype == 'Date' || item.fieldtype == 'datepicker'">
+
+                                  <mat-form-field>
+                                    <input matInput [ngModelOptions]="{standalone: true}" [matDatepicker]="resultPicker"
+                                      [(ngModel)]="item.fieldvalue2" placeholder="">
+                                    <span class="help-block"
+                                      style="margin-top: 11px;display: block;">{{gDateFormat}}</span>
+                                    <mat-datepicker-toggle matSuffix [for]="resultPicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #resultPicker startView="multi-year" [startAt]="startDate">
+                                    </mat-datepicker>
+                                  </mat-form-field>
+
+                                </div>
+                                <div
+                                  *ngIf="item.fieldtype !== 'Date' && item.fieldtype !== 'datepicker' && item.fieldtype !== 'lookup' && item.fieldtype !== 'form' && item.fieldtype !== 'ObjectID'">
+                                  <input type="text" class="form-control" [(ngModel)]="item.fieldvalue2"
+                                    [ngModelOptions]="{standalone: true}">
+                                </div>
+                                <div
+                                  *ngIf="item.fieldtype == 'lookup' || item.fieldtype == 'form' || item.fieldtype == 'ObjectID'">
+                                  <input [ngModelOptions]="{standalone: true}" type="text" class="form-control"
+                                    ngui-auto-complete [list-formatter]="autocompleListFormatter"
+                                    [source]="dynamicValueLists[item.fieldname]" value-property-name=null
+                                    display-property-name="name" [(ngModel)]="item.fieldvalue"
+                                    placeholder="Select {{item.fieldname}}">
+                                </div>
+                              </div>
+                            </div>
+
+
+                          </div> -->
+                          <!--third conditional text-->
+
+                      <!--     <div class="col-md-1" style="margin-top: 30px;">
+                            <a *ngIf="item.index !== 1" (click)="deleteItem(item.index)">
+                              <i class="material-icons text-danger cursor-pointer">remove_circle</i>
+                            </a>
+                            <a *ngIf="item.index == conditions.length" (click)="addItem(item.index)">
+                              <i class="material-icons text-success cursor-pointer">add_circle</i>
+                            </a>
+
+
+            <!--   <div class="row">
+                <label class="col-sm-2 label-on-left">
+                </label>
+                <div class="col-sm-4">
+                  <div class="form-group label-floating is-empty">
+                    <div class="checkbox">
+                      <label>
+                          <section class="example-section row">
+                            <mat-checkbox class="example-margin" name="activate"
+                            [checked]="checked">Activate</mat-checkbox>
+                        </section>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                </div>
+              </div> -->
+
+            </div>
+          </div>
+              </div>
+           </div>
+         </div>
+      </div>
+      </div>
+      </div>
+      </div>
+
+  <footer class="footer fixed-bottom bg-white shadow-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12 text-right">
+          <button class="btn btn-default" type="button" [disabled]="isDisable" (click)="removeTrigger()">
+            <i class="material-icons">close</i>Cancel
+          </button>
+
+          <button class="btn btn-primary ml-2" type="submit" [disabled]="isDisable">
+            <i class="material-icons">save</i> Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+</form>

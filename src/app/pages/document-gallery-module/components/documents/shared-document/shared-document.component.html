@@ -1,0 +1,223 @@
+<div class="row">
+  <div class="col-lg-6"></div>
+  <div class="col-lg-6">
+    <div class="input-group d-flex justify-content-end">
+      <mat-form-field 
+        class="example-full-width common-search-size w-auto pt-0" 
+        appearance="standard" >
+        <span 
+          class="input-group-prepend" 
+          matPrefix>
+          <span class="input-group-text pl-0">
+            <i class="material-icons">search</i>
+          </span>
+        </span>
+        <input 
+          matInput 
+          (keyup)="applyFilter($event.target.value)" 
+          placeholder="Search">
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+<div class="row d-flex">
+  <div class="col-sm-6 align-self-center">
+    <h4 class="card-title mb-sm-2 mb-3"> All Folders &amp; Files </h4>
+  </div>
+  <div class="col-sm-6 text-right align-self-center"></div>
+</div>
+<div class="table-responsive">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 table-hover table-membroz">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+      <td mat-cell *matCellDef="let element">
+        <img class="mr-2" [src]="getAttachmentPath(element.type)">
+        {{element.name}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="size">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+      <td mat-cell *matCellDef="let element"> {{element.sizeType}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'medium'}} </td>
+    </ng-container>
+  
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="addedby">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Created by </th>
+      <td mat-cell *matCellDef="let element"> {{element.addedby}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right"> Action </th>
+        <td mat-cell *matCellDef="let element" class="text-right"> 
+            
+
+            <button  class="btn btn-link btn-primary btn-just-icon"  data-toggle="dropdown" 
+            matTooltip="More" [matTooltipPosition]="'above'" 
+            >
+                <i class="material-icons">more_vert</i>                                   
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-right">
+              <a 
+                class="dropdown-item" 
+                *ngIf="checkImageViewPermission(element.type)"
+                (click)="attachmentClick(element)">
+                <i class="material-icons mr-3 font-18">remove_red_eye</i> Preview
+              </a>
+              <a 
+                class="dropdown-item" 
+                *ngIf="checkDocumentViewPermission(element.type) && element.path"
+                (click)="attachmentClick(element)">
+                <i class="material-icons mr-3 font-18">open_with</i> Open with
+              </a>
+
+              <a class="dropdown-item" [href]="element.path" download rel="noopener noreferrer" target="_blank">
+                  <i class="material-icons mr-3 font-18">download</i> Download
+              </a>
+              <a class="dropdown-item" (click)="createFolder()">
+                  <i class="material-icons mr-3 font-18">create_new_folder</i> Create folder
+              </a>
+              
+              <a class="dropdown-item" *ngIf="element.path" [cdkCopyToClipboard]="element.path" (click)="copied()">
+                  <i class="material-icons mr-3 font-18">link</i> Copy Link
+              </a>
+
+            </div>
+
+          </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+</div>
+
+  <button 
+    id="iframBtn" 
+    class="d-none"
+    data-toggle="modal" 
+    data-backdrop="static" 
+    data-keyboard="false"
+    data-target="#myModaliframe"> 
+    Open Modal
+  </button>
+
+<!-- iFrame Modal -->
+<div id="myModaliframe" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeIframe()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <iframe 
+          width="640" height="390"
+          class="iframeCls" 
+          *ngIf="attachmentVisibility" 
+          id="iframe1"
+          [src]="sanitizer.bypassSecurityTrustResourceUrl(attachmentLink)"
+          onload="javascript:this.contentWindow.location.hash=':0.page.20';" webkitallowfullscreen mozallowfullscreen
+          allowfullscreen>
+        </iframe>
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeIframe()">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<button 
+  id="imageViwerBtn" 
+  class="d-none"
+  data-toggle="modal" 
+  data-backdrop="static" 
+  data-keyboard="false"
+  data-target="#myModalImageViwer"> 
+  Open Modal
+</button>
+
+<!-- imageViwer Modal -->
+<div id="myModalImageViwer" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg"> 
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeImageViwer()">&times;</button>
+      </div>
+      <div class="modal-body"> 
+        <img *ngIf="imageVisibility" [src]="imageLink" style="width: 100%; height: auto;"> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeImageViwer()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button 
+    id="videoViwerBtn" 
+    class="d-none"
+    data-toggle="modal" 
+    data-backdrop="static" 
+    data-keyboard="false"
+    data-target="#myModalVideoViwer"> 
+    Open Modal
+</button>
+
+<!-- videoViwer Modal -->
+<div id="myModalVideoViwer" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="closeVideoViwer()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <video width="400" controls *ngIf="videoVisibility" style="width: 100%; height: auto;">
+                    <source [src]="videoLink" type="video/mp4">
+                    <source [src]="videoLink" type="video/ogg">
+                    Your browser does not support HTML5 video. 
+                </video>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeVideoViwer()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button 
+    id="createFolderBtn" 
+    class="btn btn-info btn-lg d-none" 
+    data-toggle="modal"
+    data-backdrop="static" 
+    data-keyboard="false"
+    data-target="#mycreateFolder"> 
+    Open Modal
+</button>
+
+<!-- Folder Modal -->
+<div id="mycreateFolder" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{getLang('create folder','Create Folder')}}</h4>
+                <button type="button" class="close" data-dismiss="modal" id="FolderCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <app-document-create-folder 
+                    *ngIf="folderFormVisibility"
+                    (folderSubmitData)="getSubmittedDataFolder($event)"> 
+                </app-document-create-folder>
+            </div>
+        </div>
+    </div>
+</div>

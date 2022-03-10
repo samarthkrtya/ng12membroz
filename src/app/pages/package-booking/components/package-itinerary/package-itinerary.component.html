@@ -1,0 +1,747 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-3 pr-xl-0">
+        <app-item-list *ngIf="itemVisbility" [dataContent]="dataContent" [schema]="formObj.schemaname"
+          [formObj]="formObj" (onItemListsData)="getSubmittedItemListsData($event)">
+        </app-item-list>
+      </div>
+      <div class="col-xl-9 ml-auto mr-auto">
+        <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center"
+          style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+          <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+        </div>
+
+        <div class="card d-none" *ngIf="contentVisibility && dataContent">
+          <div class="card-body form-horizontal">
+            <div class="row mb-3">
+              <div class="col-xl-10 ml-auto mr-auto text-right">
+                <button type="button" class="btn btn-outline-primary ml-2" (click)="onClickprint()">
+                  {{getLang('print', 'Print')}}
+                </button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-10 ml-auto mr-auto" id="printid">
+                <table style="width:100%;table-layout: fixed;">
+                  <tbody>
+                    <tr>
+                      <td style="width:50%;vertical-align: top;">
+                        <div> <img
+                            src="https://books.zoho.com/ZFInvoiceLogo.zbfs?logo_id=f1e4c911fbabce3b5eb36ff696767231"
+                            style="width:240.0px;height:81.17646789550781px;"> </div>
+
+                      </td>
+                      <td style="width:50%;vertical-align: top;" class="text-right">
+                        <span class="print-page-item-head" style="font-size: 31px;font-weight: bold;">Tour
+                          Itinerary</span><br>
+                        <span style="font-weight: bold;" class="print-item-number"><b># TP-000001</b></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div style="width: 100%;margin-top: 10px;">
+                  <table width="100%" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="width: 50%; vertical-align: bottom;">
+                          <div style="font-weight: bold;text-transform: capitalize;" class="print-item-number">Hiren
+                            Mistry</div>
+                          <address class="print-company" style="margin-bottom: 0;">
+                            106, Bldg No.2, Sector 3,<br>
+                            Millenium Business Park (MBP), Mahape,<br>
+                            Navi Mumbai - 400710<br>
+                            India
+                          </address>
+                          <div class="print-company">Mobile : 93720 25882</div>
+                        </td>
+                        <td class="text-right" style="vertical-align: bottom; width: 50%;">
+                          <table style="width: 100%; table-layout: fixed; word-wrap: break-word;" cellspacing="0"
+                            cellpadding="0" border="0">
+                            <tbody>                              
+                              <tr>
+                                <td class="text-right print-text" style="padding: 5px 10px 5px 0px;">Travel Date :</td>
+                                <td class="text-right print-text">9/8/2021</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="width: 100%;margin-top: 10px;">
+                  <table width="100%" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="font-weight: bold;"><span class="print-page-item-head"
+                            style="font-size: 20px;line-height: 30px;font-weight: bold;">Shimla-Kullu-Manali-Amritsar</span><br>
+                          <span style="font-weight: bold;text-transform: capitalize;" class="print-item-number">10 Days
+                            | 9 Nights</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <table style="width:100%;margin-top:10px;margin-bottom: 0;table-layout:fixed;"
+                  class="print-text table-membroz" cellspacing="0" cellpadding="0" border="0">
+                  <tbody>
+
+                    <tr>
+                      <td style="border-top: 1px solid #aaaaaa;padding:10px 0 0 0;width: 65px;"
+                        class="print-table-td text-break text-center align-top">
+                        <div
+                          style="border:1px solid #F29015;border-radius:4px;width: 55px;height: 55px;padding: 7px 5px;">
+                          <div class="print-page-item-head"
+                            style="font-size: 18px;line-height: 22px;font-weight: bold;">1 </div>
+                          <div style="font-size: 12px;line-height: 12px;font-weight: normal;text-transform: capitalize;"
+                            class="print-item-number">Day</div>
+                        </div>
+
+                      </td>
+
+                      <td style="border-top: 1px solid #aaaaaa;padding: 10px 5px 10px 5px;"
+                        class="print-table-td text-break text-left align-top">
+                        <table width="100%" cellspacing="0" border="0">
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 0 0 10px;vertical-align: middle;"
+                              class="print-table-td text-break text-left align-top">
+                              <div class="print-company" style="font-weight: bold;line-height: 20px;">Arrival in
+                                Chandigarh</div>
+                              <div style="display: flex;align-items: center;">
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15.323"
+                                    viewBox="0 0 16 15.323">
+                                    <path
+                                      d="M17.323,12.146a.868.868,0,0,0-.4-.718L10.871,7.645V3.21a1.21,1.21,0,0,0-2.419,0V7.645L2.4,11.428a.857.857,0,0,0-.4.718.846.846,0,0,0,1.1.806l5.355-1.677V15.71L7,16.8a.387.387,0,0,0-.161.323V17.6a.406.406,0,0,0,.516.387l2.307-.661,2.307.661a.406.406,0,0,0,.516-.387v-.476a.387.387,0,0,0-.161-.323L10.871,15.71V11.275l5.355,1.677A.846.846,0,0,0,17.323,12.146Z"
+                                      transform="translate(18 -2) rotate(90)" fill="#333" fill-rule="evenodd" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Flights </span>
+                                </div>
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="12.291"
+                                    viewBox="0 0 16 12.291">
+                                    <path id="bed"
+                                      d="M15.527,0H.472A.472.472,0,0,0,0,.472V10.24a.472.472,0,0,0,.472.472h.6v1.106a.472.472,0,0,0,.472.472H4.313a.472.472,0,0,0,.472-.472V10.712h6.349v1.106a.472.472,0,0,0,.472.472h2.769a.472.472,0,0,0,.472-.472V10.712h.68A.472.472,0,0,0,16,10.24V.472A.472.472,0,0,0,15.527,0Zm-.472.945V5.462a2.245,2.245,0,0,0-.724-.343V4.4a1.72,1.72,0,0,0-1.718-1.718H9.245A1.713,1.713,0,0,0,8,3.215a1.713,1.713,0,0,0-1.246-.537H3.387A1.72,1.72,0,0,0,1.669,4.4v.722a2.245,2.245,0,0,0-.724.343V.945ZM8.472,4.4a.774.774,0,0,1,.773-.773h3.367a.774.774,0,0,1,.773.773v.645H8.472Zm-.945.645H2.614V4.4a.774.774,0,0,1,.773-.773H6.754a.774.774,0,0,1,.773.773ZM3.841,11.346H2.017v-.634H3.841Zm10.062,0H12.079v-.634H13.9Zm1.152-1.579H.945V7.294A1.31,1.31,0,0,1,2.253,5.986H13.747a1.31,1.31,0,0,1,1.308,1.308Zm0,0"
+                                      transform="translate(0)" fill="#333" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Hotels </span>
+                                </div>
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="13.435"
+                                    viewBox="0 0 16 13.435">
+                                    <path id="Car"
+                                      d="M15.991,8.211A1.919,1.919,0,0,0,14.635,6.6L13.355,2.882A1.279,1.279,0,0,0,12.089,2H4.22a1.279,1.279,0,0,0-1.228.87L1.712,6.509A1.958,1.958,0,0,0,0,8.211a.326.326,0,0,0,0,.1V11.6a1.279,1.279,0,0,0,.64,1.1v1.772a.966.966,0,0,0,.966.966H3.523a.96.96,0,0,0,.953-.966V12.875h7.037v1.6a.96.96,0,0,0,.96.96h1.919a.96.96,0,0,0,.96-.96V12.7a1.279,1.279,0,0,0,.64-1.1V8.307A.314.314,0,0,0,15.991,8.211Zm-13.754,2.1a.96.96,0,1,1,.96-.96.96.96,0,0,1-.96.96Zm9.276,0H4.476V8.4h7.037ZM2.41,6.477l1.19-3.4a.64.64,0,0,1,.621-.435h7.868a.64.64,0,0,1,.64.441l1.171,3.4H2.384Zm11.342,3.838a.96.96,0,1,1,.96-.96A.96.96,0,0,1,13.752,10.316Z"
+                                      transform="translate(0.006 -1.998)" fill="#333" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Transfers </span>
+                                </div>
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="11.997" height="16.001"
+                                    viewBox="0 0 11.997 16.001">
+                                    <g id="location-converted" transform="translate(-64.6 511.615)">
+                                      <path id="Path_865" data-name="Path 865"
+                                        d="M69.548-511.608a5.476,5.476,0,0,0-1.974.541,5.422,5.422,0,0,0-2.82,3.545,4.917,4.917,0,0,0-.153,1.353,5.014,5.014,0,0,0,.378,2c.116.3,2.258,4.3,2.374,4.423a.317.317,0,0,0,.55-.2c.012-.064.022-1.088.025-2.275l0-2.161-.084-.115a2.6,2.6,0,0,1-.587-1.725,2.43,2.43,0,0,1,.275-1.193,2.728,2.728,0,0,1,1.721-1.419,3.026,3.026,0,0,1,1.309,0,2.693,2.693,0,0,1,1.937,2.062c.116.557.109.554.734.582a1.568,1.568,0,0,1,1.234.474c.253.226.478.255.65.08.1-.1.116-.2.116-.589a5.543,5.543,0,0,0-.75-2.746,5.329,5.329,0,0,0-3.72-2.578A7.066,7.066,0,0,0,69.548-511.608Z"
+                                        transform="translate(0 0)" fill="#333" />
+                                      <path id="Path_866" data-name="Path 866"
+                                        d="M195.217-319.693a1.311,1.311,0,0,0-.621.391l-.251.236-.713.013c-.7.013-.716.016-.91.1a1.111,1.111,0,0,0-.5.452c-.111.216-.121.433-.111,2.625l.01,2.151.111.22a1.018,1.018,0,0,0,.57.506c.213.073,6.54.073,6.753,0a1.018,1.018,0,0,0,.57-.506l.111-.22.01-2.151c.01-2.193,0-2.409-.111-2.625a1.111,1.111,0,0,0-.5-.452c-.194-.086-.21-.089-.91-.1l-.713-.013-.258-.242a2.217,2.217,0,0,0-.43-.321c-.178-.083-.181-.083-1.085-.089A9.626,9.626,0,0,0,195.217-319.693Zm1.505,1.734a2.057,2.057,0,0,1,1.292,1.085,2.027,2.027,0,0,1-.025,1.811,2.382,2.382,0,0,1-.821.85,2.085,2.085,0,0,1-1.973,0,2.381,2.381,0,0,1-.821-.85,2.025,2.025,0,0,1,.344-2.342,2.152,2.152,0,0,1,1.12-.6A2.507,2.507,0,0,1,196.722-317.959Z"
+                                        transform="translate(-123.654 -185.961)" fill="#333" />
+                                      <path id="Path_867" data-name="Path 867"
+                                        d="M278.858-244.839a1.263,1.263,0,0,0-.748.56,1.271,1.271,0,0,0-.21.741,1.319,1.319,0,0,0,1.34,1.327,1.319,1.319,0,0,0,1.34-1.327,1.334,1.334,0,0,0-.442-1.018A1.357,1.357,0,0,0,278.858-244.839Z"
+                                        transform="translate(-206.655 -258.398)" fill="#333" />
+                                      <path id="Path_868" data-name="Path 868"
+                                        d="M185.162-91.847a.34.34,0,0,0-.162.286,28.16,28.16,0,0,0,1.375,2.524.35.35,0,0,0,.42-.022c.1-.1,1.219-2.119,1.228-2.212a.318.318,0,0,0-.092-.306l-.092-.092h-.824a3.439,3.439,0,0,1-1.413-.143C185.395-91.9,185.277-91.911,185.162-91.847Z"
+                                        transform="translate(-116.652 -406.637)" fill="#333" />
+                                    </g>
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Activity </span>
+                                </div>
+                              </div>
+
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 5px 0 7px;"
+                              class="print-table-td text-break text-left align-top">
+                              <div
+                                style="font-weight: normal;line-height: 20px;padding-bottom: 5px;display: inline-block;">
+                                Flight from New Delhi to Chandigarh </div>
+                              <div style="display: flex;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="30.647"
+                                    viewBox="0 0 32 30.647">
+                                    <path
+                                      d="M32.647,22.291a1.735,1.735,0,0,0-.79-1.436L19.743,13.291V4.419a2.419,2.419,0,0,0-4.839,0v8.871L2.79,20.856A1.714,1.714,0,0,0,2,22.291,1.692,1.692,0,0,0,4.194,23.9L14.9,20.549v8.871L12,31.6a.773.773,0,0,0-.323.645V33.2a.811.811,0,0,0,1.032.774l4.613-1.323,4.613,1.323a.811.811,0,0,0,1.032-.774v-.952a.773.773,0,0,0-.323-.645l-2.9-2.178V20.549L30.453,23.9A1.692,1.692,0,0,0,32.647,22.291Z"
+                                      transform="translate(34 -2) rotate(90)" fill="#333" fill-rule="evenodd" />
+                                  </svg>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <img src="../../../../../assets/img/airindia-logo.jpg"
+                                    style="width:40px;height:auto;max-width: 40px;max-height: 40px;"> <br>
+                                  <div style="line-height: 16px;font-size: 12px;"> AI-9805 </div>
+                                  <div style="line-height: 16px;font-size: 12px;"> Air India </div>
+                                  <div style="line-height: 16px;font-size: 12px;"> Economy </div>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <div>
+                                    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                                      <div>
+                                        <div style="font-weight: bold; font-size: 18px;line-height: 32px;">06:40</div>
+                                        <div style="line-height: 16px;font-size: 14px;"> New Delhi </div>
+                                      </div>
+
+                                      <div class="plan-start-point-print plan-start-point-view"
+                                        style="position: relative;width:100px;margin: 5px 15px 5px 15px;font-size: 14px;text-align: center;font-weight: bold;">
+                                        
+                                           <div style="margin-bottom:0;line-height: normal;">01h 00m</div>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="94" height="11.492" viewBox="0 0 94 11.492">
+                                            <g id="plane" transform="translate(-793 -371)">
+                                              <rect  width="90" height="1" transform="translate(795 376)" fill="#aaa"/>
+                                              <path  d="M13.492,9.609a.651.651,0,0,0-.3-.538L8.654,6.234V2.907a.907.907,0,1,0-1.815,0V6.234L2.3,9.071a.643.643,0,0,0-.3.538.635.635,0,0,0,.823.6L6.839,8.956v3.327L5.75,13.1a.29.29,0,0,0-.121.242V13.7a.3.3,0,0,0,.387.29l1.73-.5,1.73.5a.3.3,0,0,0,.387-.29v-.357a.29.29,0,0,0-.121-.242l-1.089-.817V8.956l4.016,1.258A.635.635,0,0,0,13.492,9.609Z" transform="translate(848 369) rotate(90)" fill="#f29015" fill-rule="evenodd"/>
+                                              <circle  cx="2.5" cy="2.5" r="2.5" transform="translate(793 374)" fill="#aaa"/>
+                                              <g  transform="translate(882 374)" fill="#fff" stroke="#aaa" stroke-width="1">
+                                                <circle cx="2.5" cy="2.5" r="2.5" stroke="none"/>
+                                                <circle cx="2.5" cy="2.5" r="2" fill="none"/>
+                                              </g>
+                                            </g>
+                                          </svg>
+                                          
+                                      
+                                        
+                                      </div>
+                                      <div>
+                                        <div style="font-weight: bold; font-size: 18px;line-height: 32px;">07:40</div>
+                                        <div style="line-height: 16px;font-size: 14px;"> Chandigarh </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Baggage </div>
+                                  <div class="print-company"> Cabin: N/A <br> Check-in: 15 Kgs </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 5px 0 7px;"
+                              class="print-table-td text-break text-left align-top">
+                              <div
+                                style="font-weight: normal;line-height: 20px;padding-bottom: 5px;display: inline-block;">
+                                Airport in Chandigarh to hotel in Manali </div>
+                              <div style="display: flex;align-items: center;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26.87"
+                                    viewBox="0 0 32 26.87">
+                                    <path id="Car"
+                                      d="M31.987,14.424A3.838,3.838,0,0,0,29.275,11.2L26.716,3.766A2.559,2.559,0,0,0,24.183,2H8.446A2.559,2.559,0,0,0,5.989,3.74L3.43,11.02A3.915,3.915,0,0,0,0,14.424a.652.652,0,0,0,0,.192v6.576a2.559,2.559,0,0,0,1.279,2.2v3.544a1.932,1.932,0,0,0,1.932,1.932H7.051a1.919,1.919,0,0,0,1.906-1.932V23.751H23.031v3.2a1.919,1.919,0,0,0,1.919,1.919h3.838a1.919,1.919,0,0,0,1.919-1.919V23.392a2.559,2.559,0,0,0,1.279-2.2V14.616A.627.627,0,0,0,31.987,14.424ZM4.48,18.633A1.919,1.919,0,1,1,6.4,16.714,1.919,1.919,0,0,1,4.48,18.633Zm18.552,0H8.957V14.795H23.031ZM4.825,10.956,7.2,4.15a1.279,1.279,0,0,1,1.241-.87H24.183a1.279,1.279,0,0,1,1.279.883L27.8,10.956H4.774Zm22.684,7.677a1.919,1.919,0,1,1,1.919-1.919A1.919,1.919,0,0,1,27.509,18.633Z"
+                                      transform="translate(0.006 -1.998)" fill="#333" />
+                                  </svg>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <div class="print-company" style="font-weight: bold;"> Swift, Etios or Similar </div>
+                                  <div class="print-company"> Private Transfer/Sedan - AC </div>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Facilities </div>
+                                  <div class="print-company"> 3 Seater | 2 Luggage Bags | AC | First Aid </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 5px 0 7px;"
+                              class="print-table-td text-break text-left align-top">
+                              <div style="display: flex;align-items: flex-start;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32.002"
+                                    viewBox="0 0 32 32.002">
+                                    <g id="location" transform="translate(-542 -632)">
+                                      <rect id="Rectangle_832" data-name="Rectangle 832" width="32" height="32"
+                                        transform="translate(542 632)" fill="none" />
+                                      <g id="location-converted" transform="translate(481.4 1143.615)">
+                                        <path id="Path_865" data-name="Path 865"
+                                          d="M74.5-511.6a10.953,10.953,0,0,0-3.948,1.082,10.845,10.845,0,0,0-5.641,7.09,9.834,9.834,0,0,0-.306,2.705,10.027,10.027,0,0,0,.756,4.01c.231.6,4.517,8.592,4.748,8.847a.633.633,0,0,0,1.1-.4c.025-.127.044-2.177.05-4.551l.006-4.322-.169-.229a5.2,5.2,0,0,1-1.174-3.45,4.86,4.86,0,0,1,.55-2.387,5.455,5.455,0,0,1,3.442-2.839,6.052,6.052,0,0,1,2.617,0A5.387,5.387,0,0,1,80.4-501.92c.231,1.114.219,1.107,1.468,1.165a3.137,3.137,0,0,1,2.468.948c.506.452.956.509,1.3.159.194-.2.231-.395.231-1.177a11.085,11.085,0,0,0-1.5-5.493,10.659,10.659,0,0,0-7.44-5.155A14.136,14.136,0,0,0,74.5-511.6Z"
+                                          fill="#333" />
+                                        <path id="Path_866" data-name="Path 866"
+                                          d="M198.323-319.667a2.621,2.621,0,0,0-1.241.783l-.5.471-1.426.025c-1.4.025-1.432.032-1.82.2a2.222,2.222,0,0,0-.993.9c-.223.433-.242.866-.223,5.251l.019,4.3.223.439a2.036,2.036,0,0,0,1.139,1.012c.426.146,13.08.146,13.506,0a2.036,2.036,0,0,0,1.139-1.012l.223-.439.019-4.3c.019-4.385,0-4.818-.223-5.251a2.222,2.222,0,0,0-.993-.9c-.388-.172-.42-.178-1.82-.2l-1.426-.025-.516-.484a4.432,4.432,0,0,0-.859-.643c-.356-.165-.363-.165-2.17-.178A19.257,19.257,0,0,0,198.323-319.667Zm3.01,3.469a4.115,4.115,0,0,1,2.584,2.17,4.054,4.054,0,0,1-.051,3.622,4.763,4.763,0,0,1-1.642,1.7,4.169,4.169,0,0,1-3.946,0,4.763,4.763,0,0,1-1.642-1.7,4.051,4.051,0,0,1,.687-4.684,4.3,4.3,0,0,1,2.24-1.2A5.014,5.014,0,0,1,201.333-316.2Z"
+                                          transform="translate(-119.797 -180.026)" fill="#333" />
+                                        <path id="Path_867" data-name="Path 867"
+                                          d="M279.816-244.781a2.527,2.527,0,0,0-1.5,1.12,2.542,2.542,0,0,0-.42,1.483,2.638,2.638,0,0,0,2.68,2.654,2.638,2.638,0,0,0,2.68-2.654,2.668,2.668,0,0,0-.885-2.037A2.713,2.713,0,0,0,279.816-244.781Z"
+                                          transform="translate(-200.01 -250.077)" fill="#333" />
+                                        <path id="Path_868" data-name="Path 868"
+                                          d="M185.325-91.806a.68.68,0,0,0-.325.573,56.318,56.318,0,0,0,2.75,5.047.7.7,0,0,0,.84-.045c.191-.191,2.438-4.239,2.457-4.424a.636.636,0,0,0-.185-.611l-.185-.185h-1.648a6.878,6.878,0,0,1-2.826-.286C185.789-91.915,185.554-91.934,185.325-91.806Z"
+                                          transform="translate(-112.904 -393.547)" fill="#333" />
+                                      </g>
+                                    </g>
+                                  </svg>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Sightseeing in Manali </div>
+                                  <div class="" style="font-size: 12px;padding-bottom: 5px;"> Manali, India </div>
+                                  <div style="padding-bottom: 5px;">
+                                    <ul class="tour-place-list" style="margin: 0;padding: 0; list-style: inside;">
+                                      <li class="tour-place-item">Khajjiar</li>
+                                      <li class="tour-place-item">Bhagsu falls</li>
+                                      <li class="tour-place-item">Panchpula</li>
+                                      <li class="tour-place-item">Dalai Lama temple</li>
+                                      <li class="tour-place-item">Dal Lake</li>
+                                      <li class="tour-place-item">Naddi</li>
+                                      <li class="tour-place-item">Chamunda Temple</li>
+                                    </ul>
+                                  </div>
+                                  <div style="display: flex; align-items: center;">
+                                    <div style="margin-right: 20px;">
+                                      <div class="print-company" style="font-weight: bold;"> Duration </div>
+                                      <div class="print-company"> 10 hrs </div>
+                                    </div>
+                                    <div>
+                                      <div class="print-company" style="font-weight: bold;"> Places Covered </div>
+                                      <div class="print-company"> 7 </div>
+                                    </div>
+                                  </div>
+
+
+                                </div>
+
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 5px 0 7px;" class="print-table-td text-break text-left align-top">
+                              <div
+                                style="font-weight: normal;line-height: 20px;padding-bottom: 5px;display: inline-block;">
+                                Check-in to Hotel in Simsa @ 12 PM </div>
+                              <div style="display: flex;align-items: center;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24.583"
+                                    viewBox="0 0 32 24.583">
+                                    <path
+                                      d="M31.055,0H.945A.945.945,0,0,0,0,.945V20.48a.945.945,0,0,0,.945.945h1.2v2.213a.945.945,0,0,0,.945.945H8.627a.945.945,0,0,0,.945-.945V21.425h12.7v2.213a.945.945,0,0,0,.945.945h5.537a.945.945,0,0,0,.945-.945V21.425h1.359A.945.945,0,0,0,32,20.48V.945A.945.945,0,0,0,31.055,0ZM30.11,1.89v9.034a4.491,4.491,0,0,0-1.449-.687V8.792a3.44,3.44,0,0,0-3.436-3.436H18.491A3.425,3.425,0,0,0,16,6.43a3.425,3.425,0,0,0-2.491-1.073H6.774A3.44,3.44,0,0,0,3.338,8.792v1.445a4.491,4.491,0,0,0-1.449.687V1.89Zm-13.165,6.9a1.548,1.548,0,0,1,1.546-1.546h6.734a1.548,1.548,0,0,1,1.546,1.546v1.29H16.945Zm-1.89,1.29H5.228V8.792A1.548,1.548,0,0,1,6.775,7.246h6.734a1.548,1.548,0,0,1,1.546,1.546ZM7.682,22.693H4.035V21.425H7.682Zm20.124,0H24.159V21.425h3.647Zm2.3-3.158H1.889V14.589a2.619,2.619,0,0,1,2.616-2.616H27.494a2.619,2.619,0,0,1,2.616,2.616Zm0,0"
+                                      transform="translate(0)" fill="#333" />
+                                  </svg>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <div class="print-company" style="font-weight: bold;"> Manali Resorts </div>
+                                  <div class="" style="font-size: 12px;padding-bottom: 5px;"> Simsa </div>
+                                </div>
+                              </div>
+                              <div style="display: flex; align-items: center;">
+                                <div style="margin-right: 20px;">
+                                  <div class="print-company" style="font-weight: bold;"> Date </div>
+                                  <div class="print-company"> Fri, 10 Sep 2021 - Tue, 14 Sep 2021 </div>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <div class="print-company" style="font-weight: bold;"> Includes </div>
+                                  <div class="print-company"> Breakfast </div>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Room Type </div>
+                                  <div class="print-company"> Standard Room </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+
+                        </table>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td style="border-top: 1px solid #aaaaaa;padding:10px 0 0 0;width: 65px;"
+                        class="print-table-td text-break text-center align-top">
+                        <div
+                          style="border:1px solid #F29015;border-radius:4px;width: 55px;height: 55px;padding: 7px 5px;">
+                          <div class="print-page-item-head"
+                            style="font-size: 18px;line-height: 22px;font-weight: bold;">2 </div>
+                          <div style="font-size: 12px;line-height: 12px;font-weight: normal;text-transform: capitalize;"
+                            class="print-item-number">Day</div>
+                        </div>
+
+                      </td>
+
+                      <td style="border-top: 1px solid #aaaaaa;padding: 10px 5px 10px 5px;"
+                        class="print-table-td text-break text-left align-top">
+                        <table width="100%" cellspacing="0" border="0">
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 0 0 10px;vertical-align: middle;"
+                              class="print-table-td text-break text-left align-top">
+                              <div class="print-company" style="font-weight: bold;line-height: 20px;">Manali</div>
+                              <div style="display: flex;align-items: center;">
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="12.291"
+                                    viewBox="0 0 16 12.291">
+                                    <path id="bed"
+                                      d="M15.527,0H.472A.472.472,0,0,0,0,.472V10.24a.472.472,0,0,0,.472.472h.6v1.106a.472.472,0,0,0,.472.472H4.313a.472.472,0,0,0,.472-.472V10.712h6.349v1.106a.472.472,0,0,0,.472.472h2.769a.472.472,0,0,0,.472-.472V10.712h.68A.472.472,0,0,0,16,10.24V.472A.472.472,0,0,0,15.527,0Zm-.472.945V5.462a2.245,2.245,0,0,0-.724-.343V4.4a1.72,1.72,0,0,0-1.718-1.718H9.245A1.713,1.713,0,0,0,8,3.215a1.713,1.713,0,0,0-1.246-.537H3.387A1.72,1.72,0,0,0,1.669,4.4v.722a2.245,2.245,0,0,0-.724.343V.945ZM8.472,4.4a.774.774,0,0,1,.773-.773h3.367a.774.774,0,0,1,.773.773v.645H8.472Zm-.945.645H2.614V4.4a.774.774,0,0,1,.773-.773H6.754a.774.774,0,0,1,.773.773ZM3.841,11.346H2.017v-.634H3.841Zm10.062,0H12.079v-.634H13.9Zm1.152-1.579H.945V7.294A1.31,1.31,0,0,1,2.253,5.986H13.747a1.31,1.31,0,0,1,1.308,1.308Zm0,0"
+                                      transform="translate(0)" fill="#333" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Hotels </span>
+                                </div>
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="13.435"
+                                    viewBox="0 0 16 13.435">
+                                    <path id="Car"
+                                      d="M15.991,8.211A1.919,1.919,0,0,0,14.635,6.6L13.355,2.882A1.279,1.279,0,0,0,12.089,2H4.22a1.279,1.279,0,0,0-1.228.87L1.712,6.509A1.958,1.958,0,0,0,0,8.211a.326.326,0,0,0,0,.1V11.6a1.279,1.279,0,0,0,.64,1.1v1.772a.966.966,0,0,0,.966.966H3.523a.96.96,0,0,0,.953-.966V12.875h7.037v1.6a.96.96,0,0,0,.96.96h1.919a.96.96,0,0,0,.96-.96V12.7a1.279,1.279,0,0,0,.64-1.1V8.307A.314.314,0,0,0,15.991,8.211Zm-13.754,2.1a.96.96,0,1,1,.96-.96.96.96,0,0,1-.96.96Zm9.276,0H4.476V8.4h7.037ZM2.41,6.477l1.19-3.4a.64.64,0,0,1,.621-.435h7.868a.64.64,0,0,1,.64.441l1.171,3.4H2.384Zm11.342,3.838a.96.96,0,1,1,.96-.96A.96.96,0,0,1,13.752,10.316Z"
+                                      transform="translate(0.006 -1.998)" fill="#333" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Transfers </span>
+                                </div>
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="11.997" height="16.001"
+                                    viewBox="0 0 11.997 16.001">
+                                    <g id="location-converted" transform="translate(-64.6 511.615)">
+                                      <path id="Path_865" data-name="Path 865"
+                                        d="M69.548-511.608a5.476,5.476,0,0,0-1.974.541,5.422,5.422,0,0,0-2.82,3.545,4.917,4.917,0,0,0-.153,1.353,5.014,5.014,0,0,0,.378,2c.116.3,2.258,4.3,2.374,4.423a.317.317,0,0,0,.55-.2c.012-.064.022-1.088.025-2.275l0-2.161-.084-.115a2.6,2.6,0,0,1-.587-1.725,2.43,2.43,0,0,1,.275-1.193,2.728,2.728,0,0,1,1.721-1.419,3.026,3.026,0,0,1,1.309,0,2.693,2.693,0,0,1,1.937,2.062c.116.557.109.554.734.582a1.568,1.568,0,0,1,1.234.474c.253.226.478.255.65.08.1-.1.116-.2.116-.589a5.543,5.543,0,0,0-.75-2.746,5.329,5.329,0,0,0-3.72-2.578A7.066,7.066,0,0,0,69.548-511.608Z"
+                                        transform="translate(0 0)" fill="#333" />
+                                      <path id="Path_866" data-name="Path 866"
+                                        d="M195.217-319.693a1.311,1.311,0,0,0-.621.391l-.251.236-.713.013c-.7.013-.716.016-.91.1a1.111,1.111,0,0,0-.5.452c-.111.216-.121.433-.111,2.625l.01,2.151.111.22a1.018,1.018,0,0,0,.57.506c.213.073,6.54.073,6.753,0a1.018,1.018,0,0,0,.57-.506l.111-.22.01-2.151c.01-2.193,0-2.409-.111-2.625a1.111,1.111,0,0,0-.5-.452c-.194-.086-.21-.089-.91-.1l-.713-.013-.258-.242a2.217,2.217,0,0,0-.43-.321c-.178-.083-.181-.083-1.085-.089A9.626,9.626,0,0,0,195.217-319.693Zm1.505,1.734a2.057,2.057,0,0,1,1.292,1.085,2.027,2.027,0,0,1-.025,1.811,2.382,2.382,0,0,1-.821.85,2.085,2.085,0,0,1-1.973,0,2.381,2.381,0,0,1-.821-.85,2.025,2.025,0,0,1,.344-2.342,2.152,2.152,0,0,1,1.12-.6A2.507,2.507,0,0,1,196.722-317.959Z"
+                                        transform="translate(-123.654 -185.961)" fill="#333" />
+                                      <path id="Path_867" data-name="Path 867"
+                                        d="M278.858-244.839a1.263,1.263,0,0,0-.748.56,1.271,1.271,0,0,0-.21.741,1.319,1.319,0,0,0,1.34,1.327,1.319,1.319,0,0,0,1.34-1.327,1.334,1.334,0,0,0-.442-1.018A1.357,1.357,0,0,0,278.858-244.839Z"
+                                        transform="translate(-206.655 -258.398)" fill="#333" />
+                                      <path id="Path_868" data-name="Path 868"
+                                        d="M185.162-91.847a.34.34,0,0,0-.162.286,28.16,28.16,0,0,0,1.375,2.524.35.35,0,0,0,.42-.022c.1-.1,1.219-2.119,1.228-2.212a.318.318,0,0,0-.092-.306l-.092-.092h-.824a3.439,3.439,0,0,1-1.413-.143C185.395-91.9,185.277-91.911,185.162-91.847Z"
+                                        transform="translate(-116.652 -406.637)" fill="#333" />
+                                    </g>
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Activity </span>
+                                </div>
+                              </div>
+
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 5px 0 7px;"
+                              class="print-table-td text-break text-left align-top">
+                              <div style="font-weight: normal;line-height: 20px;display: inline-block;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="10.734"
+                                  viewBox="0 0 16 10.734">
+                                  <g id="Group_1840" data-name="Group 1840" transform="translate(-999.41 -1450.426)">
+                                    <rect id="Rectangle_826" data-name="Rectangle 826" width="16" height="1.545"
+                                      rx="0.772" transform="translate(999.41 1459.615)" fill="#333" />
+                                    <path id="Path_864" data-name="Path 864"
+                                      d="M90.665,133.415c.269-2.628,2.6-5.3,4.988-5.541-2.054.531-4.012,3.053-4.253,5.406a5.456,5.456,0,0,0-.012.873h11.989a6.887,6.887,0,0,0-6.383-6.868.988.988,0,0,0,.5-1.1.962.962,0,0,0-1.879,0,.988.988,0,0,0,.5,1.1,6.886,6.886,0,0,0-6.383,6.868h.905A5.418,5.418,0,0,1,90.665,133.415Z"
+                                      transform="translate(910.852 1325)" fill="#333" />
+                                  </g>
+                                </svg>
+                                <span style="margin-left: 10px;display: inline-block;"> Breakfast at Hotel in Manali
+                                </span>
+                              </div>
+
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 5px 0 7px;"
+                              class="print-table-td text-break text-left align-top">
+                              <div
+                                style="font-weight: normal;line-height: 20px;padding-bottom: 5px;display: inline-block;">
+                                Private AC Sedan - AC for sightseeing in & around Manali </div>
+                              <div style="display: flex;align-items: center;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26.87"
+                                    viewBox="0 0 32 26.87">
+                                    <path id="Car"
+                                      d="M31.987,14.424A3.838,3.838,0,0,0,29.275,11.2L26.716,3.766A2.559,2.559,0,0,0,24.183,2H8.446A2.559,2.559,0,0,0,5.989,3.74L3.43,11.02A3.915,3.915,0,0,0,0,14.424a.652.652,0,0,0,0,.192v6.576a2.559,2.559,0,0,0,1.279,2.2v3.544a1.932,1.932,0,0,0,1.932,1.932H7.051a1.919,1.919,0,0,0,1.906-1.932V23.751H23.031v3.2a1.919,1.919,0,0,0,1.919,1.919h3.838a1.919,1.919,0,0,0,1.919-1.919V23.392a2.559,2.559,0,0,0,1.279-2.2V14.616A.627.627,0,0,0,31.987,14.424ZM4.48,18.633A1.919,1.919,0,1,1,6.4,16.714,1.919,1.919,0,0,1,4.48,18.633Zm18.552,0H8.957V14.795H23.031ZM4.825,10.956,7.2,4.15a1.279,1.279,0,0,1,1.241-.87H24.183a1.279,1.279,0,0,1,1.279.883L27.8,10.956H4.774Zm22.684,7.677a1.919,1.919,0,1,1,1.919-1.919A1.919,1.919,0,0,1,27.509,18.633Z"
+                                      transform="translate(0.006 -1.998)" fill="#333" />
+                                  </svg>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <div class="print-company" style="font-weight: bold;"> Swift, Etios or Similar </div>
+                                  <div class="print-company"> Private Transfer/Sedan - AC </div>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Facilities </div>
+                                  <div class="print-company"> 3 Seater | 2 Luggage Bags | AC | First Aid </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr class="break-row-inside break-row-after">
+                            <td style="padding: 5px 0 7px;" class="print-table-td text-break text-left align-top">
+                              <div style="display: flex;align-items: flex-start;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32.002"
+                                    viewBox="0 0 32 32.002">
+                                    <g id="location" transform="translate(-542 -632)">
+                                      <rect id="Rectangle_832" data-name="Rectangle 832" width="32" height="32"
+                                        transform="translate(542 632)" fill="none" />
+                                      <g id="location-converted" transform="translate(481.4 1143.615)">
+                                        <path id="Path_865" data-name="Path 865"
+                                          d="M74.5-511.6a10.953,10.953,0,0,0-3.948,1.082,10.845,10.845,0,0,0-5.641,7.09,9.834,9.834,0,0,0-.306,2.705,10.027,10.027,0,0,0,.756,4.01c.231.6,4.517,8.592,4.748,8.847a.633.633,0,0,0,1.1-.4c.025-.127.044-2.177.05-4.551l.006-4.322-.169-.229a5.2,5.2,0,0,1-1.174-3.45,4.86,4.86,0,0,1,.55-2.387,5.455,5.455,0,0,1,3.442-2.839,6.052,6.052,0,0,1,2.617,0A5.387,5.387,0,0,1,80.4-501.92c.231,1.114.219,1.107,1.468,1.165a3.137,3.137,0,0,1,2.468.948c.506.452.956.509,1.3.159.194-.2.231-.395.231-1.177a11.085,11.085,0,0,0-1.5-5.493,10.659,10.659,0,0,0-7.44-5.155A14.136,14.136,0,0,0,74.5-511.6Z"
+                                          fill="#333" />
+                                        <path id="Path_866" data-name="Path 866"
+                                          d="M198.323-319.667a2.621,2.621,0,0,0-1.241.783l-.5.471-1.426.025c-1.4.025-1.432.032-1.82.2a2.222,2.222,0,0,0-.993.9c-.223.433-.242.866-.223,5.251l.019,4.3.223.439a2.036,2.036,0,0,0,1.139,1.012c.426.146,13.08.146,13.506,0a2.036,2.036,0,0,0,1.139-1.012l.223-.439.019-4.3c.019-4.385,0-4.818-.223-5.251a2.222,2.222,0,0,0-.993-.9c-.388-.172-.42-.178-1.82-.2l-1.426-.025-.516-.484a4.432,4.432,0,0,0-.859-.643c-.356-.165-.363-.165-2.17-.178A19.257,19.257,0,0,0,198.323-319.667Zm3.01,3.469a4.115,4.115,0,0,1,2.584,2.17,4.054,4.054,0,0,1-.051,3.622,4.763,4.763,0,0,1-1.642,1.7,4.169,4.169,0,0,1-3.946,0,4.763,4.763,0,0,1-1.642-1.7,4.051,4.051,0,0,1,.687-4.684,4.3,4.3,0,0,1,2.24-1.2A5.014,5.014,0,0,1,201.333-316.2Z"
+                                          transform="translate(-119.797 -180.026)" fill="#333" />
+                                        <path id="Path_867" data-name="Path 867"
+                                          d="M279.816-244.781a2.527,2.527,0,0,0-1.5,1.12,2.542,2.542,0,0,0-.42,1.483,2.638,2.638,0,0,0,2.68,2.654,2.638,2.638,0,0,0,2.68-2.654,2.668,2.668,0,0,0-.885-2.037A2.713,2.713,0,0,0,279.816-244.781Z"
+                                          transform="translate(-200.01 -250.077)" fill="#333" />
+                                        <path id="Path_868" data-name="Path 868"
+                                          d="M185.325-91.806a.68.68,0,0,0-.325.573,56.318,56.318,0,0,0,2.75,5.047.7.7,0,0,0,.84-.045c.191-.191,2.438-4.239,2.457-4.424a.636.636,0,0,0-.185-.611l-.185-.185h-1.648a6.878,6.878,0,0,1-2.826-.286C185.789-91.915,185.554-91.934,185.325-91.806Z"
+                                          transform="translate(-112.904 -393.547)" fill="#333" />
+                                      </g>
+                                    </g>
+                                  </svg>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Sightseeing in Manali </div>
+                                  <div class="" style="font-size: 12px;padding-bottom: 5px;"> Manali, India </div>
+                                  <div style="padding-bottom: 5px;">
+                                    <ul class="tour-place-list" style="margin: 0;padding: 0; list-style: inside;">
+                                      <li class="tour-place-item">Khajjiar</li>
+                                      <li class="tour-place-item">Bhagsu falls</li>
+                                      <li class="tour-place-item">Panchpula</li>
+                                      <li class="tour-place-item">Dalai Lama temple</li>
+                                      <li class="tour-place-item">Dal Lake</li>
+                                      <li class="tour-place-item">Naddi</li>
+                                      <li class="tour-place-item">Chamunda Temple</li>
+                                    </ul>
+                                  </div>
+                                  <div class="" style="display: flex; align-items: center;">
+                                    <div style="margin-right: 20px;">
+                                      <div class="print-company" style="font-weight: bold;"> Duration </div>
+                                      <div class="print-company"> 10 hrs </div>
+                                    </div>
+                                    <div>
+                                      <div class="print-company" style="font-weight: bold;"> Places Covered </div>
+                                      <div class="print-company"> 7 </div>
+                                    </div>
+                                  </div>
+
+
+                                </div>
+
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td
+                        style="border-top: 1px solid #aaaaaa;border-bottom: 1px solid #aaaaaa;padding:10px 0 0 0;width: 65px;"
+                        class="print-table-td text-break text-center align-top">
+                        <div
+                          style="border:1px solid #F29015;border-radius:4px;width: 55px;height: 55px;padding: 7px 5px;">
+                          <div class="print-page-item-head"
+                            style="font-size: 18px;line-height: 22px;font-weight: bold;">3 </div>
+                          <div style="font-size: 12px;line-height: 12px;font-weight: normal;text-transform: capitalize;"
+                            class="print-item-number">Day</div>
+                        </div>
+
+                      </td>
+
+                      <td
+                        style="border-top: 1px solid #aaaaaa;border-bottom: 1px solid #aaaaaa;padding: 10px 5px 10px 5px;"
+                        class="print-table-td text-break text-left align-top">
+                        <table width="100%" cellspacing="0" border="0">
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 0 0 10px;vertical-align: middle;"
+                              class="print-table-td text-break text-left align-top">
+                              <div class="print-company" style="font-weight: bold;line-height: 20px;">Departure from
+                                Chandigarh</div>
+                              <div style="display: flex;align-items: center;">
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15.323"
+                                    viewBox="0 0 16 15.323">
+                                    <path
+                                      d="M17.323,12.146a.868.868,0,0,0-.4-.718L10.871,7.645V3.21a1.21,1.21,0,0,0-2.419,0V7.645L2.4,11.428a.857.857,0,0,0-.4.718.846.846,0,0,0,1.1.806l5.355-1.677V15.71L7,16.8a.387.387,0,0,0-.161.323V17.6a.406.406,0,0,0,.516.387l2.307-.661,2.307.661a.406.406,0,0,0,.516-.387v-.476a.387.387,0,0,0-.161-.323L10.871,15.71V11.275l5.355,1.677A.846.846,0,0,0,17.323,12.146Z"
+                                      transform="translate(18 -2) rotate(90)" fill="#333" fill-rule="evenodd" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Flights </span>
+                                </div>
+                                <div style="margin-right: 30px;" class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="12.291"
+                                    viewBox="0 0 16 12.291">
+                                    <path id="bed"
+                                      d="M15.527,0H.472A.472.472,0,0,0,0,.472V10.24a.472.472,0,0,0,.472.472h.6v1.106a.472.472,0,0,0,.472.472H4.313a.472.472,0,0,0,.472-.472V10.712h6.349v1.106a.472.472,0,0,0,.472.472h2.769a.472.472,0,0,0,.472-.472V10.712h.68A.472.472,0,0,0,16,10.24V.472A.472.472,0,0,0,15.527,0Zm-.472.945V5.462a2.245,2.245,0,0,0-.724-.343V4.4a1.72,1.72,0,0,0-1.718-1.718H9.245A1.713,1.713,0,0,0,8,3.215a1.713,1.713,0,0,0-1.246-.537H3.387A1.72,1.72,0,0,0,1.669,4.4v.722a2.245,2.245,0,0,0-.724.343V.945ZM8.472,4.4a.774.774,0,0,1,.773-.773h3.367a.774.774,0,0,1,.773.773v.645H8.472Zm-.945.645H2.614V4.4a.774.774,0,0,1,.773-.773H6.754a.774.774,0,0,1,.773.773ZM3.841,11.346H2.017v-.634H3.841Zm10.062,0H12.079v-.634H13.9Zm1.152-1.579H.945V7.294A1.31,1.31,0,0,1,2.253,5.986H13.747a1.31,1.31,0,0,1,1.308,1.308Zm0,0"
+                                      transform="translate(0)" fill="#333" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Hotels </span>
+                                </div>
+                                <div class="print-company">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="13.435"
+                                    viewBox="0 0 16 13.435">
+                                    <path id="Car"
+                                      d="M15.991,8.211A1.919,1.919,0,0,0,14.635,6.6L13.355,2.882A1.279,1.279,0,0,0,12.089,2H4.22a1.279,1.279,0,0,0-1.228.87L1.712,6.509A1.958,1.958,0,0,0,0,8.211a.326.326,0,0,0,0,.1V11.6a1.279,1.279,0,0,0,.64,1.1v1.772a.966.966,0,0,0,.966.966H3.523a.96.96,0,0,0,.953-.966V12.875h7.037v1.6a.96.96,0,0,0,.96.96h1.919a.96.96,0,0,0,.96-.96V12.7a1.279,1.279,0,0,0,.64-1.1V8.307A.314.314,0,0,0,15.991,8.211Zm-13.754,2.1a.96.96,0,1,1,.96-.96.96.96,0,0,1-.96.96Zm9.276,0H4.476V8.4h7.037ZM2.41,6.477l1.19-3.4a.64.64,0,0,1,.621-.435h7.868a.64.64,0,0,1,.64.441l1.171,3.4H2.384Zm11.342,3.838a.96.96,0,1,1,.96-.96A.96.96,0,0,1,13.752,10.316Z"
+                                      transform="translate(0.006 -1.998)" fill="#333" />
+                                  </svg>
+                                  <span style="margin-left: 10px;display: inline-block;"> Transfers </span>
+                                </div>
+
+                              </div>
+
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 5px 0 7px;"
+                              class="print-table-td text-break text-left align-top">
+                              <div style="font-weight: normal;line-height: 20px;padding-bottom: 5px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="10.734"
+                                  viewBox="0 0 16 10.734">
+                                  <g id="Group_1840" data-name="Group 1840" transform="translate(-999.41 -1450.426)">
+                                    <rect id="Rectangle_826" data-name="Rectangle 826" width="16" height="1.545"
+                                      rx="0.772" transform="translate(999.41 1459.615)" fill="#333" />
+                                    <path id="Path_864" data-name="Path 864"
+                                      d="M90.665,133.415c.269-2.628,2.6-5.3,4.988-5.541-2.054.531-4.012,3.053-4.253,5.406a5.456,5.456,0,0,0-.012.873h11.989a6.887,6.887,0,0,0-6.383-6.868.988.988,0,0,0,.5-1.1.962.962,0,0,0-1.879,0,.988.988,0,0,0,.5,1.1,6.886,6.886,0,0,0-6.383,6.868h.905A5.418,5.418,0,0,1,90.665,133.415Z"
+                                      transform="translate(910.852 1325)" fill="#333" />
+                                  </g>
+                                </svg>
+                                <span style="margin-left: 10px;display: inline-block;"> Breakfast at Hotel in Manali
+                                </span>
+                              </div>
+                              <div style="font-weight: normal;line-height: 20px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="12.291"
+                                  viewBox="0 0 16 12.291">
+                                  <path id="bed"
+                                    d="M15.527,0H.472A.472.472,0,0,0,0,.472V10.24a.472.472,0,0,0,.472.472h.6v1.106a.472.472,0,0,0,.472.472H4.313a.472.472,0,0,0,.472-.472V10.712h6.349v1.106a.472.472,0,0,0,.472.472h2.769a.472.472,0,0,0,.472-.472V10.712h.68A.472.472,0,0,0,16,10.24V.472A.472.472,0,0,0,15.527,0Zm-.472.945V5.462a2.245,2.245,0,0,0-.724-.343V4.4a1.72,1.72,0,0,0-1.718-1.718H9.245A1.713,1.713,0,0,0,8,3.215a1.713,1.713,0,0,0-1.246-.537H3.387A1.72,1.72,0,0,0,1.669,4.4v.722a2.245,2.245,0,0,0-.724.343V.945ZM8.472,4.4a.774.774,0,0,1,.773-.773h3.367a.774.774,0,0,1,.773.773v.645H8.472Zm-.945.645H2.614V4.4a.774.774,0,0,1,.773-.773H6.754a.774.774,0,0,1,.773.773ZM3.841,11.346H2.017v-.634H3.841Zm10.062,0H12.079v-.634H13.9Zm1.152-1.579H.945V7.294A1.31,1.31,0,0,1,2.253,5.986H13.747a1.31,1.31,0,0,1,1.308,1.308Zm0,0"
+                                    transform="translate(0)" fill="#333" />
+                                </svg>
+                                <span style="margin-left: 10px;display: inline-block;"> Checkout from Hotel in Manali
+                                </span>
+                              </div>
+
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #aaaaaa;padding: 5px 0 7px;"
+                              class="print-table-td text-break text-left align-top">
+                              <div
+                                style="font-weight: normal;line-height: 20px;padding-bottom: 5px;display: inline-block;">
+                                Hotel in Manali to Airport in Chandigarh </div>
+                              <div style="display: flex;align-items: center;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26.87"
+                                    viewBox="0 0 32 26.87">
+                                    <path id="Car"
+                                      d="M31.987,14.424A3.838,3.838,0,0,0,29.275,11.2L26.716,3.766A2.559,2.559,0,0,0,24.183,2H8.446A2.559,2.559,0,0,0,5.989,3.74L3.43,11.02A3.915,3.915,0,0,0,0,14.424a.652.652,0,0,0,0,.192v6.576a2.559,2.559,0,0,0,1.279,2.2v3.544a1.932,1.932,0,0,0,1.932,1.932H7.051a1.919,1.919,0,0,0,1.906-1.932V23.751H23.031v3.2a1.919,1.919,0,0,0,1.919,1.919h3.838a1.919,1.919,0,0,0,1.919-1.919V23.392a2.559,2.559,0,0,0,1.279-2.2V14.616A.627.627,0,0,0,31.987,14.424ZM4.48,18.633A1.919,1.919,0,1,1,6.4,16.714,1.919,1.919,0,0,1,4.48,18.633Zm18.552,0H8.957V14.795H23.031ZM4.825,10.956,7.2,4.15a1.279,1.279,0,0,1,1.241-.87H24.183a1.279,1.279,0,0,1,1.279.883L27.8,10.956H4.774Zm22.684,7.677a1.919,1.919,0,1,1,1.919-1.919A1.919,1.919,0,0,1,27.509,18.633Z"
+                                      transform="translate(0.006 -1.998)" fill="#333" />
+                                  </svg>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <div class="print-company" style="font-weight: bold;"> Swift, Etios or Similar </div>
+                                  <div class="print-company"> Private Transfer/Sedan - AC </div>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Facilities </div>
+                                  <div class="print-company"> 3 Seater | 2 Luggage Bags | AC | First Aid </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 5px 0 7px;" class="print-table-td text-break text-left align-top">
+                              <div
+                                style="font-weight: normal;line-height: 20px;padding-bottom: 5px;display: inline-block;">
+                                Flight from Chandigarh to New Delhi </div>
+                              <div style="display: flex;">
+                                <div style="margin-right: 20px;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="30.647"
+                                    viewBox="0 0 32 30.647">
+                                    <path
+                                      d="M32.647,22.291a1.735,1.735,0,0,0-.79-1.436L19.743,13.291V4.419a2.419,2.419,0,0,0-4.839,0v8.871L2.79,20.856A1.714,1.714,0,0,0,2,22.291,1.692,1.692,0,0,0,4.194,23.9L14.9,20.549v8.871L12,31.6a.773.773,0,0,0-.323.645V33.2a.811.811,0,0,0,1.032.774l4.613-1.323,4.613,1.323a.811.811,0,0,0,1.032-.774v-.952a.773.773,0,0,0-.323-.645l-2.9-2.178V20.549L30.453,23.9A1.692,1.692,0,0,0,32.647,22.291Z"
+                                      transform="translate(34 -2) rotate(90)" fill="#333" fill-rule="evenodd" />
+                                  </svg>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <img src="../../../../../assets/img/airindia-logo.jpg"
+                                    style="width:40px;height:auto;max-width: 40px;max-height: 40px;"> <br>
+                                  <div style="line-height: 16px;font-size: 12px;"> AI-9806 </div>
+                                  <div style="line-height: 16px;font-size: 12px;"> Air India </div>
+                                  <div style="line-height: 16px;font-size: 12px;"> Economy </div>
+                                </div>
+                                <div style="margin-right: 20px;">
+                                  <div>
+                                    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                                      <div>
+                                        <div style="font-weight: bold; font-size: 18px;line-height: 32px;">21:15</div>
+                                        <div style="line-height: 16px;font-size: 14px;"> Chandigarh </div>
+                                      </div>
+
+                                      <div class="plan-start-point-print plan-start-point-view"
+                                        style="position: relative;width:100px;margin: 5px 15px 5px 15px;font-size: 14px;text-align: center;font-weight: bold;">
+                                        
+                                        <div style="margin-bottom:0;line-height: normal;">01h 00m</div>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="94" height="11.492" viewBox="0 0 94 11.492">
+                                            <g id="plane" transform="translate(-793 -371)">
+                                              <rect  width="90" height="1" transform="translate(795 376)" fill="#aaa"/>
+                                              <path  d="M13.492,9.609a.651.651,0,0,0-.3-.538L8.654,6.234V2.907a.907.907,0,1,0-1.815,0V6.234L2.3,9.071a.643.643,0,0,0-.3.538.635.635,0,0,0,.823.6L6.839,8.956v3.327L5.75,13.1a.29.29,0,0,0-.121.242V13.7a.3.3,0,0,0,.387.29l1.73-.5,1.73.5a.3.3,0,0,0,.387-.29v-.357a.29.29,0,0,0-.121-.242l-1.089-.817V8.956l4.016,1.258A.635.635,0,0,0,13.492,9.609Z" transform="translate(848 369) rotate(90)" fill="#f29015" fill-rule="evenodd"/>
+                                              <circle  cx="2.5" cy="2.5" r="2.5" transform="translate(793 374)" fill="#aaa"/>
+                                              <g  transform="translate(882 374)" fill="#fff" stroke="#aaa" stroke-width="1">
+                                                <circle cx="2.5" cy="2.5" r="2.5" stroke="none"/>
+                                                <circle cx="2.5" cy="2.5" r="2" fill="none"/>
+                                              </g>
+                                            </g>
+                                          </svg>
+                                       </div>
+                                      <div>
+                                        <div style="font-weight: bold; font-size: 18px;line-height: 32px;">22:15</div>
+                                        <div style="line-height: 16px;font-size: 14px;">New Delhi </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div>
+                                  <div class="print-company" style="font-weight: bold;"> Baggage </div>
+                                  <div class="print-company"> Cabin: N/A <br> Check-in: 15 Kgs </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+
+
+
+
+
+
+                        </table>
+                      </td>
+
+                    </tr>
+
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="contentVisibility && dataContent">
+          <div class="card-body form-horizontal">
+            <div class="row mb-3">
+              <div class="col-xl-10 ml-auto mr-auto text-right">
+                <button type="button" class="btn btn-outline-primary ml-2" (click)="onClickprint()">
+                  {{getLang('print', 'Print')}}
+                </button>
+                <button class="dropdown-toggle btn btn-primary mrtb0 ml-2" data-toggle="dropdown">
+                  {{getLang('more', 'More')}}
+                  <b class="caret"></b>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a *ngIf="editUrl" class="dropdown-item" href="javascript:void(0)" [routerLink]="[editUrl]">
+                    {{getLang('edit', 'Edit')}}
+                  </a>
+                  <a class="dropdown-item" href="javascript:void(0)" (click)="onClickpdf()">
+                    {{getLang('pdf', 'Export PDF')}}
+                  </a>
+                  <a class="dropdown-item" href="javascript:void(0)" (click)="onClickemail()">
+                    {{getLang('email', 'Send Email')}}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-10 ml-auto mr-auto" id="printid2">
+                <div class="d-block">
+                  <div [innerHTML]="displayHTML | safeHtml"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

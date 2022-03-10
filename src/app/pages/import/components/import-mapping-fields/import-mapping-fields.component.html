@@ -1,0 +1,50 @@
+<div class="form-horizontal">
+    <h4 class="card-title text-center mb-4">Mapping Fields</h4>
+    <div class="text-center mb-2"> Please select attributes that match your data. You can select existing attributes or create new ones. </div>    
+    <div class="text-center mb-3"> The default setting doesn't import the data.  </div> 
+
+    <div class="alert alert-danger" *ngIf="requiredFieldNeedtoMap && requiredFieldNeedtoMap.length !== 0">
+        <button mat-button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <i class="material-icons">close</i>
+        </button>
+        <span *ngFor="let item of requiredFieldNeedtoMap">
+          <b> {{item}} </b> &nbsp;&nbsp;&nbsp;  field need to map.
+        </span>
+    </div>  
+
+    <div  *ngIf="importFieldsValue.length !== 0">
+        <div  *ngFor="let itm of _tabLists">
+            <div class="mb-3 card-border p-3 alternative-light-blue">
+            <div class="row" >
+                <div class="col-md-4 mb-md-0 mb-3">
+                    {{itm.datafield}}
+                </div>
+                <div class="col-md-4">
+                    <div *ngFor="let record of itm.data"> {{record}} </div>
+                </div>
+                <div class="col-md-4">
+                    <mat-form-field class="example-full-width">
+                        <mat-select [(ngModel)]="itm.fieldname" (selectionChange)="someMethod(itm)">
+                            <mat-option value="">Do not Import</mat-option>
+                            <mat-option *ngFor="let importItem of fieldListsValue" [value]="importItem.datafield">
+                                {{importItem.displaytext}}  <span *ngIf="importItem.mandatory" class="text-danger">*</span>
+                            </mat-option>
+                        </mat-select>
+                </mat-form-field>
+                </div>
+            </div>
+         </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button class="btn btn-default">
+                <i class="material-icons">close</i> Cancel
+            </button>
+            <button [disabled]="submitBtnDisable" class="btn btn-primary"  (click)="mapping()">
+                <i class="material-icons">navigate_next</i> Confirm Mapping
+            </button>
+        </div>
+    </div>
+</div>

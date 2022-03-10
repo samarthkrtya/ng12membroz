@@ -1,0 +1,60 @@
+* {
+  box-sizing: border-box;
+}
+
+  .app {
+    overflow: auto;
+    margin-bottom: 50px;
+  }
+
+  .app app-lists-notes {
+    /* flex: 0 0 calc(50% - 1em); 
+    padding-left: 0.5em; */
+    width: 50%;
+    float: left;
+    padding: 5px;
+     
+  }
+  
+  @media only screen and (min-width: 400px) {
+    .app app-lists-notes {
+      width: 33.33%;
+    }
+  }
+
+
+  .toolbar {
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height:55px;
+    text-align: center;
+    /* position: fixed; */
+    width: 100%;
+    background-color: gold;
+    border: 10px solid gray;
+    border-bottom: 0;
+    color: gray;
+    font-size: -webkit-xxx-large;
+    font-weight: bold;
+}
+
+button {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    font-size: xx-large;
+    outline: none;
+}
+.record {
+  float: right;
+}
+
+.add {
+  /* float: left */
+}
+
+::ng-deep .mat-badge-medium.mat-badge-after .mat-badge-content {
+  right: -22px !important;
+}

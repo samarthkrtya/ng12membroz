@@ -1,0 +1,273 @@
+<form [formGroup]="form" (keydown.enter)="$event.preventDefault()" (ngSubmit)="onSubmit(form.value,form.valid)"
+    novalidate>
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="loader" *ngIf="isLoading">
+                <svg class="circular" viewBox="25 25 50 50">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                </svg>
+            </div>
+
+            <div class="row" *ngIf="!isLoading">
+                <div class="offset-xl-1 col-xl-10">
+                    <h3 class="card-title">
+                        {{getLang('paymentschedule', 'Payment Schedule')}}
+                        {{receiptnumberprefix ? '(#' + receiptnumberprefix + ')' : ''}}
+                    </h3>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('member', 'Member')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput disabled [value]="contentData.memberid.fullname">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <!-- <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('membership', 'Membership')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput disabled
+                                                    [value]="contentData.memberid.membershipid.membershipname">
+                                            </mat-form-field>
+                                        </div> -->
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('paymentterm', 'Payment Term')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput disabled
+                                                    [value]="contentData.paymentterms.paymentitem.paymentitemname">
+                                            </mat-form-field>
+                                        </div>
+
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('status', 'Status')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput disabled [value]="contentData.status">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('paidamount', 'Paid Amount')}}
+                                            </label>
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput formControlName="paidamount">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        {{getLang('balanceamount', 'Balance Amount')}}
+                                                    </label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input matInput formControlName="balance">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <ng-container *ngIf="!splitVisibilty;else splbtn">
+                                                        <button type="button" class="btn btn-danger ml-2"
+                                                            [disabled]="disableButton" (click)="reset()">
+                                                            <i class="material-icons">delete</i> {{getLang('reset',
+                                                            'Reset')}}
+                                                        </button>
+                                                        <button class="btn btn-success ml-2" type="button"
+                                                            (click)="splitVisibilty = true" [disabled]="disableButton">
+                                                            <i class="material-icons">alt_route</i>{{getLang('split',
+                                                            'Split')}}
+                                                        </button>
+                                                    </ng-container>
+                                                    <ng-template #splbtn>
+                                                        <button class="btn btn-default ml-2" type="button"
+                                                            (click)="reset()" [disabled]="disableButton">
+                                                            <i class="material-icons">cancel</i>{{getLang('cancel',
+                                                            'Cancel')}}
+                                                        </button>
+                                                    </ng-template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="offset-xl-1 col-xl-10">
+                                    <div class="row">
+                                        <!-- <div class="col-sm-6">
+                                            <label class="col-form-label">
+                                                {{getLang('enddate', 'End Date')}}
+                                                <span class="text-danger">*</span>
+                                            </label>
+
+                                            <mat-form-field>
+                                                <input matInput [matDatepicker]="picker1"
+                                                    formControlName="membershipend">
+                                                <mat-datepicker-toggle matSuffix [for]="picker1">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <div [hidden]="form.get('membershipend').valid || (form.get('membershipend').pristine && !submitted)"
+                                                class="text-danger">
+                                                <small *ngIf="form.get('membershipend').hasError('membershipend')"
+                                                    class="error-label">
+                                                    {{getLang('membershipendisrequired', 'Membershipend is Required')}}
+                                                </small>
+                                            </div>
+                                        </div> -->
+
+                                        <ng-container *ngIf="!splitVisibilty;else splitTmpl">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('scheduledate', 'Schedule Date')}}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker2"
+                                                        formControlName="scheduledate">
+                                                    <mat-datepicker-toggle matSuffix [for]="picker2">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                                                </mat-form-field>
+
+                                                <div [hidden]="form.get('scheduledate').valid || (form.get('scheduledate').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small *ngIf="form.get('scheduledate').hasError('scheduledate')"
+                                                        class="error-label">
+                                                        {{getLang('scheduledateisrequired', 'Schedule date is
+                                                        Required')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('adjustment', 'Adjustment')}}
+                                                    <span class="text-danger">(+Balance)</span>
+                                                </label>
+
+                                                <mat-form-field>
+                                                    <input matInput type="number" min="0" formControlName="adjustment">
+                                                </mat-form-field>
+
+                                                <div [hidden]="form.get('adjustment').valid || (form.get('adjustment').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small
+                                                        *ngIf="form.get('adjustment').hasError('insertonlypositivenumber')"
+                                                        class="error-label">
+                                                        {{getLang('adjustmentshouldbepositive', 'Adjustment should be
+                                                        positive')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('adjustment', 'Adjustment')}}
+                                                    <span class="text-danger">(-Balance)</span>
+                                                </label>
+                                                <mat-form-field>
+                                                    <input matInput type="number" min="0"
+                                                        formControlName="negativeadjustment">
+                                                </mat-form-field>
+
+                                                <div [hidden]="form.get('negativeadjustment').valid || (form.get('negativeadjustment').pristine && !submitted)"
+                                                    class="text-danger">
+                                                    <small
+                                                        *ngIf="form.get('negativeadjustment').hasError('insertonlypositivenumber')"
+                                                        class="error-label">
+                                                        {{getLang('adjustmentshouldbepositive', 'Adjustment should be
+                                                        positive')}}
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                        </ng-container>
+                                        <ng-template #splitTmpl>
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label">
+                                                    {{getLang('noofschedule', 'No of Schedules')}}
+                                                </label>
+
+                                                <mat-form-field>
+                                                    <input matInput type="number" min="1"
+                                                        formControlName="noofschedules">
+                                                </mat-form-field>
+                                            </div>
+                                            <ng-container *ngFor="let item of duedates; let i = index;">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label">
+                                                        {{getLang('duedate', 'Due Date')}} {{i+1}}
+                                                    </label>
+
+                                                    <mat-form-field>
+                                                        <input matInput [min]="min" [matDatepicker]="duedates_i"
+                                                            [(ngModel)]="duedates[i]"
+                                                            [ngModelOptions]="{standalone: true}">
+                                                        <mat-datepicker-toggle matSuffix [for]="duedates_i">
+                                                        </mat-datepicker-toggle>
+                                                        <mat-datepicker #duedates_i color="primary"></mat-datepicker>
+                                                    </mat-form-field>
+
+                                                </div>
+                                            </ng-container>
+
+                                        </ng-template>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer fixed-bottom bg-white shadow-top" *ngIf="!isLoading">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <button class="btn btn-danger ml-2" type="button" (click)="delete()" [disabled]="disableButton">
+                                <i class="material-icons">delete</i> {{getLang('delete', 'Delete')}}
+                            </button>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <button [routerLink]="['/pages/dynamic-list/list/paymentschedule']" class="btn btn-default ml-2"
+                                type="button" [disabled]="disableButton">
+                                <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                            </button>
+                            <button class="btn btn-primary ml-2" type="submit" [disabled]="disableButton">
+                                <i class="material-icons">save</i>{{getLang('save', 'Save')}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>

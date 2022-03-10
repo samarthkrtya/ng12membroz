@@ -1,0 +1,170 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="card-title">Payroll Process Lists</h3>
+                <div class="card">
+                    
+
+                    <div class="loader" *ngIf="isLoadingResults">
+                        <svg class="circular" viewBox="25 25 50 50">
+                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="material-datatables1">
+                            <div class="table-responsive">
+                                <table mat-table [dataSource]="dataSource" matSort matSortActive="desc"
+                                    class="mat-elevation-z8 w-100 table-hover table-membroz" id="datatables" matSortDisableClear>
+
+                                    <ng-container matColumnDef="month">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Month</th>
+                                        <td mat-cell *matCellDef="let element"> {{getMonth(element.month)}} [
+                                            {{element.month}} ] </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="year">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Year</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="workingdays">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Working Days</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.workingdays}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="weeklyoffdays">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Weekly offs</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.weeklyoffdays}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="holidays">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Holidays</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="employeesalary">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Employee</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.employeesalary ?
+                                            element.employeesalary.length : '---'}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="paymentdate">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Date</th>
+                                        <!-- <td mat-cell *matCellDef="let element"> {{element.status === 'paid' ?
+                                            element.paymentdate | date : '---'}} </td> -->
+                                        <td mat-cell *matCellDef="let element"> {{ element.paymentdate | date }}
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="payrollnetpay">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Net Payment</th>
+                                        <td mat-cell *matCellDef="let element"> ₹ {{element.payrollnetpay ?
+                                            element.payrollnetpay : 0}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef class="text-right">Action</th>
+                                        <td mat-cell *matCellDef="let element" class="td-actions text-right">
+                                            <button *ngIf="element.status == 'active' && element._id"
+                                                class="btn btn-success"
+                                                [routerLink]="['/pages/payroll-module/payroll-process/begin/' + element._id]">
+                                                Process Payroll</button>
+
+                                            <button *ngIf="element.status == 'active' && !element._id"
+                                                class="btn btn-success" (click)="createPayRoll(element)">Process
+                                                Payroll</button>
+
+                                            <button *ngIf="element.status == 'paid'" class="btn btn-info"
+                                                class="btn btn-warning"
+                                                [routerLink]="['/pages/payroll-module/payroll-process/begin/' + element._id]">
+                                                View Payroll </button>
+
+                                            <button *ngIf="element.status == 'active' && element._id"
+                                                class="btn btn-danger" (click)="deletePayRoll(element)"> Delete Payroll
+                                            </button>
+
+                                        </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                </table>
+                            </div>
+
+                            <!--      <nav *ngIf="pagedItems.length > 0" class="ng2-smart-pagination-nav">
+                            <ul *ngIf="pager.pages && pager.pages.length"
+                                class="ng2-smart-pagination pagination">
+                                <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                    <a (click)="setPage(1)" class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                            {{langVisibility && langResource['first'] ? langResource['first'] : 'First'}}
+                                        </span>
+                                        <span class="sr-only">
+                                            {{langVisibility && langResource['first'] ? langResource['first'] : 'First'}}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                    <a (click)="setPage(pager.currentPage - 1)"
+                                        class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                            {{langVisibility && langResource['previous'] ? langResource['previous'] : 'previous'}}
+                                        </span>
+                                        <span class="sr-only">
+                                            {{langVisibility && langResource['previous'] ? langResource['previous'] : 'previous'}}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li *ngFor="let page of pager.pages"
+                                    [ngClass]="{active:pager.currentPage === page}">
+                                    <a (click)="setPage(page)" class="ng2-smart-page-link page-link">
+                                        {{page}}
+                                    </a>
+                                </li>
+                                <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                    <a (click)="setPage(pager.currentPage + 1)"
+                                        class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                            {{langVisibility && langResource['next'] ? langResource['next'] : 'Next'}}
+                                        </span>
+                                        <span class="sr-only">
+                                            {{langVisibility && langResource['next'] ? langResource['next'] : 'Next'}}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                    <a (click)="setPage(pager.totalPages)"
+                                        class="ng2-smart-page-link page-link">
+                                        <span aria-hidden="true">
+                                            {{langVisibility && langResource['last'] ? langResource['last'] : 'Last'}}
+                                        </span>
+                                        <span class="sr-only">
+                                            {{langVisibility && langResource['last'] ? langResource['last'] : 'Last'}}
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="ng2-smart-pagination pagination pull-right">
+                                <li>
+                                    {{langVisibility && langResource['showing'] ? langResource['showing'] : 'Showing'}} 
+                                    {{this.pager.startIndex + 1}} 
+                                    {{langVisibility && langResource['to'] ? langResource['to'] : 'to'}}  
+                                    {{this.pager.endIndex + 1}}
+                                    {{langVisibility && langResource['of'] ? langResource['of'] : 'of'}}   
+                                    {{this.payrollLists.length}} 
+                                    {{langVisibility && langResource['records'] ? langResource['records'] : 'records'}}   
+                                </li>
+                            </ul>
+                        </nav> -->
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

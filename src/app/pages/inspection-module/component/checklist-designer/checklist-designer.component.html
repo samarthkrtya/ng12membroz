@@ -1,0 +1,532 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row" cdkDropListGroup>
+      <div class="col-xl-3 pr-xl-0 formfields-sticky"  >
+        <h3 class="card-title">Form Builder</h3>
+        <div class="card form-builder-card">   
+          <mat-tab-group class="tab-50-50">
+            <mat-tab label="Normal Fields"> 
+              <div>
+                <ul 
+                  id="simplefield"
+                  class="list-group toolbox-list"
+                  cdkDropList
+                  #todoList="cdkDropList"
+                  [cdkDropListData]="fieldLists"
+                  (cdkDropListDropped)="drop($event)"
+                  cdkDropListSortingDisabled
+                  [cdkDropListEnterPredicate]="noReturnPredicate">
+                  <li 
+                    class="list-group-item" 
+                    *ngFor="let item of fieldLists"
+                    cdkDrag>
+                    <a class="list-group-item-action d-flex align-items-center">
+                      <img [src]="item.src" class="mr-3"> 
+                      {{item.name}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </mat-tab>
+            
+          </mat-tab-group>
+        </div>
+      </div>
+      
+      <div class="col-xl-9">
+        <h3 class="card-title text-capitalize"> 
+          <app-edit-formname-inspection-designer
+            [data]='formObj?.dispalyformname'
+            (focusOut)='saveCost($event)'>
+          </app-edit-formname-inspection-designer>
+           
+        </h3>
+
+        <div class="card form-builder-card">
+          <div class="card-body">
+
+            <ng-container *ngFor="let section of this.sectionLists">
+
+              <h4>{{section[0]?.sectiondisplayname ? section[0]?.sectiondisplayname : ""}}</h4>
+
+              <div
+                [id]="section[0]?.sectionname"
+                class="row no-gutters example-list d-flex mb-4"
+                cdkDropList
+                #doneList="cdkDropList"
+                [cdkDropListData]="section"
+                (cdkDropListDropped)="drop($event)">
+
+                <div 
+                  [ngClass]="item.colspan && item.colspan == '1' ? 'col-sm-12' : item.colspan == '2' ? 'col-sm-6' : 'col-sm-3'"
+                  *ngFor="let item of section[0]?.fields" cdkDrag>
+
+                  <div class="fb-dash-border">
+
+                    <label class="col-form-label">
+                      {{item.displayname && item.displayname !== '' ? item.displayname : item.fieldname}}
+                      <span *ngIf="item.required" class="text-danger">*</span>
+                    </label>
+
+                    <div class="row">
+                      
+                      <div class="col-sm-12">
+
+                        <div class="d-flex">
+                        <app-checklist-display-field 
+                          [item]="item" class="flex-grow-1">
+                        </app-checklist-display-field>
+
+                        <button mat-button class="btn btn-link btn-primary btn-just-icon" (click)="edit(item)">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+      
+                        <button mat-button class="btn btn-link btn-primary btn-just-icon" (click)="delete(item)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                        </div>
+
+                    </div>
+
+                      
+
+                    </div>
+                  </div>
+                </div>
+                
+
+              </div>
+            </ng-container>
+
+
+            <div class="mt-2">
+              <ng-container>
+
+                <div class="row membroz-row">
+                  <div class="membroz-col mb-3">
+                    <span 
+                      (click)="insertGroup(1)"
+                      class="btn-file text-center add-upload-inner-vcenter">
+                      <label 
+                        class="upload_button mb-0 add-upload-main cursor-pointer">
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="18.77"
+                            height="18.77" 
+                            viewBox="0 0 18.77 18.77">
+                            <g transform="translate(-807.636 -666.636)">
+                              <line 
+                                x2="11.858" 
+                                y2="11.858"
+                                transform="translate(817.021 667.636) rotate(45)"
+                                fill="none" 
+                                stroke="#949494"
+                                stroke-linecap="round" 
+                                stroke-width="1" />
+                              <line 
+                                x1="11.858" 
+                                y2="11.858"
+                                transform="translate(817.021 667.636) rotate(45)"
+                                fill="none" 
+                                stroke="#949494"
+                                stroke-linecap="round" 
+                                stroke-width="1" />
+                            </g>
+                          </svg>
+                          <div class="mt-2 add-img-text" >Add 1 column</div>
+                      </label>
+                    </span>
+                  </div>
+                </div>
+
+              </ng-container>
+              
+              <!-- <ng-container>
+
+                <div class="row membroz-row">
+                  <div class="membroz-col mb-3">
+                    <span 
+                      (click)="insertGroup(2)"
+                      class="btn-file text-center add-upload-inner-vcenter">
+                      <label 
+                        class="upload_button mb-0 add-upload-main cursor-pointer">
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="18.77"
+                            height="18.77" 
+                            viewBox="0 0 18.77 18.77">
+                            <g transform="translate(-807.636 -666.636)">
+                              <line 
+                                x2="11.858" 
+                                y2="11.858"
+                                transform="translate(817.021 667.636) rotate(45)"
+                                fill="none" 
+                                stroke="#949494"
+                                stroke-linecap="round" 
+                                stroke-width="1" />
+                              <line 
+                                x1="11.858" 
+                                y2="11.858"
+                                transform="translate(817.021 667.636) rotate(45)"
+                                fill="none" 
+                                stroke="#949494"
+                                stroke-linecap="round" 
+                                stroke-width="1" />
+                            </g>
+                          </svg>
+                          <div class="mt-2 add-img-text" >Add 2 column</div>
+                      </label>
+                    </span>
+                  </div>
+                </div>
+
+              </ng-container>
+              <ng-container>
+
+                <div class="row membroz-row">
+                  <div class="membroz-col mb-3">
+                    <span 
+                      (click)="insertGroup(4)"
+                      class="btn-file text-center add-upload-inner-vcenter">
+                      <label 
+                        class="upload_button mb-0 add-upload-main cursor-pointer">
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="18.77"
+                            height="18.77" 
+                            viewBox="0 0 18.77 18.77">
+                            <g transform="translate(-807.636 -666.636)">
+                              <line 
+                                x2="11.858" 
+                                y2="11.858"
+                                transform="translate(817.021 667.636) rotate(45)"
+                                fill="none" 
+                                stroke="#949494"
+                                stroke-linecap="round" 
+                                stroke-width="1" />
+                              <line 
+                                x1="11.858" 
+                                y2="11.858"
+                                transform="translate(817.021 667.636) rotate(45)"
+                                fill="none" 
+                                stroke="#949494"
+                                stroke-linecap="round" 
+                                stroke-width="1" />
+                            </g>
+                          </svg>
+                          <div class="mt-2 add-img-text" >Add 4 column</div>
+                      </label>
+                    </span>
+                  </div>
+                </div>
+
+              </ng-container> -->
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer fixed-bottom bg-white shadow-top">
+  <div class="container-fluid">
+    
+    <!-- <div class="row">
+      <div class="col-sm-12 text-right">
+        <button class="btn btn-primary ml-2" type="submit" (click)="preview()" [disabled]="isdisablesavebutton">
+          <i class="material-icons">preview</i> Preview
+        </button>
+        <button class="btn btn-primary ml-2" type="submit" (click)="Save()" [disabled]="isdisablesavebutton">
+          <i class="material-icons">save</i> Save
+        </button>
+      </div>
+    </div> -->
+    
+  </div>
+</footer>
+
+
+  <!-- Trigger the modal with a button -->
+<button 
+    #groupAddBtn
+    type="button" 
+    class="btn btn-info btn-lg d-none" 
+    data-toggle="modal" 
+    data-target="#myModalGroup">Open Modal
+</button>
+
+<div id="myModalGroup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form 
+                [formGroup]="form" 
+                (ngSubmit)="onGroupSubmit(form.value, form.valid)" 
+                novalidate 
+                class="mb-0">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getLang('addsection', 'Add Group')}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    
+                    <input hidden="true" matInput formControlName="_id">
+                    <input hidden="true" matInput formControlName="sectionname">
+                    <input hidden="true" matInput formControlName="colspan">
+                    
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-form-label"> 
+                              {{getLang('displayname', 'Display Name')}} 
+                            </label>
+                            
+                            <mat-form-field>
+                                <input matInput formControlName="sectiondisplayname">
+                            </mat-form-field>
+              
+                            <div 
+                                [hidden]="form.get('sectiondisplayname').valid || (form.get('sectiondisplayname').pristine && !submitted)"
+                                class="text-danger">
+                                <small *ngIf="form.get('sectiondisplayname').hasError('sectiondisplayname')" class="error-label">
+                                    {{getLang('sectiondisplaynameisrequired', 'Display Name is Required')}}
+                                </small>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button 
+                        [disabled]="isdisablesavebutton"
+                        class="btn btn-default" 
+                        type="button" 
+                        data-dismiss="modal">
+                        <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+                    </button>
+                    <button 
+                        [disabled]="isdisablesavebutton"
+                        class="btn btn-primary ml-2" 
+                        type="submit">
+                        <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Trigger the modal with a button -->
+<button 
+  type="button" 
+  id="addFieldBtn" 
+  class="btn btn-info btn-lg d-none" 
+  data-toggle="modal" 
+  data-target="#myModal"
+  data-backdrop="static" 
+  data-keyboard="false"></button>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <form 
+        [formGroup]="formfieldForm" 
+        (ngSubmit)="onformFieldSubmit(formfieldForm.value, formfieldForm.valid)" 
+        novalidate 
+        class="mb-0">
+        <div class="modal-header">
+          <h4 class="modal-title"> {{getLang('addfield', 'Add Field')}} </h4>
+          <button type="button" class="close" data-dismiss="modal" (click)="cancelAction()">&times;</button>
+        </div>
+        <div class="modal-body">
+
+          <input hidden="true" matInput formControlName="_id">
+          <input hidden="true" matInput formControlName="sectionname">
+          <input hidden="true" matInput formControlName="sectiondisplayname">
+          <input hidden="true" matInput formControlName="id">
+          <input hidden="true" matInput formControlName="fieldname">
+
+          <div class="row">
+
+            <div class="col-sm-12">
+              <label class="col-form-label"> 
+                {{getLang('displayname', 'Display Name')}} 
+                <span class="text-danger">*</span>
+              </label>
+              
+              <mat-form-field>
+                <input matInput formControlName="displayname">
+              </mat-form-field>
+
+              <div 
+                  [hidden]="formfieldForm.get('displayname').valid || (formfieldForm.get('displayname').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('displayname').hasError('required')" class="error-label">
+                      {{getLang('displaynameisrequired', 'Display Name is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <label class="col-form-label"> {{getLang('required', 'Required')}} </label>
+
+              <div class="mt-2">
+                <mat-slide-toggle
+                    class="example-margin"
+                    formControlName="required">
+                </mat-slide-toggle>
+              </div>
+              <div 
+                  [hidden]="formfieldForm.get('required').valid || (formfieldForm.get('required').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('required').hasError('required')" class="error-label">
+                      {{getLang('requiredisrequired', 'required is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <label class="col-form-label"> {{getLang('check lists', 'Check Lists')}} </label>
+              
+              <div class="mt-2">
+                <mat-slide-toggle
+                    class="example-margin"
+                    formControlName="checklist">
+                </mat-slide-toggle>
+              </div>
+
+              <div 
+                  [hidden]="formfieldForm.get('checklist').valid || (formfieldForm.get('checklist').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('checklist').hasError('checklist')" class="error-label">
+                      {{getLang('checklistisrequired', 'checklist is Required')}}
+                  </small>
+              </div>
+          </div>
+
+            <div class="col-sm-12" [ngClass]="checkMultiSelect(this._formfieldModel.fieldtype)">
+              <label class="col-form-label"> {{getLang('multiselect', 'Is Multi Select')}} </label>
+
+              <div class="mt-2">
+
+                <mat-slide-toggle
+                    class="example-margin"
+                    formControlName="multiselect">
+                </mat-slide-toggle>
+
+              </div>
+
+              <div 
+                  [hidden]="formfieldForm.get('multiselect').valid || (formfieldForm.get('multiselect').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('multiselect').hasError('required')" class="error-label">
+                      {{getLang('multiselectisrequired', 'multiselect is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'number') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('maxlength', 'Min')}} <span class="text-danger">*</span></label>
+
+              <div class="mt-2">
+
+                <mat-form-field>
+                  <input matInput type="number" formControlName="min" >
+                </mat-form-field>
+              </div>
+              <div 
+                  [hidden]="formfieldForm.get('min').valid || (formfieldForm.get('min').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('min').hasError('required')" class="error-label">
+                      {{getLang('minisrequired', 'min is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'number') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('Max', 'Max')}} <span class="text-danger">*</span> </label>
+
+              <div class="mt-2">
+
+                <mat-form-field>
+                  <input matInput type="number" formControlName="max" >
+                </mat-form-field>
+              </div>
+              <div 
+                  [hidden]="formfieldForm.get('max').valid || (formfieldForm.get('max').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('max').hasError('required')" class="error-label">
+                      {{getLang('maxisrequired', 'max is Required')}}
+                  </small>
+              </div>
+            </div>
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'mobile' || this._formfieldModel.fieldtype == 'alternatenumber') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> {{getLang('maxlength', 'Max Length')}} <span class="text-danger">*</span> </label>
+
+              <div class="mt-2">
+
+                <mat-form-field>
+                  <input matInput type="number" min="0" max="100" formControlName="maxlength" >
+                </mat-form-field>
+              </div>
+              <div 
+                  [hidden]="formfieldForm.get('maxlength').valid || (formfieldForm.get('maxlength').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('maxlength').hasError('required')" class="error-label">
+                      {{getLang('maxlengthisrequired', 'maxlength is Required')}}
+                  </small>
+              </div>
+            </div>
+
+
+
+            <div class="col-sm-12" [ngClass]="(this._formfieldModel.fieldtype == 'readonly' || this._formfieldModel.fieldtype == 'hidden') ? 'd-block' : 'd-none'">
+              <label class="col-form-label"> 
+                {{getLang('defaultvalue', 'Value')}} 
+                <span class="text-danger">*</span>
+              </label>
+              
+              <mat-form-field>
+                <input matInput formControlName="defaultvalue">
+              </mat-form-field>
+
+              <div 
+                  [hidden]="formfieldForm.get('defaultvalue').valid || (formfieldForm.get('defaultvalue').pristine && !formsubmitted)"
+                  class="text-danger">
+                  <small *ngIf="formfieldForm.get('defaultvalue').hasError('required')" class="error-label">
+                    {{getLang('valueisrequired', 'Value is Required')}}
+                  </small>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button 
+              (click)="cancelAction()"
+              [disabled]="isdisablesavebutton"
+              class="btn btn-default" 
+              type="button" 
+              data-dismiss="modal">
+              <i class="material-icons">close</i> {{getLang('cancel', 'Cancel')}}
+          </button>
+          <button 
+              [disabled]="isdisablesavebutton"
+              class="btn btn-primary ml-2" 
+              type="submit">
+              <i class="material-icons">save</i> {{getLang('save', 'Save')}}
+          </button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

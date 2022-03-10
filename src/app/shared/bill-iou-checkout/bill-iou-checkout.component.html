@@ -1,0 +1,68 @@
+<div class="d-block">
+  <div class="card white-box-full-order">
+    <div class="card-body">
+      <div class="loader" *ngIf="isLoading">
+        <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+      </div>
+      <h4 class="card-title"> {{getLang('iousummary', 'IOU Summary')}} </h4>
+      <div class="row">
+
+        <div class="col-sm-12">
+          <div class="table-responsive mt-3">
+            <table mat-table [dataSource]="unpaidbillList" class="mat-elevation-z8 w-100 table-hover table-membroz">
+              <ng-container matColumnDef="docnumber">
+                <th mat-header-cell *matHeaderCellDef> {{getLang('doc', 'Document')}}</th>
+                <td mat-cell *matCellDef="let element"> {{element?.docnumber}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="billdate">
+                <th mat-header-cell *matHeaderCellDef>{{getLang('date', 'Date')}}</th>
+                <td mat-cell *matCellDef="let element"> {{element?.billdate | toLocaleDate }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="totalamount">
+                <th mat-header-cell *matHeaderCellDef>{{getLang('totalamount', 'Total amount')}}</th>
+                <td mat-cell *matCellDef="let element"> {{element?.totalamount | myCurrencyPipe}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="balance">
+                <th mat-header-cell *matHeaderCellDef>{{getLang('balance', 'Balance')}}</th>
+                <td mat-cell *matCellDef="let element"> {{element?.balance| myCurrencyPipe}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>{{getLang('status', 'Status')}}</th>
+                <td mat-cell *matCellDef="let element"> {{element?.status}}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>{{getLang('action', 'Action')}}</th>
+                <td mat-cell *matCellDef="let element">
+                  <button type="button" class="btn btn-link btn-primary btn-just-icon" matTooltip="Make Payment"
+                    [matTooltipPosition]="'above'" (click)="makePayment(element)">
+                    <i class="material-icons">payment</i>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-sm-12 text-right" *ngIf="!isLoading">
+          <button class="btn btn-primary ml-2" type="button" (click)="onCancel()">
+            <i class="material-icons">cancel</i> {{getLang('back', 'Back')}}
+          </button>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+
+<div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5 member-img-xl-px">
+        <div class="member-img-main position-relative member-profile-img-border">
+
+            <label class="upload_button btn btn-link btn-primary btn-just-icon profile-img-edit m-0" for="fileupload">
+                <i class="material-icons">edit</i>
+            </label>
+             <label *ngIf="dataContent.profilepic" class="upload_button btn btn-link btn-primary btn-just-icon profile-img-delete m-0 flex-grow-1" (click)="deleteProfileImg()">
+                <i class="material-icons">delete</i>
+            </label>
+
+            <img
+                [src]="dataContent.profilepic ? dataContent.profilepic : '../assets/img/default-avatar.png'"
+                src="" class="img-fluid w-100" alt="">
+
+            <div
+                class="membership-details"
+                [style.background-color]="dataContent.status && dataContent.status == 'active' ? 'green' : null">
+                <div class="media-body text-center">
+                    <div class="text-uppercase">{{dataContent.status}}</div>
+                </div>
+            </div>
+
+            <input
+                class="d-none"
+                type="file"
+                id="fileupload"
+                #fileInput
+                ng2FileSelect
+                [style.display]="'none'"
+                [uploader]="uploader"
+                (change)="fileInput.value=''"
+                multiple />
+
+            <div class="file" *ngIf="response['file']" id="upload_status">
+                <div class="status">
+                    Uploading... {{response['progress']}}%
+                    <div *ngIf="!response['status']">In progress</div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress" role="progressbar" [style.width.%]="response['progress']"></div>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+        <h3 class="member-name mt-2">{{dataContent.fullname}} <span>{{dataContent.membernumber}}</span> </h3>
+        <div class="row">
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property && dataContent.property.primaryemail">
+                    <div class="mr-2">
+                        <img
+                            src="../assets/img/email-gray-icon.svg" alt="">
+                    </div>
+                    <div>{{dataContent.property && dataContent.property.primaryemail ? dataContent.property.primaryemail : '---' }}</div>
+                    <!-- <div class="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><g transform="translate(-13418 105)"><g transform="translate(13418 -105)" fill="none" class="svg-stroke-secondary-icon"  stroke-width="1"><circle cx="17" cy="17" r="17" stroke="none"/><circle cx="17" cy="17" r="16.5" fill="none"/></g><g transform="translate(13426 -95)"><g transform="translate(0 0)"><path d="M17.069.149a.5.5,0,0,0-.544-.112L.318,6.52a.5.5,0,0,0-.033.922l6.391,3.1,3.1,6.391a.5.5,0,0,0,.454.284h.018a.5.5,0,0,0,.45-.317L17.18.693A.5.5,0,0,0,17.069.149ZM1.752,7.032,14.618,1.886,6.95,9.553Zm8.433,8.433-2.521-5.2L15.331,2.6Z" transform="translate(0 -0.001)" class="svg-fill-secondary-icon" /></g></g></g></svg>
+                    </div> -->
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property && dataContent.property.mobile">
+                    <div class="mr-2"> <img src="../assets/img/phone-gray-icon.svg"  alt=""></div>
+                    <div> {{dataContent.property.mobile}}  </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent && dataContent.paidamount">
+                    <div class="mr-2"> <img src="../assets/img/amount-gray-icon.svg"  alt=""></div>
+                    <div>{{getLang('amntrcvd','Amount Received:')}}  <span class="brand-secondary"> {{dataContent.paidamount | myCurrencyPipe}} </span> </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.property && dataContent.property.whatsapp_number">
+                    <div class="mr-2"> <img src="../assets/img/whatsapp-gray-icon.svg"  alt=""></div>
+                    <div>{{dataContent.property.whatsapp_number}}</div>
+                    <!-- <div class="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><g transform="translate(-5189 -555)"><g transform="translate(5189 555)" fill="none" class="svg-stroke-secondary-icon" stroke-width="1"><circle cx="17" cy="17" r="17" stroke="none"/><circle cx="17" cy="17" r="16.5" fill="none"/></g><path d="M14.7,2.471A8.426,8.426,0,0,0,1.445,12.635L.25,17l4.466-1.171a8.415,8.415,0,0,0,4.026,1.025h0A8.428,8.428,0,0,0,14.7,2.471ZM8.745,15.431h0a6.993,6.993,0,0,1-3.564-.976L4.922,14.3l-2.65.7.707-2.584-.167-.265a7,7,0,1,1,5.931,3.281Zm3.841-5.244c-.21-.105-1.245-.614-1.438-.685s-.333-.105-.473.105-.544.685-.667.825-.245.158-.456.053A5.749,5.749,0,0,1,7.858,9.441,6.349,6.349,0,0,1,6.687,7.983c-.123-.211,0-.314.092-.43a5.954,5.954,0,0,0,.526-.72.387.387,0,0,0-.018-.369c-.053-.105-.473-1.141-.649-1.563s-.344-.355-.474-.361-.263-.007-.4-.007A.773.773,0,0,0,5.2,4.8a2.361,2.361,0,0,0-.737,1.756A4.1,4.1,0,0,0,5.324,8.73a9.382,9.382,0,0,0,3.6,3.178,12.048,12.048,0,0,0,1.2.443,2.886,2.886,0,0,0,1.326.083,2.168,2.168,0,0,0,1.421-1,1.759,1.759,0,0,0,.123-1c-.053-.088-.193-.14-.4-.246Zm0,0" transform="translate(5197.75 564)" class="svg-fill-secondary-icon" fill-rule="evenodd"/></g></svg>
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6" >
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.campaign && dataContent.campaign.campaignname">
+                    <div class="mr-2"> <img src="../assets/img/member-card-gray-icon.svg"  alt=""></div>
+                    <div> {{dataContent.campaign.campaignname}}</div>
+                </div>
+                <div class="d-flex align-items-center mb-3" *ngIf="dataContent.membershipstart" >
+                    <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg"  alt=""></div>
+                    <div> {{dataContent.membershipstart | date: 'medium'}} </div>
+                </div>
+                
+                <div class="d-flex align-items-center mb-3"  *ngIf="dataContent && dataContent.walletbalance">
+                    <div class="mr-2"> <img src="../assets/img/wallet-gray-icon.svg" alt=""></div>
+                    <div>{{getLang('walletblnc','Wallet Balance:')}}<span class="brand-secondary">{{dataContent.walletbalance | myCurrencyPipe}}</span> </div>
+                    <!-- <div class="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><g transform="translate(-5189 -555)"><g transform="translate(5189 555)" fill="none" class="svg-stroke-secondary-icon" stroke-width="1"><circle cx="17" cy="17" r="17" stroke="none"/><circle cx="17" cy="17" r="16.5" fill="none"/></g><path d="M36.552,5.808A3.719,3.719,0,1,0,40.271,2.09,3.723,3.723,0,0,0,36.552,5.808Zm6.871,0a3.152,3.152,0,1,1-3.152-3.152A3.156,3.156,0,0,1,43.423,5.808ZM40.271,3.9a.283.283,0,0,1,.283.283V4.3a.851.851,0,0,1,.567.8.283.283,0,1,1-.567,0,.283.283,0,0,0-.567,0v.115a.282.282,0,0,0,.2.27l.338.106a.846.846,0,0,1,.6.811v.115a.851.851,0,0,1-.673.831v.089a.283.283,0,1,1-.567,0V7.272a.851.851,0,0,1-.46-.755.283.283,0,0,1,.567,0,.283.283,0,1,0,.567,0V6.4a.282.282,0,0,0-.2-.27l-.338-.106a.846.846,0,0,1-.6-.811V5.1a.851.851,0,0,1,.567-.8v-.12A.283.283,0,0,1,40.271,3.9Zm4.6,7.508v3.613A1.986,1.986,0,0,1,42.892,17H31.983A1.986,1.986,0,0,1,30,15.017V1.133A1.135,1.135,0,0,1,31.133,0h9.208a1.135,1.135,0,0,1,1.133,1.133.283.283,0,1,1-.567,0,.567.567,0,0,0-.567-.567H31.133a.567.567,0,0,0-.567.567V15.017a1.418,1.418,0,0,0,1.417,1.417h9.522a1.977,1.977,0,0,1-.6-1.417V10.59a.283.283,0,1,1,.567,0v4.427a1.417,1.417,0,0,0,2.833,0V11.4a.567.567,0,0,0-.567-.567h-1.2a.283.283,0,0,1,0-.567h1.2A1.135,1.135,0,0,1,44.875,11.4Zm-12.4-3.79a.283.283,0,0,1,.283-.283h2.408a.283.283,0,0,1,0,.567H32.763A.283.283,0,0,1,32.479,7.615Zm0-3.187a.283.283,0,0,1,.283-.283h2.408a.283.283,0,0,1,0,.567H32.763A.283.283,0,0,1,32.479,4.427ZM39,10.8a.283.283,0,0,1-.283.283h-5.95a.283.283,0,0,1,0-.567h5.95A.283.283,0,0,1,39,10.8Zm0,2.975a.283.283,0,0,1-.283.283h-5.95a.283.283,0,0,1,0-.567h5.95A.283.283,0,0,1,39,13.777Z" transform="translate(5169 564)" class="svg-fill-stroke-secondary-icon" stroke-width="0.4"/></g></svg>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

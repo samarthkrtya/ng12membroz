@@ -1,0 +1,127 @@
+<div class="wrapper wrapper-full-page">
+  <div class="login-full-page landing-main " [ngClass]="adminloginimage && adminloginimage !=='' ? 'header-filter' : ''"
+    [ngStyle]="styleObject()">
+
+    <div class="top-right-square " [ngClass]="adminloginimage && adminloginimage !=='' ? 'd-none' : ''">
+    </div>
+    <nav class="navbar navbar-expand-lg membroz-menu navbar-light p-0" >
+      <div id="header" class="header-inner">
+        <div class="container">
+          <a class="navbar-brand ml-0" href="#"><img *ngIf="logoPath && isLoadimg == false" [src]="logoPath" alt=""></a>         
+          <button class="navbar-toggler login-toggler" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+          </button>
+          <div class="collapse w-100" id="collapseExample" >
+            <div class="card p-3">
+              <ul class="list-unstyled mb-0">
+                <li class="nav-item">
+                  <a class="nav-link text-capitalize" *ngIf="resetType == 'user' && allowmemberlogin==true" href="/login/member">
+                    {{memberFormDisplayFormName ? memberFormDisplayFormName : '' }} Login
+                  </a>
+                  <a class="nav-link text-capitalize" *ngIf="resetType == 'member'" href="/login/user">
+                    {{userFormDisplayFormName ? userFormDisplayFormName : '' }} Login
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          
+            <div class="d-none d-lg-block navbar-nav ml-auto" >
+              <ul class="list-unstyled mb-0">
+                <li class="nav-item">
+                  <a class="nav-link" *ngIf="resetType == 'user' && allowmemberlogin==true" href="/login/member">
+                    {{memberFormDisplayFormName ? memberFormDisplayFormName : '' }} Login
+                  </a>
+                  <a class="nav-link" *ngIf="resetType == 'member'" href="/login/user">
+                    {{userFormDisplayFormName ? userFormDisplayFormName : '' }} Login
+                  </a>
+                </li>
+              </ul>
+            </div>
+        
+
+
+
+        </div>
+      </div>
+    </nav>
+    <div class="container login-container">
+      <div class="row">
+        <div class="col-xl-6 col-md-6 d-flex align-items-center">
+          <div class="text-center text-md-left">
+            <div class="top-left-dots" [ngClass]="adminloginimage && adminloginimage !=='' ? 'd-none' : ''"></div>
+            <h1 class="h2 landing-head"> {{loginheader}}</h1>
+            <div class="landing-intro">
+              <p>{{loginsubheader}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-5 col-md-6">
+          <div class="landing-box p-4 membroz-form align-items-center">
+            <div class="ie-dblock">
+              <h4 class="mb-3">
+                <span *ngIf="resetType == 'user'"> {{userFormDisplayFormName ? userFormDisplayFormName : '' }}</span>
+                <span *ngIf="resetType == 'member'"> {{memberFormDisplayFormName ? memberFormDisplayFormName : ''
+                  }}</span> Login
+              </h4>
+              <form class="mb-0" [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)">
+
+                <div class="alert alert-danger" [hidden]="(form.get('email').pristine || !submitted || !Invalid)">
+                  User Name & Password is Invalid
+                </div>
+
+                <div class="loader" *ngIf="isLoading">
+                  <svg class="circular" viewBox="25 25 50 50">
+                    <circle class="path" cx="50" cy="50" r="15" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                  </svg>
+                </div>
+
+                <div class="form-group" *ngIf="!isLoading">
+                  <input type="text" class="form-control" placeholder="User Name" formControlName="email">
+                </div>
+                <div class="form-group" *ngIf="!isLoading">
+                  <input type="password" class="form-control" placeholder="Password" formControlName="password">
+                </div>
+                <div class="form-group">
+                  <button [disabled]="!form.valid || disableBtn" type="submit"
+                    class="btn btn-primary btn-lg btn-block">Login</button>
+                </div>
+                <div class="form-group">
+                  <div class="row mt-4">
+                    <div class="col-12">
+                      <a [routerLink]="['/reset/'+resetType]">Reset Password?</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group text-center">
+                  <div class="row">
+                    <div class="col-6">
+                      <select [(ngModel)]="userLanguage" [ngModelOptions]="{standalone: true}" name="lang"
+                        class="form-control">
+                        <option *ngFor="let item of supportedlanguageLists" [value]="item.id">{{item.itemName}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-right-round-square" [ngClass]="adminloginimage && adminloginimage !=='' ? 'd-none' : ''"></div>
+  <div class="bottom-left-round-square-1" [ngClass]="adminloginimage && adminloginimage !=='' ? 'd-none' : ''"></div>
+  <div class="bottom-left-round-square-2" [ngClass]="adminloginimage && adminloginimage !=='' ? 'd-none' : ''"></div>
+  <footer class="login-footer mt-auto py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col text-center"> {{copyright}}</div>
+      </div>
+    </div>
+  </footer>

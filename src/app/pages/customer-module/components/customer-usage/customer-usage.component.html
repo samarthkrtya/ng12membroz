@@ -1,0 +1,160 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="card-title mt-3">Customer Usage Summary</h3>
+
+        <div class="card" *ngIf="isLoadingDate">
+          <div class="card-body">
+            <div fxLayout="row" fxLayoutAlign="space-around center"
+              style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+              <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="!isLoadingDate">
+
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-xl-2 col-lg-4 col-md-5 member-img-xl-px">
+                  <div class="member-img-main position-relative member-profile-img-border">
+                    <img [src]="dataContent?.profilepic ? dataContent?.profilepic : '../assets/img/apple-icon.png'"
+                      class="img-fluid w-100" alt="">
+                    <div class="membership-details"
+                      [style.background-color]="dataContent?.status && dataContent?.status == 'active' ? 'green' : null">
+                      <div class="media-body text-center">
+                        <div class="text-uppercase">{{dataContent?.status}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-8 col-lg-8 col-md-7">
+                  <h3 class="member-name mt-2">{{dataContent?.fullname}} <span> {{dataContent?.membernumber}} </span>
+                  </h3>
+                  <div class="row">
+                    <div class="col-md-12 col-lg-6">
+                      <div class="d-flex align-items-center mb-3"
+                        *ngIf="dataContent?.membershipid && dataContent?.membershipid?.membershipname">
+                        <div class="mr-2"> <img src="../assets/img/member-card-gray-icon.svg" alt=""></div>
+                        <div>{{dataContent?.membershipid?.membershipname}}</div>
+                      </div>
+                      <div class="d-flex align-items-center mb-3"
+                        *ngIf="dataContent.property && dataContent.property.primaryemail">
+                        <div class="mr-2">
+                          <img src="../assets/img/email-gray-icon.svg" alt="">
+                        </div>
+                        <div>{{dataContent?.property?.primaryemail}}</div>
+                      </div>
+                      <div class="d-flex align-items-center mb-3"
+                        *ngIf="dataContent.property && dataContent.property.mobile">
+                        <div class="mr-2"> <img src="../assets/img/phone-gray-icon.svg" alt="">
+                        </div>
+                        <div>{{dataContent?.property?.mobile}}</div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12 col-lg-6">
+
+                      <div class="d-flex align-items-center mb-3" *ngIf="dataContent.membershipstart">
+                        <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg" alt="">
+                        </div>
+                        <div>Start Date: <span class="brand-secondary">{{dataContent?.membershipstart | toLocaleDate}}
+                          </span> </div>
+
+                      </div>
+                      <div class="d-flex align-items-center mb-3" *ngIf="dataContent.membershipend">
+                        <div class="mr-2"> <img src="../assets/img/calendar-gray-icon.svg" alt="">
+                        </div>
+                        <div>End Date: <span class="brand-secondary">{{dataContent?.membershipend |
+                            toLocaleDate}}</span> </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+
+                <div class="col-sm-8 col-md-8 col-lg-8">
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                  <ng-container *ngIf="pacakgesLists && pacakgesLists.length > 0">
+                    <label class="col-form-label pt-0">
+                      Packages
+                    </label>
+                    <mat-form-field>
+                      <mat-select placeholder="Select packages" (selectionChange)="onPCSelect($event.value)"
+                        [(ngModel)]="selectedMembershipName">
+                        <mat-option *ngFor="let addons of usageobjectArray" [value]="addons">
+                          {{addons &&  addons.packagename}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-container>
+                </div>
+                <!-- <div class="col-sm-3 col-md-3 col-lg-3">
+                  <label class="col-form-label pt-0">
+                    Period
+                  </label>
+                  <mat-form-field>
+                    <mat-select (selectionChange)="onItemSelect1($event.value)" [(ngModel)]="selectedPEriodName">
+                      <mat-option value="Yearly">Yearly</mat-option>
+                      <mat-option value="One time">One time</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div> -->
+              </div>
+
+              <div class="border-outer-secondary">
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered table-hover table-membroz-plain">
+                    <thead>
+                      <tr>
+                        <th rowspan="2">Package & Service</th>
+                        <th rowspan="2">Purchase Date</th>
+                        <th rowspan="2">Expiry</th>
+                        <th class="text-center" rowspan="2">Entitled</th>
+                        <th class="text-center" rowspan="2">Used</th>
+                        <th class="text-center" rowspan="2">Balance</th>
+                      </tr>
+
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let usageobject of pacakgesLists">
+                        <tr>
+                          <td><h4 >{{usageobject?.packagename}}</h4></td>
+                          <td>{{usageobject?.purchasedate | toLocaleDate}}</td>
+                          <td>{{usageobject?.expiry}}</td>
+                        </tr>
+                        <tr *ngFor="let item of usageobject.services">
+                            <td>&nbsp;&nbsp;{{item.services}}</td>
+                            <td></td>
+                            <td></td>
+                            <td>{{item?.entitled}}</td>
+                            <td>{{item.used}}</td>
+                            <td>{{item.balance}}</td>
+                        </tr>
+                      </ng-container>
+                      
+                      <ng-template #Temp>
+                        <tr>
+                          <td colspan="6" class="text-center">No usage available !</td>
+                        </tr>
+                      </ng-template>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>

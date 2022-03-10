@@ -1,0 +1,93 @@
+<form [formGroup]="maintanceform" (ngSubmit)="onSubmit(maintanceform.value)">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                    
+            <div class="col-md-6">              
+                <mat-form-field class="example-full-width">
+                    <mat-label>Brand</mat-label>                  
+                        <mat-select (selectionChange)="onItemSelect1($event.value)">
+                            <mat-option *ngFor="let brand of vendorlists" [value]="brand._id">
+                                {{brand.fullname}}
+                            </mat-option>
+                        </mat-select>
+                   </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+               <mat-label>Purchase</mat-label>               
+                     <input matInput formControlName="purchase" >
+                 </mat-form-field>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+               <mat-label>Cost</mat-label>               
+                     <input type="number" matInput formControlName="cost" >
+                 </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+               <mat-label>Depreciation</mat-label>               
+                     <input type="number" matInput formControlName="depreciation">
+                 </mat-form-field>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <mat-form-field>
+                    <mat-select (selectionChange)="onItemSelect($event.value)" placeholder="Contract" formControlName="contract">
+                        <mat-option value="monthly" name="monthly">Monthly</mat-option>
+                        <mat-option value="yearly" name="yearly">Yearly</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-sm-6">
+                <mat-form-field class="example-full-width" >
+                    <mat-label>Choose a date</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="startperiod">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+            </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field class="example-full-width">
+                   <mat-label>Contract Cost</mat-label>               
+                         <input type="number" matInput formControlName="contractcost">
+                     </mat-form-field>
+                </div>
+            </div>
+       
+
+        <div class="row">
+            <div class="col-sm-12 text-right">
+                <button 
+                    data-dismiss="modal"
+                    class="btn btn-default" 
+                    type="button"
+                    >
+                    <i class="material-icons">close</i> Cancel
+                </button>
+                <button 
+                    class="btn btn-primary ml-2" 
+                    type="submit"
+                    [disabled]="isDisable">
+                    <i class="material-icons">save</i>Save
+                </button>
+            </div>
+            </div>
+
+
+        </div>
+        </div>
+        </form>
+  

@@ -1,0 +1,175 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 pr-xl-0" *ngIf="itemVisbility">
+                <app-item-list [dataContent]="dataContent" [schema]="'formdatas'" [formObj]="formObj"
+                    (onItemListsData)="getSubmittedItemListsData($event)">
+                </app-item-list>
+            </div>
+            <div class="col-xl-9">
+
+
+                <div fxLayout="row" *ngIf="!contentVisibility" fxLayoutAlign="space-around center"
+                    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+                    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+                </div>
+                <ng-container *ngIf="contentVisibility && dataContent">
+                    <h3 class="card-title mt-3"> {{getLang('documentdetail','Document Detail')}} </h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-4 col-md-5 member-img-xl-px">
+                                    <div class="member-img-main position-relative member-profile-img-border">
+                                        <img [src]="'../assets/img/default-avatar.png'"
+                                            class="img-fluid w-100" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-xl-8 col-lg-8 col-md-7">
+                                    <h3 class="member-name mt-2">{{dataContent?.formname}} </h3>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-6">
+                                            {{dataContent?.category}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-6">
+                                            {{getLang('signed','Signed')}} : {{dataContent?.signedcount}}
+                                        </div>
+                                        <div class="col-md-12 col-lg-6">
+                                            {{getLang('acknowledged','Acknowledged')}} :
+                                            {{dataContent?.acknowledgedcount}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <mat-accordion *ngIf="dataContent">
+                        <mat-expansion-panel [expanded]="true">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{getLang('noaction','No Action')}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <ng-container [ngTemplateOutlet]="recDD"
+                                [ngTemplateOutletContext]="{list:dataContent.noaction,type:'simple'}">
+                            </ng-container>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+
+                    <div class="mt-3">
+                        <mat-accordion *ngIf="dataContent">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{getLang('signed','Signed')}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <ng-container [ngTemplateOutlet]="recDD"
+                                    [ngTemplateOutletContext]="{list:dataContent.signed,type:'nosimple'}">
+                                </ng-container>
+
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+
+                    <div class="mt-3">
+                        <mat-accordion *ngIf="dataContent">
+                            <mat-expansion-panel [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{getLang('acknowledged','Acknowledged')}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <ng-container [ngTemplateOutlet]="recDD"
+                                    [ngTemplateOutletContext]="{list:dataContent.acknowledged,type:'nosimple'}">
+                                </ng-container>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+
+                    <!-- <mat-accordion *ngIf="dataContent">
+                      <mat-expansion-panel [expanded]="true">
+                          <mat-expansion-panel-header>
+                              <mat-panel-title>
+                                  {{getLang('shared','Shared with')}}
+                              </mat-panel-title>
+                          </mat-expansion-panel-header>
+                          <ng-container [ngTemplateOutlet]="recDD"
+                              [ngTemplateOutletContext]="{list:dataContent.shared,type:'simple'}">
+                          </ng-container>
+                      </mat-expansion-panel>
+                  </mat-accordion> -->
+
+                </ng-container>
+            </div>
+        </div>
+
+
+
+        <ng-template #recDD let-userlist="list" let-type="type">
+            <ng-container *ngIf="userlist.length > 0;else emptypt">
+                <div class="table-responsive border-outer-secondary">
+                    <table mat-table [dataSource]="userlist"
+                        class="mat-elevation-z8 w-100 table-membroz-plain ms-payment-term">
+
+                        <ng-container matColumnDef="fullname">
+                            <th mat-header-cell *matHeaderCellDef>{{getLang('fullname','Fullname')}}</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element?.fullname}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="mobile">
+                            <th mat-header-cell *matHeaderCellDef>{{getLang('mobile','Mobile')}} </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element?.mobile}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="email">
+                            <th mat-header-cell *matHeaderCellDef>{{getLang('email','Email')}}
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element?.email}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="duedate" *ngIf="type == 'simple'">
+                            <th mat-header-cell *matHeaderCellDef>{{getLang('duedate','Due Date')}}
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element?.duedate | date}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef class="text-right">{{getLang('action','Action')}}
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                                <button type="button" class="btn btn-link btn-primary btn-just-icon" matTooltip="View"
+                                    [matTooltipPosition]="'above'" (click)="onView(element.formname, element._id)">
+                                    <i class="material-icons">visibility</i>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container *ngIf="type == 'simple';else oth">
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+                        </ng-container>
+                        <ng-template #oth>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </ng-template>
+                    </table>
+                </div>
+            </ng-container>
+
+            <ng-template #emptypt>
+                {{getLang('norecordexist','No​ record exist !!')}}
+            </ng-template>
+        </ng-template>

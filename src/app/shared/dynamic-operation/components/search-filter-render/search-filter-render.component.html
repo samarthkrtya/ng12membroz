@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="offset-xl-1 col-xl-10">
+        <div class="advance-filter-main">
+            <div class="row">
+                <div class="col-sm-4" *ngFor="let filterfield of filterfieldListsValue let i = index">
+
+                    <ng-container *ngIf="filterfield.fieldtype !== 'audio' && filterfield.fieldtype !== 'attachment' && filterfield.fieldtype !== 'image' && filterfield.display">
+                        
+                        <label 
+                            class="col-form-label"
+                            title="{{filterfield.displayname ? filterfield.displayname: filterfield.fielddisplaytext}}">
+                            {{filterfield.displayname ? filterfield.displayname: filterfield.fielddisplaytext}}
+                        </label>
+
+                        <ng-container *ngIf="filterfield.fieldtype == 'Date' || filterfield.fieldtype == 'datepicker' || filterfield.fieldtype == 'Datetime' || filterfield.fieldtype == 'Daterange'" >
+                            <mat-form-field >
+                            <mat-date-range-input [rangePicker]="picker">
+                                <input matStartDate [(ngModel)]="filterfield.modelValue.beginJsDate" placeholder="Start date" #dateRangeStart>
+                                <input #dateRangeEnd (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)" matEndDate [(ngModel)]="filterfield.modelValue.endJsDate" placeholder="End date">
+                                </mat-date-range-input>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-date-range-picker #picker></mat-date-range-picker>
+                        </mat-form-field>
+                        </ng-container>
+
+                        <ng-container *ngIf="filterfield.fieldtype == 'ObjectID' || filterfield.fieldtype == 'ObjectId' || filterfield.fieldtype == 'lookup' || filterfield.fieldtype == 'form' || filterfield.fieldtype == 'formdata'" >
+                            <app-dynamic-autocomplete-ngmodel
+                                *ngIf="resetControl"
+                                [setting]="filterfield"
+                                [(inputModel)]="filterfield.modelValue"
+                                (inputModelChange)="onItemAdded($event)">
+                            </app-dynamic-autocomplete-ngmodel>
+                        </ng-container>
+
+                        <ng-container *ngIf="filterfield.fieldtype == 'form_multiselect'">
+                            <mat-form-field class="example-full-width">
+                                <mat-select multiple (selectionChange)="onItemAdded($event)" [(ngModel)]="filterfield.modelValue">
+                                    <mat-option *ngFor="let item of filterfield.formfieldfilterValue" [value]="item.id">{{item.itemName}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
+
+
+
+                    </ng-container>
+
+                </div>
+                <div class="col-sm-12 text-right" *ngIf="isDisaplayBtnValue">
+                <button type="button" class="btn btn-success ml-2 mb-3" (click)="reloadList()" >
+                     <i class="material-icons"> search</i>
+                     {{isDisaplayBtnTxtValue ? isDisaplayBtnTxtValue : 'Filter'}}
+                </button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

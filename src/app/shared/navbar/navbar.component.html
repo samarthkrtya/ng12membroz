@@ -1,0 +1,183 @@
+<nav #navbar class="navbar navbar-expand-lg  navbar-absolute fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-wrapper">
+      <div class="navbar-minimize">
+        <button id="sidebartoggle" mat-raised-button (click)="minimizeSidebar()" class="btn btn-link px-0 m-0 mr-3">
+          <i class="visible-on-sidebar-regular">
+            <svg id="decrease" xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20">
+              <rect id="Rectangle_596" data-name="Rectangle 596" width="24" height="2" class="svg-primary-fill"/>
+              <rect id="Rectangle_597" data-name="Rectangle 597" width="24" height="2" transform="translate(0 6)" class="svg-primary-fill"/>
+              <rect id="Rectangle_598" data-name="Rectangle 598" width="12" height="2" transform="translate(12 12)" class="svg-primary-fill"/>
+              <path id="Path_582" data-name="Path 582" d="M9,0H1V2H9Z" transform="translate(1 14.343)" class="svg-primary-fill"/>
+              <rect id="Rectangle_599" data-name="Rectangle 599" width="12" height="2" transform="translate(12 18)" class="svg-primary-fill"/>
+              <path id="Subtraction_7" data-name="Subtraction 7" d="M1.555,0h0L.092,1.462,2.987,4.357,0,7.344,1.463,8.806l4.45-4.45L1.556,0Z" transform="translate(5.912 19.7) rotate(180)" class="svg-primary-fill"/>
+            </svg>
+
+          </i>
+          <i class="visible-on-sidebar-mini">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20">
+              <g id="increase" transform="translate(-22435 746)">
+                <rect id="Rectangle_596" data-name="Rectangle 596" width="24" height="2" transform="translate(22435 -746)" class="svg-primary-fill" />
+                <rect id="Rectangle_597" data-name="Rectangle 597" width="24" height="2" transform="translate(22435 -740)" class="svg-primary-fill"/>
+                <rect id="Rectangle_598" data-name="Rectangle 598" width="12" height="2" transform="translate(22435 -734)" class="svg-primary-fill"/>
+                <path id="Path_582" data-name="Path 582" d="M1,0H9V2H1Z" transform="translate(22448 -731.657)" class="svg-primary-fill"/>
+                <rect id="Rectangle_599" data-name="Rectangle 599" width="12" height="2" transform="translate(22435 -728)" class="svg-primary-fill"/>
+                <path id="Subtraction_7" data-name="Subtraction 7" d="M9.643,10.6h0L8.18,9.135l2.894-2.894L8.088,3.254,9.551,1.791,14,6.241,9.643,10.6Z" transform="translate(22445 -736.898)" class="svg-primary-fill"/>
+              </g>
+            </svg>
+
+          </i>
+        </button>
+      </div>
+    </div>
+  
+
+    
+    
+    
+    
+        
+    <mat-form-field class="col-xl-3 col-lg-3 col-md-10 col-sm-10 col-9 d-flex justify-content-start mat-form-field-space-remove">
+      <mat-select matNativeControl [formControl]="branchContrl"  (selectionChange)="onGlobalBranch()">    
+        <mat-option [value]="branch"  *ngFor="let branch of branchList">{{branch.branchname}}</mat-option>
+      </mat-select>
+    </mat-form-field> 
+
+    <button mat-button class="navbar-toggler btn-no-ripple" type="button" (click)="sidebarToggle()">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="navbar-toggler-icon icon-bar"></span>
+      <span class="navbar-toggler-icon icon-bar"></span>
+      <span class="navbar-toggler-icon icon-bar"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navigation">
+       <ul class="nav mr-auto">
+         <li class="nav-item">
+            <div class="font-weight-bold text-danger"><strong>{{idleState}}</strong></div>
+            <!-- <p *ngIf="lastPing"><small>Last keepalive ping <strong>{{lastPing | amTimeAgo}}</strong></small></p> -->
+            <!-- <button (click)="reset()" *ngIf="timedOut">Restart</button> -->
+         </li>
+       </ul>
+       
+
+      
+      
+
+      <app-global-searchbar *ngIf="globalSearchVisible && this._loginUserRoleType!='M'" [actionListsValue]="actionLists" (onSelectOption)="onSelectOptionValue($event)"></app-global-searchbar>
+
+
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown" *ngIf="isSupportEnable">
+          <a  class="nav-link cursor-pointer" data-toggle="dropdown">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <g  transform="translate(-1353 -14)">
+                <g  data-name="Ellipse 84" transform="translate(1353 14)" fill="none" class="svg-primary-stroke" stroke-width="1.55">
+                  <circle cx="12" cy="12" r="12" stroke="none"/>
+                  <circle cx="12" cy="12" r="11.225" fill="none"/>
+                </g>
+                <path  d="M11,18h2V16H11ZM12,6a4,4,0,0,0-4,4h2a2,2,0,0,1,4,0c0,2-3,1.75-3,5h2c0-2.25,3-2.5,3-5A4,4,0,0,0,12,6Z" transform="translate(1353 14)" class="svg-primary-fill" />
+              </g>
+            </svg>
+          </a>
+          <div class="dropdown-menu dropdown-menu-md-right">
+            <a class="dropdown-item cursor-pointer" target="_blank" (click)="goToLink('www.membroz.com/documents/company-profile/')">Help</a>
+            <a class="dropdown-item cursor-pointer" target="_blank" (click)="goToLink('www.membroz.com/additional-services/video/')">Traning Videos</a>
+            <a class="dropdown-item cursor-pointer" [routerLink]="['/pages/dynamic-list/list/support']"> Support Ticket </a>
+          </div>
+        </li>
+        <li class="nav-item" *ngIf="isSettingEnable">
+          <a class="nav-link" [routerLink]="['/pages/menublocklist/5bc4568ffc478d2044076c3a']">
+            <svg xmlns="http://www.w3.org/2000/svg" width="21.4" height="22" viewBox="0 0 21.4 22">
+              <path d="M21.543,14.477a8.106,8.106,0,0,0,.069-1.077,6.619,6.619,0,0,0-.08-1.077l2.326-1.81a.562.562,0,0,0,.137-.7l-2.2-3.8a.56.56,0,0,0-.676-.252l-2.739,1.1A8.094,8.094,0,0,0,16.524,5.78l-.413-2.91a.554.554,0,0,0-.55-.47h-4.4a.543.543,0,0,0-.539.47l-.413,2.91A8.273,8.273,0,0,0,8.355,6.857l-2.739-1.1a.547.547,0,0,0-.676.252l-2.189,3.8a.521.521,0,0,0,.137.7l2.326,1.81a6.375,6.375,0,0,0-.023,2.154l-2.326,1.81a.562.562,0,0,0-.137.7l2.2,3.8a.56.56,0,0,0,.676.252l2.739-1.1A8.1,8.1,0,0,0,10.2,21.02l.412,2.91a.563.563,0,0,0,.55.47h4.4a.534.534,0,0,0,.539-.47l.412-2.91a7.859,7.859,0,0,0,1.856-1.077l2.739,1.1a.547.547,0,0,0,.676-.252l2.2-3.8a.53.53,0,0,0-.138-.7Zm-8.181,3.048A4.125,4.125,0,1,1,17.487,13.4,4.137,4.137,0,0,1,13.362,17.525Z" transform="translate(-2.662 -2.4)" class="svg-primary-fill" />
+            </svg>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="isWalletEnable && this._loginUserRoleType!='M'" >
+          <a class="nav-link" [routerLink]="['/pages/wallet-module/debit']">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="22.2" viewBox="0 0 24 22.2">
+              <g  transform="translate(0 -19.098)">
+                <path   d="M21.8,24.193h-.3v-2.9a2.2,2.2,0,0,0-2.2-2.2H3.39A3.394,3.394,0,0,0,.018,22.155C-.008,22.277,0,21.2,0,37.909A3.393,3.393,0,0,0,3.39,41.3H21.8A2.2,2.2,0,0,0,24,39.1V26.388a2.2,2.2,0,0,0-2.195-2.2ZM3.39,20.606H19.311a.688.688,0,0,1,.687.687v2.9H3.39a1.8,1.8,0,1,1,0-3.587ZM21.8,39.791H3.39a1.883,1.883,0,0,1-1.881-1.881V25.129A3.37,3.37,0,0,0,3.39,25.7H21.8a.688.688,0,0,1,.687.687v3.056H16.819a3.5,3.5,0,1,0,0,7.008h5.673V39.1a.688.688,0,0,1-.687.687Zm.687-4.846H16.819a2,2,0,1,1,0-3.992h5.673Z" transform="translate(0)" class="svg-primary-fill" />
+                <circle  cx="1.094" cy="1.094" r="1.094" transform="translate(16.003 31.854)" class="svg-primary-fill" />
+              </g>
+            </svg>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="this.calendarmenu">
+          <a class="nav-link" [routerLink]="['/pages/calendar/my-calendar']">
+            <svg xmlns="http://www.w3.org/2000/svg" width="21.6" height="24" viewBox="0 0 21.6 24">
+              <path
+                d="M10.2,12.8H7.8v2.4h2.4Zm4.8,0H12.6v2.4H15Zm4.8,0H17.4v2.4h2.4Zm2.4-8.4H21V2H18.6V4.4H9V2H6.6V4.4H5.4A2.389,2.389,0,0,0,3.012,6.8L3,23.6A2.4,2.4,0,0,0,5.4,26H22.2a2.407,2.407,0,0,0,2.4-2.4V6.8A2.407,2.407,0,0,0,22.2,4.4Zm0,19.2H5.4V10.4H22.2Z"
+                transform="translate(-3 -2)" class="svg-primary-fill" />
+            </svg>
+          </a>
+        </li>
+        <div *ngIf="isXeroConnected == 'false'">
+          <button class="xerobutton" (click)="connectToXeroBtn()" *ngIf="this._loginUserRoleName=='HR Manager' && isXeroConnected == 'false' ">Connect to xero </button>
+        </div>
+        <div *ngIf="isXeroConnected == 'true'">
+          <button class="xerobutton" (click)="disconnectToXeroBtn()" *ngIf="this._loginUserRoleName=='HR Manager' && isXeroConnected == 'true' ">Disconnect from xero </button>
+        </div>
+
+        <li class="nav-item dropdown" *ngIf="this._loginUserRoleType!='M'">
+          <a href="#" class="nav-link" data-toggle="dropdown">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.507" height="23.012" viewBox="0 0 17.507 23.012">
+              <g transform="translate(-0.248 -0.5)">
+                <g transform="translate(-1093 -28)">
+                  <g transform="translate(1084 22.5)">
+                    <path
+                      d="M26.671,25.361a11.891,11.891,0,0,1-1.25-5.3V15.95A7.641,7.641,0,0,0,20.3,8.679V8.3a2.3,2.3,0,1,0-4.6,0v.367a7.418,7.418,0,0,0-5.122,7.053v4.344a11.89,11.89,0,0,1-1.25,5.3.767.767,0,0,0,.69,1.109H14.9a3.162,3.162,0,0,0,6.2,0h4.888a.767.767,0,0,0,.686-1.109ZM18,7.533a.767.767,0,0,1,.767.767H17.231A.767.767,0,0,1,18,7.533Zm0,19.933a1.632,1.632,0,0,1-1.5-1h3a1.631,1.631,0,0,1-1.5,1Zm-6.808-2.53a13.459,13.459,0,0,0,.92-4.871V15.722A5.89,5.89,0,0,1,18.4,9.846a6.021,6.021,0,0,1,5.495,6.1v4.116a13.461,13.461,0,0,0,.92,4.872Z"
+                      class="svg-primary-fill" />
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <span class="notification" [ngClass]=" (activitiesLists.length != 0)? 'badge-num' : ' '"
+              id="counterbadge">{{activitiesLists.length}}</span>
+            <p>
+              <span class="d-lg-none d-md-block">Some Actions</span>
+            </p>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right notifications-list">
+            <a class="dropdown-item" [routerLink]="[activity.url]" *ngFor="let activity of activitiesLists">
+              {{activity?.title}}
+              <br>
+              {{activity?.duedate | toLocaleDate : 'datetime' }}
+            </a>
+          </div>
+
+        </li>
+
+        <app-quickadd 
+          *ngIf="this._loginUserRoleType!='M' && this.quickform"
+          [quickfromstyle]="quickfromstyle"
+          [id]="'1'"
+          [quickformschemaname]="quickformschemaname">
+        </app-quickadd>
+
+        <li class="nav-item dropdown">
+          <a href="" class="nav-link profile-avatar" data-toggle="dropdown">
+            <img [src]="profilepic ? profilepic :  'assets/img/default-avatar.png'">
+
+          </a>
+          <div class="dropdown-menu dropdown-menu-md-right">
+            <a class="dropdown-item cursor-pointer">{{userName | titlecase }}</a>
+            <a class="dropdown-item cursor-pointer" (click)="openMyprofile()" >My Profile</a>
+            <a class="dropdown-item cursor-pointer" *ngIf="this._loginUserRoleType =='M'" [routerLink]="['/pages/myaccount/my-accountdetail']">My Cards</a>
+            <a class="dropdown-item cursor-pointer" *ngIf="isAccandBillEnable && this._loginUserRoleType!='M'" [routerLink]="['/pages/myaccount']">Account & Billing</a>
+            <a class="dropdown-item cursor-pointer" [routerLink]="['/pages/admins/reset-password']">Change Password</a>
+            <!-- <a class="dropdown-item cursor-pointer"  [routerLink]="['/pages/wallet/summary/' + walletId]">Wallet Settings</a> -->
+            <!-- <a class="dropdown-item cursor-pointer"
+                            [routerLink]="['/pages/admin-account/admin-account-overview']">My Account</a> -->
+            <a class="dropdown-item cursor-pointer" (click)="logout()">Sign Out</a>
+
+          </div>
+        </li>
+
+
+      </ul>
+
+
+
+    </div>
+  </div>
+</nav>

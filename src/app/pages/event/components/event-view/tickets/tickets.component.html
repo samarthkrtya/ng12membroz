@@ -1,0 +1,86 @@
+<div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="space-around center"
+    style="height:100%; position: relative; margin-left: 50%; margin-right: 50%;">
+    <mat-spinner diameter="50" strokeWidth="5"></mat-spinner>
+</div>
+
+<ng-container *ngIf="!isLoading">
+    <div class="row">
+        <div class="col-sm-12 text-right mt-3 mb-4" *ngIf="ticketType.length > 0">
+            <button class="dropdown-toggle btn btn-primary" data-toggle="dropdown">{{getLang('add', 'Add')}} </button>
+            <div class="dropdown-menu dropdown-menu-right dropdown-limit">
+                <a class="dropdown-item" *ngFor="let item of ticketType" (click)="addOffer(item)">
+                    {{item?.name}}
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-12 mt-3 mb-4">
+            <div class="table-responsive border-outer-secondary" *ngIf="ticketList && ticketList.length !== 0">
+                <table class="table mat-elevation-z8 w-100 table-membroz-plain">
+                    <thead>
+                        <tr>
+                            <th>{{getLang('tickettype', 'ticket Type')}}</th>
+                            <th>{{getLang('noofperson', 'No. of person')}}</th>
+                            <th>{{getLang('cost', 'Cost')}}</th>
+                            <th>{{getLang('taxes', 'Taxes')}}    </th>
+                            <th class="text-right td-actions">{{getLang('action', 'Action')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of ticketList;let i = index">
+                            <td>{{item?.tickettype}}</td>
+                            <td>
+                                <ng-container *ngIf="!item.isedit">{{item?.noofperson}}</ng-container>
+                                <ng-container *ngIf="item.isedit">
+                                    <input id="noofperson" type="number" min="1" name="noofperson" class="form-control"
+                                        [(ngModel)]="item.noofperson" placeholder="No of person">
+                                </ng-container>
+                            </td> 
+                            <td>
+                                <ng-container *ngIf="!item.isedit">{{item?.cost}}</ng-container>
+                                <ng-container *ngIf="item.isedit">
+                                    <input id="cost" type="number" name="cost" class="form-control"
+                                        [(ngModel)]="item.cost" placeholder="Cost">
+                                </ng-container>
+                            </td>
+                            <td>
+                                <mat-form-field class="example-full-width">
+                                    <mat-select [(ngModel)]="item.taxes" multiple  [disabled]="!item.isedit">
+                                        <mat-option *ngFor="let item of taxesList" [value]="item._id">
+                                            {{item?.taxname}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                            <td class="text-right td-actions">
+                                <button *ngIf="!item.isedit" (click)="item.isedit = !item.isedit"
+                                    [disabled]="btnDisable" type="button" class="btn btn-link btn-primary btn-just-icon"
+                                    matTooltip="Edit" [matTooltipPosition]="'above'">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button *ngIf="item.isedit" (click)="item.isedit = !item.isedit" [disabled]="btnDisable"
+                                    type="button" class="btn btn-link btn-primary btn-just-icon" matTooltip="Cancel"
+                                    [matTooltipPosition]="'above'">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+
+                                <button *ngIf="item.isedit" (click)="update(item,'update')" [disabled]="btnDisable"
+                                    type="button" class="btn btn-link btn-primary btn-just-icon" matTooltip="Update"
+                                    [matTooltipPosition]="'above'">
+                                    <i class="material-icons">save</i>
+                                </button>
+
+                                <!-- <button *ngIf="!item.isedit" (click)="update(i,'delete')" [disabled]="btnDisable"
+                                    type="button" class="btn btn-link btn-primary btn-just-icon" matTooltip="Delete"
+                                    [matTooltipPosition]="'above'">
+                                    <i class="material-icons">delete</i>
+                                </button> -->
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</ng-container>
