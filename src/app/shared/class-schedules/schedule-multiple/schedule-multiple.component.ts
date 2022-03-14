@@ -431,9 +431,10 @@ export class ScheduleMultipleComponent extends BaseLiteComponemntComponent imple
   }
 
   async optionSelected(option: any) {
-    // this.visits= option.value.visits
     this.serviceLoading = true;
-    await this.getServiceById(option.value._id);
+    if (option.value && option.value._id) {
+      await this.getServiceById(option.value._id);
+    }
     await this.serviceSchedule();
   }
 
