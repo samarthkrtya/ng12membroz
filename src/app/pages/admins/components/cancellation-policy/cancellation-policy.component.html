@@ -302,7 +302,7 @@
                                                 </label>
                                                 <input matInput readonly formControlName="allowStaffConcurrency">
                                             </div>
-<!-- 
+                                            <!-- 
                                             <div class="col-sm-12">
                                                 <label class="col-form-label">
                                                     {{getLang('requireStaffonAvailabilitySearch',
@@ -882,8 +882,7 @@
                                                 {{getLang('creditnote','Credit Note')}}
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <mat-radio-group aria-label="Select an option"
-                                                formControlName="creditnote">
+                                            <mat-radio-group aria-label="Select an option" formControlName="creditnote">
                                                 <mat-radio-button value="Yes">Yes</mat-radio-button>
                                                 <mat-radio-button value="No">No</mat-radio-button>
                                             </mat-radio-group>
@@ -1070,7 +1069,7 @@
                                                 </small>
                                             </div>
                                         </div> -->
-<!-- 
+                                        <!-- 
                                         <div class="col-sm-6 d-none" *ngIf="isPaymentEditMode">
                                             <label class="col-form-label">
                                                 {{getLang('prepaidinactivein', 'Inactive in')}}
@@ -1272,7 +1271,7 @@
                                                 </small>
                                             </div>
                                         </div> -->
-<!-- 
+                                        <!-- 
                                         <div class="col-sm-6 d-none" *ngIf="isPaymentEditMode">
                                             <label class="col-form-label">
                                                 {{getLang('tipscalculatorpercentagebasedon', 'Tips Calculator
@@ -1517,13 +1516,16 @@
                                                 </label>
                                                 <section class="example-section" formGroupName="cardtypes">
                                                     <p>
-                                                        <mat-checkbox formControlName="rupay" [attr.disabled]="true"></mat-checkbox>
+                                                        <mat-checkbox formControlName="rupay" [attr.disabled]="true">
+                                                        </mat-checkbox>
                                                         &nbsp;&nbsp;<img width="100"
                                                             src="assets/img/rupay.jpg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        <mat-checkbox formControlName="master" [attr.disabled]="true"></mat-checkbox>
+                                                        <mat-checkbox formControlName="master" [attr.disabled]="true">
+                                                        </mat-checkbox>
                                                         &nbsp;&nbsp;<img width="100"
                                                             src="assets/img/mastercard.png">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        <mat-checkbox formControlName="visa" [attr.disabled]="true"></mat-checkbox>
+                                                        <mat-checkbox formControlName="visa" [attr.disabled]="true">
+                                                        </mat-checkbox>
                                                         &nbsp;&nbsp;<img width="100" src="assets/img/visa.png">
                                                     </p>
                                                 </section>
@@ -1566,7 +1568,7 @@
                                                 <input matInput readonly
                                                     formControlName="requirepostalcodeforcardtransactionsequaloraboveacertainamount">
                                             </div>
-<!-- 
+                                            <!-- 
                                             <div class="col-sm-12 d-none">
                                                 <label class="col-form-label">
                                                     {{getLang('requirepostalcodewhenordercontainsagiftcardorgiftcertificate',
@@ -1757,7 +1759,7 @@
                                                 </label>
                                                 <input matInput readonly formControlName="autotransfertipstopayouts">
                                             </div>
-<!-- 
+                                            <!-- 
                                             <div class="col-sm-12 d-none">
                                                 <label class="col-form-label">
                                                     {{getLang('paymentmethod', 'Payment Method')}}

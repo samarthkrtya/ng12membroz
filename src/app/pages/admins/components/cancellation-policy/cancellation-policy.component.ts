@@ -77,9 +77,9 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
       'enableNoShowAlert': ['', Validators.required],
       'showAlertwhenacustomerhas': ['', Validators.required],
       'enableStaffDependentPricingAndDurations': [],
-     // 'enableCheckin': ['', Validators.required],
+      // 'enableCheckin': ['', Validators.required],
       'enableLockStafftoRoom': ['', Validators.required],
-    //  'enableStaffbookingonoffdays': ['', Validators.required],
+      //  'enableStaffbookingonoffdays': ['', Validators.required],
     });
 
     this.cancellationform = this.fb.group({
@@ -97,9 +97,9 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
       'acceptcash': ['', Validators.required],
       'acceptcreditcard': ['', Validators.required],
       'cardtypes': this.fb.group({
-        'rupay': [{value:'false'}],
-        'master': [{value:'false'}],
-        'visa': [{value:'false'}],
+        'rupay': [{ value: 'false' }],
+        'master': [{ value: 'false' }],
+        'visa': [{ value: 'false' }],
       }),
       'mappartner': [],
       'requirebillingaddressforonlinepurchages': [],
@@ -107,18 +107,18 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
       //'requirepostalcodewhenordercontainsagiftcardorgiftcertificate': ['', Validators.required],
       'acceptgiftcards': ['', Validators.required],
       'enablecashbackforgiftcertificatebalance': ['', Validators.required],
-     // 'expiregiftcertificates': ['', Validators.required],
+      // 'expiregiftcertificates': ['', Validators.required],
       'applytaxon': [],
       'inactivein': [],
-    //  'allowrefunds': ['', Validators.required],
-   //   'prepaidinactivein': ['', Validators.required],
+      //  'allowrefunds': ['', Validators.required],
+      //   'prepaidinactivein': ['', Validators.required],
       'allowdiposit': ['', Validators.required],
       'pmstype': [],
       'enableach': [],
       'enablepaypal': [],
       'paypalmobilepayments': [],
       'utilizeglobalsettings': [],
-     // 'allowordertobesplit': ['', Validators.required],
+      // 'allowordertobesplit': ['', Validators.required],
       //'enablepointsminutes': ['', Validators.required],
       'enabletipsgratuityforServices': ['', Validators.required],
       'autotransfertipstopayouts': ['', Validators.required],
@@ -520,7 +520,7 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
             //this.paymentform.controls['requirepostalcodewhenordercontainsagiftcardorgiftcertificate'].setValue(this.selectedPaymentSetting?.requirepostalcodewhenordercontainsagiftcardorgiftcertificate);
             this.paymentform.controls['acceptgiftcards'].setValue(this.selectedPaymentSetting?.acceptgiftcards);
             this.paymentform.controls['enablecashbackforgiftcertificatebalance'].setValue(this.selectedPaymentSetting?.enablecashbackforgiftcertificatebalance);
-            this.paymentform.controls['expiregiftcertificates'].setValue(this.selectedPaymentSetting?.expiregiftcertificates);
+            // this.paymentform.controls['expiregiftcertificates'].setValue(this.selectedPaymentSetting?.expiregiftcertificates);
             this.paymentform.controls['applytaxon'].setValue(this.selectedPaymentSetting?.applytaxon);
             this.paymentform.controls['inactivein'].setValue(this.selectedPaymentSetting?.inactivein);
             //this.paymentform.controls['allowrefunds'].setValue(this.selectedPaymentSetting?.allowrefunds);
