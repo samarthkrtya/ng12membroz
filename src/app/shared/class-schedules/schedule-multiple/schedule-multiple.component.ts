@@ -1601,12 +1601,25 @@ export class ScheduleMultipleComponent extends BaseLiteComponemntComponent imple
 
   async getpackages() {
     var packages = []
-    if (this.dataContent.membershipid) {
+
+    if (this.dataContent.addons && this.dataContent.addons.length > 0 && this.dataContent.membershipid) {
+      packages.push({ _id: this.dataContent.membershipid._id, title: this.dataContent.membershipid.membershipname, services: this.dataContent.membershipid.services })
+
+      this.dataContent.addons.forEach(element => {
+        this.date = new Date();
+        if (this.datepipe.transform(element.membershipend, 'yyyy-MM-dd') >= this.datepipe.transform(this.date, 'yyyy-MM-dd'))
+          packages.push({
+            _id: element.membershipid._id, title: element.membershipid.membershipname + ' -Expirying On ' +
+              this.datepipe.transform(element.membershipend, 'yyyy-MM-dd'), services: element.membershipid.services, membershipend: element.membershipend
+          })
+      });
+    }
+    else if (this.dataContent.membershipid) {
       packages.push({ _id: this.dataContent.membershipid._id, title: this.dataContent.membershipid.membershipname, services: this.dataContent.membershipid.services })
     }
-    else {
+    else if (this.dataContent.addons) {
       this.dataContent.addons.forEach(element => {
-        this.date=new Date();
+        this.date = new Date();
 
         if (this.datepipe.transform(element.membershipend, 'yyyy-MM-dd') >= this.datepipe.transform(this.date, 'yyyy-MM-dd'))
           packages.push({

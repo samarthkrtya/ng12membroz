@@ -7,13 +7,14 @@
 
     <div [ngClass]="isVisible ? 'd-none' : ''">
 
-        <ng-container *ngIf="dataContent.addons && dataContent.addons.length || dataContent.membershipid && dataContent.membershipid.length> 0;else emtyTmp" >
+        <ng-container
+            *ngIf="dataContent.addons && dataContent.addons.length > 0 || dataContent.membershipid ;else emtyTmp">
             <div class="row">
 
                 <div class="col-lg-12" [ngClass]="this.memberid ? 'd-none' : 'd-block'">
-    
+
                     <div class="row">
-    
+
                         <div class="col-lg-3 col-sm-4 col-4">
                             <label class="col-form-label">
                                 {{getLang('attendee', 'Attendee')}}
@@ -27,102 +28,102 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-    
+
                         <div class="col-lg-9 col-sm-8 col-8" *ngIf="type == 'multi'">
-    
+
                             <label class="col-form-label">
                                 &nbsp;
                             </label>
-    
+
                             <div *ngIf="assign=='individual'">
-    
+
                                 <mat-form-field class="example-full-width">
                                     <input type="text" matInput required [formControl]="attendee"
                                         [matAutocomplete]="autoAttendee" (keyup.enter)="enterAttendee()"
                                         (click)="preloadAttendeedata()" (change)="handleEmptyAttendeeInput($event)">
                                     <mat-autocomplete #autoAttendee="matAutocomplete" [displayWith]="displayAttendeeFn"
                                         (optionSelected)="optionAttendeeSelected($event.option)">
-    
+
                                         <mat-option *ngIf="attendeeisLoadingBox" class="is-loading">
                                             <mat-spinner diameter="50"></mat-spinner>
                                         </mat-option>
-    
+
                                         <ng-container *ngIf="!attendeeisLoadingBox && allAttendeeLists.length > 0">
-    
+
                                             <div class="mat-optgroup-media">
-    
+
                                                 <mat-option *ngFor="let option of filteredAttendeeOptions | async"
                                                     [value]="option">
                                                     {{option?.nickname}}
                                                 </mat-option>
-    
+
                                             </div>
-    
+
                                         </ng-container>
-    
+
                                         <ng-container *ngIf="!attendeeisLoadingBox && allAttendeeLists.length == 0">
                                             <mat-option>
                                                 <span>{{getLang('norecord', 'No Record')}}</span>
                                             </mat-option>
                                         </ng-container>
-    
+
                                     </mat-autocomplete>
-    
-    
+
+
                                 </mat-form-field>
-    
+
                                 <div [hidden]="form.get('attendee').valid || (form.get('attendee').pristine && !submitted)"
                                     class="text-danger">
                                     <small *ngIf="form.get('attendee').hasError('required')" class="error-label">
                                         {{getLang('attendeeisrequired', 'Attendee is Required')}}
                                     </small>
                                 </div>
-    
+
                             </div>
-    
+
                             <div *ngIf="assign=='group'">
-    
+
                                 <mat-form-field class="example-full-width">
-                                    <input type="text" matInput required [formControl]="group" [matAutocomplete]="autoGroup"
-                                        (keyup.enter)="enterGroup()" (click)="preloadGroupdata()"
-                                        (change)="handleEmptyGroupInput($event)">
+                                    <input type="text" matInput required [formControl]="group"
+                                        [matAutocomplete]="autoGroup" (keyup.enter)="enterGroup()"
+                                        (click)="preloadGroupdata()" (change)="handleEmptyGroupInput($event)">
                                     <mat-autocomplete #autoGroup="matAutocomplete" [displayWith]="displayGroupFn"
                                         (optionSelected)="optionGroupSelected($event.option)">
-    
+
                                         <mat-option *ngIf="groupisLoadingBox" class="is-loading">
                                             <mat-spinner diameter="50"></mat-spinner>
                                         </mat-option>
-    
+
                                         <ng-container *ngIf="!groupisLoadingBox && allGroupLists.length > 0">
                                             <mat-option *ngFor="let option of filteredGroupOptions | async"
                                                 [value]="option">
                                                 {{option.title}}
                                             </mat-option>
                                         </ng-container>
-    
+
                                         <ng-container *ngIf="!groupisLoadingBox && allGroupLists.length == 0">
                                             <mat-option>
                                                 <span>{{getLang('norecord', 'No Record')}}</span>
                                             </mat-option>
                                         </ng-container>
-    
+
                                     </mat-autocomplete>
-    
+
                                 </mat-form-field>
-    
+
                                 <div [hidden]="form.get('group').valid || (form.get('group').pristine && !submitted)"
                                     class="text-danger">
                                     <small *ngIf="form.get('group').hasError('required')" class="error-label">
                                         {{getLang('groupisrequired', 'Group is Required')}}
                                     </small>
                                 </div>
-    
+
                             </div>
                         </div>
                     </div>
-    
+
                 </div>
-    
+
                 <div class="col-sm-6">
                     <div class="row">
                         <div class="col-sm-12">
@@ -142,7 +143,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="col-sm-6">
                     <div class="row">
                         <div class="col-sm-12">
@@ -150,26 +151,27 @@
                                 {{getLang('service', 'Service')}}
                                 <span class="text-danger">*</span>
                             </label>
-    
+
                             <mat-form-field class="example-full-width">
                                 <input type="text" matInput required [formControl]="service"
                                     placeholder="Type here to search services" [matAutocomplete]="autoService"
                                     (keyup.enter)="enter()" (click)="preloaddata()" (change)="handleEmptyInput($event)">
                                 <mat-autocomplete #autoService="matAutocomplete" [displayWith]="displayFn"
                                     (optionSelected)="optionSelected($event.option)">
-    
+
                                     <mat-option *ngIf="serviceisLoadingBox" class="is-loading">
                                         <mat-spinner diameter="50"></mat-spinner>
                                     </mat-option>
-    
+
                                     <ng-container *ngIf="!serviceisLoadingBox && serviceobject.length > 0">
                                         <div class="mat-optgroup-media">
-                                            <mat-option *ngFor="let option of filteredServices | async" [value]="option">
-    
+                                            <mat-option *ngFor="let option of filteredServices | async"
+                                                [value]="option">
+
                                                 <div class="media py-2 member-profile-item service-list cursor-pointer">
-    
+
                                                     <i class="material-icons mt-2 mr-2 rounded-icon"> list_alt </i>
-    
+
                                                     <div class="media-body">
                                                         <div class="d-flex">
                                                             <div class="flex-grow-1">
@@ -179,28 +181,30 @@
                                                                         {{option?.services?.length}}</small>
                                                                 </div>
                                                             </div>
-                                                            <div class="fc-today-button font-500">{{option?.charges }}</div>
+                                                            <div class="fc-today-button font-500">{{option?.charges }}
+                                                            </div>
                                                         </div>
                                                         <div class="d-flex">
                                                             <div class="flex-grow-1"> {{option.type == 'service' ?
                                                                 group.name : option.type}} </div>
-                                                            <div class="fc-today-button font-14" *ngIf="option?.duration">
+                                                            <div class="fc-today-button font-14"
+                                                                *ngIf="option?.duration">
                                                                 {{option?.duration}} Min.</div>
                                                         </div>
                                                     </div>
                                                 </div>
-    
-    
+
+
                                             </mat-option>
                                         </div>
                                     </ng-container>
-    
+
                                     <ng-container *ngIf="!serviceisLoadingBox && serviceobject.length == 0">
                                         <mat-option>
                                             <span>{{getLang('norecord', 'No Record')}}</span>
                                         </mat-option>
                                     </ng-container>
-    
+
                                 </mat-autocomplete>
                             </mat-form-field>
                             <!-- <div>
@@ -215,15 +219,15 @@
                                 </small>
                             </div>
                         </div>
-    
+
                     </div>
                 </div>
             </div>
         </ng-container>
 
         <ng-template #emtyTmp>
-                <h3 class="text-center mb-3"> Your Package setup is incomplete! </h3>
-          </ng-template>
+            <h3 class="text-center mb-3"> Your Package setup is incomplete! </h3>
+        </ng-template>
 
         <ng-container
             *ngIf="!serviceLoading && this.service && this.service.value && this.service.value.type == 'service'">
@@ -599,7 +603,7 @@
             </div>
         </ng-container>
 
-        <div class="row mt-3" *ngIf="dataContent.addons && dataContent.addons.length || dataContent.membershipid && dataContent.membershipid.length> 0">
+        <div class="row mt-3" *ngIf="dataContent.addons && dataContent.addons.length > 0 || dataContent.membershipid">
 
             <div class="col-sm-12 text-right">
                 <button (click)="cancel()" class="btn btn-default" type="button" [disabled]="disableBtn">
