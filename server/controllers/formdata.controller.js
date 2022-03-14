@@ -417,6 +417,7 @@ async function patch(Id, req) {
   if (req.body.property) formdata.property = req.body.property
   if  (req.body.contextid)  formdata.contextid = req.body.contextid 
   if  (req.body.onModel)  formdata.onModel = req.body.onModel
+  if  (req.body.status)  formdata.status = req.body.status
   return await formdata.save(req);
 }
 
@@ -426,6 +427,7 @@ async function update(Id, req) {
   formdata.property = req.body.property
   formdata.contextid = req.body.contextid
   formdata.onModel = req.body.onModel
+  formdata.status = req.body.status
   formdata._original = original;
   
   if (formdata.property['signed']){
