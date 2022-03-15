@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { BaseComponemntComponent } from 'src/app/shared/base-componemnt/base-componemnt.component';
-import { MatTab } from '@angular/material/tabs';
-import { LookupsService } from 'src/app/core/services/lookups/lookup.service';
-import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { BaseLiteComponemntComponent } from 'src/app/shared/base-componemnt/base-lite-componemnt/base-lite-componemnt.component';
 import { CommonService } from 'src/app/core/services/common/common.service';
-import { any } from 'joi';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { Location } from '@angular/common';
 
 declare var $: any;
 
@@ -21,19 +15,17 @@ declare var $: any;
 export class InternalNotificationsComponent extends BaseLiteComponemntComponent implements OnInit {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
-  isLoading: boolean;
   workflowslist: any[] = [];
   roleList: any;
   form: FormGroup;
   submitted: boolean;
-  disableBtn: boolean = false;
-
+  disableBtn: boolean;
+  isLoadingData: boolean = true;
   formdataLists: any[] = [];
 
   constructor(
-    private _route: ActivatedRoute,
+    private location: Location,
     private fb: FormBuilder,
-    private _lookupService: LookupsService,
     private _commonService: CommonService,
   ) {
     super();
@@ -41,24 +33,24 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
 
   async ngOnInit() {
     try {
-      this.isLoading = true;
+      this.isLoadingData = true;
       await super.ngOnInit();
       await this.initializeVariables();
       await this.getWorkflowsList();
       await this.getRoleList();
       await this.getFormdatas()
       await this.workfloeWiseRoles();
-      this.isLoading = false;
+      this.isLoadingData = false;
 
     } catch (error) {
       console.error(error);
-      this.isLoading = false;
-
+      this.isLoadingData = false;
     } finally {
     }
   }
 
   async initializeVariables() {
+    this.isLoadingData = true;
     this.formdataLists = [];
     return;
   }
@@ -77,8 +69,9 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
+          this.isLoadingData = true;
           this.workflowslist = data.filter(p => p.solutiontype.includes(this._loginUser.branchid.solutiontype));
-          this.isLoading = false;
+          this.isLoadingData = false;
         }
       }, (error) => {
         console.error(error);
@@ -98,8 +91,9 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then(data => {
         if (data) {
+          this.isLoadingData = true;
           this.roleList = data;
-          this.isLoading = false;
+          this.isLoadingData = false;
         }
       }, (error) => {
         console.error(error);
@@ -120,8 +114,10 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
+          this.isLoadingData = true;
           this.formdataLists = [];
           this.formdataLists = data;
+          this.isLoadingData = false;
           return;
         }
       }, (error) => {
@@ -221,15 +217,22 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
   }
 
   async saveData(url: any, method: any, postData: any) {
+    this.disableBtn = true;
     return this._commonService
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
+        this.disableBtn = false;
         if (data) {
+          this.getFormdatas();
         }
       }, (error) => {
         this.disableBtn = false;
         console.error(error);
       });
+  }
+
+  cancel() {
+    this.location.back();
   }
 
 }
