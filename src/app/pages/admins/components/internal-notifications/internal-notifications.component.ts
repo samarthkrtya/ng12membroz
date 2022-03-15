@@ -20,7 +20,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
   form: FormGroup;
   submitted: boolean;
   disableBtn: boolean;
-  isLoadingData: boolean = true;
+  isLoadingData: boolean = false;
   formdataLists: any[] = [];
 
   constructor(
@@ -50,7 +50,6 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
   }
 
   async initializeVariables() {
-    this.isLoadingData = true;
     this.formdataLists = [];
     return;
   }
@@ -91,9 +90,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then(data => {
         if (data) {
-          this.isLoadingData = true;
           this.roleList = data;
-          this.isLoadingData = false;
         }
       }, (error) => {
         console.error(error);
@@ -114,10 +111,8 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
-          this.isLoadingData = true;
           this.formdataLists = [];
           this.formdataLists = data;
-          this.isLoadingData = false;
           return;
         }
       }, (error) => {
@@ -202,10 +197,13 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
               var method = "PATCH";
 
               let obj = {};
+              obj["property"] = {};
+              obj["property"]["roles"] = [];
+              obj["property"]["workflowid"] = element._id;
+              obj["contextid"] = element.action.email[0]._id;
               obj["status"] = "deleted";
 
               await this.saveData(url, method, obj);
-
             }
           }
         }

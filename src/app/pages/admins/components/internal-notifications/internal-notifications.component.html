@@ -1,97 +1,105 @@
-<form *ngIf="form" (ngSubmit)="onSubmit(form.value, form.valid)" [formGroup]="form" novalidate class="form-horizontal">
+<div class="main-content">
+    <div class="container-fluid">
 
-    <div class="main-content">
-        <div class="container-fluid">
-
-            <div class="row">
-                <div class="offset-xl-1 col-xl-10">
-                    <h3 class="card-title">
-                        Internal Notifications
-                    </h3>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="offset-xl-1 col-xl-10">
-                                    <div class="loader" *ngIf="isLoadingData">
-                                        <svg class="circular" viewBox="25 25 50 50">
-                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
-                                                stroke-miterlimit="10" />
-                                        </svg>
-                                    </div>
-
-                                    <ng-container *ngIf="!isLoadingData">
-                                        <div class="mb-3">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <h4 class="card-title mb-4">Email/SMS Notifications</h4>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex mb-4" *ngFor="let item of workflowslist; let i = index">
-
-                                                <ng-container [formGroupName]="item._id">
-
-                                                    <div class="flex-grow-1">
-                                                        <div>
-                                                            <h5 class="mb-1">{{item?.title}}</h5>
-                                                            <div>
-                                                                {{item?.action?.email[0]?.title}}
-                                                            </div>
-                                                        </div>
-
-                                                        <div
-                                                            [ngClass]="form.controls[item._id].value.toggle == true ? 'd-block' : 'd-none'">
-                                                            <h5 class="mt-2 mb-2">User/Role</h5>
-
-                                                            <div>
-                                                                <mat-selection-list formControlName="roles">
-                                                                    <mat-list-option class="mat-primary"
-                                                                        checkboxPosition="before"
-                                                                        *ngFor="let role of this.roleList"
-                                                                        [value]="role._id">
-                                                                        {{role.rolename}}
-                                                                    </mat-list-option>
-                                                                </mat-selection-list>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                    <div class="ml-2">
-                                                        <mat-slide-toggle formControlName="toggle"></mat-slide-toggle>
-                                                    </div>
-
-                                                </ng-container>
-
-                                            </div>
-
-                                        </div>
-                                    </ng-container>
-
-                                </div>
-                            </div>
+        <div class="row">
+            <div class="offset-xl-1 col-xl-10">
+                <h3 class="card-title">
+                    Internal Notifications
+                </h3>
+                <div class="card" *ngIf="isLoadingData">
+                    <div class="card-body">
+                        <div class="loader">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                                    stroke-miterlimit="10" />
+                            </svg>
                         </div>
                     </div>
-
-                    <div class="card" *ngIf="!isLoadingData">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-12 text-right">
-                                    <button class="btn btn-default btn-full-width" type="button" [disabled]="disableBtn"
-                                        (click)="cancel()">
-                                        <i class="material-icons">close</i>Cancel
-                                    </button>
-                                    <button class="btn btn-primary ml-2" type="submit" [disabled]="disableBtn">
-                                        <i class="material-icons">save</i>Submit
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
+                <ng-container *ngIf="!isLoadingData">
+                    <form *ngIf="form" (ngSubmit)="onSubmit(form.value, form.valid)" [formGroup]="form" novalidate
+                        class="form-horizontal">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="offset-xl-1 col-xl-10">
+
+                                        <ng-container>
+                                            <div class="mb-3">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <h4 class="card-title mb-4">Email/SMS Notifications</h4>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mb-4"
+                                                    *ngFor="let item of workflowslist; let i = index">
+
+                                                    <ng-container [formGroupName]="item._id">
+
+                                                        <div class="flex-grow-1">
+                                                            <div>
+                                                                <h5 class="mb-1">{{item?.title}}</h5>
+                                                                <div>
+                                                                    {{item?.action?.email[0]?.title}}
+                                                                </div>
+                                                            </div>
+
+                                                            <div
+                                                                [ngClass]="form.controls[item._id].value.toggle == true ? 'd-block' : 'd-none'">
+                                                                <h5 class="mt-2 mb-2">User/Role</h5>
+
+                                                                <div>
+                                                                    <mat-selection-list formControlName="roles">
+                                                                        <mat-list-option class="mat-primary"
+                                                                            checkboxPosition="before"
+                                                                            *ngFor="let role of this.roleList"
+                                                                            [value]="role._id">
+                                                                            {{role.rolename}}
+                                                                        </mat-list-option>
+                                                                    </mat-selection-list>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="ml-2">
+                                                            <mat-slide-toggle formControlName="toggle">
+                                                            </mat-slide-toggle>
+                                                        </div>
+
+                                                    </ng-container>
+
+                                                </div>
+
+                                            </div>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button class="btn btn-default btn-full-width" type="button"
+                                            [disabled]="disableBtn" (click)="cancel()">
+                                            <i class="material-icons">close</i>Cancel
+                                        </button>
+                                        <button class="btn btn-primary ml-2" type="submit" [disabled]="disableBtn">
+                                            <i class="material-icons">save</i>Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </ng-container>
             </div>
         </div>
     </div>
-</form>
+</div>
