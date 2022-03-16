@@ -231,6 +231,22 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
           this.appointmentsetting = data && data["appointmentsetting"] ? data["appointmentsetting"] : null;
           if (this.appointmentsetting == null) {
             this.isAppointmentEditMode = true;
+
+            this.selectedAppointmentSetting = this.appointmentsetting;
+            this.appointmentform.controls['allowAppointmentsToEndAfterYourLocationOfficalClosingTime'].setValue(this.selectedAppointmentSetting?.allowAppointmentsToEndAfterYourLocationOfficalClosingTime ? this.selectedAppointmentSetting?.allowAppointmentsToEndAfterYourLocationOfficalClosingTime : 'Yes');
+            this.appointmentform.controls['overageduration'].setValue(this.selectedAppointmentSetting?.overageduration ? this.selectedAppointmentSetting?.overageduration : '5 Hours');
+            this.appointmentform.controls['allowAppointmentInThepast'].setValue(this.selectedAppointmentSetting?.allowAppointmentInThepast ? this.selectedAppointmentSetting?.allowAppointmentInThepast : 'Yes');
+            this.appointmentform.controls['allowResourceOverbooking'].setValue(this.selectedAppointmentSetting?.allowResourceOverbooking ? this.selectedAppointmentSetting?.allowResourceOverbooking : 'Yes');
+            this.appointmentform.controls['allowStaffConcurrency'].setValue(this.selectedAppointmentSetting?.allowStaffConcurrency ? this.selectedAppointmentSetting?.allowStaffConcurrency : 'Yes');
+            //this.appointmentform.controls['requireStaffonAvailabilitySearch'].setValue(this.selectedAppointmentSetting?.requireStaffonAvailabilitySearch);
+            // this.appointmentform.controls['enableAutoPackageDetection'].setValue(this.selectedAppointmentSetting?.enableAutoPackageDetection);
+            this.appointmentform.controls['enableNoShowAlert'].setValue(this.selectedAppointmentSetting?.enableNoShowAlert ? this.selectedAppointmentSetting?.enableNoShowAlert : 'Yes');
+            this.appointmentform.controls['showAlertwhenacustomerhas'].setValue(this.selectedAppointmentSetting?.showAlertwhenacustomerhas ? this.selectedAppointmentSetting?.showAlertwhenacustomerhas : '1');
+            // this.appointmentform.controls['enableStaffDependentPricingAndDurations'].setValue(this.selectedAppointmentSetting?.enableStaffDependentPricingAndDurations);
+            //this.appointmentform.controls['enableCheckin'].setValue(this.selectedAppointmentSetting?.enableCheckin);
+            this.appointmentform.controls['enableLockStafftoRoom'].setValue(this.selectedAppointmentSetting?.enableLockStafftoRoom ? this.selectedAppointmentSetting?.enableLockStafftoRoom : 'Yes');
+            //this.appointmentform.controls['enableStaffbookingonoffdays'].setValue(this.selectedAppointmentSetting?.enableStaffbookingonoffdays);
+            this.isLoadingData = false;
           }
           else {
             this.isAppointmentEditMode = false;
@@ -326,6 +342,14 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
           this.cancellationpolicy = data && data["cancellationpolicy"] ? data["cancellationpolicy"] : null;
           if (this.cancellationpolicy == null) {
             this.isCancellationEditMode = true;
+            this.cancellationform.controls['applyto'].setValue(this.selectedCancellationPolicy?.applyto);
+            this.cancellationform.controls['applycancellationfeewithin'].setValue(this.selectedCancellationPolicy?.applycancellationfeewithin ? this.selectedCancellationPolicy?.applycancellationfeewithin : '1 Hours');
+            this.cancellationform.controls['cancellationfee'].setValue(this.selectedCancellationPolicy?.cancellationfee ? this.selectedCancellationPolicy?.cancellationfee : '10%');
+            this.cancellationform.controls['noshowfee'].setValue(this.selectedCancellationPolicy?.noshowfee ? this.selectedCancellationPolicy?.noshowfee : '10%');
+            this.cancellationform.controls['enablecancellationreasons'].setValue(this.selectedCancellationPolicy?.enablecancellationreasons ? this.selectedCancellationPolicy?.enablecancellationreasons : 'Yes');
+            this.cancellationform.controls['cancellationpolicytext'].setValue(this.selectedCancellationPolicy?.cancellationpolicytext);
+            this.cancellationform.controls['cancellationreasons'].setValue(this.selectedCancellationPolicy?.cancellationreasons);
+            this.isLoadingData = false;
           }
           else {
             this.isCancellationEditMode = false;
@@ -501,6 +525,41 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
           this.paymentsetting = data && data["paymentsetting"] ? data["paymentsetting"] : null;
           if (this.paymentsetting == null) {
             this.isPaymentEditMode = true;
+            this.paymentform.controls['acceptchecks'].setValue(this.selectedPaymentSetting?.acceptchecks ? this.selectedPaymentSetting?.acceptchecks : 'Yes');
+            this.paymentform.controls['acceptcash'].setValue(this.selectedPaymentSetting?.acceptcash ? this.selectedPaymentSetting?.acceptcash : 'Yes');
+            this.paymentform.controls['acceptcreditcard'].setValue(this.selectedPaymentSetting?.acceptcreditcard ? this.selectedPaymentSetting?.acceptcreditcard : 'Yes');
+
+            var cardtypes = this.paymentform.controls['cardtypes'] as FormGroup;
+            cardtypes.get('rupay').setValue(this.selectedPaymentSetting?.cardtypes?.rupay);
+            cardtypes.get('master').setValue(this.selectedPaymentSetting?.cardtypes?.master);
+            cardtypes.get('visa').setValue(this.selectedPaymentSetting?.cardtypes?.visa);
+            this.paymentform.controls['mappartner'].setValue(this.selectedPaymentSetting?.mappartner);
+            //this.paymentform.controls['requirebillingaddressforonlinepurchages'].setValue(this.selectedPaymentSetting?.requirebillingaddressforonlinepurchages);
+            this.paymentform.controls['requirepostalcodeforcardtransactionsequaloraboveacertainamount'].setValue(this.selectedPaymentSetting?.requirepostalcodeforcardtransactionsequaloraboveacertainamount);
+            //this.paymentform.controls['requirepostalcodewhenordercontainsagiftcardorgiftcertificate'].setValue(this.selectedPaymentSetting?.requirepostalcodewhenordercontainsagiftcardorgiftcertificate);
+            this.paymentform.controls['acceptgiftcards'].setValue(this.selectedPaymentSetting?.acceptgiftcards ? this.selectedPaymentSetting?.acceptgiftcards : 'Yes');
+            this.paymentform.controls['enablecashbackforgiftcertificatebalance'].setValue(this.selectedPaymentSetting?.enablecashbackforgiftcertificatebalance ? this.selectedPaymentSetting?.enablecashbackforgiftcertificatebalance : 'Yes');
+            // this.paymentform.controls['expiregiftcertificates'].setValue(this.selectedPaymentSetting?.expiregiftcertificates);
+            this.paymentform.controls['applytaxon'].setValue(this.selectedPaymentSetting?.applytaxon);
+            this.paymentform.controls['inactivein'].setValue(this.selectedPaymentSetting?.inactivein);
+            //this.paymentform.controls['allowrefunds'].setValue(this.selectedPaymentSetting?.allowrefunds);
+            //this.paymentform.controls['prepaidinactivein'].setValue(this.selectedPaymentSetting?.prepaidinactivein);
+            this.paymentform.controls['allowdiposit'].setValue(this.selectedPaymentSetting?.allowdiposit ? this.selectedPaymentSetting?.allowdiposit : 'Yes');
+            this.paymentform.controls['pmstype'].setValue(this.selectedPaymentSetting?.pmstype);
+            this.paymentform.controls['enableach'].setValue(this.selectedPaymentSetting?.enableach);
+            this.paymentform.controls['enablepaypal'].setValue(this.selectedPaymentSetting?.enablepaypal);
+            this.paymentform.controls['paypalmobilepayments'].setValue(this.selectedPaymentSetting?.paypalmobilepayments);
+            this.paymentform.controls['utilizeglobalsettings'].setValue(this.selectedPaymentSetting?.utilizeglobalsettings);
+            //this.paymentform.controls['allowordertobesplit'].setValue(this.selectedPaymentSetting?.allowordertobesplit);
+            //this.paymentform.controls['enablepointsminutes'].setValue(this.selectedPaymentSetting?.enablepointsminutes);
+            this.paymentform.controls['enabletipsgratuityforServices'].setValue(this.selectedPaymentSetting?.enabletipsgratuityforServices ? this.selectedPaymentSetting?.enabletipsgratuityforServices : 'Yes');
+            this.paymentform.controls['autotransfertipstopayouts'].setValue(this.selectedPaymentSetting?.autotransfertipstopayouts ? this.selectedPaymentSetting?.autotransfertipstopayouts : 'Yes');
+            this.paymentform.controls['enableservicecharge'].setValue(this.selectedPaymentSetting?.enableservicecharge ? this.selectedPaymentSetting?.enableservicecharge : 'Yes');
+            //this.paymentform.controls['paymentmethod'].setValue(this.selectedPaymentSetting?.paymentmethod);
+            //this.paymentform.controls['tipscalculatorpercentagebasedon'].setValue(this.selectedPaymentSetting?.tipscalculatorpercentagebasedon);
+            this.paymentform.controls['creditnote'].setValue(this.selectedPaymentSetting?.creditnote ? this.selectedPaymentSetting?.creditnote : 'Yes');
+
+            this.isLoadingData = false;
           }
           else {
             this.isPaymentEditMode = false;
