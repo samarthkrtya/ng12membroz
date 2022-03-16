@@ -71,9 +71,9 @@
                                             <mat-form-field>
                                                 <mat-label>Select</mat-label>
                                                 <mat-select matNativeControl formControlName="overageduration">
-                                                    <mat-option value="1">1 Hours</mat-option>
-                                                    <mat-option value="2">2 Hours</mat-option>
-                                                    <mat-option value="5">5 Hours</mat-option>
+                                                    <mat-option value="1 Hours">1 Hours</mat-option>
+                                                    <mat-option value="2 Hours">2 Hours</mat-option>
+                                                    <mat-option value="5 Hours">5 Hours</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
@@ -865,14 +865,15 @@
 
                                             <section class="example-section" formGroupName="cardtypes">
                                                 <p>
-                                                    <mat-checkbox formControlName="rupay"></mat-checkbox>
+                                                    <mat-checkbox formControlName="rupay" value="rupay"></mat-checkbox>
                                                     &nbsp;&nbsp;<img width="100"
                                                         src="assets/img/rupay.jpg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <mat-checkbox formControlName="master"></mat-checkbox>
+                                                    <mat-checkbox formControlName="master" value="master">
+                                                    </mat-checkbox>
                                                     &nbsp;&nbsp;<img width="100"
                                                         src="assets/img/mastercard.png">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <mat-checkbox formControlName="visa"></mat-checkbox>&nbsp;&nbsp;<img
-                                                        width="100" src="assets/img/visa.png">
+                                                    <mat-checkbox formControlName="visa" value="visa"></mat-checkbox>
+                                                    &nbsp;&nbsp;<img width="100" src="assets/img/visa.png">
                                                 </p>
                                             </section>
                                         </div>
