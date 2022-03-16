@@ -40,9 +40,21 @@
 
                                                         <div class="flex-grow-1">
                                                             <div>
-                                                                <h5 class="mb-1">{{item?.title}}</h5>
+                                                                <h5 class="mb-1">{{item?.title}}
+                                                                    <button mat-raised-button type="button"
+                                                                        style="line-height: normal;width: auto;height: 30px;"
+                                                                        [matTooltip]="'Email'"
+                                                                        [matTooltipPosition]="'above'"
+                                                                        data-original-title="Email"
+                                                                        class="btn btn-link btn-primary btn-just-icon m-0 p-0">
+                                                                        <i class="material-icons"
+                                                                            style="line-height: 28px;"
+                                                                            [routerLink]="['/pages/admins/mail-alerts/form/'+item.communicationid]">email</i>
+                                                                    </button>
+                                                                </h5>
                                                                 <div>
                                                                     {{item?.action?.email[0]?.title}}
+
                                                                 </div>
                                                             </div>
 
@@ -62,6 +74,22 @@
                                                                 </div>
 
                                                             </div>
+                                                            <div class="col-sm-12">
+                                                                <h5 class="mt-2 mb-2">Others</h5>
+                                                                <mat-form-field appearance="fill">
+                                                                    <mat-label>Others</mat-label>
+                                                                    <mat-select formControlName="users" multiple>
+                                                                        <mat-option *ngFor="let user of userList"
+                                                                            [value]="user._id">
+                                                                            {{user?.fullname}} |
+                                                                            {{user?.property?.primaryemail}} |
+                                                                            {{user?.property?.mobile}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                </mat-form-field>
+                                                            </div>
+
+
 
                                                         </div>
 
@@ -69,6 +97,8 @@
                                                             <mat-slide-toggle formControlName="toggle">
                                                             </mat-slide-toggle>
                                                         </div>
+
+
 
                                                     </ng-container>
 

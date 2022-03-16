@@ -4,6 +4,10 @@ import { Subject } from 'rxjs';
 import { BaseLiteComponemntComponent } from 'src/app/shared/base-componemnt/base-lite-componemnt/base-lite-componemnt.component';
 import { CommonService } from 'src/app/core/services/common/common.service';
 import { Location } from '@angular/common';
+import { takeUntil } from 'rxjs/operators';
+import { any } from 'joi';
+import { ActivatedRoute } from '@angular/router';
+import { BaseComponemntComponent } from 'src/app/shared/base-componemnt/base-componemnt.component';
 
 declare var $: any;
 
@@ -12,23 +16,32 @@ declare var $: any;
   templateUrl: './internal-notifications.component.html',
   styles: []
 })
-export class InternalNotificationsComponent extends BaseLiteComponemntComponent implements OnInit {
+export class InternalNotificationsComponent extends BaseComponemntComponent implements OnInit {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
   workflowslist: any[] = [];
   roleList: any;
   form: FormGroup;
+  users = new FormControl();
+
   submitted: boolean;
   disableBtn: boolean;
-  isLoadingData: boolean = false;
+  isLoadingData: boolean;
   formdataLists: any[] = [];
+  userList: any[] = [];
 
   constructor(
     private location: Location,
     private fb: FormBuilder,
-    private _commonService: CommonService,
+    private _route: ActivatedRoute,
+    public _commonService: CommonService,
   ) {
     super();
+
+    this._route.params.forEach((params) => {
+      this.bindId = params["id"];
+    })
+
   }
 
   async ngOnInit() {
@@ -36,12 +49,12 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       this.isLoadingData = true;
       await super.ngOnInit();
       await this.initializeVariables();
+      this.getUsers();
+      this.getRoleList();
       await this.getWorkflowsList();
-      await this.getRoleList();
-      await this.getFormdatas()
+      await this.getFormdatas();
       await this.workfloeWiseRoles();
       this.isLoadingData = false;
-
     } catch (error) {
       console.error(error);
       this.isLoadingData = false;
@@ -51,6 +64,8 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
 
   async initializeVariables() {
     this.formdataLists = [];
+    this.userList = [];
+    this.roleList = [];
     return;
   }
 
@@ -70,6 +85,9 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
         if (data) {
           this.isLoadingData = true;
           this.workflowslist = data.filter(p => p.solutiontype.includes(this._loginUser.branchid.solutiontype));
+          this.workflowslist.map((wfl) => {
+            wfl.communicationid = wfl.action.email[0]._id;
+          })
           this.isLoadingData = false;
         }
       }, (error) => {
@@ -77,7 +95,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       })
   }
 
-  async getRoleList() {
+  getRoleList() {
     let method = "POST";
     let url = "roles/filter";
 
@@ -86,15 +104,37 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
     postData["search"].push({ "searchfield": "status", "searchvalue": "active", "criteria": "eq" });
     postData["search"].push({ "searchfield": "solutiontype", "searchvalue": this._loginUser.branchid.solutiontype, "criteria": "eq" });
 
-    return this._commonService
-      .commonServiceByUrlMethodDataAsync(url, method, postData)
-      .then(data => {
+    this._commonService
+      .commonServiceByUrlMethodData(url, method, postData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
         if (data) {
+          this.isLoadingData = true;
           this.roleList = data;
+          this.isLoadingData = false;
         }
       }, (error) => {
         console.error(error);
       })
+  }
+
+  getUsers() {
+    let postData = {};
+    postData["search"] = [];
+    postData["search"].push({ "searchfield": "status", "searchvalue": "active", "criteria": "eq" });
+
+    let url = "users/filter";
+    let method = "POST";
+
+    this._commonService
+      .commonServiceByUrlMethodData(url, method, postData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        if (data) {
+          this.userList = [];
+          this.userList = data;
+        }
+      });
   }
 
   getFormdatas() {
@@ -111,8 +151,10 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
+          this.isLoadingData = true;
           this.formdataLists = [];
           this.formdataLists = data;
+          this.isLoadingData = false;
           return;
         }
       }, (error) => {
@@ -130,6 +172,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
         var element = this.workflowslist[i];
         var id = '';
         var roles = [];
+        var users = [];
         var status: boolean = true;
 
         if (this.formdataLists && this.formdataLists.length > 0) {
@@ -137,6 +180,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
           if (formdataObj) {
             id = formdataObj._id;
             roles = formdataObj.property.roles;
+            users = formdataObj.property.users;
             if (formdataObj.status == "deleted") {
               status = false;
             }
@@ -147,7 +191,8 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
           'id': [id],
           'toggle': new FormControl(status),
           'roles': [roles],
-          'workflowid': [element._id]
+          'workflowid': [element._id],
+          'users': [users]
         })
 
       }
@@ -157,7 +202,6 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
   }
 
   async onSubmit(value: any, isValid: boolean) {
-
     this.submitted = true;
 
     if (!isValid) {
@@ -169,6 +213,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
         for (let i = 0; i < this.workflowslist.length; i++) {
 
           var element = this.workflowslist[i];
+
           if (this.form.controls[element._id].value.toggle == true) {
 
             let obj = {};
@@ -178,6 +223,8 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
             obj["property"] = {};
             obj["property"]["roles"] = this.form.controls[element._id].value.roles;
             obj["property"]["workflowid"] = element._id;
+            obj["property"]["users"] = this.form.controls[element._id].value.users;
+
             obj["contextid"] = element.action.email[0]._id;
             obj["status"] = "active";
 
@@ -199,6 +246,7 @@ export class InternalNotificationsComponent extends BaseLiteComponemntComponent 
               let obj = {};
               obj["property"] = {};
               obj["property"]["roles"] = [];
+              obj["property"]["users"] = [];
               obj["property"]["workflowid"] = element._id;
               obj["contextid"] = element.action.email[0]._id;
               obj["status"] = "deleted";
