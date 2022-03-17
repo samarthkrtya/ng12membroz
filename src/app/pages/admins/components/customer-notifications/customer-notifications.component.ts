@@ -49,11 +49,11 @@ export class CustomerNotificationsComponent extends BaseComponemntComponent impl
       await this.getWorkflowsList();
       await this.getFormdatas();
       await this.workfloeWiseRoles();
-      this.isLoadingData = false;
     } catch (error) {
       console.error(error);
       this.isLoadingData = false;
     } finally {
+      this.isLoadingData = false;
     }
   }
 
@@ -76,12 +76,10 @@ export class CustomerNotificationsComponent extends BaseComponemntComponent impl
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
-          this.isLoadingData = true;
           this.workflowslist = data.filter(p => p.solutiontype.includes(this._loginUser.branchid.solutiontype));
           this.workflowslist.map((wfl) => {
             wfl.communicationid = wfl.action.email[0]._id;
           })
-          this.isLoadingData = false;
         }
       }, (error) => {
         console.error(error);
@@ -89,7 +87,6 @@ export class CustomerNotificationsComponent extends BaseComponemntComponent impl
   }
 
   getFormdatas() {
-
     let method = "POST";
     let url = "formdatas/filter";
 
@@ -102,10 +99,8 @@ export class CustomerNotificationsComponent extends BaseComponemntComponent impl
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
-          this.isLoadingData = true;
           this.formdataLists = [];
           this.formdataLists = data;
-          this.isLoadingData = false;
           return;
         }
       }, (error) => {

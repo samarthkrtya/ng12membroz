@@ -49,16 +49,16 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
       this.isLoadingData = true;
       await super.ngOnInit();
       await this.initializeVariables();
-      this.getUsers();
-      this.getRoleList();
+      await this.getUsers();
+      await this.getRoleList();
       await this.getWorkflowsList();
       await this.getFormdatas();
       await this.workfloeWiseRoles();
-      this.isLoadingData = false;
     } catch (error) {
       console.error(error);
       this.isLoadingData = false;
     } finally {
+      this.isLoadingData = false;
     }
   }
 
@@ -83,19 +83,20 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
-          this.isLoadingData = true;
+
           this.workflowslist = data.filter(p => p.solutiontype.includes(this._loginUser.branchid.solutiontype));
           this.workflowslist.map((wfl) => {
             wfl.communicationid = wfl.action.email[0]._id;
           })
-          this.isLoadingData = false;
+
+          return;
         }
       }, (error) => {
         console.error(error);
       })
   }
 
-  getRoleList() {
+  async getRoleList() {
     let method = "POST";
     let url = "roles/filter";
 
@@ -104,21 +105,21 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
     postData["search"].push({ "searchfield": "status", "searchvalue": "active", "criteria": "eq" });
     postData["search"].push({ "searchfield": "solutiontype", "searchvalue": this._loginUser.branchid.solutiontype, "criteria": "eq" });
 
-    this._commonService
-      .commonServiceByUrlMethodData(url, method, postData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(data => {
+    return this._commonService
+      .commonServiceByUrlMethodDataAsync(url, method, postData)
+      .then(data => {
         if (data) {
-          this.isLoadingData = true;
+          this.roleList = [];
           this.roleList = data;
-          this.isLoadingData = false;
+
+          return;
         }
       }, (error) => {
         console.error(error);
       })
   }
 
-  getUsers() {
+  async getUsers() {
     let postData = {};
     postData["search"] = [];
     postData["search"].push({ "searchfield": "status", "searchvalue": "active", "criteria": "eq" });
@@ -126,13 +127,13 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
     let url = "users/filter";
     let method = "POST";
 
-    this._commonService
-      .commonServiceByUrlMethodData(url, method, postData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data: any) => {
+    return this._commonService
+      .commonServiceByUrlMethodDataAsync(url, method, postData)
+      .then((data: any) => {
         if (data) {
           this.userList = [];
           this.userList = data;
+          return;
         }
       });
   }
@@ -151,10 +152,10 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
-          this.isLoadingData = true;
+
           this.formdataLists = [];
           this.formdataLists = data;
-          this.isLoadingData = false;
+
           return;
         }
       }, (error) => {
@@ -163,6 +164,7 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
   }
 
   async workfloeWiseRoles() {
+
     const group: any = {};
 
     if (this.workflowslist && this.workflowslist.length > 0) {
