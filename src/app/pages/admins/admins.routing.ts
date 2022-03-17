@@ -47,6 +47,10 @@ export const AdminsRoutes: Routes = [
         path: 'internal-notifications', 
         loadChildren: () => import('./components/internal-notifications/internal-notifications.module').then(m => m.InternalNotificationsModule),
       },
+      {
+        path: 'customer-notifications', 
+        loadChildren: () => import('./components/customer-notifications/customer-notifications.module').then(m => m.CustomerNotificationsModule),
+      },
     ]
     //children: [
     // { path: 'admin-dashboard', loadChildren: './components/admin-dashboard/admin-dashboard.module#AdminDashboardModule' },

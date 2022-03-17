@@ -34,7 +34,7 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
   isCancellationEditMode: boolean;
   cancellationpolicy: any[] = [];
   selectedCancellationPolicy: any;
-  applyToList: string[] = ['All Customer', 'All Member'];
+  applyToList: any[] = ["All Customer", "All Member"];
   cancellationReasonsList: any[] = [];
   cancellationdataSource = new MatTableDataSource;
 
@@ -303,6 +303,14 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
         .commonServiceByUrlMethodDataAsync(url, method, postData)
         .then((data: any) => {
           if (data) {
+
+            var localStoragetmp = JSON.parse(localStorage.getItem('currentUser'));
+            var loginUser = localStoragetmp['user'];
+            loginUser['branchid'] = data;
+            localStoragetmp['user'] = loginUser;
+            localStorage.removeItem('currentUser');
+            localStorage.setItem('currentUser', JSON.stringify(localStoragetmp))
+
             super.showNotification("top", "right", "Appointment Settings Made successfully !!", "success");
             this.ngOnInit();
             return;
@@ -342,7 +350,7 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
           this.cancellationpolicy = data && data["cancellationpolicy"] ? data["cancellationpolicy"] : null;
           if (this.cancellationpolicy == null) {
             this.isCancellationEditMode = true;
-            this.cancellationform.controls['applyto'].setValue(this.selectedCancellationPolicy?.applyto);
+            this.cancellationform.controls['applyto'].setValue([this.applyToList[0]]);
             this.cancellationform.controls['applycancellationfeewithin'].setValue(this.selectedCancellationPolicy?.applycancellationfeewithin ? this.selectedCancellationPolicy?.applycancellationfeewithin : '1 Hours');
             this.cancellationform.controls['cancellationfee'].setValue(this.selectedCancellationPolicy?.cancellationfee ? this.selectedCancellationPolicy?.cancellationfee : '10%');
             this.cancellationform.controls['noshowfee'].setValue(this.selectedCancellationPolicy?.noshowfee ? this.selectedCancellationPolicy?.noshowfee : '10%');
@@ -355,9 +363,9 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
             this.isCancellationEditMode = false;
             this.selectedCancellationPolicy = this.cancellationpolicy;
             this.cancellationform.controls['applyto'].setValue(this.selectedCancellationPolicy?.applyto);
-            this.cancellationform.controls['applycancellationfeewithin'].setValue(this.selectedCancellationPolicy?.applycancellationfeewithin);
-            this.cancellationform.controls['cancellationfee'].setValue(this.selectedCancellationPolicy?.cancellationfee);
-            this.cancellationform.controls['noshowfee'].setValue(this.selectedCancellationPolicy?.noshowfee);
+            this.cancellationform.controls['applycancellationfeewithin'].setValue(this.selectedCancellationPolicy?.applycancellationfeewithin ? this.selectedCancellationPolicy?.applycancellationfeewithin : '1 Hours');
+            this.cancellationform.controls['cancellationfee'].setValue(this.selectedCancellationPolicy?.cancellationfee ? this.selectedCancellationPolicy?.cancellationfee : '10%');
+            this.cancellationform.controls['noshowfee'].setValue(this.selectedCancellationPolicy?.noshowfee ? this.selectedCancellationPolicy?.noshowfee : '10%');
             this.cancellationform.controls['enablecancellationreasons'].setValue(this.selectedCancellationPolicy?.enablecancellationreasons ? this.selectedCancellationPolicy?.enablecancellationreasons : 'Yes');
             this.cancellationform.controls['cancellationpolicytext'].setValue(this.selectedCancellationPolicy?.cancellationpolicytext);
             this.cancellationform.controls['cancellationreasons'].setValue(this.selectedCancellationPolicy?.cancellationreasons);
@@ -393,6 +401,14 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
         .commonServiceByUrlMethodDataAsync(url, method, postData)
         .then((data: any) => {
           if (data) {
+
+            var localStoragetmp = JSON.parse(localStorage.getItem('currentUser'));
+            var loginUser = localStoragetmp['user'];
+            loginUser['branchid'] = data;
+            localStoragetmp['user'] = loginUser;
+            localStorage.removeItem('currentUser');
+            localStorage.setItem('currentUser', JSON.stringify(localStoragetmp))
+
             super.showNotification("top", "right", "Cancellation Policy Made successfully !!", "success");
             this.ngOnInit();
             return;
@@ -654,6 +670,14 @@ export class CancellationPolicyComponent extends BaseComponemntComponent impleme
         .commonServiceByUrlMethodDataAsync(url, method, postData)
         .then((data: any) => {
           if (data) {
+
+            var localStoragetmp = JSON.parse(localStorage.getItem('currentUser'));
+            var loginUser = localStoragetmp['user'];
+            loginUser['branchid'] = data;
+            localStoragetmp['user'] = loginUser;
+            localStorage.removeItem('currentUser');
+            localStorage.setItem('currentUser', JSON.stringify(localStoragetmp))
+
             super.showNotification("top", "right", "Payment Settings Made successfully !!", "success");
             this.ngOnInit();
             return;
