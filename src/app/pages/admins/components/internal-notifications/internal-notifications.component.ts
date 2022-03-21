@@ -83,12 +83,10 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
-
           this.workflowslist = data.filter(p => p.solutiontype.includes(this._loginUser.branchid.solutiontype));
           this.workflowslist.map((wfl) => {
             wfl.communicationid = wfl.action.email[0]._id;
           })
-
           return;
         }
       }, (error) => {
@@ -111,7 +109,6 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
         if (data) {
           this.roleList = [];
           this.roleList = data;
-
           return;
         }
       }, (error) => {
@@ -145,17 +142,15 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
 
     let postData = {};
     postData["search"] = [];
-    postData["search"].push({ "searchfield": "status", "searchvalue": ["active", "deleted"], "criteria": "in" });
+    postData["search"].push({ "searchfield": "status", "searchvalue": ["active", "deleted", "inactive"], "criteria": "in" });
     postData["search"].push({ "searchfield": "formid", "searchvalue": "622c81e045a25d0ff86b3f22", "criteria": "eq" });
 
     return this._commonService
       .commonServiceByUrlMethodDataAsync(url, method, postData)
       .then((data: any) => {
         if (data) {
-
           this.formdataLists = [];
           this.formdataLists = data;
-
           return;
         }
       }, (error) => {
@@ -164,7 +159,6 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
   }
 
   async workfloeWiseRoles() {
-
     const group: any = {};
 
     if (this.workflowslist && this.workflowslist.length > 0) {
@@ -179,11 +173,12 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
 
         if (this.formdataLists && this.formdataLists.length > 0) {
           var formdataObj = this.formdataLists.find(p => p?.property?.workflowid == element._id);
+
           if (formdataObj) {
             id = formdataObj._id;
             roles = formdataObj.property.roles;
             users = formdataObj.property.users;
-            if (formdataObj.status == "deleted") {
+            if (formdataObj.status == "inactive") {
               status = false;
             }
           }
@@ -247,11 +242,11 @@ export class InternalNotificationsComponent extends BaseComponemntComponent impl
 
               let obj = {};
               obj["property"] = {};
-              obj["property"]["roles"] = [];
+              obj["property"]["roles"] = this.form.controls[element._id].value.roles;;
               obj["property"]["users"] = [];
               obj["property"]["workflowid"] = element._id;
               obj["contextid"] = element.action.email[0]._id;
-              obj["status"] = "deleted";
+              obj["status"] = "inactive";
 
               await this.saveData(url, method, obj);
             }

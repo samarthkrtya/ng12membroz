@@ -60,7 +60,7 @@
 
                                                             <div
                                                                 [ngClass]="form.controls[item._id].value.toggle == true ? 'd-block' : 'd-none'">
-                                                                <h5 class="mt-2 mb-2">User/Role</h5>
+                                                                <h5 class="mt-2 mb-2">User role</h5>
 
                                                                 <div>
                                                                     <mat-selection-list formControlName="roles">
@@ -75,9 +75,9 @@
 
                                                             </div>
                                                             <div class="col-sm-12">
-                                                                <h5 class="mt-2 mb-2">Others</h5>
+                                                                <h5 class="mt-2 mb-2">User/Email</h5>
                                                                 <mat-form-field appearance="fill">
-                                                                    <mat-label>Others</mat-label>
+                                                                    <mat-label>Select user/email</mat-label>
                                                                     <mat-select formControlName="users" multiple>
                                                                         <mat-option *ngFor="let user of userList"
                                                                             [value]="user._id">
